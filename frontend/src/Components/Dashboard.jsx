@@ -1,16 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+import Seasons from "./Seasons";
 
 const Dashboard = () => {
 
   const navigate = useNavigate();
+  const [seasons, setSeasons] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
 
     const token = localStorage.getItem("token");
 
-    // If no token → redirect to login
     if (!token) {
       navigate("/login");
       return;
@@ -18,24 +20,67 @@ const Dashboard = () => {
 
     try {
       const decoded = jwtDecode(token);
-      const role = decoded.role;
 
-      // If admin → redirect to admin dashboard
-      if (role === "ADMIN") {
-        navigate("/admin-dashboard");
+      // 🔥 Expiration check
+      if (decoded.exp * 1000 < Date.now()) {
+        localStorage.removeItem("token");
+        navigate("/login");
+        return;
       }
 
-    } catch (error) {
-      // Invalid token → clear and redirect
+      // 🔥 Admin redirect
+      if (decoded.role === "ADMIN") {
+        navigate("/admin-dashboard");
+        return;
+      }
+
+      fetchSeasons(token);
+
+    } catch {
       localStorage.removeItem("token");
       navigate("/login");
     }
 
   }, [navigate]);
 
+  const fetchSeasons = async (token) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/seasons`,
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
+        return;
+      }
+
+      if (response.status === 403) {
+        alert("Access denied.");
+        return;
+      }
+
+      const data = await response.json();
+      setSeasons(data);
+
+    } catch (error) {
+      console.error("Error fetching seasons:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <h3>Loading seasons...</h3>;
+
   return (
     <div>
-      <h2>This is User Dashboard</h2>
+      <h2>User Dashboard</h2>
+      <Seasons seasons={seasons} />
     </div>
   );
 };

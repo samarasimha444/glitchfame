@@ -21,8 +21,7 @@ public class SecurityConfig {
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/signup", "/login").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/user/**").hasRole("USER")
+                .requestMatchers("/api/seasons/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         )
         .addFilterBefore(jwtFilter,
@@ -30,11 +29,7 @@ public class SecurityConfig {
 
     return http.build();
 }
-
-
-
-
-    @Bean
+ @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10); // cost factor 10
     }
