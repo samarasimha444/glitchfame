@@ -1,5 +1,4 @@
 package com.example.glitchfame.Service;
-
 import com.example.glitchfame.Configuration.jwt.JwtUtil;
 import com.example.glitchfame.Entity.User;
 import com.example.glitchfame.Repository.LoginRepository;

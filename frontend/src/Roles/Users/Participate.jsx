@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import { useMutation } from "@tanstack/react-query";
 
 const Participate = () => {
-
   const { seasonId } = useParams();
   const navigate = useNavigate();
 
@@ -16,53 +15,15 @@ const Participate = () => {
   });
 
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  // 🔐 Token + Role Validation
-  useEffect(() => {
-
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    try {
-      const decoded = jwtDecode(token);
-
-      if (decoded.exp * 1000 < Date.now()) {
-        localStorage.removeItem("token");
-        navigate("/login");
-        return;
-      }
-
-      if (decoded.role === "ADMIN") {
-        navigate("/admin-dashboard");
-        return;
-      }
-
-      if (decoded.role !== "USER") {
-        navigate("/login");
-      }
-
-    } catch {
-      localStorage.removeItem("token");
-      navigate("/login");
-    }
-
-  }, [navigate]);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [e.target.name]: e.target.value
-    });
+    }));
   };
 
-  // ✅ Frontend Validation
   const validateForm = () => {
-
     if (!formData.age || isNaN(formData.age)) {
       return "Age must be a valid number";
     }
@@ -84,21 +45,49 @@ const Participate = () => {
     try {
       new URL(formData.photoUrl);
     } catch {
-      return "Photo URL must be a valid URL";
+      return "Photo URL must be valid";
     }
 
-    if (!formData.description.trim()) {
-      return "Description is required";
-    }
-
-    if (formData.description.trim().length < 10) {
+    if (!formData.description.trim() || formData.description.trim().length < 10) {
       return "Description must be at least 10 characters";
     }
 
     return null;
   };
 
-  const handleSubmit = async (e) => {
+  const mutation = useMutation({
+    mutationFn: async (payload) => {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/participations`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        }
+      );
+
+      if (!response.ok) {
+        const message = await response.text();
+        throw new Error(message || "Failed to submit participation");
+      }
+
+      return response.status === 204 ? null : response.json();
+    },
+    onSuccess: () => {
+      alert("Participation submitted successfully");
+      navigate("/dashboard");
+    },
+    onError: (err) => {
+      setError(err.message);
+    }
+  });
+
+  const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
 
@@ -107,8 +96,6 @@ const Participate = () => {
       setError(validationError);
       return;
     }
-
-    const token = localStorage.getItem("token");
 
     const payload = {
       seasonId: Number(seasonId),
@@ -119,105 +106,108 @@ const Participate = () => {
       description: formData.description.trim()
     };
 
-    try {
-      setLoading(true);
-
-      const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/participations`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify(payload)
-        }
-      );
-
-      if (response.status === 201) {
-        alert("Participation submitted successfully");
-        navigate("/dashboard");
-      } else {
-        const message = await response.text();
-        setError(message);
-      }
-
-    } catch {
-      setError("Something went wrong.");
-    } finally {
-      setLoading(false);
-    }
+    mutation.mutate(payload);
   };
 
   return (
-    <div style={{ maxWidth: "500px", margin: "40px auto" }}>
+    <div style={styles.container}>
       <h2>Participate in Season {seasonId}</h2>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p style={styles.error}>{error}</p>}
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} style={styles.form}>
 
-        <input
-          type="number"
-          name="age"
-          placeholder="Enter your age"
-          value={formData.age}
-          onChange={handleChange}
-          required
-        />
+        <div style={styles.field}>
+          <label>Age</label>
+          <input
+            type="number"
+            name="age"
+            placeholder="Enter your age"
+            value={formData.age}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <br /><br />
+        <div style={styles.field}>
+          <label>Mobile Number</label>
+          <input
+            type="text"
+            name="mobileNumber"
+            placeholder="Enter mobile number"
+            value={formData.mobileNumber}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <input
-          type="text"
-          name="mobileNumber"
-          placeholder="Enter mobile number"
-          value={formData.mobileNumber}
-          onChange={handleChange}
-          required
-        />
+        <div style={styles.field}>
+          <label>Location</label>
+          <input
+            type="text"
+            name="location"
+            placeholder="Enter your location"
+            value={formData.location}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <br /><br />
+        <div style={styles.field}>
+          <label>Photo URL</label>
+          <input
+            type="text"
+            name="photoUrl"
+            placeholder="Paste image URL"
+            value={formData.photoUrl}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <input
-          type="text"
-          name="location"
-          placeholder="Enter your location"
-          value={formData.location}
-          onChange={handleChange}
-          required
-        />
+        <div style={styles.field}>
+          <label>Description</label>
+          <textarea
+            name="description"
+            placeholder="Describe yourself"
+            value={formData.description}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <br /><br />
-
-        <input
-          type="text"
-          name="photoUrl"
-          placeholder="Paste image URL"
-          value={formData.photoUrl}
-          onChange={handleChange}
-          required
-        />
-
-        <br /><br />
-
-        <textarea
-          name="description"
-          placeholder="Describe yourself"
-          value={formData.description}
-          onChange={handleChange}
-          required
-        />
-
-        <br /><br />
-
-        <button type="submit" disabled={loading}>
-          {loading ? "Submitting..." : "Submit Participation"}
+        <button type="submit" disabled={mutation.isPending}>
+          {mutation.isPending ? "Submitting..." : "Submit Participation"}
         </button>
 
       </form>
     </div>
   );
+};
+
+const styles = {
+  container: {
+    maxWidth: "500px",
+    margin: "40px auto",
+    padding: "20px",
+    border: "1px solid #ddd",
+    borderRadius: "8px",
+    backgroundColor: "#f9f9f9"
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "15px"
+  },
+  field: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "5px"
+  },
+  error: {
+    color: "red",
+    fontWeight: "bold"
+  }
 };
 
 export default Participate;

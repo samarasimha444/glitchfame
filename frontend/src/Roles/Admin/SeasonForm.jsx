@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-
 const SeasonForm = () => {
-
-  const [form, setForm] = useState({
+const [form, setForm] = useState({
     name: "",
     prizeMoney: "",
     registrationStartDate: "",
