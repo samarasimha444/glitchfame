@@ -1,5 +1,4 @@
 package com.example.glitchfame.Configuration;
-
 import com.example.glitchfame.Configuration.jwt.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +8,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 @Configuration
 public class SecurityConfig {
@@ -22,7 +22,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // allow preflight
-                    .requestMatchers("/signup", "/login").permitAll()
+                    .requestMatchers("/signup", "/login","/verifysignup").permitAll()
                     .requestMatchers("/api/seasons/**").hasRole("ADMIN")
                     .requestMatchers(
                                      "/v3/api-docs/**",
