@@ -1,5 +1,5 @@
 import { Outlet, useOutletContext } from "react-router-dom";
-import UserProfile from "./UserProfile.jsx";
+import UserProfile from "./Profile.jsx";
 
 const Layout = () => {
   const { profile } = useOutletContext();

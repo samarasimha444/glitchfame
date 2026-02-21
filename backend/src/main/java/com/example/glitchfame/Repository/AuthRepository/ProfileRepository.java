@@ -1,4 +1,4 @@
-package com.example.glitchfame.Repository;
+package com.example.glitchfame.Repository.AuthRepository;
 
 import java.util.Optional;
 
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.example.glitchfame.Entity.User;
 
 @Repository
-public interface UserProfileRepository extends JpaRepository<User, Long> {
+public interface ProfileRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 }

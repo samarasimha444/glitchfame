@@ -1,6 +1,7 @@
-package com.example.glitchfame.Controller;
-import com.example.glitchfame.Service.ParticipationService;
-import com.example.glitchfame.dto.ParticipationRequestDTO;
+package com.example.glitchfame.Controller.UserController;
+import com.example.glitchfame.Service.UserService.ParticipationService;
+import com.example.glitchfame.dto.UserDTO.ParticipationRequestDTO;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/participations")
 @RequiredArgsConstructor
 public class ParticipationController {
-
     private final ParticipationService participationService;
 
     @PostMapping

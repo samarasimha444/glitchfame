@@ -1,4 +1,4 @@
-package com.example.glitchfame.dto;
+package com.example.glitchfame.dto.AdminDTO;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

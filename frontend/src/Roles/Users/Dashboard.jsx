@@ -4,7 +4,6 @@ import Seasons from "./Seasons";
 
 const fetchSeasons = async () => {
   const token = localStorage.getItem("token");
-
   const response = await fetch(
     `${import.meta.env.VITE_BASE_URL}/seasons`,
     {

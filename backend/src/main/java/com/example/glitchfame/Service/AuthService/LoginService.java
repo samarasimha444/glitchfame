@@ -1,8 +1,9 @@
-package com.example.glitchfame.Service;
+package com.example.glitchfame.Service.AuthService;
 import com.example.glitchfame.Configuration.jwt.JwtUtil;
 import com.example.glitchfame.Entity.User;
-import com.example.glitchfame.Repository.LoginRepository;
-import com.example.glitchfame.dto.LoginRequest;
+import com.example.glitchfame.Repository.AuthRepository.LoginRepository;
+import com.example.glitchfame.dto.AuthDTO.LoginRequest;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

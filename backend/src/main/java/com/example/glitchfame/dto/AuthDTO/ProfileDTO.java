@@ -1,4 +1,4 @@
-package com.example.glitchfame.dto;
+package com.example.glitchfame.dto.AuthDTO;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserProfileDTO {
+public class ProfileDTO {
 
     private Long id;
     private String username;

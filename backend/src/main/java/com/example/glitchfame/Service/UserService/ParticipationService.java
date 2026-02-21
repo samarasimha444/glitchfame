@@ -1,12 +1,12 @@
-package com.example.glitchfame.Service;
+package com.example.glitchfame.Service.UserService;
 
 import com.example.glitchfame.Entity.Participation;
 import com.example.glitchfame.Entity.Seasons;
 import com.example.glitchfame.Entity.User;
-import com.example.glitchfame.Repository.ParticipationRepository;
-import com.example.glitchfame.Repository.SeasonRepository;
-import com.example.glitchfame.Repository.LoginRepository;
-import com.example.glitchfame.dto.ParticipationRequestDTO;
+import com.example.glitchfame.Repository.UserRepository.ParticipationRepository;
+import com.example.glitchfame.Repository.AuthRepository.LoginRepository;
+import com.example.glitchfame.dto.UserDTO.ParticipationRequestDTO;
+import com.example.glitchfame.Repository.UserRepository.SeasonRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

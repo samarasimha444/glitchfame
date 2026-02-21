@@ -67,7 +67,7 @@ const [form, setForm] = useState({
     try {
       setLoading(true);
 
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/seasons`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/admin/seasons`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,22 +1,22 @@
-package com.example.glitchfame.Service;
+package com.example.glitchfame.Service.AuthService;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.example.glitchfame.dto.UserProfileDTO;
 import com.example.glitchfame.Entity.User;
-import com.example.glitchfame.Repository.UserProfileRepository;
+import com.example.glitchfame.Repository.AuthRepository.ProfileRepository;
+import com.example.glitchfame.dto.AuthDTO.ProfileDTO;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UserProfileService {
+public class ProfileService {
 
-    private final UserProfileRepository userRepository;
+    private final ProfileRepository userRepository;
 
-    public UserProfileDTO getLoggedInUserProfile() {
+    public ProfileDTO getLoggedInUserProfile() {
 
         Authentication authentication = SecurityContextHolder
                 .getContext()
@@ -27,7 +27,7 @@ public class UserProfileService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return UserProfileDTO.builder()
+        return ProfileDTO.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())

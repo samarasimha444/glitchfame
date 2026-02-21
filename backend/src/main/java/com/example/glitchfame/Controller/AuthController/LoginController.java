@@ -1,7 +1,8 @@
-package com.example.glitchfame.Controller;
+package com.example.glitchfame.Controller.AuthController;
 
-import com.example.glitchfame.Service.LoginService;
-import com.example.glitchfame.dto.LoginRequest;
+import com.example.glitchfame.Service.AuthService.LoginService;
+import com.example.glitchfame.dto.AuthDTO.LoginRequest;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

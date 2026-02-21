@@ -1,4 +1,4 @@
-package com.example.glitchfame.Repository;
+package com.example.glitchfame.Repository.UserRepository;
 
 import com.example.glitchfame.Entity.Participation;
 import com.example.glitchfame.Entity.Seasons;

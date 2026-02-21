@@ -1,4 +1,4 @@
-package com.example.glitchfame.dto;
+package com.example.glitchfame.dto.UserDTO;
 import jakarta.validation.constraints.*;
 import lombok.*;
 

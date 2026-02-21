@@ -1,4 +1,4 @@
-package com.example.glitchfame.Repository;
+package com.example.glitchfame.Repository.AuthRepository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.glitchfame.Entity.User;

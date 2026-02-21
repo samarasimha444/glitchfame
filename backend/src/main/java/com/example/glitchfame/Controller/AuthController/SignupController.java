@@ -1,7 +1,8 @@
-package com.example.glitchfame.Controller;
+package com.example.glitchfame.Controller.AuthController;
 
-import com.example.glitchfame.Service.SignupService;
-import com.example.glitchfame.dto.SignupRequest;
+import com.example.glitchfame.Service.AuthService.SignupService;
+import com.example.glitchfame.dto.AuthDTO.SignupRequest;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class SignupController {
 
-    private final SignupService signupService;
+      private final SignupService signupService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest request) {

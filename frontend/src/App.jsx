@@ -1,11 +1,11 @@
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
-import Layout from "./Layout";
+import Layout from "./Auth/Layout";
 
 import Dashboard from "./Roles/Users/Dashboard";
 import Admin from "./Roles/Admin/Admin";
-import Login from "./Roles/Users/Login";
-import Signup from "./Roles/Users/Signup";
+import Login from "./Auth/Login";
+import Signup from "./Auth/Signup";
 import Participate from "./Roles/Users/Participate";
 
 export default function App() {
