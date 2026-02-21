@@ -10,7 +10,7 @@ import java.util.List;
 @RestController
 
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173") // your React dev port
+
 public class SeasonController {
 
     private final SeasonService seasonService;
@@ -22,6 +22,7 @@ public class SeasonController {
 
         return ResponseEntity.status(201).body(savedSeason);
     }
+    
 
 
     @GetMapping("/seasons")

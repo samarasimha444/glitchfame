@@ -32,8 +32,22 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role = Role.USER;   // ✅ Default role
+    private Role role = Role.USER;   // default USER
 
-    @Column(name = "created_at", nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        if (this.role == null) {
+            this.role = Role.USER;
+        }
+    }
+
+    // 🔥 Enum inside same file
+    public enum Role {
+        USER,
+        ADMIN
+    }
 }

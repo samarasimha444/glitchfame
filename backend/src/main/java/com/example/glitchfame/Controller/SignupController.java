@@ -1,7 +1,6 @@
 package com.example.glitchfame.Controller;
 
-import com.example.glitchfame.Service.UserService;
-import com.example.glitchfame.dto.LoginRequest;
+import com.example.glitchfame.Service.SignupService;
 import com.example.glitchfame.dto.SignupRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -9,15 +8,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
-public class UserController {
+public class SignupController {
 
-    private final UserService userService;
+    private final SignupService signupService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
+
         try {
-            userService.registerUser(request);
+            signupService.registerUser(request);
             return ResponseEntity.status(201).body("User registered successfully");
 
         } catch (RuntimeException ex) {
@@ -38,26 +37,4 @@ public class UserController {
             }
         }
     }
-
-   @PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-
-    try {
-        String token = userService.loginUser(request);
-        return ResponseEntity.ok(token);
-
-    } catch (RuntimeException ex) {
-
-        switch (ex.getMessage()) {
-
-            case "INVALID_EMAIL":
-                return ResponseEntity.status(404).body("Email not found");
-
-            case "INVALID_PASSWORD":
-                return ResponseEntity.status(401).body("Incorrect password");
-
-            default:
-                return ResponseEntity.status(500).body("Something went wrong");
-        }
-    }
-}}
+}
