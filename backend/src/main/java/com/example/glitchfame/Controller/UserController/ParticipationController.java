@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/participations")
+@RequestMapping("user/participations")
 @RequiredArgsConstructor
 public class ParticipationController {
     private final ParticipationService participationService;

@@ -1,4 +1,4 @@
-package com.example.glitchfame.dto.AdminDTO;
+package com.example.glitchfame.dto.AdminDTO.AdminSeasonDTO;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SeasonRequestDTO {
+public class UpdateSeasonDTO {
 
     private String name;
 

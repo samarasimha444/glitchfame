@@ -60,7 +60,7 @@ const Participate = () => {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/participations`,
+        `${import.meta.env.VITE_BASE_URL}user/participations`,
         {
           method: "POST",
           headers: {
