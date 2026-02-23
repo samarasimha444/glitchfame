@@ -18,13 +18,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String username;
 
-    @Column(nullable = false, unique = true, length = 15)
+    @Column(nullable = false, length = 15)
     private String mobileNumber;
 
     @Column(nullable = false)
@@ -32,10 +32,15 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role = Role.USER;   // default USER
+    private Role role = Role.USER;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    // ✅ Soft delete column
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean deleted = false;
 
     @PrePersist
     public void onCreate() {
@@ -43,9 +48,11 @@ public class User {
         if (this.role == null) {
             this.role = Role.USER;
         }
+        if (this.deleted == null) {
+            this.deleted = false;
+        }
     }
 
-    // 🔥 Enum inside same file
     public enum Role {
         USER,
         ADMIN

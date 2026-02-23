@@ -13,6 +13,8 @@ CREATE TABLE users (
     CONSTRAINT uk_users_username_deleted UNIQUE (username, deleted)
 );
 
+
+
 CREATE TABLE seasons (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     deleted BIT(1) NOT NULL DEFAULT b'0',
@@ -26,3 +28,4 @@ CREATE TABLE seasons (
 
     CONSTRAINT uk_season_name_deleted UNIQUE (name, deleted)
 );
+
