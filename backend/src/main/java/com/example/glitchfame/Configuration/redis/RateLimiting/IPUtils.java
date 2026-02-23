@@ -1,4 +1,4 @@
-package com.example.glitchfame.Configuration.redis;
+package com.example.glitchfame.Configuration.redis.RateLimiting;
 
 import jakarta.servlet.http.HttpServletRequest;
 

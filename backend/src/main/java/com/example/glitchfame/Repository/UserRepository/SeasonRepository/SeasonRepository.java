@@ -1,13 +1,15 @@
-package com.example.glitchfame.Repository.UserRepository;
-
+package com.example.glitchfame.Repository.UserRepository.SeasonRepository;
 import com.example.glitchfame.Entity.Seasons;
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
+
 
 
 public interface SeasonRepository extends JpaRepository<Seasons, Long> {
 
-    boolean existsByNameAndDeletedFalse(String name);
-    List<Seasons> findByDeletedFalse();
+    // Fetch all seasons where deleted = false
+    List<Seasons> findByDeletedFalseOrderByRegistrationStartDateDesc();
 
 }
+

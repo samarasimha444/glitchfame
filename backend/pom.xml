@@ -122,6 +122,24 @@
         </dependency>
 
         
+      <!--flyway-->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+
+    <dependency>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-mysql</artifactId>
+    </dependency>
+
+    <!--jackson for LocalDateTime-->
+        <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+    </dependency>
+
+        
      <!--add more depencies-->
 
     </dependencies>

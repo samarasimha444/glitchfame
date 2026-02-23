@@ -1,4 +1,4 @@
-package com.example.glitchfame.Configuration.redis;
+package com.example.glitchfame.Configuration.redis.RateLimiting;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,6 +25,16 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+
+        String path = request.getRequestURI();
+
+        return !(path.startsWith("/login")
+                || path.startsWith("/signup")
+                || path.startsWith("/verifyotp"));
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
@@ -42,6 +52,9 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         if (count != null && count > MAX_REQUESTS) {
 
             Long ttl = redisTemplate.getExpire(key);
+            if (ttl == null || ttl < 0) {
+                ttl = WINDOW_SECONDS;
+            }
 
             response.setStatus(429);
             response.setContentType("application/json");
@@ -52,7 +65,6 @@ public class RateLimitingFilter extends OncePerRequestFilter {
                             + "\"retryAfterSeconds\":" + ttl
                             + "}"
             );
-
             return;
         }
 

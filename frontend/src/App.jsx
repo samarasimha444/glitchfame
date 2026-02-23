@@ -5,7 +5,6 @@ import Dashboard from "./Roles/Users/Dashboard";
 import Admin from "./Roles/Admin/Admin";
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
-import Participate from "./Roles/Users/Participate";
 import RoleRedirect from "./Auth/RoleRedirect";
 import Seasons from "./Roles/Admin/Seasons/SeasonsList";
 import SeasonForm from "./Roles/Admin/Seasons/SeasonForm";
@@ -29,7 +28,7 @@ export default function App() {
       <Route element={<ProtectedRoute allowedRole="USER" />}>
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/:seasonId/participate" element={<Participate />} />
+          
         </Route>
       </Route>
 

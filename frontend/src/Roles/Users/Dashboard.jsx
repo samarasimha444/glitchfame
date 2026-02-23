@@ -1,7 +1,13 @@
+import { Outlet, useOutletContext } from "react-router-dom";
+import Seasons from "./Seasons/SeasonList";
+
+
 export default function Dashboard(){
+   const { profile } = useOutletContext();
   return(
     <div>
-      this is user dashboard
+      <Outlet context={{ profile }} />
+       <Seasons />
     </div>
   )
 }
