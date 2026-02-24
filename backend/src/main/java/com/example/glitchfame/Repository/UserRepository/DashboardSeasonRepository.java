@@ -11,14 +11,10 @@ import java.util.List;
 
 public interface DashboardSeasonRepository extends JpaRepository<Seasons, Long> {
 
-    
-
-
-
-
     @Query(value = """
         SELECT 
             s.id AS id,
+            p.id AS participationId,
             s.name AS name,
             s.prize_money AS prizeMoney,
             s.registration_start_date AS registrationStartDate,
@@ -28,7 +24,8 @@ public interface DashboardSeasonRepository extends JpaRepository<Seasons, Long> 
             p.status AS status
         FROM seasons s
         LEFT JOIN (
-            SELECT p1.season_id,
+            SELECT p1.id,
+                   p1.season_id,
                    p1.status
             FROM participations p1
             INNER JOIN (

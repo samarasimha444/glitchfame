@@ -1,13 +1,10 @@
 package com.example.glitchfame.Controller.UserController;
-
 import com.example.glitchfame.Service.UserService.DashboardService;
 import com.example.glitchfame.dto.UserDTO.SeasonDashboardProjection;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -25,7 +22,7 @@ public class DashboardController {
             return ResponseEntity.status(401).build();
         }
 
-        String email = authentication.getName(); // comes from JWT subject
+        String email = authentication.getName();
 
         List<SeasonDashboardProjection> response =
                 dashboardService.getDashboardSeasons(email);

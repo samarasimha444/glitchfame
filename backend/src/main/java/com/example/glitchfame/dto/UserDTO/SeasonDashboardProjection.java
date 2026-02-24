@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 
 public interface SeasonDashboardProjection {
 
-    Long getId();
+    Long getId();               // season id (s.id)
+    Long getParticipationId();  // participation id (p.id)
+
     String getName();
     BigDecimal getPrizeMoney();
     LocalDateTime getRegistrationStartDate();
