@@ -1,8 +1,6 @@
 package com.example.glitchfame.Controller.AuthController;
-
 import com.example.glitchfame.Service.AuthService.LoginService;
 import com.example.glitchfame.dto.AuthDTO.LoginRequest;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +10,7 @@ import org.springframework.web.bind.annotation.*;
 public class LoginController {
 
     private final LoginService loginService;
-
-    @PostMapping("/login")
+     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
         try {
@@ -22,17 +19,15 @@ public class LoginController {
 
         } catch (RuntimeException ex) {
 
-            switch (ex.getMessage()) {
-
-                case "INVALID_EMAIL":
-                    return ResponseEntity.status(404).body("Email not found");
-
-                case "INVALID_PASSWORD":
-                    return ResponseEntity.status(401).body("Incorrect password");
-
-                default:
-                    return ResponseEntity.status(500).body("Something went wrong");
+            if ("EMAIL_NOT_FOUND".equals(ex.getMessage())) {
+                return ResponseEntity.status(404).body("Email not found");
             }
+
+            if ("INVALID_PASSWORD".equals(ex.getMessage())) {
+                return ResponseEntity.status(401).body("Incorrect password");
+            }
+
+            return ResponseEntity.status(500).body("Something went wrong");
         }
     }
 }

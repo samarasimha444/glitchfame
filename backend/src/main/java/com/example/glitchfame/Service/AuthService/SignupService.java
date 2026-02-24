@@ -33,32 +33,31 @@ public class SignupService {
     public void initiateSignup(SignupRequest request) {
 
         String email = request.getEmail().toLowerCase().trim();
+        String username = request.getUsername().trim();
+        String mobile = request.getPhoneNumber().trim();
 
-        // Duplicate checks
-        if (signupRepository.existsByEmail(email)) {
+        // Check only ACTIVE users
+        if (signupRepository.existsByEmailAndDeletedFalse(email)) {
             throw new ConflictException("Email already exists");
         }
 
-        if (signupRepository.existsByUsername(request.getUsername())) {
+        if (signupRepository.existsByUsernameAndDeletedFalse(username)) {
             throw new ConflictException("Username already exists");
         }
 
-        if (signupRepository.existsByMobileNumber(request.getPhoneNumber())) {
+        if (signupRepository.existsByMobileNumberAndDeletedFalse(mobile)) {
             throw new ConflictException("Mobile number already exists");
         }
 
-        // Encode password BEFORE storing
-        request.setPassword(
-                passwordEncoder.encode(request.getPassword())
-        );
-
+        // Encode password BEFORE storing in Redis
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
         request.setEmail(email);
+        request.setUsername(username);
+        request.setPhoneNumber(mobile);
 
         try {
-            String signupData =
-                    objectMapper.writeValueAsString(request);
+            String signupData = objectMapper.writeValueAsString(request);
 
-            // Store signup data in Redis
             redisTemplate.opsForValue().set(
                     SIGNUP_PREFIX + email,
                     signupData,
@@ -69,11 +68,9 @@ public class SignupService {
             throw new BadRequestException("Unable to process signup");
         }
 
-        // Generate & store OTP
         String otp = otpService.generateOtp();
         otpService.storeOtp(email, otp);
 
-        // Send email
         emailService.sendHtmlEmail(
                 email,
                 "GlitchFame Signup OTP",
@@ -88,7 +85,6 @@ public class SignupService {
 
         email = email.toLowerCase().trim();
 
-        // Validate OTP
         if (!otpService.validateOtp(email, otp)) {
             throw new BadRequestException("Invalid or expired OTP");
         }
@@ -104,12 +100,26 @@ public class SignupService {
             SignupRequest request =
                     objectMapper.readValue(signupData, SignupRequest.class);
 
+            // FINAL safety check (race condition protection)
+            if (signupRepository.existsByEmailAndDeletedFalse(request.getEmail())) {
+                throw new ConflictException("Email already registered");
+            }
+
+            if (signupRepository.existsByUsernameAndDeletedFalse(request.getUsername())) {
+                throw new ConflictException("Username already registered");
+            }
+
+            if (signupRepository.existsByMobileNumberAndDeletedFalse(request.getPhoneNumber())) {
+                throw new ConflictException("Mobile number already registered");
+            }
+
             User user = User.builder()
                     .email(request.getEmail())
                     .username(request.getUsername())
                     .mobileNumber(request.getPhoneNumber())
                     .password(request.getPassword()) // already encoded
                     .role(User.Role.USER)
+                    .deleted(false)  // IMPORTANT
                     .build();
 
             // Clean Redis
@@ -118,6 +128,8 @@ public class SignupService {
 
             return signupRepository.save(user);
 
+        } catch (ConflictException e) {
+            throw e;
         } catch (Exception e) {
             throw new BadRequestException("User creation failed");
         }

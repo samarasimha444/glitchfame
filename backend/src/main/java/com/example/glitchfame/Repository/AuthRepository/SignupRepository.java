@@ -3,11 +3,15 @@ package com.example.glitchfame.Repository.AuthRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.glitchfame.Entity.User;
 
+import java.util.Optional;
+
 public interface SignupRepository extends JpaRepository<User, Long> {
 
-    boolean existsByEmail(String email);
+    boolean existsByEmailAndDeletedFalse(String email);
 
-    boolean existsByUsername(String username);
+    boolean existsByUsernameAndDeletedFalse(String username);
 
-    boolean existsByMobileNumber(String mobileNumber);
+    boolean existsByMobileNumberAndDeletedFalse(String mobileNumber);
+
+    Optional<User> findByEmailAndDeletedFalse(String email);
 }

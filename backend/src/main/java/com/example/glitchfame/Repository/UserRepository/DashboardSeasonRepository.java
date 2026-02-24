@@ -11,6 +11,11 @@ import java.util.List;
 
 public interface DashboardSeasonRepository extends JpaRepository<Seasons, Long> {
 
+    
+
+
+
+
     @Query(value = """
         SELECT 
             s.id AS id,
