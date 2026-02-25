@@ -6,8 +6,7 @@ import Admin from "./Roles/Admin/Admin";
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
 import RoleRedirect from "./Auth/RoleRedirect";
-import Seasons from "./Roles/Admin/Seasons/SeasonsList";
-import SeasonForm from "./Roles/Admin/Seasons/SeasonForm";
+
 
 import SeasonDetails from "./Roles/Admin/Seasons/SeasonDetails"
 export default function App() {
@@ -25,12 +24,13 @@ export default function App() {
 
 
       {/* USER Protected Routes */}
-      <Route element={<ProtectedRoute allowedRole="USER" />}>
+      {/* <Route element={<ProtectedRoute allowedRole="USER" />}> */}
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           
         </Route>
-      </Route>
+        
+      {/* </Route> */}
 
 
 
@@ -38,7 +38,9 @@ export default function App() {
 
     {/* ADMIN Protected Routes */}
 <Route element={<ProtectedRoute allowedRole="ADMIN" />}>
-  <Route element={<Layout />}>
+
+
+  {/* <Route element={<Layout />}>
     <Route path="/admin-dashboard" element={<Admin />}>
 
       <Route path="seasons" element={<Seasons />} />
@@ -48,7 +50,7 @@ export default function App() {
 
      
     </Route>
-  </Route>
+  </Route> */}
 </Route>
 
     </Routes>

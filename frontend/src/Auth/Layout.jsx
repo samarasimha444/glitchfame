@@ -1,14 +1,26 @@
 import { Outlet, useOutletContext } from "react-router-dom";
-import UserProfile from "./Profile.jsx";
+import UserProfile from "./Navbar.jsx";
+import Navbar from "./Navbar.jsx";
+import Footer from "../Footer.jsx";
 
 const Layout = () => {
-  const { profile } = useOutletContext();
+  // Use dummy data for now
+  const dummyProfile = {
+    name: "John Doe",
+    email: "john.doe@example.com",
+    avatar: "https://via.placeholder.com/100",
+  };
+
+  // Fallback to dummyProfile if no context
+  const { profile } = useOutletContext() || { profile: dummyProfile };
 
   return (
     <>
-      <UserProfile profile={profile} />
-      <div style={{ padding: "20px" }}>
+      <Navbar profile={profile} />
+      <div>
         <Outlet context={{ profile }} />
+
+       <Footer/>
       </div>
     </>
   );
