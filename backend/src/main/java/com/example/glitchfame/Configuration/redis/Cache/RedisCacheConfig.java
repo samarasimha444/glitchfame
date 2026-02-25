@@ -1,5 +1,4 @@
 package com.example.glitchfame.Configuration.redis.Cache;
-
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,13 +14,16 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 @Configuration
 @EnableCaching
 public class RedisCacheConfig {
-
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.findAndRegisterModules();
+
+        objectMapper.activateDefaultTyping(
+                objectMapper.getPolymorphicTypeValidator(),
+                ObjectMapper.DefaultTyping.NON_FINAL
+        );
 
         GenericJackson2JsonRedisSerializer serializer =
                 new GenericJackson2JsonRedisSerializer(objectMapper);
@@ -30,9 +32,9 @@ public class RedisCacheConfig {
                 .defaultCacheConfig()
                 .serializeValuesWith(
                         RedisSerializationContext.SerializationPair
-                                .fromSerializer(serializer)
-                )
-                .entryTtl(Duration.ofDays(10));
+                                .fromSerializer(serializer))
+                .entryTtl(Duration.ofMinutes(30))
+                .disableCachingNullValues();
 
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(config)

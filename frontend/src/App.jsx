@@ -8,6 +8,7 @@ import Signup from "./Auth/Signup";
 import RoleRedirect from "./Auth/RoleRedirect";
 
 
+
 import SeasonDetails from "./Roles/Admin/Seasons/SeasonDetails"
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
       {/* Public Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      
 
 
 

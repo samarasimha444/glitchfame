@@ -29,8 +29,8 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        return !(path.startsWith("/login")
-                || path.startsWith("/signup")
+        return !(path.startsWith("/auth/login")
+                || path.startsWith("/auth/signup")
                 || path.startsWith("/verifyotp"));
     }
 

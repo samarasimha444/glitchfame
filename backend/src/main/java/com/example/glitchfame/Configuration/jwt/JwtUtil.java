@@ -21,19 +21,21 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String email, String role) {
+    // 🔥 Now ID is subject
+    public String generateToken(Long userId, String role) {
 
         return Jwts.builder()
-                .setSubject(email)
-                .claim("role", role)
+                .setSubject(String.valueOf(userId))   // store ID
+                .claim("role", role)                  // keep role
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String extractEmail(String token) {
-        return extractAllClaims(token).getSubject();
+    // 🔥 Extract ID
+    public Long extractUserId(String token) {
+        return Long.parseLong(extractAllClaims(token).getSubject());
     }
 
     public String extractRole(String token) {

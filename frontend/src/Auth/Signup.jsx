@@ -40,7 +40,7 @@ const Signup = () => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/signup`,
+        `${import.meta.env.VITE_BASE_URL}/auth/signup`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -37,14 +37,16 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if (jwtUtil.validateToken(token)) {
 
-                String email = jwtUtil.extractEmail(token);
+                // 🔥 Extract ID instead of email
+                Long userId = jwtUtil.extractUserId(token);
                 String role = jwtUtil.extractRole(token);
 
                 List<SimpleGrantedAuthority> authorities =
                         List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
+                // 🔥 Principal is now userId
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(email, null, authorities);
+                        new UsernamePasswordAuthenticationToken(userId, null, authorities);
 
                 authentication.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
