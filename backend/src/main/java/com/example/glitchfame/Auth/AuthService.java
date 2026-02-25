@@ -2,7 +2,6 @@ package com.example.glitchfame.Auth;
 import com.example.glitchfame.Auth.DTO.LoginDTO;
 import com.example.glitchfame.Auth.DTO.ProfileResponseDTO;
 import com.example.glitchfame.Auth.DTO.RegisterDTO;
-import com.example.glitchfame.Auth.Entity.User;
 import com.example.glitchfame.Configuration.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 import org.springframework.cache.annotation.Cacheable;
+
 
 
 @Service
@@ -61,50 +61,54 @@ public class AuthService {
 
 
 
+//login
+public ResponseEntity<?> login(LoginDTO dto) {
 
+    User user = authRepository.findByEmail(dto.getEmail())
+            .orElse(null);
 
-    //LOGIN
-    public String login(LoginDTO dto) {
-
-        User user = authRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
-
-        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
-        }
-
-        //ID-based JWT
-        return jwtUtil.generateToken(
-                user.getId(),
-                user.getRole().name()
-        );
+    if (user == null) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body("Invalid credentials");
     }
 
-
-
-
-
-
-
-
-    // Get user profile with caching
-    @Cacheable(value = "userProfile", key = "#userId")
-    public ProfileResponseDTO getProfile(Long userId) {
-
-        User user = authRepository.findById(userId)
-                .orElseThrow(() ->
-                        new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
-                                "User not found"
-                        )
-                );
-
-        return ProfileResponseDTO.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .mobileNumber(user.getMobileNumber())
-                .role(user.getRole().name())
-                .build();
+    if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body("Invalid credentials");
     }
+
+    String token = jwtUtil.generateToken(
+            user.getId(),
+            user.getRole().name()
+    );
+
+    return ResponseEntity.ok(token);
+}
+
+
+
+
+
+  //profile
+   @Cacheable(value = "profiles", key = "#userId")
+public ProfileResponseDTO getProfile(Long userId) {
+
+    User user = authRepository.findById(userId)
+            .orElseThrow(() ->
+                    new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "User not found"
+                    )
+            );
+
+    return ProfileResponseDTO.builder()
+            .id(user.getId())
+            .username(user.getUsername())
+            .email(user.getEmail())
+            .mobileNumber(user.getMobileNumber())
+            .role(user.getRole().name())
+            .build();
+}
 }

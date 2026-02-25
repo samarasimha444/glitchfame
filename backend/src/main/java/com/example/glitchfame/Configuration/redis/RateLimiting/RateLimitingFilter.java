@@ -1,14 +1,11 @@
 package com.example.glitchfame.Configuration.redis.RateLimiting;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 import java.time.Duration;
 
@@ -31,7 +28,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 
         return !(path.startsWith("/auth/login")
                 || path.startsWith("/auth/signup")
-                || path.startsWith("/verifyotp"));
+               );
     }
 
     @Override

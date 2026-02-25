@@ -1,6 +1,6 @@
 package com.example.glitchfame.Participations;
 
-import com.example.glitchfame.Auth.Entity.User;
+import com.example.glitchfame.Auth.User;
 import com.example.glitchfame.Seasons.Seasons;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,7 +20,9 @@ import java.time.LocalDate;
                 @Index(name = "idx_participation_user_id", columnList = "user_id"),
                 @Index(name = "idx_participation_season_id", columnList = "season_id"),
                 @Index(name = "idx_participation_location", columnList = "location"),
-                @Index(name = "idx_participation_dob", columnList = "date_of_birth")
+                @Index(name = "idx_participation_dob", columnList = "date_of_birth"),
+                @Index(name = "idx_participation_status", columnList = "status"),
+                @Index(name = "idx_participation_name", columnList = "name")
         }
 )
 @Getter
@@ -44,6 +46,17 @@ public class Participation {
     @JoinColumn(name = "season_id", nullable = false)
     private Seasons season;
 
+    @Column(nullable = false, length = 150)
+    private String name;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    @Builder.Default
+    private Status status = Status.PENDING;
+
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
@@ -52,4 +65,10 @@ public class Participation {
 
     @Column(name = "photo_url", nullable = false, length = 500)
     private String photoUrl;
+
+    public enum Status {
+        PENDING,
+        REJECTED,
+        APPROVED
+    }
 }

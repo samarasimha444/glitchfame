@@ -22,19 +22,23 @@ public ResponseEntity<String> register(@RequestBody RegisterDTO dto) {
 
 
 
-    // LOGIN
-    @PostMapping("/login")
-    public String login(@RequestBody LoginDTO dto) {
-        return authService.login(dto);
-    }
+    //LOGIN
+      @PostMapping("/login")
+public ResponseEntity<?> login(@RequestBody LoginDTO dto) {
+    return authService.login(dto);
+}
 
    
 
-    // Get user profile
+
+   //PROFILE
    @GetMapping("/profile")
-public ProfileResponseDTO getProfile(Authentication authentication) {
+public ResponseEntity<ProfileResponseDTO> getProfile(Authentication authentication) {
 
     Long userId = Long.parseLong(authentication.getName());
-     return authService.getProfile(userId);
+
+    ProfileResponseDTO profile = authService.getProfile(userId);
+
+    return ResponseEntity.ok(profile);
 }
 }

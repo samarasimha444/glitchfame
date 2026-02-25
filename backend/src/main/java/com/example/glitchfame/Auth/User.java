@@ -1,4 +1,4 @@
-package com.example.glitchfame.Auth.Entity;
+package com.example.glitchfame.Auth;
 
 import jakarta.persistence.*;
 import lombok.*;

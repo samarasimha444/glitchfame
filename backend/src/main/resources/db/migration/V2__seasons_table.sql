@@ -25,6 +25,10 @@ CREATE TABLE participations (
     user_id BIGINT NOT NULL,
     season_id BIGINT NOT NULL,
 
+    name VARCHAR(150) NOT NULL,
+    description TEXT,
+    status ENUM('PENDING','REJECTED','APPROVED') NOT NULL DEFAULT 'PENDING',
+
     date_of_birth DATE NOT NULL,
     location VARCHAR(150) NOT NULL,
     photo_url VARCHAR(500) NOT NULL,
@@ -44,14 +48,18 @@ CREATE TABLE participations (
     CONSTRAINT uk_user_season UNIQUE (user_id, season_id)
 );
 
--- Indexes (only useful ones)
+-- Indexes
 CREATE INDEX idx_participation_location 
 ON participations(location);
 
 CREATE INDEX idx_participation_dob 
 ON participations(date_of_birth);
 
+CREATE INDEX idx_participation_status 
+ON participations(status);
 
+CREATE INDEX idx_participation_name 
+ON participations(name);
 
 
 
