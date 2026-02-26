@@ -10,6 +10,9 @@ import RoleRedirect from "./Auth/RoleRedirect";
 
 
 import SeasonDetails from "./Roles/Admin/Seasons/SeasonDetails"
+import EntryForm from "./Roles/Users/EntryForm";
+import Arena from "./Roles/Users/Arena";
+import PlayerDetail from "./Roles/Users/PlayerDetails";
 export default function App() {
   return (
     <Routes>
@@ -29,6 +32,9 @@ export default function App() {
       {/* <Route element={<ProtectedRoute allowedRole="USER" />}> */}
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/enter" element={<EntryForm/>} />
+           <Route path="/arena" element={<Arena/>} />
+            <Route path="/details" element={<PlayerDetail/>} />
           
         </Route>
         
