@@ -41,4 +41,14 @@ public ResponseEntity<ProfileResponseDTO> getProfile(Authentication authenticati
 
     return ResponseEntity.ok(profile);
 }
+
+
+
+@DeleteMapping("/delete")
+public ResponseEntity<String> deleteMyAccount() {
+
+    authService.deleteMyAccount();
+
+    return ResponseEntity.ok("Account deleted successfully");
+}
 }

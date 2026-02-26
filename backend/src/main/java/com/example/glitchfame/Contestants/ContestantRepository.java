@@ -107,4 +107,11 @@ List<ContestantsStatusDTO> getAllPendingContestants();
     """, nativeQuery = true)
 List<ContestantsStatusDTO> getAllRejectedContestants();
 
+
+
+
+
+//delete participation by id
+void deleteById(Long id);
+
 }

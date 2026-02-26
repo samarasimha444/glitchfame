@@ -32,4 +32,15 @@ public class SeasonsService {
         Long userId = extractJwtData.getUserId();
         return seasonsRepository.getPastSeasons(userId);
     }
+
+    
+
+    //delete season by id
+    public void deleteSeasonById(Long id) {
+
+    Seasons season = seasonsRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Season does not exist"));
+
+    seasonsRepository.delete(season);
+}
 }

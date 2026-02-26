@@ -102,4 +102,22 @@ System.out.println("Season ID: " + seasonId);
 
         return "Application submitted successfully. Status: PENDING";
     }
+
+
+//delete participation by id
+    public String deleteParticipationById(Long id) {
+        if (!contestantRepository.existsById(id)) {
+            throw new RuntimeException("Participation  does not exist.");
+        }
+        contestantRepository.deleteById(id);
+        return "Participation deleted successfully.";
+    }
+
+
+
+
+
+
+
+
 }

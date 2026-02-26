@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 import org.springframework.cache.annotation.Cacheable;
-
+import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
 
 
 @Service
@@ -19,7 +19,9 @@ public class AuthService {
 
     private final AuthRepository authRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ExtractJwtData ExtractJwtData;
     private final JwtUtil jwtUtil;
+
 
 
     //REGISTER
@@ -111,4 +113,18 @@ public ProfileResponseDTO getProfile(Long userId) {
             .role(user.getRole().name())
             .build();
 }
+
+
+
+
+
+        //delete user   
+        public void deleteMyAccount() {
+        Long userId = ExtractJwtData.getUserId();
+
+        if (!authRepository.existsById(userId)) {
+            throw new RuntimeException("User not found");
+        }
+        authRepository.deleteById(userId);
+    }
 }

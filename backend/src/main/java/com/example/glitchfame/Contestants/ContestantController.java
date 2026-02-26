@@ -3,6 +3,7 @@ import com.example.glitchfame.Contestants.DTO.ContestantsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import java.util.List;
 import com.example.glitchfame.Contestants.DTO.ContestantsStatusDTO;
 import com.example.glitchfame.Contestants.DTO.CreateContestantDTO;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 
@@ -74,5 +76,16 @@ public class ContestantController {
                 .status(HttpStatus.CREATED)
                 .body(response);
 
+    }
+
+
+
+    
+
+    //delete participation
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteParticipation(@PathVariable Long id) {
+        String response = contestantService.deleteParticipationById(id);
+        return ResponseEntity.ok(response);
     }
 }

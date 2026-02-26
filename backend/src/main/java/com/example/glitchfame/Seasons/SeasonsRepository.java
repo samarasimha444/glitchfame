@@ -90,4 +90,8 @@ List<SeasonsDTO> getLiveSeasons(@Param("userId") Long userId);
     ORDER BY s.voting_end_date DESC
     """, nativeQuery = true)
 List<SeasonsDTO> getPastSeasons(@Param("userId") Long userId);
+
+
+//delete season
+void deleteById(Long id);
 }
