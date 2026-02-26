@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 import com.example.glitchfame.Contestants.DTO.ContestantsDTO;
 import java.util.List;
 import com.example.glitchfame.Contestants.DTO.ContestantsStatusDTO;
+import com.example.glitchfame.Contestants.DTO.SeasonContestants;
+import org.springframework.data.repository.query.Param;
 
 @Repository
 public interface ContestantRepository extends JpaRepository<Participation, Long> {
@@ -106,6 +108,60 @@ List<ContestantsStatusDTO> getAllPendingContestants();
     ORDER BY p.date_of_birth ASC
     """, nativeQuery = true)
 List<ContestantsStatusDTO> getAllRejectedContestants();
+
+
+
+
+// ✅ Get contestants of a season with vote info
+@Query(value = """
+    SELECT 
+        p.id AS id,
+        p.user_id AS userId,
+        p.season_id AS seasonId,
+        p.name AS name,
+        p.description AS description,
+        p.status AS status,
+        p.date_of_birth AS dateOfBirth,
+        p.location AS location,
+        p.photo_url AS photoUrl,
+
+        COUNT(v.id) AS totalVotes,
+
+        CASE 
+            WHEN EXISTS (
+                SELECT 1
+                FROM votes v2
+                WHERE v2.contestant_id = p.id
+                AND v2.voter_id = :userId
+            )
+            THEN TRUE
+            ELSE FALSE
+        END AS hasVoted
+
+    FROM participations p
+
+    LEFT JOIN votes v 
+        ON v.contestant_id = p.id
+
+    WHERE p.season_id = :seasonId
+    AND p.status = 'APPROVED'
+
+    GROUP BY 
+        p.id,
+        p.user_id,
+        p.season_id,
+        p.name,
+        p.description,
+        p.date_of_birth,
+        p.location,
+        p.photo_url
+    """, nativeQuery = true)
+List<SeasonContestants> findSeasonContestants(
+        @Param("seasonId") Long seasonId,
+        @Param("userId") Long userId
+);
+
+
 
 
 

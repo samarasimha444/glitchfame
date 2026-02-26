@@ -7,6 +7,7 @@ import com.example.glitchfame.Seasons.Seasons;
 import com.example.glitchfame.Contestants.DTO.ContestantsDTO;
 import com.example.glitchfame.Contestants.DTO.ContestantsStatusDTO;
 import com.example.glitchfame.Contestants.DTO.CreateContestantDTO;
+import com.example.glitchfame.Contestants.DTO.SeasonContestants;
 import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
 import com.example.glitchfame.Auth.AuthRepository;
 import com.example.glitchfame.Seasons.SeasonsRepository;
@@ -40,7 +41,6 @@ public class ContestantService {
 
 
 
-
     // Pending contestants
     public List<ContestantsStatusDTO> getAllPendingContestants() {
         List<ContestantsStatusDTO> list =
@@ -52,8 +52,6 @@ public class ContestantService {
 
         return list;
     }
-
-
 
 
 
@@ -69,17 +67,12 @@ public class ContestantService {
         return list;
     }
 
+    
 
-
-
-// ✅ Create contestant (User apply for season)
+    // ✅ Create contestant (User apply for season)
       public String createContestant(CreateContestantDTO request) {
-
         Long userId = extractJwtData.getUserId();
         Long seasonId = request.getSeasonId();
-        System.out.println("User ID: " + userId);
-System.out.println("Season ID: " + seasonId);
-
         if (contestantRepository.existsByUserIdAndSeasonId(userId, seasonId)) {
             throw new RuntimeException("You have already applied for this season.");
         }
@@ -104,6 +97,20 @@ System.out.println("Season ID: " + seasonId);
     }
 
 
+
+    
+
+    //get all contestants of a season
+    public List<SeasonContestants> getSeasonContestants(Long seasonId) {
+        if (!seasonsRepository.existsById(seasonId)) {
+            throw new RuntimeException("Season not found");
+        }
+        Long userId = extractJwtData.getUserId();
+        return contestantRepository
+                .findSeasonContestants(seasonId, userId);
+    }
+
+
 //delete participation by id
     public String deleteParticipationById(Long id) {
         if (!contestantRepository.existsById(id)) {
@@ -112,12 +119,6 @@ System.out.println("Season ID: " + seasonId);
         contestantRepository.deleteById(id);
         return "Participation deleted successfully.";
     }
-
-
-
-
-
-
 
 
 }

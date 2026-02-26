@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import com.example.glitchfame.Contestants.DTO.ContestantsStatusDTO;
 import com.example.glitchfame.Contestants.DTO.CreateContestantDTO;
+import com.example.glitchfame.Contestants.DTO.SeasonContestants;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -24,8 +25,6 @@ public class ContestantController {
     private final ContestantService contestantService;
 
 
-
-
     // Approved contestants 
     @GetMapping("/approved")
     public ResponseEntity<List<ContestantsDTO>> getApproved() {
@@ -33,10 +32,6 @@ public class ContestantController {
                 contestantService.getAllApprovedContestants()
         );
     }
-
-
-
-    
 
 
     // Pending contestants
@@ -49,10 +44,6 @@ public class ContestantController {
 
 
    
-   
-   
-   
-   
     // Rejected contestants
     @GetMapping("/rejected")
     public ResponseEntity<List<ContestantsStatusDTO>> getRejected() {
@@ -63,11 +54,7 @@ public class ContestantController {
 
  
 
-
-
-
-   
-     // ✅ Create contestant (User apply for season)
+    // ✅ Create contestant (User apply for season)
     @PostMapping("/apply")
     public ResponseEntity<String> createContestant(
             @RequestBody CreateContestantDTO request) {
@@ -80,7 +67,19 @@ public class ContestantController {
 
 
 
-    
+      // ✅ Get contestants of a season with vote info
+       @GetMapping("/{seasonId}")
+    public ResponseEntity<List<SeasonContestants>> getSeasonContestants(
+            @PathVariable Long seasonId
+    ) {
+
+        List<SeasonContestants> contestants =
+                contestantService.getSeasonContestants(seasonId);
+
+        return ResponseEntity.ok(contestants);
+    }
+
+
 
     //delete participation
     @DeleteMapping("/delete/{id}")

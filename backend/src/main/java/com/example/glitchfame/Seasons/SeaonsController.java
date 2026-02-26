@@ -1,8 +1,11 @@
 package com.example.glitchfame.Seasons;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.glitchfame.Seasons.DTO.SeasonDetailsDTO;
 import com.example.glitchfame.Seasons.DTO.SeasonsDTO;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
@@ -48,6 +51,24 @@ public class SeaonsController {
     public List<SeasonsDTO> past() {
         return seasonsService.getPastSeasons();
     }
+
+
+
+
+    // Season details
+      @GetMapping("/{seasonId}")
+    public ResponseEntity<SeasonDetailsDTO> getSeasonDetails(
+            @PathVariable Long seasonId
+    ) {
+
+        SeasonDetailsDTO season =
+                seasonsService.getSeasonDetails(seasonId);
+
+        return ResponseEntity.ok(season);
+    }
+    
+
+
 
 
     @DeleteMapping("/delete/{id}")

@@ -7,8 +7,7 @@ import org.springframework.cache.annotation.EnableCaching;
 @EnableCaching
 @SpringBootApplication
 public class GlitchfameApplication {
-
-	public static void main(String[] args) {
+        public static void main(String[] args) {
 		SpringApplication.run(GlitchfameApplication.class, args);
 	}
 

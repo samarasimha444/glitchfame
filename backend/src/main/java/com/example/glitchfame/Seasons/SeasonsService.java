@@ -1,4 +1,5 @@
 package com.example.glitchfame.Seasons;
+import com.example.glitchfame.Seasons.DTO.SeasonDetailsDTO;
 import com.example.glitchfame.Seasons.DTO.SeasonsDTO;
 import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +36,26 @@ public class SeasonsService {
 
     
 
+
+
+    //Season details
+    public SeasonDetailsDTO getSeasonDetails(Long seasonId) {
+        Long userId = extractJwtData.getUserId();
+          SeasonDetailsDTO season =
+                seasonsRepository.findSeasonDetailsById(seasonId, userId);
+        if (season == null) {
+            throw new RuntimeException("Season not found");
+        }
+
+        return season;
+    }
+
+
+    
+
     //delete season by id
     public void deleteSeasonById(Long id) {
-
-    Seasons season = seasonsRepository.findById(id)
+     Seasons season = seasonsRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Season does not exist"));
 
     seasonsRepository.delete(season);

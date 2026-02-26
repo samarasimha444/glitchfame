@@ -2,6 +2,8 @@ package com.example.glitchfame.Seasons;
 import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.glitchfame.Seasons.DTO.SeasonDetailsDTO;
 import com.example.glitchfame.Seasons.DTO.SeasonsDTO;
 import org.springframework.data.repository.query.Param;
 
@@ -35,9 +37,7 @@ List<SeasonsDTO> getUpcomingSeasons(@Param("userId") Long userId);
 
 
 
-
-
-    //live seasons order by registration end date ascending
+//live seasons order by registration end date ascending
     @Query(value = """
     SELECT
         s.id AS seasonId,
@@ -92,6 +92,45 @@ List<SeasonsDTO> getLiveSeasons(@Param("userId") Long userId);
 List<SeasonsDTO> getPastSeasons(@Param("userId") Long userId);
 
 
+
+
+
+
+
+
+//Season details by id
+@Query(value = """
+    SELECT
+        s.id AS id,
+        s.name AS name,
+        s.prize_money AS prizeMoney,
+        s.registration_start_date AS registrationStartDate,
+        s.registration_end_date AS registrationEndDate,
+        s.voting_start_date AS votingStartDate,
+        s.voting_end_date AS votingEndDate,
+        s.photo_url AS photoUrl,
+
+        p.status AS participationStatus
+
+    FROM seasons s
+
+    LEFT JOIN participations p
+        ON p.season_id = s.id
+        AND p.user_id = :userId
+
+    WHERE s.id = :seasonId
+    """, nativeQuery = true)
+SeasonDetailsDTO findSeasonDetailsById(
+        @Param("seasonId") Long seasonId,
+        @Param("userId") Long userId
+);
+
+
+
+
+
 //delete season
 void deleteById(Long id);
+
+
 }

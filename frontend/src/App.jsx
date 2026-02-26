@@ -40,8 +40,6 @@ export default function App() {
 
 
 
-
-
     {/* ADMIN Protected Routes */}
 <Route element={<ProtectedRoute allowedRole="ADMIN" />}>
 
