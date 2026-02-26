@@ -6,9 +6,6 @@ import Admin from "./Roles/Admin/Admin";
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
 import RoleRedirect from "./Auth/RoleRedirect";
-
-
-
 import SeasonDetails from "./Roles/Admin/Seasons/SeasonDetails"
 import EntryForm from "./Roles/Users/EntryForm";
 import Arena from "./Roles/Users/Arena";
@@ -16,6 +13,7 @@ import PlayerDetail from "./Roles/Users/PlayerDetails";
 export default function App() {
   return (
     <Routes>
+     
 
       {/* Root role-based redirect */}
       <Route path="/" element={<RoleRedirect />} />
@@ -60,6 +58,9 @@ export default function App() {
     </Route>
   </Route> */}
 </Route>
+
+
+ 
 
     </Routes>
   );

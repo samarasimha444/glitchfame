@@ -1,7 +1,8 @@
 package com.example.glitchfame.Votes;
 
 import com.example.glitchfame.Auth.User;
-import com.example.glitchfame.Participations.Participation;
+import com.example.glitchfame.Contestants.Participation;
+
 import jakarta.persistence.*;
 import lombok.*;
 

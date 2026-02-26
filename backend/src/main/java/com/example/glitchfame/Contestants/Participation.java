@@ -1,4 +1,4 @@
-package com.example.glitchfame.Participations;
+package com.example.glitchfame.Contestants;
 
 import com.example.glitchfame.Auth.User;
 import com.example.glitchfame.Seasons.Seasons;
