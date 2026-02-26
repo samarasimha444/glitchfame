@@ -1,30 +1,36 @@
 package com.example.glitchfame.Contestants;
 import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
+import java.util.List;
+import com.example.glitchfame.Auth.User;
+import com.example.glitchfame.Seasons.Seasons;
 import com.example.glitchfame.Contestants.DTO.ContestantsDTO;
 import com.example.glitchfame.Contestants.DTO.ContestantsStatusDTO;
-import java.util.List;
-
-
+import com.example.glitchfame.Contestants.DTO.CreateContestantDTO;
+import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
+import com.example.glitchfame.Auth.AuthRepository;
+import com.example.glitchfame.Seasons.SeasonsRepository;
 
 
 @Service
+@RequiredArgsConstructor
 public class ContestantService {
 
     private final ContestantRepository contestantRepository;
+    private final ExtractJwtData extractJwtData;
+    private final AuthRepository authRepository;
+    private final SeasonsRepository seasonsRepository;
 
 
-     // Constructor injection for the repository
-    public ContestantService(ContestantRepository contestantRepository) {
-        this.contestantRepository = contestantRepository;
-    }
 
 
 
     // Approved contestants
     public List<ContestantsDTO> getAllApprovedContestants() {
-                List<ContestantsDTO> list =
+        List<ContestantsDTO> list =
                 contestantRepository.getAllApprovedContestants();
-                if (list == null || list.isEmpty()) {
+
+        if (list.isEmpty()) {
             throw new RuntimeException("No approved contestants found");
         }
 
@@ -34,15 +40,13 @@ public class ContestantService {
 
 
 
-    
-
-
 
     // Pending contestants
     public List<ContestantsStatusDTO> getAllPendingContestants() {
-                List<ContestantsStatusDTO> list =
+        List<ContestantsStatusDTO> list =
                 contestantRepository.getAllPendingContestants();
-                if (list == null || list.isEmpty()) {
+
+        if (list.isEmpty()) {
             throw new RuntimeException("No pending contestants found");
         }
 
@@ -53,17 +57,49 @@ public class ContestantService {
 
 
 
-
-
     // Rejected contestants
     public List<ContestantsStatusDTO> getAllRejectedContestants() {
-                List<ContestantsStatusDTO> list =
+        List<ContestantsStatusDTO> list =
                 contestantRepository.getAllRejectedContestants();
 
-        if (list == null || list.isEmpty()) {
+        if (list.isEmpty()) {
             throw new RuntimeException("No rejected contestants found");
         }
 
         return list;
+    }
+
+
+
+
+// ✅ Create contestant (User apply for season)
+      public String createContestant(CreateContestantDTO request) {
+
+        Long userId = extractJwtData.getUserId();
+        Long seasonId = request.getSeasonId();
+        System.out.println("User ID: " + userId);
+System.out.println("Season ID: " + seasonId);
+
+        if (contestantRepository.existsByUserIdAndSeasonId(userId, seasonId)) {
+            throw new RuntimeException("You have already applied for this season.");
+        }
+
+        User user = authRepository.getReferenceById(userId);
+        Seasons season = seasonsRepository.getReferenceById(seasonId);
+
+        Participation participation = Participation.builder()
+                .user(user)
+                .season(season)
+                .name(request.getName())
+                .description(request.getDescription())
+                .dateOfBirth(request.getDateOfBirth())
+                .location(request.getLocation())
+                .photoUrl(request.getPhotoUrl())
+                .status(Participation.Status.PENDING)
+                .build();
+
+        contestantRepository.save(participation);
+
+        return "Application submitted successfully. Status: PENDING";
     }
 }

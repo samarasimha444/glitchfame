@@ -1,7 +1,5 @@
 package com.example.glitchfame.Auth.DTO;
-
 import java.io.Serializable;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -4,6 +4,8 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+
+
 @Entity
 @Table(
         name = "seasons",
@@ -37,6 +39,13 @@ public class Seasons {
     @Column(name = "voting_start_date", nullable = false)
     private LocalDateTime votingStartDate;
 
+    
     @Column(name = "voting_end_date", nullable = false)
     private LocalDateTime votingEndDate;
+
+
+        @Column(name = "photo_url", length = 255)
+        private String photoUrl;
+
+
 }

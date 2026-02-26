@@ -2,6 +2,7 @@ package com.example.glitchfame.Contestants.DTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface ContestantsDTO {
 
@@ -19,5 +20,12 @@ public interface ContestantsDTO {
     BigDecimal getPrizeMoney();
 
     Long getVoteCount();
+    String getParticipantPhotoUrl();
+String getSeasonPhotoUrl();
+
+LocalDateTime getRegistrationStartDate();
+LocalDateTime getRegistrationEndDate();
+LocalDateTime getVotingStartDate();
+LocalDateTime getVotingEndDate();
 
 }
