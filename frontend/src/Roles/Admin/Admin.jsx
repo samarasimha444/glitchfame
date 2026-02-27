@@ -1,32 +1,28 @@
-import { Outlet, useOutletContext } from "react-router-dom";
-import AdminSidebar from "./AdminSiderBar/AdminSideBar";
+import { Outlet } from "react-router-dom";
+import Sidebar from "./ui/Sidebar";
 
 const Admin = () => {
-  const { profile } = useOutletContext();
+  const profile = JSON.parse(localStorage.getItem("profile"));
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      
-      {/* Sidebar */}
-      <AdminSidebar />
+    <div className="flex  min-h-screen  w-full max-w-screen text-white">
 
-      {/* Main Content Area */}
-      <div style={{ flex: 1, padding: "30px" }}>
+
+      <div className="w-1/6 bg-[#171A1F] py-6 px-4">
+        <h2 className="text-xl font-bold">Admin Dashboard</h2>
         
-        {/* Header */}
-        <div style={{ marginBottom: "20px" }}>
-          <h2>Admin Dashboard</h2>
-          <p>Welcome, {profile.username}</p>
-        </div>
 
-        <hr />
+        <hr className="my-1 border-gray-700" />
+           
+           <Sidebar/>
 
-        {/* Nested Routes Render Here */}
-        <div style={{ marginTop: "20px" }}>
-          <Outlet context={{ profile }} />
-        </div>
-
+        
       </div>
+
+        <section className="w-full p-6 bg-[#1E2229] overflow-y-auto">
+        <Outlet />
+      </section>
+
     </div>
   );
 };
