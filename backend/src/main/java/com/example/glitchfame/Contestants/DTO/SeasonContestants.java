@@ -24,4 +24,6 @@ public interface SeasonContestants {
     Long getTotalVotes();
 
     Integer getHasVoted();
+
+    
 } 

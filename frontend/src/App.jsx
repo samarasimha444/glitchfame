@@ -10,6 +10,8 @@ import SeasonDetails from "./Roles/Admin/Seasons/SeasonDetails"
 import EntryForm from "./Roles/Users/EntryForm";
 import Arena from "./Roles/Users/Arena";
 import PlayerDetail from "./Roles/Users/PlayerDetails";
+import Testing from "./Testing";
+
 export default function App() {
   return (
     <Routes>
@@ -21,6 +23,7 @@ export default function App() {
       {/* Public Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/Testing" element={<Testing/>} />
       
 
 
@@ -33,11 +36,12 @@ export default function App() {
           <Route path="/enter" element={<EntryForm/>} />
            <Route path="/arena" element={<Arena/>} />
             <Route path="/details" element={<PlayerDetail/>} />
+            
+            
           
         </Route>
         
       {/* </Route> */}
-
 
 
     {/* ADMIN Protected Routes */}
