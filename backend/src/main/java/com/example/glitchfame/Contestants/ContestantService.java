@@ -25,19 +25,11 @@ public class ContestantService {
 
 
 
-
-    // Approved contestants
-    public List<ContestantsDTO> getAllApprovedContestants() {
-        List<ContestantsDTO> list =
-                contestantRepository.getAllApprovedContestants();
-
-        if (list.isEmpty()) {
-            throw new RuntimeException("No approved contestants found");
-        }
-
-        return list;
-    }
-
+// Approved contestants
+  public List<ContestantsDTO> getAllApprovedContestants() {
+    Long userId = extractJwtData.getUserId();
+    return contestantRepository.getAllApprovedContestants(userId);
+}
 
 
 

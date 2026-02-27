@@ -22,6 +22,7 @@ public interface ContestantsDTO {
     Long getVoteCount();
     String getParticipantPhotoUrl();
 String getSeasonPhotoUrl();
+Integer getHasVoted();
 
 LocalDateTime getRegistrationStartDate();
 LocalDateTime getRegistrationEndDate();

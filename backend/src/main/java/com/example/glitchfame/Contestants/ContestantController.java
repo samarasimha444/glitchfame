@@ -24,13 +24,12 @@ public class ContestantController {
 
     private final ContestantService contestantService;
 
-
-    // Approved contestants 
-    @GetMapping("/approved")
-    public ResponseEntity<List<ContestantsDTO>> getApproved() {
-        return ResponseEntity.ok(
-                contestantService.getAllApprovedContestants()
-        );
+  // Approved contestants
+  @GetMapping("/approved")
+    public ResponseEntity<List<ContestantsDTO>> getApprovedContestants() {
+              List<ContestantsDTO> contestants =
+                contestantService.getAllApprovedContestants();
+        return ResponseEntity.ok(contestants);
     }
 
 

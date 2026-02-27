@@ -1,87 +1,172 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Client } from "@stomp/stompjs";
 
-export default function Testing() {
+const BASE_URL = "http://localhost:3000";
+const DEFAULT_IMAGE =
+  "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
-  const [messages, setMessages] = useState([]);
+export default function Testing() {
+  const [contestants, setContestants] = useState([]);
   const [connected, setConnected] = useState(false);
+  const [loadingId, setLoadingId] = useState(null);
+  const clientRef = useRef(null);
 
   useEffect(() => {
+    fetchContestants();
+    connectWebSocket();
 
+    return () => {
+      if (clientRef.current) {
+        clientRef.current.deactivate();
+      }
+    };
+  }, []);
+
+  // ---------------- FETCH CONTESTANTS ----------------
+  const fetchContestants = async () => {
     const token = localStorage.getItem("token");
 
-    if (!token) {
-      console.error("No JWT found in localStorage");
-      return;
-    }
+    const res = await fetch(
+      `${BASE_URL}/contestants/approved`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) return;
+
+    const data = await res.json();
+    setContestants(data);
+  };
+
+  // ---------------- WEBSOCKET ----------------
+  const connectWebSocket = () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
 
     const client = new Client({
       brokerURL: "ws://localhost:3000/ws",
-
-      // 🔥 THIS IS WHAT YOU WERE MISSING
       connectHeaders: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
-
       reconnectDelay: 5000,
 
-      debug: (str) => console.log(str),
-
       onConnect: () => {
-
         setConnected(true);
-        console.log("✅ STOMP connected with JWT");
 
-        client.subscribe("/topic/test", (msg) => {
-          setMessages(prev => [...prev, msg.body]);
-        });
+        client.subscribe("/topic/votes", (message) => {
+          const data = JSON.parse(message.body);
 
-        client.publish({
-          destination: "/app/test",
-          body: "Hello from React (JWT)"
+          // 🔥 Only update voteCount globally
+          setContestants((prev) =>
+            prev.map((c) =>
+              c.participationId === data.participationId
+                ? { ...c, voteCount: data.voteCount }
+                : c
+            )
+          );
         });
       },
 
-      onStompError: (frame) => {
-        console.error("❌ STOMP error:", frame.headers["message"]);
-        setConnected(false);
-      },
-
-      onWebSocketClose: () => {
-        setConnected(false);
-      }
+      onStompError: () => setConnected(false),
+      onWebSocketClose: () => setConnected(false),
     });
 
     client.activate();
+    clientRef.current = client;
+  };
 
-    return () => client.deactivate();
+  // ---------------- TOGGLE VOTE ----------------
+  const handleVote = async (contestant) => {
+    const token = localStorage.getItem("token");
+    setLoadingId(contestant.participationId);
 
-  }, []);
+    try {
+      const res = await fetch(
+        `${BASE_URL}/votes/toggle/${contestant.participationId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+
+      // Local update (user-specific)
+      setContestants((prev) =>
+        prev.map((c) =>
+          c.participationId === data.participationId
+            ? {
+                ...c,
+                voteCount: data.voteCount,
+                hasVoted: data.hasVoted ? 1 : 0,
+              }
+            : c
+        )
+      );
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingId(null);
+    }
+  };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>WebSocket JWT Test</h2>
+    <div style={{ padding: 30 }}>
+      <h2>Contestants</h2>
 
       <p>
-        Status: {connected ? "🟢 Connected" : "🔴 Disconnected"}
+        WebSocket:{" "}
+        {connected ? "🟢 Connected" : "🔴 Disconnected"}
       </p>
 
-      <div style={{ marginTop: "20px" }}>
-        <h3>Messages:</h3>
+      {contestants.map((c) => (
+        <div
+          key={c.participationId}
+          style={{
+            border: "1px solid #ddd",
+            padding: 20,
+            marginBottom: 20,
+            borderRadius: 10,
+            width: 350,
+          }}
+        >
+          <img
+            src={c.participantPhotoUrl || DEFAULT_IMAGE}
+            alt="contestant"
+            style={{
+              width: "100%",
+              height: 250,
+              objectFit: "cover",
+              borderRadius: 10,
+            }}
+          />
 
-        {messages.length === 0 && <p>No messages yet...</p>}
+          <h3>{c.participantName}</h3>
 
-        {messages.map((msg, index) => (
-          <div key={index} style={{
-            background: "#f1f1f1",
-            padding: "10px",
-            marginBottom: "8px",
-            borderRadius: "5px"
-          }}>
-            {msg}
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <button
+              onClick={() => handleVote(c)}
+              disabled={loadingId === c.participationId}
+              style={{
+                background: "none",
+                border: "none",
+                fontSize: 24,
+                cursor: "pointer",
+                color: c.hasVoted === 1 ? "red" : "black",
+              }}
+            >
+              {c.hasVoted === 1 ? "❤️" : "🤍"}
+            </button>
+
+            <span>{c.voteCount} votes</span>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }

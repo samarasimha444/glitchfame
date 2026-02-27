@@ -15,9 +15,7 @@ public interface ContestantRepository extends JpaRepository<Participation, Long>
 boolean existsByUserIdAndSeasonId(Long userId, Long seasonId);
 
 
-
-// approved contestants with vote count order by descending
-  @Query(value = """
+@Query(value = """
     SELECT 
         p.id AS participationId,
         p.name AS participantName,
@@ -34,7 +32,13 @@ boolean existsByUserIdAndSeasonId(Long userId, Long seasonId);
         s.registration_end_date AS registrationEndDate,
         s.voting_start_date AS votingStartDate,
         s.voting_end_date AS votingEndDate,
-        COUNT(v.id) AS voteCount
+        COUNT(v.id) AS voteCount,
+        EXISTS (
+            SELECT 1 
+            FROM votes v2 
+            WHERE v2.contestant_id = p.id 
+            AND v2.voter_id = :userId
+        ) AS hasVoted
     FROM participations p
     JOIN seasons s ON p.season_id = s.id
     LEFT JOIN votes v ON v.contestant_id = p.id
@@ -48,8 +52,15 @@ boolean existsByUserIdAndSeasonId(Long userId, Long seasonId);
         s.voting_start_date,
         s.voting_end_date
     ORDER BY voteCount DESC
-    """, nativeQuery = true)
-List<ContestantsDTO> getAllApprovedContestants();
+""", nativeQuery = true)
+List<ContestantsDTO> getAllApprovedContestants(@Param("userId") Long userId);
+
+
+
+
+
+
+
 
 
 
