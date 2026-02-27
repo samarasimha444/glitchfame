@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import com.example.glitchfame.Auth.User;
 import com.example.glitchfame.Seasons.Seasons;
+import com.example.glitchfame.Contestants.DTO.ContestantByName;
 import com.example.glitchfame.Contestants.DTO.ContestantsDTO;
 import com.example.glitchfame.Contestants.DTO.ContestantsStatusDTO;
 import com.example.glitchfame.Contestants.DTO.CreateContestantDTO;
@@ -103,6 +104,39 @@ public class ContestantService {
     }
 
 
+
+    
+    //search by name
+    public List<ContestantByName> searchContestantsByName(String name) {
+
+    String search = name == null ? "" : name.trim();
+
+    if (search.length() < 2) {
+        return List.of();   // no DB hit, clean response
+    }
+
+    return contestantRepository.findByNameContaining(search);
+}
+
+
+
+
+//get contestant by id
+public ContestantsDTO getApprovedContestantById(Long id) {
+
+    Long userId = extractJwtData.getUserId();
+
+    return contestantRepository
+            .getApprovedContestantById(id, userId)
+            .orElseThrow(() ->
+                    new RuntimeException("Approved contestant not found"));
+}
+
+
+
+
+
+
 //delete participation by id
     public String deleteParticipationById(Long id) {
         if (!contestantRepository.existsById(id)) {
@@ -111,6 +145,5 @@ public class ContestantService {
         contestantRepository.deleteById(id);
         return "Participation deleted successfully.";
     }
-
 
 }

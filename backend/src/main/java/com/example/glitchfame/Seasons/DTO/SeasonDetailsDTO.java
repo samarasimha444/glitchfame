@@ -12,14 +12,9 @@ public interface SeasonDetailsDTO {
     BigDecimal getPrizeMoney();
 
     LocalDateTime getRegistrationStartDate();
-
     LocalDateTime getRegistrationEndDate();
-
     LocalDateTime getVotingStartDate();
-
     LocalDateTime getVotingEndDate();
-
     String getPhotoUrl();
-
     String getParticipationStatus(); // can be null
 }

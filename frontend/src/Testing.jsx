@@ -2,8 +2,10 @@ import { useEffect, useState, useRef } from "react";
 import { Client } from "@stomp/stompjs";
 
 const BASE_URL = "http://localhost:3000";
+
+// Default portrait image
 const DEFAULT_IMAGE =
-  "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+  "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
 export default function Testing() {
   const [contestants, setContestants] = useState([]);
@@ -22,7 +24,7 @@ export default function Testing() {
     };
   }, []);
 
-  // ---------------- FETCH CONTESTANTS ----------------
+  // ---------------- FETCH ----------------
   const fetchContestants = async () => {
     const token = localStorage.getItem("token");
 
@@ -59,7 +61,6 @@ export default function Testing() {
         client.subscribe("/topic/votes", (message) => {
           const data = JSON.parse(message.body);
 
-          // 🔥 Only update voteCount globally
           setContestants((prev) =>
             prev.map((c) =>
               c.participationId === data.participationId
@@ -96,7 +97,6 @@ export default function Testing() {
 
       const data = await res.json();
 
-      // Local update (user-specific)
       setContestants((prev) =>
         prev.map((c) =>
           c.participationId === data.participationId
@@ -120,8 +120,7 @@ export default function Testing() {
       <h2>Contestants</h2>
 
       <p>
-        WebSocket:{" "}
-        {connected ? "🟢 Connected" : "🔴 Disconnected"}
+        WebSocket: {connected ? "🟢 Connected" : "🔴 Disconnected"}
       </p>
 
       {contestants.map((c) => (
@@ -130,32 +129,47 @@ export default function Testing() {
           style={{
             border: "1px solid #ddd",
             padding: 20,
-            marginBottom: 20,
-            borderRadius: 10,
-            width: 350,
+            marginBottom: 25,
+            borderRadius: 12,
+            width: 320,
+            textAlign: "center",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
           }}
         >
-          <img
-            src={c.participantPhotoUrl || DEFAULT_IMAGE}
-            alt="contestant"
+         <img
+  src={c.participantPhotoUrl || DEFAULT_IMAGE}
+  alt={c.participantName ? c.participantName : "Contestant Image"}
+  title={c.participantName}  // optional: shows tooltip on hover
+  style={{
+    width: 180,
+    height: 220,
+    objectFit: "cover",
+    borderRadius: 12,
+    marginBottom: 15,
+  }}
+/>
+
+          {/* Name */}
+          <h3 style={{ margin: "10px 0" }}>
+            {c.participantName}
+          </h3>
+
+          {/* Vote Section */}
+          <div
             style={{
-              width: "100%",
-              height: 250,
-              objectFit: "cover",
-              borderRadius: 10,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 12,
             }}
-          />
-
-          <h3>{c.participantName}</h3>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          >
             <button
               onClick={() => handleVote(c)}
               disabled={loadingId === c.participationId}
               style={{
                 background: "none",
                 border: "none",
-                fontSize: 24,
+                fontSize: 28,
                 cursor: "pointer",
                 color: c.hasVoted === 1 ? "red" : "black",
               }}
@@ -163,7 +177,9 @@ export default function Testing() {
               {c.hasVoted === 1 ? "❤️" : "🤍"}
             </button>
 
-            <span>{c.voteCount} votes</span>
+            <span style={{ fontWeight: "bold" }}>
+              {c.voteCount} votes
+            </span>
           </div>
         </div>
       ))}

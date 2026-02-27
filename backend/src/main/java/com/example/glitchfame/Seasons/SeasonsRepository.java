@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.glitchfame.Seasons.DTO.SeasonDetailsDTO;
+import com.example.glitchfame.Seasons.DTO.SeasonsByNameDTO;
 import com.example.glitchfame.Seasons.DTO.SeasonsDTO;
 import org.springframework.data.repository.query.Param;
 
@@ -125,6 +126,23 @@ SeasonDetailsDTO findSeasonDetailsById(
         @Param("userId") Long userId
 );
 
+
+
+
+//season by name
+@Query(value = """
+    SELECT
+        s.id AS seasonId,
+        s.name AS seasonName,
+        s.photo_url AS photoUrl
+    FROM seasons s
+    WHERE s.name LIKE CONCAT(:name, '%')
+    ORDER BY s.name ASC
+    LIMIT 10
+""", nativeQuery = true)
+List<SeasonsByNameDTO> findSeasonsByNameContaining(
+        @Param("name") String name
+);
 
 
 

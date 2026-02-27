@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.example.glitchfame.Seasons.DTO.SeasonsByNameDTO;
 import com.example.glitchfame.Seasons.DTO.SeasonDetailsDTO;
 import com.example.glitchfame.Seasons.DTO.SeasonsDTO;
 import lombok.RequiredArgsConstructor;
@@ -55,26 +55,41 @@ public class SeaonsController {
 
 
 
-    // Season details
+    // Season details by id
       @GetMapping("/{seasonId}")
     public ResponseEntity<SeasonDetailsDTO> getSeasonDetails(
             @PathVariable Long seasonId
-    ) {
-
-        SeasonDetailsDTO season =
+    )    {
+                    SeasonDetailsDTO season =
                 seasonsService.getSeasonDetails(seasonId);
 
-        return ResponseEntity.ok(season);
-    }
-    
+        return ResponseEntity.ok(season);}
 
 
 
 
-    @DeleteMapping("/delete/{id}")
+
+@GetMapping("/search/{name}")
+public ResponseEntity<List<SeasonsByNameDTO>> searchSeasons(
+        @PathVariable String name
+) {
+    return ResponseEntity.ok(
+            seasonsService.searchSeasonsByName(name)
+    );
+}
+
+
+
+
+
+
+ @DeleteMapping("/delete/{id}")
     public void deleteSeason(@PathVariable Long id) {
         seasonsService.deleteSeasonById(id);
     }
+
+
+
 }
     
 

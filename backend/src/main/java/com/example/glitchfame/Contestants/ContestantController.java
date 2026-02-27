@@ -1,4 +1,5 @@
 package com.example.glitchfame.Contestants;
+import com.example.glitchfame.Contestants.DTO.ContestantByName;
 import com.example.glitchfame.Contestants.DTO.ContestantsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,12 +18,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 
+
 @RestController
 @RequestMapping("/contestants")
 @RequiredArgsConstructor
 public class ContestantController {
 
-    private final ContestantService contestantService;
+private final ContestantService contestantService;
 
   // Approved contestants
   @GetMapping("/approved")
@@ -31,6 +33,8 @@ public class ContestantController {
                 contestantService.getAllApprovedContestants();
         return ResponseEntity.ok(contestants);
     }
+
+
 
 
     // Pending contestants
@@ -42,6 +46,8 @@ public class ContestantController {
     }
 
 
+
+
    
     // Rejected contestants
     @GetMapping("/rejected")
@@ -50,6 +56,8 @@ public class ContestantController {
                 contestantService.getAllRejectedContestants()
         );
     }
+
+
 
  
 
@@ -66,21 +74,49 @@ public class ContestantController {
 
 
 
+
+
       // ✅ Get contestants of a season with vote info
        @GetMapping("/{seasonId}")
     public ResponseEntity<List<SeasonContestants>> getSeasonContestants(
             @PathVariable Long seasonId
-    ) {
-
-        List<SeasonContestants> contestants =
+    ) 
+    {
+             List<SeasonContestants> contestants =
                 contestantService.getSeasonContestants(seasonId);
 
         return ResponseEntity.ok(contestants);
     }
 
+  
+//search contestants by name
+    @GetMapping("search/{name}")
+public ResponseEntity<List<ContestantByName>> searchContestants(
+        @PathVariable String name
+) {
+
+    List<ContestantByName> results =
+            contestantService.searchContestantsByName(name);
+
+    return ResponseEntity.ok(results);
+}
 
 
-    //delete participation
+
+//get contestant details by id
+@GetMapping("/details/{id}")
+public ResponseEntity<ContestantsDTO> getContestantDetails(
+        @PathVariable Long id
+) {
+    return ResponseEntity.ok(
+            contestantService.getApprovedContestantById(id)
+    );
+}
+
+
+
+
+//delete participation
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteParticipation(@PathVariable Long id) {
         String response = contestantService.deleteParticipationById(id);

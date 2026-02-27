@@ -5,6 +5,7 @@ import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import com.example.glitchfame.Seasons.DTO.SeasonsByNameDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +50,27 @@ public class SeasonsService {
 
         return season;
     }
+
+
+
+
+//get season by name
+        public List<SeasonsByNameDTO> searchSeasonsByName(String name) {
+        String search = name == null ? "" : name.trim();
+        // Prevent useless DB hits
+    if (search.length() < 2) {
+        return List.of();
+    }
+   return seasonsRepository.findSeasonsByNameContaining(search);
+}
+
+
+
+
+
+
+
+
 
 
     
