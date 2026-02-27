@@ -9,7 +9,8 @@ import RoleRedirect from "./Auth/RoleRedirect";
 import EntryForm from "./Roles/Users/EntryForm";
 import Arena from "./Roles/Users/Arena";
 import PlayerDetail from "./Roles/Users/PlayerDetails";
-import Testing from "./Testing";
+import AdminDashboard from "./Roles/Admin/AdminDashboard";
+// import Testing from "./Testing";
 
 export default function App() {
   return (
@@ -21,7 +22,7 @@ export default function App() {
       {/* Public Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-      <Route path="/testing" element={<Testing />} />
+      {/* <Route path="/testing" element={<Testing />} /> */}
 
       {/* USER Protected Routes */}
       {/* <Route element={<ProtectedRoute allowedRole="USER" />}> */}
@@ -32,6 +33,13 @@ export default function App() {
           <Route path="/details" element={<PlayerDetail />} />
         </Route>
       {/* </Route> */}
+
+      <Route path="/super-admin" element={<Admin/>}>
+        <Route path="" element={<AdminDashboard/>}/>
+        
+
+      </Route>
+      
 
     </Routes>
   );

@@ -19,7 +19,7 @@ const Admin = () => {
         
       </div>
 
-        <section className="w-full p-6 bg-[#1E2229] overflow-y-auto">
+        <section className="w-full p-6 bg-[#0F1114] overflow-y-auto">
         <Outlet />
       </section>
 
