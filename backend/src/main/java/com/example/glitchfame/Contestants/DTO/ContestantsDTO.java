@@ -18,7 +18,6 @@ public interface ContestantsDTO {
     Long getSeasonId();
     String getSeasonName();
     BigDecimal getPrizeMoney();
-
     Long getVoteCount();
     String getParticipantPhotoUrl();
 String getSeasonPhotoUrl();

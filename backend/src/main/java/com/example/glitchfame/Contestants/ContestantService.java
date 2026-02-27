@@ -12,6 +12,7 @@ import com.example.glitchfame.Contestants.DTO.SeasonContestants;
 import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
 import com.example.glitchfame.Auth.AuthRepository;
 import com.example.glitchfame.Seasons.SeasonsRepository;
+import com.example.glitchfame.Configuration.Cloudinary.CloudinaryService;
 
 
 @Service
@@ -22,6 +23,7 @@ public class ContestantService {
     private final ExtractJwtData extractJwtData;
     private final AuthRepository authRepository;
     private final SeasonsRepository seasonsRepository;
+    private final CloudinaryService cloudinaryService;
 
 
 
@@ -60,34 +62,53 @@ public class ContestantService {
         return list;
     }
 
-    
 
-    // ✅ Create contestant (User apply for season)
-      public String createContestant(CreateContestantDTO request) {
-        Long userId = extractJwtData.getUserId();
-        Long seasonId = request.getSeasonId();
-        if (contestantRepository.existsByUserIdAndSeasonId(userId, seasonId)) {
-            throw new RuntimeException("You have already applied for this season.");
-        }
 
-        User user = authRepository.getReferenceById(userId);
-        Seasons season = seasonsRepository.getReferenceById(seasonId);
 
-        Participation participation = Participation.builder()
-                .user(user)
-                .season(season)
-                .name(request.getName())
-                .description(request.getDescription())
-                .dateOfBirth(request.getDateOfBirth())
-                .location(request.getLocation())
-                .photoUrl(request.getPhotoUrl())
-                .status(Participation.Status.PENDING)
-                .build();
+// Create contestant (User apply for season)
+public String createContestant(CreateContestantDTO request) {
 
-        contestantRepository.save(participation);
+    Long userId = extractJwtData.getUserId();
+    Long seasonId = request.getSeasonId();
 
-        return "Application submitted successfully. Status: PENDING";
+    // 🔒 Fetch user from DB
+    User user = authRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    // 🚫 Check participation permission
+    if (!user.isCanParticipate()) {
+        throw new RuntimeException("You are not allowed to participate.");
     }
+
+    // 🚫 Prevent duplicate application
+    if (contestantRepository.existsByUserIdAndSeasonId(userId, seasonId)) {
+        throw new RuntimeException("You have already applied for this season.");
+    }
+
+    // 🔥 Upload image
+    String imageUrl = cloudinaryService.uploadImage(request.getImage());
+
+    Seasons season = seasonsRepository.getReferenceById(seasonId);
+
+    Participation participation = Participation.builder()
+            .user(user)
+            .season(season)
+            .name(request.getName())
+            .description(request.getDescription())
+            .dateOfBirth(request.getDateOfBirth())
+            .location(request.getLocation())
+            .photoUrl(imageUrl)
+            .status(Participation.Status.PENDING)
+            .build();
+
+    contestantRepository.save(participation);
+
+    return "Application submitted successfully. Status: PENDING";
+}
+
+
+
+
 
 
 
@@ -105,6 +126,11 @@ public class ContestantService {
 
 
 
+
+
+
+
+
     
     //search by name
     public List<ContestantByName> searchContestantsByName(String name) {
@@ -117,6 +143,10 @@ public class ContestantService {
 
     return contestantRepository.findByNameContaining(search);
 }
+
+
+
+
 
 
 

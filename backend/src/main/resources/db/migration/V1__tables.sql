@@ -10,6 +10,9 @@ CREATE TABLE auth_users (
     can_vote BOOLEAN NOT NULL DEFAULT TRUE,
     can_participate BOOLEAN NOT NULL DEFAULT TRUE,
 
+    profile_picture VARCHAR(500) NOT NULL
+        DEFAULT 'https://res.cloudinary.com/demo/image/upload/v1/default_profile.png',
+
     CONSTRAINT uk_auth_users_email UNIQUE (email),
     CONSTRAINT uk_auth_users_username UNIQUE (username),
     CONSTRAINT uk_auth_users_mobile UNIQUE (mobile_number)
@@ -17,13 +20,10 @@ CREATE TABLE auth_users (
 
 
 
-
-
 CREATE TABLE seasons (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
 
     name VARCHAR(100) NOT NULL,
-
     prize_money DECIMAL(15,2) NOT NULL,
 
     registration_start_date DATETIME NOT NULL,
@@ -31,13 +31,11 @@ CREATE TABLE seasons (
 
     voting_start_date DATETIME NOT NULL,
     voting_end_date DATETIME NOT NULL,
+
     photo_url VARCHAR(255) DEFAULT NULL,
 
     CONSTRAINT uk_seasons_name UNIQUE (name)
 );
-
-
-
 
 
 CREATE TABLE participations (
@@ -49,13 +47,15 @@ CREATE TABLE participations (
 
     name VARCHAR(150) NOT NULL,
     description TEXT,
-    status ENUM('PENDING','REJECTED','APPROVED') NOT NULL DEFAULT 'PENDING',
+    status ENUM('PENDING','REJECTED','APPROVED')
+        NOT NULL DEFAULT 'PENDING',
 
     date_of_birth DATE NOT NULL,
     location VARCHAR(150) NOT NULL,
     photo_url VARCHAR(500) NOT NULL,
 
-    -- Foreign Keys
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
     CONSTRAINT fk_participation_user
         FOREIGN KEY (user_id)
         REFERENCES auth_users(id)
@@ -66,23 +66,20 @@ CREATE TABLE participations (
         REFERENCES seasons(id)
         ON DELETE CASCADE,
 
-    -- Prevent duplicate application for same season
     CONSTRAINT uk_user_season UNIQUE (user_id, season_id)
 );
 
--- Indexes
-CREATE INDEX idx_participation_location 
+CREATE INDEX idx_participation_location
 ON participations(location);
 
-CREATE INDEX idx_participation_dob 
+CREATE INDEX idx_participation_dob
 ON participations(date_of_birth);
 
-CREATE INDEX idx_participation_status 
+CREATE INDEX idx_participation_status
 ON participations(status);
 
-CREATE INDEX idx_participation_name 
+CREATE INDEX idx_participation_name
 ON participations(name);
-
 
 
 
@@ -102,11 +99,9 @@ CREATE TABLE votes (
         REFERENCES auth_users(id)
         ON DELETE CASCADE,
 
-    -- One voter can vote only once per contestant
     CONSTRAINT uk_votes_unique_vote
         UNIQUE (contestant_id, voter_id)
 );
 
--- Indexes
 CREATE INDEX idx_votes_contestant ON votes(contestant_id);
 CREATE INDEX idx_votes_voter ON votes(voter_id);

@@ -1,6 +1,7 @@
 package com.example.glitchfame.Contestants.DTO;
 import java.time.LocalDate;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 
 
@@ -14,7 +15,7 @@ public class CreateContestantDTO {
     private String description;
     private LocalDate dateOfBirth;
     private String location;
-    private String photoUrl;
+    private MultipartFile image;
 }
     
 

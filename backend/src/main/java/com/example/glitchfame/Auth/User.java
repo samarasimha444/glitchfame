@@ -51,4 +51,8 @@ public class User {
         USER,
         ADMIN
     }
+
+
+ @Column(name = "can_participate", nullable = false)
+private boolean canParticipate = true;
 }
