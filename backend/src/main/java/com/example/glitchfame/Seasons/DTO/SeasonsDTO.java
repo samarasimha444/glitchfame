@@ -1,11 +1,10 @@
 package com.example.glitchfame.Seasons.DTO;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public interface SeasonsDTO {
 
-    Long getSeasonId();
+   Long getSeasonId();
     String getSeasonName();
     BigDecimal getPrizeMoney();
     String getSeasonPhotoUrl();
@@ -13,5 +12,5 @@ public interface SeasonsDTO {
     LocalDateTime getRegistrationEndDate();
     LocalDateTime getVotingStartDate();
     LocalDateTime getVotingEndDate();
-  String getParticipationStatus();
+    String getParticipationStatus();
 }

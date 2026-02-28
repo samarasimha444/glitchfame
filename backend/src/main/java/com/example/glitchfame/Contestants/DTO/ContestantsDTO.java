@@ -1,15 +1,14 @@
 package com.example.glitchfame.Contestants.DTO;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-
-//DTO for returning contestant details in various contexts (e.g., by season, by name, etc.)
 public interface ContestantsDTO {
 
     Long getParticipationId();
     String getParticipantName();
-    String getPhotoUrl();
+    String getParticipantPhotoUrl();
     LocalDate getDateOfBirth();
     String getLocation();
     String getDescription();
@@ -18,13 +17,11 @@ public interface ContestantsDTO {
     String getSeasonName();
     BigDecimal getPrizeMoney();
     Long getVoteCount();
-    String getParticipantPhotoUrl();
-    String getSeasonPhotoUrl();
     Integer getHasVoted();
+    String getSeasonPhotoUrl();
+
     LocalDateTime getRegistrationStartDate();
     LocalDateTime getRegistrationEndDate();
     LocalDateTime getVotingStartDate();
     LocalDateTime getVotingEndDate();
-
-
 }

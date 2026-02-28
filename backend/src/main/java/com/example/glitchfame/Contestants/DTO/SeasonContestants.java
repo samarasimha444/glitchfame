@@ -7,16 +7,11 @@ public interface SeasonContestants {
 
     Long getId();
     Long getUserId();
-
     Long getSeasonId();
-
     String getName();
-
     String getDescription();
-
     String getStatus();
-
-    LocalDate getDateOfBirth();
+     LocalDate getDateOfBirth();
 
     String getLocation();
 

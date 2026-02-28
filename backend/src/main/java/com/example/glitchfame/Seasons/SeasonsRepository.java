@@ -12,6 +12,15 @@ import org.springframework.data.repository.query.Param;
 
 public interface SeasonsRepository extends JpaRepository<Seasons, Long> {
 
+    // Check if season name exists (case-insensitive)
+    boolean existsByNameIgnoreCase(String name);
+
+    // Check if season name exists for other seasons (case-insensitive)
+    boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
+
+
+
+
     //upcoming seasons order by registration start date ascending
     @Query(value = """
     SELECT

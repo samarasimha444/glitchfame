@@ -2,10 +2,10 @@ package com.example.glitchfame.Auth;
 import com.example.glitchfame.Auth.DTO.LoginDTO;
 import com.example.glitchfame.Auth.DTO.ProfileResponseDTO;
 import com.example.glitchfame.Auth.DTO.RegisterDTO;
+import com.example.glitchfame.Auth.DTO.UpdateProfileDTO;
 import com.example.glitchfame.Auth.DTO.UserSearchProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
@@ -25,8 +25,7 @@ public class AuthController {
     private final ExtractJwtData jwtService;
   
 
-
-    //REGISTER
+     //REGISTER
     @PostMapping("/signup")
     public ResponseEntity<String> register(@RequestBody RegisterDTO dto) {
     return authService.register(dto);}
@@ -40,42 +39,43 @@ public class AuthController {
 
    
     //PROFILE
-    @GetMapping("/profile")
+    @GetMapping("/profile/me")
     public ResponseEntity<ProfileResponseDTO> getProfile(Authentication authentication) {
     Long userId = Long.parseLong(authentication.getName());
     ProfileResponseDTO profile = authService.getProfile(userId);
     return ResponseEntity.ok(profile);
 }
 
+// UPDATE PROFILE
+@PatchMapping(value = "/profile/update",
+        consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+public ResponseEntity<String> updateProfile(
+        @ModelAttribute UpdateProfileDTO dto) {
 
-
-    //UPDATE PROFILE PICTURE
-    @PutMapping(value = "/profile-picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> updateProfilePicture(
-    @RequestPart("file") MultipartFile file) {
-    Long userId = jwtService.getUserId(); // your JWT extractor
-    authService.updateProfilePicture(userId, file);
-    return ResponseEntity.ok("Profile picture updated");
+    authService.updateProfile(dto);
+    return ResponseEntity.ok("Profile updated successfully");
 }
 
-
-
-    //REMOVE PROFILE PICTURE
-    @DeleteMapping("/profile-picture")
-    public ResponseEntity<String> removeProfilePicture() {
-    Long userId = jwtService.getUserId();
-    authService.removeProfilePicture(userId);
+ 
+// REMOVE PROFILE PICTURE
+@PatchMapping("/profile-picture/remove")
+public ResponseEntity<String> removeProfilePicture() {
+     authService.removeProfilePicture();
     return ResponseEntity.ok("Profile picture removed");
 }
 
 
+
+
+
     //SEARCH USERS
-    @GetMapping("/search")
+    @GetMapping("profile/name")
     public List<UserSearchProjection> searchUsers(
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {     return authService.searchUsers(keyword, page, size);
+
     }
 
 
@@ -90,7 +90,7 @@ public class AuthController {
 
 
     //DELETE ACCOUNT
-    @DeleteMapping("/deleteaccount")
+    @DeleteMapping("/profile/delete")
     public ResponseEntity<String> deleteMyAccount() {
     authService.deleteMyAccount();
     return ResponseEntity.ok("Account deleted successfully");

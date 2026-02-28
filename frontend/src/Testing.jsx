@@ -29,7 +29,7 @@ export default function Testing() {
     const token = localStorage.getItem("token");
 
     const res = await fetch(
-      `${BASE_URL}/contestants/approved`,
+      `${BASE_URL}/contestants/status/approved`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -40,7 +40,7 @@ export default function Testing() {
     if (!res.ok) return;
 
     const data = await res.json();
-    setContestants(data);
+    setContestants(data.content);
   };
 
   // ---------------- WEBSOCKET ----------------

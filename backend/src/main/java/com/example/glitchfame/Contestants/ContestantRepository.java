@@ -4,11 +4,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import com.example.glitchfame.Contestants.DTO.ContestantsDTO;
 import java.util.List;
-import com.example.glitchfame.Contestants.DTO.ContestantsStatusDTO;
 import com.example.glitchfame.Contestants.DTO.SeasonContestants;
 import org.springframework.data.repository.query.Param;
 import com.example.glitchfame.Contestants.DTO.ContestantByName;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 
@@ -23,53 +24,8 @@ import java.util.Optional;
 @Repository
 public interface ContestantRepository extends JpaRepository<Participation, Long> {
 
- //check whether a user has already applied for a season
+//check whether a user has already applied for a season
 boolean existsByUserIdAndSeasonId(Long userId, Long seasonId);
-
-
-
-//get all approved contestants with vote count and whether the user has voted for them or not, order by vote count descending
-@Query(value = """
-    SELECT 
-        p.id AS participationId,
-        p.name AS participantName,
-        p.photo_url AS participantPhotoUrl,
-        s.photo_url AS seasonPhotoUrl,
-        p.date_of_birth AS dateOfBirth,
-        p.location AS location,
-        p.description AS description,
-        p.user_id AS userId,
-        s.id AS seasonId,
-        s.name AS seasonName,
-        s.prize_money AS prizeMoney,
-        s.registration_start_date AS registrationStartDate,
-        s.registration_end_date AS registrationEndDate,
-        s.voting_start_date AS votingStartDate,
-        s.voting_end_date AS votingEndDate,
-        COUNT(v.id) AS voteCount,
-        EXISTS (
-            SELECT 1 
-            FROM votes v2 
-            WHERE v2.contestant_id = p.id 
-            AND v2.voter_id = :userId
-        ) AS hasVoted
-    FROM participations p
-    JOIN seasons s ON p.season_id = s.id
-    LEFT JOIN votes v ON v.contestant_id = p.id
-    WHERE p.status = 'APPROVED'
-    GROUP BY 
-        p.id, p.name, p.photo_url, p.date_of_birth, 
-        p.location, p.description, p.user_id,
-        s.id, s.name, s.prize_money, s.photo_url,
-        s.registration_start_date,
-        s.registration_end_date,
-        s.voting_start_date,
-        s.voting_end_date
-    ORDER BY voteCount DESC
-""", nativeQuery = true)
-List<ContestantsDTO> getAllApprovedContestants(@Param("userId") Long userId);
-
-
 
 
 //get contestants by ID
@@ -119,58 +75,69 @@ Optional<ContestantsDTO> getApprovedContestantById(
 
 
 
-// pending contestants order by date of birth ascending
+
+// ✅ Get contestants by status with pagination and vote info
 @Query(value = """
     SELECT 
         p.id AS participationId,
         p.name AS participantName,
         p.photo_url AS participantPhotoUrl,
-        s.photo_url AS seasonPhotoUrl,
         p.date_of_birth AS dateOfBirth,
         p.location AS location,
         p.description AS description,
         p.user_id AS userId,
+
         s.id AS seasonId,
         s.name AS seasonName,
         s.prize_money AS prizeMoney,
-        s.registration_start_date AS registrationStartDate,
-        s.registration_end_date AS registrationEndDate,
-        s.voting_start_date AS votingStartDate,
-        s.voting_end_date AS votingEndDate
-    FROM participations p
-    JOIN seasons s ON p.season_id = s.id
-    WHERE p.status = 'PENDING'
-    ORDER BY p.date_of_birth ASC
-    """, nativeQuery = true)
-List<ContestantsStatusDTO> getAllPendingContestants();
-
-
-
-
-// rejected contestants order by date of birth ascending
-@Query(value = """
-    SELECT 
-        p.id AS participationId,
-        p.name AS participantName,
-        p.photo_url AS participantPhotoUrl,
         s.photo_url AS seasonPhotoUrl,
-        p.date_of_birth AS dateOfBirth,
-        p.location AS location,
-        p.description AS description,
-        p.user_id AS userId,
-        s.id AS seasonId,
-        s.name AS seasonName,
-        s.prize_money AS prizeMoney,
         s.registration_start_date AS registrationStartDate,
         s.registration_end_date AS registrationEndDate,
         s.voting_start_date AS votingStartDate,
-        s.voting_end_date AS votingEndDate
+        s.voting_end_date AS votingEndDate,
+
+        COALESCE(COUNT(v.id), 0) AS voteCount,
+
+        CASE 
+            WHEN :userId IS NOT NULL AND EXISTS (
+                SELECT 1 
+                FROM votes v2
+                WHERE v2.contestant_id = p.id
+                AND v2.voter_id = :userId
+            )
+            THEN 1
+            ELSE 0
+        END AS hasVoted
+
     FROM participations p
     JOIN seasons s ON p.season_id = s.id
-    WHERE p.status = 'REJECTED'
-    ORDER BY p.date_of_birth ASC
-    """, nativeQuery = true)
-List<ContestantsStatusDTO> getAllRejectedContestants();
+    LEFT JOIN votes v ON v.contestant_id = p.id
+
+    WHERE p.status = :status
+
+    GROUP BY 
+        p.id, p.name, p.photo_url, p.date_of_birth,
+        p.location, p.description, p.user_id,
+        s.id, s.name, s.prize_money, s.photo_url,
+        s.registration_start_date,
+        s.registration_end_date,
+        s.voting_start_date,
+        s.voting_end_date
+
+    ORDER BY voteCount DESC, p.date_of_birth ASC
+    """,
+    countQuery = """
+        SELECT COUNT(*)
+        FROM participations p
+        WHERE p.status = :status
+    """,
+    nativeQuery = true)
+Page<ContestantsDTO> getContestantsByStatus(
+        @Param("status") String status,
+        @Param("userId") Long userId,
+        Pageable pageable);
+
+
 
 
 

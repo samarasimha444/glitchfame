@@ -5,13 +5,10 @@ import java.time.LocalDateTime;
 
 public interface SeasonDetailsDTO {
 
-    Long getId();
-
-    String getName();
-
-    BigDecimal getPrizeMoney();
-
-    LocalDateTime getRegistrationStartDate();
+     Long getId();
+     String getName();
+     BigDecimal getPrizeMoney();
+     LocalDateTime getRegistrationStartDate();
     LocalDateTime getRegistrationEndDate();
     LocalDateTime getVotingStartDate();
     LocalDateTime getVotingEndDate();
