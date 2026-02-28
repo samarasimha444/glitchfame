@@ -5,17 +5,16 @@ import com.example.glitchfame.Auth.User;
 import com.example.glitchfame.Auth.AuthRepository;
 import com.example.glitchfame.Contestants.Participation;
 import com.example.glitchfame.Contestants.ContestantRepository;
+import com.example.glitchfame.Leadboard.LeaderboardService;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.util.Map;
-
-
-
-
 
 @Service
 @RequiredArgsConstructor
@@ -26,20 +25,19 @@ public class VoteService {
     private final AuthRepository userRepository;
     private final ExtractJwtData extractJwtData;
     private final SimpMessagingTemplate messagingTemplate;
+    private final LeaderboardService leaderboardService; // 🔥 ADD THIS
 
     @Transactional
     public VoteResponse toggleVote(Long participationId) {
 
         Long userId = extractJwtData.getUserId();
 
-        // 🔒 Fetch user
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "User not found"
                 ));
 
-        // 🚫 Check voting permission
         if (!user.isCanVote()) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
@@ -47,7 +45,16 @@ public class VoteService {
             );
         }
 
-        // 🔍 Check if already voted
+        // 🔥 Always fetch participation FIRST
+        Participation participation =
+                contestantRepository.findById(participationId)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Contestant not found"
+                        ));
+
+        Long seasonId = participation.getSeason().getId(); // 🔥 get seasonId once
+
         boolean alreadyVoted =
                 votesRepository.existsByContestant_IdAndVoter_Id(
                         participationId, userId);
@@ -56,14 +63,6 @@ public class VoteService {
             votesRepository.deleteByContestant_IdAndVoter_Id(
                     participationId, userId);
         } else {
-
-            Participation participation =
-                    contestantRepository.findById(participationId)
-                            .orElseThrow(() -> new ResponseStatusException(
-                                    HttpStatus.NOT_FOUND,
-                                    "Contestant not found"
-                            ));
-
             Vote vote = Vote.builder()
                     .contestant(participation)
                     .voter(user)
@@ -75,7 +74,7 @@ public class VoteService {
         long updatedCount =
                 votesRepository.countByContestant_Id(participationId);
 
-        // 📡 Broadcast updated vote count
+        // 🔥 Broadcast vote count update
         messagingTemplate.convertAndSend(
                 "/topic/votes",
                 Map.of(
@@ -83,6 +82,9 @@ public class VoteService {
                         "voteCount", updatedCount
                 )
         );
+
+        // 🔥 Broadcast leaderboard update
+        leaderboardService.broadcastLeaderboard(seasonId);
 
         return new VoteResponse(
                 participationId,
