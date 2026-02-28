@@ -10,6 +10,9 @@ import EntryForm from "./Roles/Users/EntryForm";
 import Arena from "./Roles/Users/Arena";
 import PlayerDetail from "./Roles/Users/PlayerDetails";
 import AdminDashboard from "./Roles/Admin/AdminDashboard";
+import Contest from "./Roles/Admin/Contest";
+import ParticipantsApproval from "./Roles/Admin/ui/ParticipantsApproval";
+import AdminSettings from "./Roles/Admin/AdminSettings";
 // import Testing from "./Testing";
 
 export default function App() {
@@ -34,11 +37,12 @@ export default function App() {
         </Route>
       {/* </Route> */}
 
-      <Route path="/super-admin" element={<Admin/>}>
-        <Route path="" element={<AdminDashboard/>}/>
-        
-
-      </Route>
+     <Route path="/super-admin" element={<Admin />}>
+     <Route index element={<AdminDashboard />} />
+     <Route path="contestants" element={<Contest/>} />
+      <Route path="settings" element={<AdminSettings/>} />
+     <Route path="user" element={<ParticipantsApproval/>} />
+    </Route>
       
 
     </Routes>
