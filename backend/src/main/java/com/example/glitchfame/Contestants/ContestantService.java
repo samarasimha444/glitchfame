@@ -1,6 +1,7 @@
 package com.example.glitchfame.Contestants;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
 import com.example.glitchfame.Auth.User;
@@ -16,6 +17,8 @@ import com.example.glitchfame.Configuration.Cloudinary.CloudinaryService;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @Service
@@ -69,9 +72,12 @@ public String createContestant(CreateContestantDTO request) {
             .orElseThrow(() -> new RuntimeException("User not found"));
 
     // 🚫 Check participation permission
-    if (!user.isCanParticipate()) {
-        throw new RuntimeException("You are not allowed to participate.");
-    }
+   if (!user.isCanParticipate()) {
+    throw new ResponseStatusException(
+            HttpStatus.FORBIDDEN,
+            "You are not allowed to participate."
+    );
+}
 
     // 🚫 Prevent duplicate application
     if (contestantRepository.existsByUserIdAndSeasonId(userId, seasonId)) {
@@ -98,6 +104,11 @@ public String createContestant(CreateContestantDTO request) {
 
     return "Application submitted successfully. Status: PENDING";
 }
+
+
+
+
+
 
 
  //get all contestants of a season

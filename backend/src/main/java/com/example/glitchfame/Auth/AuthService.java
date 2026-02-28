@@ -219,8 +219,7 @@ public class AuthService {
     @Transactional
     @CacheEvict(value = "profiles", key = "#userId")
     public void removeProfilePictureInternal(Long userId) {
-
-        String defaultUrl =
+     String defaultUrl =
                 "https://res.cloudinary.com/demo/image/upload/v1/default_profile.png";
 
         int updated = authRepository.resetProfilePicture(userId, defaultUrl);
@@ -259,6 +258,56 @@ public class AuthService {
     }
 
 
+// ========================= UPDATE PASSWORD =========================
+@Transactional
+public void updatePassword(String newPassword) {
+
+    Long userId = extractJwtData.getUserId();
+
+    if (newPassword == null || newPassword.trim().isEmpty()) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Password cannot be empty"
+        );
+    }
+
+    if (newPassword.length() < 6) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Password must be at least 6 characters"
+        );
+    }
+
+    User user = authRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "User not found"
+            ));
+
+    user.setPassword(passwordEncoder.encode(newPassword));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // ========================= GET USER BY ID =========================
 
@@ -283,6 +332,47 @@ public class AuthService {
                 .profilePicture(user.getProfilePicture())
                 .build();
     }
+
+
+// ========================= TOGGLE CAN VOTE (ADMIN) =========================
+@Transactional
+public void toggleCanVote(Long userId) {
+    User user = authRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "User not found"));
+    user.setCanVote(!user.isCanVote());
+}
+
+
+// ========================= TOGGLE CAN PARTICIPATE (ADMIN) =========================
+@Transactional
+public void toggleCanParticipate(Long userId) {
+User user = authRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "User not found"
+            ));
+
+    user.setCanParticipate(!user.isCanParticipate());
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

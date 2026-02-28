@@ -66,25 +66,34 @@ public ResponseEntity<String> removeProfilePicture() {
 
 
 
-
-
-    //SEARCH USERS
+//SEARCH USERS
     @GetMapping("profile/name")
     public List<UserSearchProjection> searchUsers(
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {     return authService.searchUsers(keyword, page, size);
-
-    }
-
+}
 
 
-    //get user profile by id (for admin or public viewing)
+
+
+
+
+   //get user profile by id (for admin or public viewing)
      @GetMapping("/profile/{id}")
     public ProfileResponseDTO getUserProfile(@PathVariable Long id) {
         return authService.getUserProfileById(id);
     }
+
+
+    // ================= UPDATE PASSWORD =================
+@PatchMapping("/profile/change-password/{newPassword}")
+public ResponseEntity<String> updatePassword(
+        @PathVariable String newPassword) {
+    authService.updatePassword(newPassword);
+    return ResponseEntity.ok("Password updated successfully");
+}
 
 
 
@@ -95,4 +104,28 @@ public ResponseEntity<String> removeProfilePicture() {
     authService.deleteMyAccount();
     return ResponseEntity.ok("Account deleted successfully");
 }
+
+
+
+
+//vote control by admin
+@PatchMapping("/admin/{id}/toggle-vote")
+public ResponseEntity<String> toggleCanVote(@PathVariable Long id) {
+
+    authService.toggleCanVote(id);
+    return ResponseEntity.ok("User voting permission toggled");
+}
+
+
+
+//participation control by admin
+@PatchMapping("/admin/{id}/toggle-participate")
+public ResponseEntity<String> toggleCanParticipate(@PathVariable Long id) {
+
+    authService.toggleCanParticipate(id);
+    return ResponseEntity.ok("User participation permission toggled");
+}
+
+
+
 }

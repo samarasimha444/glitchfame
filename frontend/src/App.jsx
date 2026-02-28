@@ -28,7 +28,9 @@ export default function App() {
       {/* Public Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-      {/*<Route path="/testing" element={<Testing />} />*/}
+    { /*<Route path="/testing" element={<Testing />} /> */}
+
+
 
       {/* USER Protected Routes */}
       {/* <Route element={<ProtectedRoute allowedRole="USER" />}> */}

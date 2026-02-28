@@ -11,14 +11,10 @@ public interface SeasonContestants {
     String getName();
     String getDescription();
     String getStatus();
-     LocalDate getDateOfBirth();
-
+    LocalDate getDateOfBirth();
     String getLocation();
-
     String getPhotoUrl();
-
     Long getTotalVotes();
-
     Integer getHasVoted();
 
 } 
