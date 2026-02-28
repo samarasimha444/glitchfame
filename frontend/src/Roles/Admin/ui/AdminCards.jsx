@@ -1,8 +1,8 @@
 import React from "react";
 
-const AdminCards = () => {
+const AdminCards = ({className}) => {
   return (
-    <div className="flex flex-col w-full  py-4 ">
+    <div className={`flex flex-col w-full  py-4 ${className}`}>
 
       <section className="flex w-full  justify-between items-start ">
         <h3 className="flex flex-col font-semibold text-3xl">
@@ -86,6 +86,7 @@ const AdminCards = () => {
             <span className="text-blue-400 text-xl">📈</span>
           </div>
         </div>
+        
 
       </section>
     </div>
