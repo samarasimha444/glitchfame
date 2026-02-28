@@ -1,10 +1,11 @@
 package com.example.glitchfame.Contestants.DTO;
 import java.time.LocalDate;
 
+
+//DTO for returning contestant details for a specific season, including voting status and total votes
 public interface SeasonContestants {
 
     Long getId();
-
     Long getUserId();
 
     Long getSeasonId();
@@ -25,5 +26,4 @@ public interface SeasonContestants {
 
     Integer getHasVoted();
 
-    
 } 

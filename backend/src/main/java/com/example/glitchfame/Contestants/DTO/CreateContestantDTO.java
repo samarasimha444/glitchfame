@@ -8,6 +8,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 @Data
+
+
+//DTO for creating a new contestant
 public class CreateContestantDTO {
 
     private Long seasonId;

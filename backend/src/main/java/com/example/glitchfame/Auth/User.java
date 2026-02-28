@@ -55,4 +55,14 @@ public class User {
 
  @Column(name = "can_participate", nullable = false)
 private boolean canParticipate = true;
+
+
+
+@Column(name = "can_vote", nullable = false)
+private boolean canVote = true;
+
+@Column(name = "profile_picture", nullable = false, length = 500)
+@Builder.Default
+private String profilePicture =
+        "https://res.cloudinary.com/demo/image/upload/v1/default_profile.png";
 }

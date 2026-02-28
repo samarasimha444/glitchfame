@@ -12,9 +12,12 @@ import lombok.NoArgsConstructor;
 public class ProfileResponseDTO   implements Serializable {
 
     
-    private Long id;
+     private Long id;
     private String username;
     private String email;
     private String mobileNumber;
     private String role;
+     private boolean canVote;
+    private boolean canParticipate;
+    private String profilePicture;
 }

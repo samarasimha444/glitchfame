@@ -2,15 +2,25 @@ package com.example.glitchfame.Auth;
 import com.example.glitchfame.Auth.DTO.LoginDTO;
 import com.example.glitchfame.Auth.DTO.ProfileResponseDTO;
 import com.example.glitchfame.Auth.DTO.RegisterDTO;
+import com.example.glitchfame.Auth.DTO.UserSearchProjection;
 import com.example.glitchfame.Configuration.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.http.MediaType;
+import com.example.glitchfame.Configuration.Cloudinary.CloudinaryService;
+import java.util.List;
 
 
 @Service
@@ -21,6 +31,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final ExtractJwtData ExtractJwtData;
     private final JwtUtil jwtUtil;
+        private final CloudinaryService cloudinaryService;
 
 
 
@@ -92,9 +103,8 @@ public ResponseEntity<?> login(LoginDTO dto) {
 
 
 
-
-  //profile
-   @Cacheable(value = "profiles", key = "#userId")
+//profile
+@Cacheable(value = "profiles", key = "#userId")
 public ProfileResponseDTO getProfile(Long userId) {
 
     User user = authRepository.findById(userId)
@@ -104,13 +114,15 @@ public ProfileResponseDTO getProfile(Long userId) {
                             "User not found"
                     )
             );
-
-    return ProfileResponseDTO.builder()
+        return ProfileResponseDTO.builder()
             .id(user.getId())
             .username(user.getUsername())
             .email(user.getEmail())
             .mobileNumber(user.getMobileNumber())
             .role(user.getRole().name())
+            .canVote(user.isCanVote())
+            .canParticipate(user.isCanParticipate())
+            .profilePicture(user.getProfilePicture())
             .build();
 }
 
@@ -118,7 +130,97 @@ public ProfileResponseDTO getProfile(Long userId) {
 
 
 
-        //delete user   
+//update profile picture
+  @Transactional
+@CacheEvict(value = "profiles", key = "#userId")
+public void updateProfilePicture(Long userId, MultipartFile file) {
+if (file.isEmpty()) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File is empty");
+    }
+
+    String imageUrl = cloudinaryService.uploadImage(file); // you implement this
+
+    int updated = authRepository.updateProfilePicture(userId, imageUrl);
+
+    if (updated == 0) {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+    }
+}
+
+
+
+
+
+//remove profile picture
+@Transactional
+@CacheEvict(value = "profiles", key = "#userId")
+public void removeProfilePicture(Long userId) {
+
+    String defaultUrl =
+        "https://res.cloudinary.com/demo/image/upload/v1/default_profile.png";
+
+    int updated = authRepository.resetProfilePicture(userId, defaultUrl);
+
+    if (updated == 0) {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+    }
+}
+
+
+        public List<UserSearchProjection> searchUsers(String keyword, int page, int size) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Search keyword is required"
+            );}
+        if (size > 20) { // hard limit
+            size = 20;
+        }
+        Pageable pageable = PageRequest.of(page, size);
+        return authRepository.searchByUsername(keyword, pageable);
+    }
+
+
+   
+
+
+        //get user profile by id (for other users to view)
+public ProfileResponseDTO getUserProfileById(Long userId) {
+User user = authRepository.findById(userId)
+            .orElseThrow(() ->
+        new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "User not found"));
+        return ProfileResponseDTO.builder()
+            .id(user.getId())
+            .username(user.getUsername())
+            .email(user.getEmail())
+            .mobileNumber(user.getMobileNumber())
+            .role(user.getRole().name())
+            .canVote(user.isCanVote())
+            .canParticipate(user.isCanParticipate())
+            .profilePicture(user.getProfilePicture())
+            .build();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//delete user   
         public void deleteMyAccount() {
         Long userId = ExtractJwtData.getUserId();
 
