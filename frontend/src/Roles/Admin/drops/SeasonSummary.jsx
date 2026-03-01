@@ -4,6 +4,7 @@ import { MoreVertical } from "lucide-react";
 const SeasonSummary = ({ title, subtitle, data }) => {
   return (
     <div className="w-full bg-[#0f1115] flex ">
+        
       <div className="w-full max-w-[650px]  border border-gray-900  ">
 
         
@@ -22,7 +23,6 @@ const SeasonSummary = ({ title, subtitle, data }) => {
           </button>
         </div>
 
-        {/* Content */}
         <div className="p-6">
           <div className="grid grid-cols-2 gap-y-6 gap-x-12 text-sm">
             {data.map((item, index) => (

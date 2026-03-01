@@ -1,42 +1,47 @@
-import React from "react";
+import { X } from "lucide-react";
 
-const Modal = ({ type, onClose, onConfirm }) => {
-  if (!type) return null; 
+const Modal = ({
+  open,
+  title,
+  children,
+  onClose,
+  footer,
+  size = "lg",
+}) => {
+  if (!open) return null;
+
+  const sizes = {
+    sm: "max-w-md",
+    md: "max-w-lg",
+    lg: "max-w-2xl",
+    xl: "max-w-3xl",
+  };
 
   return (
-    
-    <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
       
      
-      <div className="bg-[#1C1C1E] text-white w-[90%] max-w-md rounded-2xl shadow-2xl p-6 animate-fadeIn">
-        
-        
-        <h2 className="text-xl font-semibold mb-3">
-          {type === "reset" && "Reset Season"}
-        </h2>
-
-        
-        <p className="text-sm text-gray-300 mb-6">
-          {type === "reset" &&
-            "Are you sure you want to reset the season? This action cannot be undone."}
-        </p>
-
-     
-        <div className="flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition"
-          >
-            Cancel
-          </button>
-
-          <button
-            onClick={onConfirm}
-            className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 transition"
-          >
-            OK
+      <div
+        className={`w-full ${sizes[size]} bg-[#1C1C1E] text-white rounded-2xl shadow-2xl border border-white/10`}
+      >
+       
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+          <h2 className="text-lg font-semibold">{title}</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-white">
+            <X size={18} />
           </button>
         </div>
+
+       \
+        <div className="px-6 py-5  max-h-[70vh] overflow-y-auto">
+          {children}
+        </div>
+
+        {footer && (
+          <div className="px-6 py-4 border-t border-white/10 flex justify-end gap-3">
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   );

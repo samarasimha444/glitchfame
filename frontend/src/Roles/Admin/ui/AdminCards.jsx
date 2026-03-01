@@ -1,8 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
+import Modal from "../drops/Model";
+import SeasonForm from "./SeasonForm";
 
 const AdminCards = ({className}) => {
+
+    const [open, setOpen] = useState(false);
+
+
+    const handleSubmit=()=>{
+
+    }
+
   return (
     <div className={`flex flex-col w-full  py-4 ${className}`}>
+        
+     <Modal className="w-full " open={open} onClose={() => setOpen(false)} title="Create Season">
+        <SeasonForm  onSubmit={handleSubmit} />
+      </Modal>
 
       <section className="flex w-full  justify-between items-start ">
         <h3 className="flex flex-col font-semibold text-3xl">
@@ -13,10 +27,14 @@ const AdminCards = ({className}) => {
           </p>
         </h3>
 
-        <button className="bg-blue-400 px-3 py-2">+Create Season</button>
+        <button onClick={()=>setOpen(!open)} className="bg-blue-400 px-3 py-2">+Create Season</button>
       </section>
 
-      <section className="mt-12 flex  w-full justify-between ">
+    
+
+
+
+      <section className="mt-12 flex  gap-2 w-full justify-between ">
 
         <div
           className="relative bg-[#111418] border border-[#1E232B] 
@@ -86,7 +104,7 @@ const AdminCards = ({className}) => {
             <span className="text-blue-400 text-xl">📈</span>
           </div>
         </div>
-        
+
 
       </section>
     </div>
