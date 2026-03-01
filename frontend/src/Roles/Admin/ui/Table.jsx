@@ -114,9 +114,8 @@ const SeasonsTable = () => {
                 <td className="px-6 py-4 text-gray-400">{season.voting}</td>
 
                 <td className="px-6 py-4 space-x-3 text-right ">
-                  <button className=" cursor-pointer hover:text-purple-300 text-sm">
-                     <TimerReset />
-                  </button>
+
+             
 
                   <button
                     onClick={() => setModalType("reset")}
@@ -125,9 +124,7 @@ const SeasonsTable = () => {
                    <LockOpen />
                   </button>
 
-                  <button className=" cursor-pointer hover:text-purple-300 text-sm">
-                     <RotateCcw />
-                  </button>
+                  
                 </td>
               </tr>
             ))}

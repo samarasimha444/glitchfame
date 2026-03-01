@@ -4,10 +4,17 @@ const initialState = {
   name: "",
   prizePool: "",
   registrationType: "Public Entry",
-  registrationStart: "",
-  registrationEnd: "",
-  votingStart: "",
-  votingEnd: "",
+
+  registrationStartDate: "",
+  registrationStartTime: "",
+  registrationEndDate: "",
+  registrationEndTime: "",
+
+  votingStartDate: "",
+  votingStartTime: "",
+  votingEndDate: "",
+  votingEndTime: "",
+
   status: "Active",
   description: "",
 };
@@ -21,20 +28,17 @@ const fields = [
     type: "select",
     options: ["Public Entry", "Private Entry"],
   },
-  { label: "Registration Start", name: "registrationStart", type: "date" },
-  { label: "Registration End", name: "registrationEnd", type: "date" },
-  { label: "Voting Start", name: "votingStart", type: "date" },
-  { label: "Voting End", name: "votingEnd", type: "date" },
-  {
-    label: "Initial Status",
-    name: "status",
-    type: "select",
-    options: ["Active", "Inactive", "Draft"],
-  },
+
+  { label: "Registration Start", name: "registrationStart", type: "datetime" },
+  { label: "Registration End", name: "registrationEnd", type: "datetime" },
+
+  { label: "Voting Start", name: "votingStart", type: "datetime" },
+  { label: "Voting End", name: "votingEnd", type: "datetime" },
+
   { label: "Description", name: "description", type: "textarea", full: true },
 ];
 
-const SeasonForm = ({ onSubmit, initialData = {}, loading }) => {
+const SeasonForm = ({ initialData = {}, loading }) => {
   const [form, setForm] = useState({ ...initialState, ...initialData });
 
   const handleChange = (e) => {
@@ -42,73 +46,118 @@ const SeasonForm = ({ onSubmit, initialData = {}, loading }) => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const formattedData = { ...form };
+
+    fields.forEach((field) => {
+      if (field.type === "datetime") {
+        const date = form[`${field.name}Date`];
+        const time = form[`${field.name}Time`];
+
+        if (date && time) {
+          formattedData[field.name] = `${date}T${time}`;
+        }
+      }
+    });
+
+    console.log(formattedData)
+
+  
+  };
+
+
+  const renderInput = (field) => {
+    const commonClasses =
+      "w-full bg-[#111317] text-sm text-white px-3 py-2 rounded-lg border border-white/10 focus:ring-2 focus:ring-blue-600 outline-none transition";
+
+    switch (field.type) {
+      case "select":
+        return (
+          <select
+            name={field.name}
+            value={form[field.name]}
+            onChange={handleChange}
+            className={commonClasses}
+          >
+            {field.options.map((option) => (
+              <option key={option}>{option}</option>
+            ))}
+          </select>
+        );
+
+      case "textarea":
+        return (
+          <textarea
+            name={field.name}
+            rows="4"
+            value={form[field.name]}
+            onChange={handleChange}
+            className={`${commonClasses} resize-none`}
+          />
+        );
+
+      case "datetime":
+        return (
+          <div className="flex gap-3">
+            <input
+              type="date"
+              name={`${field.name}Date`}
+              value={form[`${field.name}Date`]}
+              onChange={handleChange}
+              className={`${commonClasses} w-2/3`}
+            />
+            <input
+              type="time"
+              name={`${field.name}Time`}
+              value={form[`${field.name}Time`]}
+              onChange={handleChange}
+              className={`${commonClasses} w-1/3`}
+            />
+          </div>
+        );
+
+      default:
+        return (
+          <input
+            type={field.type}
+            name={field.name}
+            value={form[field.name]}
+            onChange={handleChange}
+            required={field.required}
+            className={commonClasses}
+          />
+        );
+    }
+  };
+
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit(form);
-      }}
-      className="bg-[#171A1F] border w-full border-white/5 rounded-xl p-6"
+      onSubmit={handleSubmit}
+      className="bg-[#171A1F] border border-white/5 rounded-xl p-6 w-full"
     >
-      <h2 className="text-lg font-semibold text-white mb-6">
+      <h2 className="text-base font-semibold text-white mb-6">
         Season Configuration
       </h2>
 
       <div className="grid grid-cols-2 gap-6">
         {fields.map((field) => (
-          <div
-            key={field.name}
-            className={field.full ? "col-span-2" : ""}
-          >
-            <label className="block text-xs uppercase tracking-wide text-white/50 mb-2">
+          <div key={field.name} className={field.full ? "col-span-2" : ""}>
+            <label className="block text-[10px] uppercase tracking-wider text-white/50 mb-2">
               {field.label}
             </label>
 
-            {/* SELECT */}
-            {field.type === "select" && (
-              <select
-                name={field.name}
-                value={form[field.name]}
-                onChange={handleChange}
-                className="w-full bg-[#111317] text-white px-4 py-2.5 rounded-lg border border-white/10 focus:ring-2 focus:ring-purple-600 outline-none transition"
-              >
-                {field.options.map((option) => (
-                  <option key={option}>{option}</option>
-                ))}
-              </select>
-            )}
-
-            
-            {field.type === "textarea" && (
-              <textarea
-                name={field.name}
-                rows="4"
-                value={form[field.name]}
-                onChange={handleChange}
-                className="w-full bg-[#111317] text-white px-4 py-2.5 rounded-lg border border-white/10 focus:ring-2 focus:ring-purple-600 outline-none transition resize-none"
-              />
-            )}
-
-            
-            {field.type !== "select" && field.type !== "textarea" && (
-              <input
-                type={field.type}
-                name={field.name}
-                value={form[field.name]}
-                onChange={handleChange}
-                required={field.required}
-                className="w-full bg-[#111317] text-white px-4 py-2.5 rounded-lg border border-white/10 focus:ring-2 focus:ring-purple-600 outline-none transition"
-              />
-            )}
+            {renderInput(field)}
           </div>
         ))}
       </div>
 
-      {/* Buttons */}
       <div className="flex justify-end gap-3 pt-6 mt-6 border-t border-white/5">
         <button
           type="button"
-          className="px-5 py-2.5 rounded-lg bg-[#2C2C2E] text-white/70 hover:bg-[#3A3A3C] transition"
+          className="px-4 py-2 text-sm rounded-lg bg-[#2C2C2E] text-white/70 hover:bg-[#3A3A3C] transition"
         >
           Cancel
         </button>
@@ -116,7 +165,7 @@ const SeasonForm = ({ onSubmit, initialData = {}, loading }) => {
         <button
           type="submit"
           disabled={loading}
-          className="px-5 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-700 transition text-white font-medium disabled:opacity-50"
+          className="px-4 py-2 text-sm rounded-lg bg-blue-600 hover:bg-blue-700 transition text-white font-medium disabled:opacity-50"
         >
           {loading ? "Saving..." : "Save Season"}
         </button>

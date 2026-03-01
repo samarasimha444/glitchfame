@@ -2,21 +2,24 @@ import React, { useState } from "react";
 import Modal from "../drops/Model";
 import SeasonForm from "./SeasonForm";
 
-const AdminCards = ({className}) => {
+const AdminCards = ({ className, type, cardsInfo, data }) => {
+  console.log(cardsInfo);
 
-    const [open, setOpen] = useState(false);
-
-
-    const handleSubmit=()=>{
-
-    }
+  const [open, setOpen] = useState(false);
 
   return (
     <div className={`flex flex-col w-full  py-4 ${className}`}>
-        
-     <Modal className="w-full " open={open} onClose={() => setOpen(false)} title="Create Season">
-        <SeasonForm  onSubmit={handleSubmit} />
-      </Modal>
+      {type &&
+        (() => {
+          <Modal
+            className="w-full "
+            open={open}
+            onClose={() => setOpen(false)}
+            title="Create Season"
+          >
+            <SeasonForm />
+          </Modal>;
+        })}
 
       <section className="flex w-full  justify-between items-start ">
         <h3 className="flex flex-col font-semibold text-3xl">
@@ -27,85 +30,51 @@ const AdminCards = ({className}) => {
           </p>
         </h3>
 
-        <button onClick={()=>setOpen(!open)} className="bg-blue-400 px-3 py-2">+Create Season</button>
+        {type == "home" &&
+          (() => {
+            <button
+              onClick={() => setOpen(!open)}
+              className="bg-blue-400 px-3 py-2"
+            >
+              +Create Season
+            </button>;
+          })}
       </section>
 
-    
-
-
-
       <section className="mt-12 flex  gap-2 w-full justify-between ">
+        {cardsInfo?.map((item, idx) => {
+          const Icon = item.icon; 
 
-        <div
-          className="relative bg-[#111418] border border-[#1E232B] 
-                  rounded-2xl p-6 w-full max-w-[340px]"
-        >
-          <div className="space-y-2">
-            <h3 className="text-gray-400 text-sm font-medium">
-              Active Seasons
-            </h3>
+          return (
+            <div
+              key={idx}
+              className="relative bg-[#111418] border border-[#1E232B] 
+                  rounded-2xl p-6 w-full max-w-85"
+            >
+              <div className="space-y-2">
+                <h3 className="text-gray-400 text-sm font-medium">
+                  {item.title}
+                </h3>
 
-            <p className="text-3xl font-semibold text-white">4</p>
+                <p className="text-3xl font-semibold text-white">
+                  {item.total}
+                </p>
 
-            <p className="text-xs text-gray-500">+15% across 2 continents</p>
-          </div>
+                <p className="text-xs text-gray-500">
+                  +15% across 2 continents
+                </p>
+              </div>
 
-          <div
-            className="absolute right-6 top-1/2 -translate-y-1/2
+              <div
+                className="absolute right-6 top-1/2 -translate-y-1/2
                     w-14 h-14 rounded-full 
                     bg-[#1B2330] flex items-center justify-center"
-          >
-            <span className="text-blue-400 text-xl">📈</span>
-          </div>
-        </div>
-
-         <div
-          className="relative bg-[#111418] border border-[#1E232B] 
-                  rounded-2xl p-6 w-full max-w-[340px]"
-        >
-          <div className="space-y-2">
-            <h3 className="text-gray-400 text-sm font-medium">
-              Active Seasons
-            </h3>
-
-            <p className="text-3xl font-semibold text-white">4</p>
-
-            <p className="text-xs text-gray-500">+15% across 2 continents</p>
-          </div>
-
-          <div
-            className="absolute right-6 top-1/2 -translate-y-1/2
-                    w-14 h-14 rounded-full 
-                    bg-[#1B2330] flex items-center justify-center"
-          >
-            <span className="text-blue-400 text-xl">📈</span>
-          </div>
-        </div>
-       
-         <div
-          className="relative bg-[#111418] border border-[#1E232B] 
-                  rounded-2xl p-6 w-full max-w-[340px]"
-        >
-          <div className="space-y-2">
-            <h3 className="text-gray-400 text-sm font-medium">
-              Active Seasons
-            </h3>
-
-            <p className="text-3xl font-semibold text-white">4</p>
-
-            <p className="text-xs text-gray-500">+15% across 2 continents</p>
-          </div>
-
-          <div
-            className="absolute right-6 top-1/2 -translate-y-1/2
-                    w-14 h-14 rounded-full 
-                    bg-[#1B2330] flex items-center justify-center"
-          >
-            <span className="text-blue-400 text-xl">📈</span>
-          </div>
-        </div>
-
-
+              >
+                <Icon className="text-blue-400" size={24} />
+              </div>
+            </div>
+          );
+        })}
       </section>
     </div>
   );

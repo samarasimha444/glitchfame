@@ -14,6 +14,7 @@ import Contest from "./Roles/Admin/Contest";
 import ParticipantsApproval from "./Roles/Admin/ui/ParticipantsApproval";
 import AdminSettings from "./Roles/Admin/AdminSettings";
 import Testing from "./Testing";
+import ActiveParticipantsTable from "./Roles/Admin/ui/ParticipantUser";
 
 
 export default function App() {
@@ -47,9 +48,9 @@ export default function App() {
      <Route path="contestants" element={<Contest/>} />
       <Route path="settings" element={<AdminSettings/>} />
      <Route path="user" element={<ParticipantsApproval/>} />
-    </Route>
-      
+       
 
+    </Route>
     </Routes>
   );
 }
