@@ -1,12 +1,10 @@
 package com.example.glitchfame.Leadboard;
-
 import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
 import com.example.glitchfame.Leadboard.DTO.LeaderboardProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service

@@ -15,6 +15,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
+import java.time.Duration;
 import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.glitchfame.Configuration.Cloudinary.CloudinaryService;
@@ -30,6 +32,7 @@ public class AuthService {
     private final ExtractJwtData extractJwtData;
     private final JwtUtil jwtUtil;
     private final CloudinaryService cloudinaryService;
+    private final RedisTemplate<String, String> redisTemplate;
 
 
 
@@ -68,28 +71,26 @@ public class AuthService {
 
 
     // ========================= LOGIN =========================
-
-    public ResponseEntity<?> login(LoginDTO dto) {
-
-        User user = authRepository.findByEmail(dto.getEmail())
-                .orElse(null);
-
-        if (user == null ||
-            !passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid credentials");
-        }
-
-        String token = jwtUtil.generateToken(
-                user.getId(),
-                user.getRole().name()
-        );
-
-        return ResponseEntity.ok(token);
+public ResponseEntity<?> login(LoginDTO dto) {
+User user = authRepository.findByEmail(dto.getEmail())
+            .orElse(null);
+   if (user == null ||
+        !passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Invalid credentials");
     }
+ String token = jwtUtil.generateToken(
+            user.getId(),
+            user.getRole().name());
+String redisKey = "auth:user:" + user.getId();
+redisTemplate.opsForValue().set(
+            redisKey,
+            token,
+            Duration.ofHours(24) // match JWT expiry
+    );
 
-
+    return ResponseEntity.ok(token);
+}
 
     // ========================= GET MY PROFILE =========================
 

@@ -1,5 +1,4 @@
 package com.example.glitchfame.Configuration.redis.Cache;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
@@ -14,8 +13,7 @@ public class SeasonCacheListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleSeasonChange(SeasonChangedEvent event) {
-
-        if (cacheManager.getCache("dashboardSeasons") != null) {
+            if (cacheManager.getCache("dashboardSeasons") != null) {
             cacheManager.getCache("dashboardSeasons").clear();
         }
     }

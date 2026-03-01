@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,23 +21,17 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
 
         String path = request.getServletPath();
-        String contentType = request.getContentType();
 
-        // Skip authentication for public endpoints
-        if (path.equals("/auth/login")
+        return path.equals("/auth/login")
                 || path.equals("/auth/signup")
                 || path.startsWith("/ws")
-                || path.startsWith("/test")) {   // allow test upload
-            return true;
-        }
-
-        
-        return false;
+                || path.startsWith("/test");
     }
 
     @Override
@@ -52,25 +47,47 @@ public class JwtFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
 
             try {
-                if (jwtUtil.validateToken(token)) {
 
-                    Long userId = jwtUtil.extractUserId(token);
-                    String role = jwtUtil.extractRole(token);
-
-                    List<SimpleGrantedAuthority> authorities =
-                            List.of(new SimpleGrantedAuthority("ROLE_" + role));
-
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(userId, null, authorities);
-
-                    authentication.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
-                    );
-
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                // 1️⃣ Validate JWT structure & expiry
+                if (!jwtUtil.validateToken(token)) {
+                    throw new RuntimeException("Invalid token");
                 }
+
+                Long userId = jwtUtil.extractUserId(token);
+                String role = jwtUtil.extractRole(token);
+
+                // 2️⃣ Check Redis
+                String redisKey = "auth:user:" + userId;
+                String storedToken = redisTemplate.opsForValue().get(redisKey);
+
+                if (storedToken == null) {
+                    throw new RuntimeException("Session expired");
+                }
+
+                if (!storedToken.equals(token)) {
+                    throw new RuntimeException("Logged in from another device");
+                }
+
+                // 3️⃣ Set authentication
+                List<SimpleGrantedAuthority> authorities =
+                        List.of(new SimpleGrantedAuthority("ROLE_" + role));
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userId, null, authorities);
+
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
             } catch (Exception ex) {
+
                 SecurityContextHolder.clearContext();
+
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write(ex.getMessage());
+                return;
             }
         }
 
