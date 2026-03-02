@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import Modal from "../drops/Model";
+import Modal from "./Model";
 import SeasonForm from "./SeasonForm";
 
-const AdminCards = ({ className, type, cardsInfo, data }) => {
+
+const AdminCard = ({ className, type, cardsInfo, data }) => {
   console.log(cardsInfo);
 
   const [open, setOpen] = useState(false);
@@ -80,4 +81,4 @@ const AdminCards = ({ className, type, cardsInfo, data }) => {
   );
 };
 
-export default AdminCards;
+export default AdminCard;

@@ -32,7 +32,7 @@ const data = [
   },
 ];
 
-const ActiveParticipantsTable = ({ type,className,userData}) => {
+const ParticipantsTable = ({ type,className,userData}) => {
 
   return (
 
@@ -122,4 +122,4 @@ const ActiveParticipantsTable = ({ type,className,userData}) => {
   );
 };
 
-export default ActiveParticipantsTable;
+export default ParticipantsTable;

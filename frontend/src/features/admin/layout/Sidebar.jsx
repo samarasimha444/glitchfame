@@ -10,13 +10,13 @@ import {
 const menuItems = [
   {
     name: "Seasons",
-    path: "/super-admin",
+    path: "/admin",
     icon: LayoutDashboard,
   },
  
   {
     name: "Contestants",
-    path: "contestants",
+    path: "season",
     icon: Users,
   },
 

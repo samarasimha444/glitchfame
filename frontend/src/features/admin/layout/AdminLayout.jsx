@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "./ui/Sidebar";
+import Sidebar from "./Sidebar";
 
-const Admin = () => {
+const AdminLayout = () => {
   const profile = JSON.parse(localStorage.getItem("profile"));
 
   return (
@@ -27,4 +27,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default AdminLayout;

@@ -29,7 +29,7 @@ const participants = [
 ];
 
 
-const ParticipantsApproval = ({className}) => {
+const Approval = ({className}) => {
 
 
    return (
@@ -122,4 +122,4 @@ const ParticipantsApproval = ({className}) => {
 };
 
 
-export default ParticipantsApproval
+export default Approval

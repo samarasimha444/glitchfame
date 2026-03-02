@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Modal from "../drops/Model";
+import Modal from "./Model";
 import { TimerReset } from 'lucide-react';
 import { RotateCcw } from 'lucide-react';
 import { LockOpen } from 'lucide-react';
@@ -30,6 +30,8 @@ const seasons = [
     voting: "2023-11-15 — 2023-12-15",
   },
 ];
+
+
 
 const getStatusStyle = (status) => {
   switch (status) {
