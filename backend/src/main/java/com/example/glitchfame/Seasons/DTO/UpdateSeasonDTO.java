@@ -17,4 +17,9 @@ public class UpdateSeasonDTO {
     private LocalDateTime votingStartDate;
     private LocalDateTime votingEndDate;
     private MultipartFile Image;
+
+
+    private Boolean voteLock;
+private Boolean participationLock;
+private Boolean seasonLock;
 }

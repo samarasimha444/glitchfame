@@ -48,4 +48,14 @@ public class Seasons {
         private String photoUrl;
 
 
+        @Column(name = "vote_lock", nullable = false)
+        private boolean voteLock = false;
+
+        @Column(name = "participation_lock", nullable = false)
+        private boolean participationLock = false;
+
+        @Column(name = "season_lock", nullable = false)
+        private boolean seasonLock = false;
+
+
 }

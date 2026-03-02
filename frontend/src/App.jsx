@@ -15,20 +15,18 @@ import ParticipantsApproval from "./Roles/Admin/ui/ParticipantsApproval";
 import AdminSettings from "./Roles/Admin/AdminSettings";
 import Testing from "./Testing";
 
-
 export default function App() {
   return (
     <Routes>
 
       
-
       {/* Root role-based redirect */}
       <Route path="/" element={<RoleRedirect />} />
 
       {/* Public Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-    { <Route path="/testing" element={<Testing />} /> }
+     { <Route path="/testing" element={<Testing />} /> }
 
 
 

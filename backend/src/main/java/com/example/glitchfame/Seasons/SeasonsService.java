@@ -1,71 +1,59 @@
 package com.example.glitchfame.Seasons;
-import com.example.glitchfame.Seasons.DTO.SeasonDetailsDTO;
-import com.example.glitchfame.Seasons.DTO.SeasonFormDTO;
-import com.example.glitchfame.Seasons.DTO.SeasonsDTO;
-import com.example.glitchfame.Seasons.DTO.UpdateSeasonDTO;
+
+import com.example.glitchfame.Seasons.DTO.*;
 import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
+import com.example.glitchfame.Configuration.Cloudinary.CloudinaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import com.example.glitchfame.Seasons.DTO.SeasonsByNameDTO;
-import jakarta.transaction.Transactional;
-import com.example.glitchfame.Configuration.Cloudinary.CloudinaryService;
-
-
-
-
-
-
-
 
 @Service
 @RequiredArgsConstructor
 public class SeasonsService {
-     
 
-
-
-    // Inject repositories and utilities
     private final SeasonsRepository seasonsRepository;
     private final ExtractJwtData extractJwtData;
     private final CloudinaryService cloudinaryService;
 
+    /*
+     -------------------------------------------------
+     1️⃣ GET SEASONS BY STATUS (MERGED LOGIC)
+     -------------------------------------------------
+    */
+  public List<SeasonsDTO> getSeasons(String status) {
 
+    Long userId = extractJwtData.getUserId();
 
-
-    // upcoming seasons
-    public List<SeasonsDTO> getUpcomingSeasons() {
-
-        Long userId = extractJwtData.getUserId();
-        return seasonsRepository.getUpcomingSeasons(userId);
+    // If no status → return all seasons
+    if (status == null || status.trim().isEmpty()) {
+        return seasonsRepository.getSeasonsByStatus(null, userId);
     }
 
+    String normalized = status.trim().toUpperCase();
 
-
-
-    // live seasons
-    public List<SeasonsDTO> getLiveSeasons() {
-
-        Long userId = extractJwtData.getUserId();
-        return seasonsRepository.getLiveSeasons(userId);
+    if (!normalized.equals("UPCOMING") &&
+        !normalized.equals("LIVE") &&
+        !normalized.equals("PAST")) {
+        throw new IllegalArgumentException("Invalid season status");
     }
 
-
-
-    // past seasons
-    public List<SeasonsDTO> getPastSeasons() {
-
-        Long userId = extractJwtData.getUserId();
-        return seasonsRepository.getPastSeasons(userId);
-    }
-
-    
-     //Season details
+    return seasonsRepository.getSeasonsByStatus(normalized, userId);
+}
+    /*
+     -------------------------------------------------
+     2️⃣ GET SEASON DETAILS
+     -------------------------------------------------
+    */
     public SeasonDetailsDTO getSeasonDetails(Long seasonId) {
+
         Long userId = extractJwtData.getUserId();
-          SeasonDetailsDTO season =
+
+        SeasonDetailsDTO season =
                 seasonsRepository.findSeasonDetailsById(seasonId, userId);
+
         if (season == null) {
             throw new RuntimeException("Season not found");
         }
@@ -73,83 +61,101 @@ public class SeasonsService {
         return season;
     }
 
+  /*
+ -------------------------------------------------
+ 3️⃣ SEARCH SEASONS BY NAME + STATUS
+ Example:
+ /seasons/search?name=Li&status=LIVE
+ -------------------------------------------------
+*/
+public List<SeasonsByNameDTO> searchSeasonsByName(String name, String status) {
 
+    if (name == null || status == null) {
+        return List.of();
+    }
 
-//get season by name
-        public List<SeasonsByNameDTO> searchSeasonsByName(String name) {
-        String search = name == null ? "" : name.trim();
-        // Prevent useless DB hits
+    String search = name.trim();
+    String seasonStatus = status.trim().toUpperCase();
+
     if (search.length() < 2) {
         return List.of();
     }
-   return seasonsRepository.findSeasonsByNameContaining(search);
+
+    // Validate status properly
+    if (!seasonStatus.equals("LIVE") &&
+        !seasonStatus.equals("PAST") &&
+        !seasonStatus.equals("UPCOMING")) {
+        throw new IllegalArgumentException("Invalid season status");
+    }
+
+    return seasonsRepository.findSeasonsByNameContaining(
+            search,
+            seasonStatus
+    );
 }
+  
 
 
+//create season
+    @Transactional
+    public String createSeason(SeasonFormDTO dto) {
 
+        LocalDateTime now = LocalDateTime.now();
 
-@Transactional
-public String createSeason(SeasonFormDTO dto) {
+        String name = dto.getName().trim();
 
-    LocalDateTime now = LocalDateTime.now();
-    if (seasonsRepository.existsByNameIgnoreCase(dto.getName().trim())) {
-    throw new IllegalArgumentException("Season name already exists");}
+        if (seasonsRepository.existsByNameIgnoreCase(name)) {
+            throw new IllegalArgumentException("Season name already exists");
+        }
 
-    if (dto.getRegistrationStartDate().isBefore(now)) {
-        throw new IllegalArgumentException("Registration start date cannot be in the past");
+        if (dto.getRegistrationStartDate().isBefore(now)) {
+            throw new IllegalArgumentException("Registration start date cannot be in the past");
+        }
+
+        if (dto.getRegistrationStartDate().isAfter(dto.getRegistrationEndDate())) {
+            throw new IllegalArgumentException("Registration end must be after registration start");
+        }
+
+        if (dto.getRegistrationEndDate().isAfter(dto.getVotingStartDate())) {
+            throw new IllegalArgumentException("Voting must start after registration ends");
+        }
+
+        if (dto.getVotingStartDate().isAfter(dto.getVotingEndDate())) {
+            throw new IllegalArgumentException("Voting end must be after voting start");
+        }
+
+        String imageUrl;
+        try {
+            imageUrl = cloudinaryService.uploadImage(dto.getImage());
+        } catch (Exception e) {
+            throw new RuntimeException("Image upload failed");
+        }
+
+        Seasons season = Seasons.builder()
+                .name(name)
+                .prizeMoney(dto.getPrizeMoney())
+                .registrationStartDate(dto.getRegistrationStartDate())
+                .registrationEndDate(dto.getRegistrationEndDate())
+                .votingStartDate(dto.getVotingStartDate())
+                .votingEndDate(dto.getVotingEndDate())
+                .photoUrl(imageUrl)
+                .build();
+
+        seasonsRepository.save(season);
+
+        return "Season created successfully";
     }
 
-    if (dto.getRegistrationStartDate().isAfter(dto.getRegistrationEndDate())) {
-        throw new IllegalArgumentException("Registration end must be after registration start");
-    }
-
-    if (dto.getRegistrationEndDate().isAfter(dto.getVotingStartDate())) {
-        throw new IllegalArgumentException("Voting must start after registration ends");
-    }
-
-    if (dto.getVotingStartDate().isAfter(dto.getVotingEndDate())) {
-        throw new IllegalArgumentException("Voting end must be after voting start");
-    }
-
-    // 🔥 Upload image to Cloudinary
-    String imageUrl;
-    try {
-        imageUrl = cloudinaryService.uploadImage(dto.getImage());
-    } catch (Exception e) {
-        throw new RuntimeException("Image upload failed");
-    }
-
-    Seasons season = Seasons.builder()
-            .name(dto.getName())
-            .prizeMoney(dto.getPrizeMoney())
-            .registrationStartDate(dto.getRegistrationStartDate())
-            .registrationEndDate(dto.getRegistrationEndDate())
-            .votingStartDate(dto.getVotingStartDate())
-            .votingEndDate(dto.getVotingEndDate())
-            .photoUrl(imageUrl)
-            .build();
-
-    seasonsRepository.save(season);
-
-    return "Season created successfully";
-}
 
 
-
-
-@Transactional
+//upadate the season
+   @Transactional
 public String updateSeason(Long id, UpdateSeasonDTO dto) {
 
     Seasons season = seasonsRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Season not found"));
 
-    LocalDateTime now = LocalDateTime.now();
-    
-    if (season.getVotingEndDate().isBefore(now)) {
-        throw new IllegalStateException("Cannot modify a finished season");
-    }
-
-    // 🔹 Handle Name Update + Uniqueness Check
+    // Name
     if (dto.getName() != null) {
 
         String newName = dto.getName().trim();
@@ -165,7 +171,7 @@ public String updateSeason(Long id, UpdateSeasonDTO dto) {
         season.setName(newName);
     }
 
-    // 🔹 Prize Money Update
+    // Prize money
     if (dto.getPrizeMoney() != null) {
 
         if (dto.getPrizeMoney().signum() <= 0) {
@@ -175,7 +181,26 @@ public String updateSeason(Long id, UpdateSeasonDTO dto) {
         season.setPrizeMoney(dto.getPrizeMoney());
     }
 
-    // 🔹 Prepare Timeline (PATCH Safe Logic)
+
+  
+     //  2️⃣ LOCK FIELD UPDATES (TRUE/FALSE TOGGLE)
+  
+
+    if (dto.getVoteLock() != null) {
+        season.setVoteLock(dto.getVoteLock());
+    }
+
+    if (dto.getParticipationLock() != null) {
+        season.setParticipationLock(dto.getParticipationLock());
+    }
+
+    if (dto.getSeasonLock() != null) {
+        season.setSeasonLock(dto.getSeasonLock());
+    }
+
+
+    //   3️⃣ TIMELINE PATCH SAFE LOGIC
+   
     LocalDateTime regStart = dto.getRegistrationStartDate() != null
             ? dto.getRegistrationStartDate()
             : season.getRegistrationStartDate();
@@ -192,13 +217,10 @@ public String updateSeason(Long id, UpdateSeasonDTO dto) {
             ? dto.getVotingEndDate()
             : season.getVotingEndDate();
 
-    // 🔹 If registration start is being changed, prevent past date
-    if (dto.getRegistrationStartDate() != null &&
-            dto.getRegistrationStartDate().isBefore(now)) {
-        throw new IllegalArgumentException("Registration start date cannot be in the past");
-    }
 
-    // 🔹 Timeline Validation
+
+
+    // Validate timeline consistency
     if (regStart.isAfter(regEnd)) {
         throw new IllegalArgumentException("Registration end must be after registration start");
     }
@@ -211,43 +233,34 @@ public String updateSeason(Long id, UpdateSeasonDTO dto) {
         throw new IllegalArgumentException("Voting end must be after voting start");
     }
 
-    // 🔹 Apply Validated Dates
     season.setRegistrationStartDate(regStart);
     season.setRegistrationEndDate(regEnd);
     season.setVotingStartDate(voteStart);
     season.setVotingEndDate(voteEnd);
 
-    // 🔹 Photo Update (if provided)
-   if (dto.getImage() != null && !dto.getImage().isEmpty()) {
-    String imageUrl;
-    try {
-        imageUrl = cloudinaryService.uploadImage(dto.getImage());
-    } catch (Exception e) {
-        throw new RuntimeException("Image upload failed");
+
+     //  4️⃣ IMAGE UPDATE
+ if (dto.getImage() != null && !dto.getImage().isEmpty()) {
+try {
+            String imageUrl = cloudinaryService.uploadImage(dto.getImage());
+            season.setPhotoUrl(imageUrl);
+        } catch (Exception e) {
+            throw new RuntimeException("Image upload failed");
+        }
     }
 
-    season.setPhotoUrl(imageUrl);
+    return "Season updated successfully";
 }
 
 
-return "Season updated successfully";
 
 
-}
-
-
- 
-
-
-
-//delete season by id
+    //delete season
     public void deleteSeasonById(Long id) {
-     Seasons season = seasonsRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Season does not exist"));
 
-    seasonsRepository.delete(season);
-}
+        Seasons season = seasonsRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Season does not exist"));
 
-
-
+        seasonsRepository.delete(season);
+    }
 }

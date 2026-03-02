@@ -9,9 +9,14 @@ public interface SeasonDetailsDTO {
      String getName();
      BigDecimal getPrizeMoney();
      LocalDateTime getRegistrationStartDate();
-    LocalDateTime getRegistrationEndDate();
-    LocalDateTime getVotingStartDate();
-    LocalDateTime getVotingEndDate();
-    String getPhotoUrl();
-    String getParticipationStatus(); // can be null
+     LocalDateTime getRegistrationEndDate();
+     LocalDateTime getVotingStartDate();
+     LocalDateTime getVotingEndDate();
+     String getPhotoUrl();
+     String getParticipationStatus(); // can be null
+     Boolean getVoteLock();
+    Boolean getParticipationLock();
+    Boolean getSeasonLock();
+
+     
 }

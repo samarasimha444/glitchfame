@@ -13,4 +13,7 @@ public interface SeasonsDTO {
     LocalDateTime getVotingStartDate();
     LocalDateTime getVotingEndDate();
     String getParticipationStatus();
+    Boolean getVoteLock();
+    Boolean getParticipationLock();
+    Boolean getSeasonLock();
 }

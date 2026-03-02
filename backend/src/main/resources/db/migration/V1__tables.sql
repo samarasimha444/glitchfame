@@ -1,3 +1,4 @@
+-- auth_users table
 CREATE TABLE auth_users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
@@ -19,10 +20,9 @@ CREATE TABLE auth_users (
 );
 
 
-
+-- seasons table
 CREATE TABLE seasons (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-
     name VARCHAR(100) NOT NULL,
     prize_money DECIMAL(15,2) NOT NULL,
 
@@ -34,12 +34,16 @@ CREATE TABLE seasons (
 
     photo_url VARCHAR(255) DEFAULT NULL,
 
+    vote_lock BOOLEAN NOT NULL DEFAULT FALSE,
+    participation_lock BOOLEAN NOT NULL DEFAULT FALSE,
+    season_lock BOOLEAN NOT NULL DEFAULT FALSE,
+
     CONSTRAINT uk_seasons_name UNIQUE (name)
 );
 
 
+-- participations table
 CREATE TABLE participations (
-
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
 
     user_id BIGINT NOT NULL,
@@ -47,6 +51,7 @@ CREATE TABLE participations (
 
     name VARCHAR(150) NOT NULL,
     description TEXT,
+
     status ENUM('PENDING','REJECTED','APPROVED')
         NOT NULL DEFAULT 'PENDING',
 
@@ -82,7 +87,7 @@ CREATE INDEX idx_participation_name
 ON participations(name);
 
 
-
+-- votes table
 CREATE TABLE votes (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
 
@@ -105,3 +110,20 @@ CREATE TABLE votes (
 
 CREATE INDEX idx_votes_contestant ON votes(contestant_id);
 CREATE INDEX idx_votes_voter ON votes(voter_id);
+
+
+-- admin_votes table
+CREATE TABLE admin_votes (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    participation_id BIGINT NOT NULL,
+    admin_vote_count INT NOT NULL DEFAULT 0,
+
+    CONSTRAINT fk_admin_votes_participation
+        FOREIGN KEY (participation_id)
+        REFERENCES participations(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT uk_admin_votes_participation
+        UNIQUE (participation_id)
+);
