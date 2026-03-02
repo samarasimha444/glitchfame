@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Modal from "../drops/Model";
+import Modal from "./Model";
 import { TimerReset } from 'lucide-react';
 import { RotateCcw } from 'lucide-react';
 import { LockOpen } from 'lucide-react';
@@ -30,6 +30,8 @@ const seasons = [
     voting: "2023-11-15 — 2023-12-15",
   },
 ];
+
+
 
 const getStatusStyle = (status) => {
   switch (status) {
@@ -114,9 +116,8 @@ const SeasonsTable = () => {
                 <td className="px-6 py-4 text-gray-400">{season.voting}</td>
 
                 <td className="px-6 py-4 space-x-3 text-right ">
-                  <button className=" cursor-pointer hover:text-purple-300 text-sm">
-                     <TimerReset />
-                  </button>
+
+             
 
                   <button
                     onClick={() => setModalType("reset")}
@@ -125,9 +126,7 @@ const SeasonsTable = () => {
                    <LockOpen />
                   </button>
 
-                  <button className=" cursor-pointer hover:text-purple-300 text-sm">
-                     <RotateCcw />
-                  </button>
+                  
                 </td>
               </tr>
             ))}

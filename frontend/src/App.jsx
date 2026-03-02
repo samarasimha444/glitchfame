@@ -1,32 +1,37 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import Layout from "./Auth/Layout";
-import Dashboard from "./Roles/Users/Dashboard";
-import Admin from "./Roles/Admin/Admin";
+import Dashboard from "./features/Users/Dashboard";
+
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
 import RoleRedirect from "./Auth/RoleRedirect";
-import EntryForm from "./Roles/Users/EntryForm";
-import Arena from "./Roles/Users/Arena";
-import PlayerDetail from "./Roles/Users/PlayerDetails";
-import AdminDashboard from "./Roles/Admin/AdminDashboard";
-import Contest from "./Roles/Admin/Contest";
-import ParticipantsApproval from "./Roles/Admin/ui/ParticipantsApproval";
-import AdminSettings from "./Roles/Admin/AdminSettings";
+import EntryForm from "./features/Users/EntryForm";
+import Arena from "./features/Users/Arena";
+import PlayerDetail from "./features/Users/PlayerDetails";
+
+
+import AdminSettings from "./features/admin/settings/SettingPage";
 import Testing from "./Testing";
+
+import AdminLayout from "./features/admin/layout/AdminLayout";
+import SeasonPage from "./features/admin/seasons/SeasonPage";
+import AdminDashboard from "./features/admin/dashboard/AdminDashboard";
+
 
 export default function App() {
   return (
     <Routes>
 
       
+
       {/* Root role-based redirect */}
       <Route path="/" element={<RoleRedirect />} />
 
       {/* Public Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-     { <Route path="/testing" element={<Testing />} /> }
+    { <Route path="/testing" element={<Testing />} /> }
 
 
 
@@ -40,14 +45,17 @@ export default function App() {
         </Route>
       {/* </Route> */}
 
-     <Route path="/super-admin" element={<Admin />}>
-     <Route index element={<AdminDashboard />} />
-     <Route path="contestants" element={<Contest/>} />
-      <Route path="settings" element={<AdminSettings/>} />
-     <Route path="user" element={<ParticipantsApproval/>} />
-    </Route>
-      
+    
+      <Route path="/admin" element={<AdminLayout />}>
+        
+        <Route index element={<Navigate to="dashboard" replace />} />
 
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="season" element={<SeasonPage/>} />
+        <Route path="settings" element={<AdminSettings/>} />
+        
+      </Route>
+   
     </Routes>
   );
 }

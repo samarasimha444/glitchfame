@@ -1,6 +1,9 @@
 import React from 'react'
-import AdminCards from './ui/AdminCards'
-import Table from './ui/Table'
+
+import { dashCards } from '../../../lib/admin'
+import AdminCard from './components/AdminCard'
+import SeasonsTable from './components/SeasonTable'
+
 
 const AdminDashboard = () => {
   return (
@@ -8,8 +11,8 @@ const AdminDashboard = () => {
 
 
      <section className='flex flex-col  space-y-6 w-full h-full px-6'>
-      <AdminCards/>
-      <Table/>
+      <AdminCard type="home" cardsInfo={dashCards} />
+      <SeasonsTable/>
 
      </section>
 

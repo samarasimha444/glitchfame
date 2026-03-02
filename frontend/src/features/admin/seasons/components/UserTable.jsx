@@ -32,37 +32,20 @@ const data = [
   },
 ];
 
-const ActiveParticipantsTable = ({className}) => {
+const ParticipantsTable = ({ type,className,userData}) => {
 
   return (
 
-    <div className={`bg-[#0f1115]  flex w-full ${className}`}>
-      <div className="w-full max-w-5xl bg-[#1a1f2b] rounded-2xl border border-gray-800 p-8 shadow-xl">
+    <div className={` flex ${className ? className : "w-full"}`}>
 
-        
-        {/* <div className="flex justify-between items-center mb-6">
-          <div>
-            <h2 className="text-white text-2xl font-semibold">
-              Active Participants
-            </h2>
-            <p className="text-gray-400 text-sm">
-              Manage approved contestants and manual vote overrides
-            </p>
-          </div>
-
-          <button className="flex items-center gap-2 bg-black border border-gray-700 text-white px-4 py-2 rounded-lg hover:border-gray-500 transition">
-            <UserPlus size={16} />
-            Add Member
-          </button>
-        </div> */}
-
-        {/* Table */}
+      <div className="w-full mt-12   border border-gray-700 p-8 ">
+        <h3 className="text-xl flex gap-3 font-semibold"><UserPlus/> Active Contestants</h3>
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full  text-left border-collapse">
             <thead>
               <tr className="border-b border-gray-700 text-gray-400 text-sm">
                 <th className="py-4">Contestant</th>
-                
+                 <th className="py-4">Season</th>
                 <th>Votes</th>
                 <th className="text-right">Actions</th>
               </tr>
@@ -89,9 +72,9 @@ const ActiveParticipantsTable = ({className}) => {
                   </td>
 
                   
-                  {/* <td className="text-gray-400">
+                  <td className="text-gray-400">
                     {item.location}
-                  </td> */}
+                  </td>
 
                   <td className="text-blue-400 font-semibold">
                     {item.votes.toLocaleString()}
@@ -100,13 +83,20 @@ const ActiveParticipantsTable = ({className}) => {
                  
                   <td className="text-right">
                     <div className="flex justify-end gap-3">
-                      {/* <button className="bg-[#141821] border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-md hover:border-gray-500 transition">
-                        +5
-                      </button> */}
 
-                      {/* <button className="bg-[#141821] border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-md hover:border-gray-500 transition">
+                       <button className="bg-[#141821] border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-md hover:border-gray-500 transition">
+                        Custom
+                      </button>
+                      
+                      <button className="bg-[#141821] border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-md hover:border-gray-500 transition">
+                        +5
+                      </button>
+
+                      
+
+                      <button className="bg-[#141821] border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-md hover:border-gray-500 transition">
                         +10
-                      </button> */}
+                      </button>
 
                       <button className="text-red-500 hover:text-red-400 transition">
                         <Trash2 size={18} />
@@ -120,7 +110,7 @@ const ActiveParticipantsTable = ({className}) => {
         </div>
          
          <section className="w-full  flex items-center mt-4 justify-center">
-              <button className="bg-blue-500 px-4 py-2 rounded-xs">Edit Details</button>
+              <button className="bg-blue-500 px-4 py-2 rounded-xs">Load More</button>
 
          </section>
        
@@ -132,4 +122,4 @@ const ActiveParticipantsTable = ({className}) => {
   );
 };
 
-export default ActiveParticipantsTable;
+export default ParticipantsTable;

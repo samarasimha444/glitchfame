@@ -25,15 +25,15 @@ const Modal = ({
         className={`w-full ${sizes[size]} bg-[#1C1C1E] text-white rounded-2xl shadow-2xl border border-white/10`}
       >
        
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+        <div className="flex items-center justify-between px-4 py-2 border-b border-white/10">
           <h2 className="text-lg font-semibold">{title}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white">
             <X size={18} />
           </button>
         </div>
 
-       \
-        <div className="px-6 py-5  max-h-[70vh] overflow-y-auto">
+       
+        <div className=" py-2  max-h-[75vh] overflow-y-auto no-scrollbar">
           {children}
         </div>
 

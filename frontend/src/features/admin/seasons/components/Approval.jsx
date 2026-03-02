@@ -29,13 +29,13 @@ const participants = [
 ];
 
 
-const ParticipantsApproval = ({className}) => {
+const Approval = ({className}) => {
 
 
    return (
     <div className={`w-full bg-[#0f1115] flex justify-center ${className}`
     }>
-      <div className="w-full max-w-4xl bg-[#1a1f2b] rounded-2xl p-6 shadow-xs border border-gray-800">
+      <div className="w-full  bg-[#1a1f2b] rounded-2xl p-6 shadow-xs border border-gray-800">
         
         
         <div className="flex justify-between items-start mb-6">
@@ -122,4 +122,4 @@ const ParticipantsApproval = ({className}) => {
 };
 
 
-export default ParticipantsApproval
+export default Approval

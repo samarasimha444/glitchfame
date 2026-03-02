@@ -1,9 +1,9 @@
 import React from "react";
-import AdminCards from "./ui/AdminCards";
-import SeasonSummary from "./drops/SeasonSummary";
-import SessionEngineTimer from "./drops/EngineBox";
-import Controls from "./drops/Controls";
-import { Plus } from "lucide-react";
+import AdminCard from "../dashboard/components/AdminCard";
+import SeasonSummary from "./components/SeasonSummary";
+import Controls from "./components/Controls";
+import SessionEngineTimer from "./components/EngineBox";
+import { ImageOff, Import, Plus } from "lucide-react";
 
 const seasonData = [
   { label: "Season Name", value: "Neon Genesis S03" },
@@ -40,7 +40,7 @@ const AdminSettings = () => {
 
       <section className="w-full flex items-start justify-between  gap-6">
         <div className="flex-none  self-start">
-          <AdminCards className="max-w-4xl" />
+          <AdminCard className="max-w-4xl" />
           <SeasonSummary
             title="Season Summary"
             subtitle="Overview of registration and performance metrics"
@@ -82,15 +82,3 @@ const AdminSettings = () => {
 };
 
 export default AdminSettings;
-
-// //here comes lock and unlock voting of a particular season
-// <br />
-//  control timer of the seasons
-
-//  reset seaons we can start from zeri again timer again same seaons
-
-//  manual wineer for some particular season
-
-//  manage prize mony of a particlar season
-
-/* Container */
