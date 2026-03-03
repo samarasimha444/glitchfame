@@ -1,4 +1,5 @@
 package com.example.glitchfame.User.Leadboard;
+
 import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
 import com.example.glitchfame.User.Leadboard.DTO.LeaderboardProjection;
 
@@ -6,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -16,43 +18,46 @@ public class LeaderboardService {
     private final ExtractJwtData extractJwtData;
     private final SimpMessagingTemplate messagingTemplate;
 
-    // =========================
-    // REST: All seasons
-    // =========================
+    // ============================================================
+    // 🔥 REST: TOP 3 OF ALL SEASONS
+    // ============================================================
+
     @Transactional(readOnly = true)
-    public List<LeaderboardProjection> getLeadersOfAllSeasons() {
+    public List<LeaderboardProjection> getTop3OfAllSeasons() {
 
         Long userId = extractJwtData.getUserId();
 
-        return leaderboardRepository.findLeadersOfAllSeasons(userId);
+        return leaderboardRepository.findTop3OfAllSeasons(userId);
     }
 
-    // =========================
-    // REST: Single season (with user context)
-    // =========================
+    // ============================================================
+    // 🔥 REST: TOP 3 OF ONE SEASON
+    // ============================================================
+
     @Transactional(readOnly = true)
-    public List<LeaderboardProjection> getLeadersBySeason(Long seasonId) {
+    public List<LeaderboardProjection> getTop3BySeason(Long seasonId) {
 
         Long userId = extractJwtData.getUserId();
 
-        return leaderboardRepository.findLeadersBySeason(seasonId, userId);
+        return leaderboardRepository.findTop3BySeason(seasonId, userId);
     }
 
-    // =========================
-    // WEBSOCKET: Broadcast (NO JWT)
-    // =========================
-    @Transactional(readOnly = true)
-    public void broadcastLeaderboard(Long seasonId) {
+    // ============================================================
+    // 🔥 WEBSOCKET: BROADCAST TOP 3 (NO USER CONTEXT)
+    // ============================================================
 
-        // IMPORTANT: separate method without userId
+    @Transactional(readOnly = true)
+    public void broadcastTop3Leaderboard(Long seasonId) {
+
         List<LeaderboardProjection> leaderboard =
-                leaderboardRepository.findLeadersBySeasonForBroadcast(seasonId);
+                leaderboardRepository.findTop3BySeasonForBroadcast(seasonId);
 
         messagingTemplate.convertAndSend(
                 "/topic/leaderboard/" + seasonId,
                 leaderboard
         );
-        System.out.println("Broadcasting leaderboard for season: " + seasonId);
-System.out.println("Leaderboard size: " + leaderboard.size());
+
+        System.out.println("Broadcasting TOP 3 leaderboard for season: " + seasonId);
+        System.out.println("Top 3 size: " + leaderboard.size());
     }
 }

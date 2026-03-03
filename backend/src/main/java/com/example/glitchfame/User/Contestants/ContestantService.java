@@ -200,37 +200,6 @@ public Page<SeasonContestants> getApprovedSeasonContestants(
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // ================= DELETE OWN PARTICIPATION =================
     public String deleteMyParticipation(Long id) {
 

@@ -65,6 +65,7 @@ public interface AdminContestantRepository extends JpaRepository<Participation, 
     );
 
 
+
     // APPROVED CONTESTANTS OF A SEASON WITH VOTES
     @Query(value = """
         SELECT 
@@ -123,6 +124,7 @@ public interface AdminContestantRepository extends JpaRepository<Participation, 
             @Param("userId") Long userId,
             Pageable pageable
     );
+
 
 
     // SEASON CONTESTANTS FILTERED BY STATUS
@@ -185,6 +187,7 @@ public interface AdminContestantRepository extends JpaRepository<Participation, 
             Pageable pageable
     );
 
+    
 
     // UNIFIED SEARCH (ALL COMBINATIONS SUPPORTED)
     @Query(value = """

@@ -43,7 +43,7 @@ public class AdminContestantService {
             int page,
             int size) {
 
-        if (seasonId != null && !seasonsRepository.existsById(seasonId)) {
+            if (seasonId != null && !seasonsRepository.existsById(seasonId)) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
                     "Season not found"

@@ -1,4 +1,5 @@
 package com.example.glitchfame.User.Leadboard;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,21 +14,23 @@ public class LeaderboardController {
 
     private final LeaderboardService leaderboardService;
 
-   
+    // ============================================================
+    // 🔥 TOP 3 OF ALL SEASONS
+    // ============================================================
 
-    //lead board of all the seasons
     @GetMapping
-    public List<LeaderboardProjection> getAllSeasonsLeaderboard() {
-        return leaderboardService.getLeadersOfAllSeasons();
+    public List<LeaderboardProjection> getTop3OfAllSeasons() {
+        return leaderboardService.getTop3OfAllSeasons();
     }
 
-   
-    
-    //lead board of a season
+    // ============================================================
+    // 🔥 TOP 3 OF ONE SEASON
+    // ============================================================
+
     @GetMapping("/{seasonId}")
-    public List<LeaderboardProjection> getSeasonLeaderboard(
+    public List<LeaderboardProjection> getTop3BySeason(
             @PathVariable Long seasonId
     ) {
-        return leaderboardService.getLeadersBySeason(seasonId);
+        return leaderboardService.getTop3BySeason(seasonId);
     }
 }
