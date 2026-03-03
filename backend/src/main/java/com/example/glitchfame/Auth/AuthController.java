@@ -8,10 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
 import org.springframework.http.MediaType;
-import java.util.List;
 
+import java.util.List;
 
 
 
@@ -22,110 +21,64 @@ import java.util.List;
 public class AuthController {
 
     private final AuthService authService;
-    private final ExtractJwtData jwtService;
-  
 
-     //REGISTER
+    // ================= REGISTER =================
     @PostMapping("/signup")
     public ResponseEntity<String> register(@RequestBody RegisterDTO dto) {
-    return authService.register(dto);}
+        return authService.register(dto);
+    }
 
+    // ================= LOGIN =================
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginDTO dto) {
+        return authService.login(dto);
+    }
 
-
-    //LOGIN
-      @PostMapping("/login")
-      public ResponseEntity<?> login(@RequestBody LoginDTO dto) {
-    return authService.login(dto);}
-
-   
-    //PROFILE
+    // ================= MY PROFILE =================
     @GetMapping("/profile/me")
     public ResponseEntity<ProfileResponseDTO> getProfile(Authentication authentication) {
-    Long userId = Long.parseLong(authentication.getName());
-    ProfileResponseDTO profile = authService.getProfile(userId);
-    return ResponseEntity.ok(profile);
-}
+        Long userId = Long.parseLong(authentication.getName());
+        return ResponseEntity.ok(authService.getProfile(userId));
+    }
 
-// UPDATE PROFILE
-@PatchMapping(value = "/profile/update",
-        consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-public ResponseEntity<String> updateProfile(
-        @ModelAttribute UpdateProfileDTO dto) {
+    // ================= UPDATE PROFILE =================
+    @PatchMapping(value = "/profile/update",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> updateProfile(@ModelAttribute UpdateProfileDTO dto) {
+        authService.updateProfile(dto);
+        return ResponseEntity.ok("Profile updated successfully");
+    }
 
-    authService.updateProfile(dto);
-    return ResponseEntity.ok("Profile updated successfully");
-}
+    // ================= REMOVE PROFILE PICTURE =================
+    @PatchMapping("/profile-picture/remove")
+    public ResponseEntity<String> removeProfilePicture() {
+        authService.removeProfilePicture();
+        return ResponseEntity.ok("Profile picture removed");
+    }
 
- 
-// REMOVE PROFILE PICTURE
-@PatchMapping("/profile-picture/remove")
-public ResponseEntity<String> removeProfilePicture() {
-     authService.removeProfilePicture();
-    return ResponseEntity.ok("Profile picture removed");
-}
-
-
-
-//SEARCH USERS
-    @GetMapping("profile/name")
+    // ================= SEARCH USERS =================
+    @GetMapping("/profile/name")
     public List<UserSearchProjection> searchUsers(
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {     return authService.searchUsers(keyword, page, size);
-}
+            @RequestParam(defaultValue = "10") int size) {
 
+        return authService.searchUsers(keyword, page, size);
+    }
 
-
-
-
-
-   //get user profile by id (for admin or public viewing)
-     @GetMapping("/profile/{id}")
-    public ProfileResponseDTO getUserProfile(@PathVariable Long id) {
-        return authService.getUserProfileById(id);
+    // ================= UPDATE PASSWORD =================
+    @PatchMapping("/profile/change-password/{newPassword}")
+    public ResponseEntity<String> updatePassword(@PathVariable String newPassword) {
+        authService.updatePassword(newPassword);
+        return ResponseEntity.ok("Password updated successfully");
     }
 
 
-    // ================= UPDATE PASSWORD =================
-@PatchMapping("/profile/change-password/{newPassword}")
-public ResponseEntity<String> updatePassword(
-        @PathVariable String newPassword) {
-    authService.updatePassword(newPassword);
-    return ResponseEntity.ok("Password updated successfully");
-}
-
-
-
-
-    //DELETE ACCOUNT
+    
+    // ================= DELETE MY ACCOUNT =================
     @DeleteMapping("/profile/delete")
     public ResponseEntity<String> deleteMyAccount() {
-    authService.deleteMyAccount();
-    return ResponseEntity.ok("Account deleted successfully");
-}
-
-
-
-
-//vote control by admin
-@PatchMapping("/admin/{id}/toggle-vote")
-public ResponseEntity<String> toggleCanVote(@PathVariable Long id) {
-
-    authService.toggleCanVote(id);
-    return ResponseEntity.ok("User voting permission toggled");
-}
-
-
-
-//participation control by admin
-@PatchMapping("/admin/{id}/toggle-participate")
-public ResponseEntity<String> toggleCanParticipate(@PathVariable Long id) {
-
-    authService.toggleCanParticipate(id);
-    return ResponseEntity.ok("User participation permission toggled");
-}
-
-
-
+        authService.deleteMyAccount();
+        return ResponseEntity.ok("Account deleted successfully");
+    }
 }
