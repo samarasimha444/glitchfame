@@ -2,6 +2,7 @@ import { Outlet, useOutletContext } from "react-router-dom";
 import Cards from "./home/Cards";
 import Gallery from "./home/Gallery";
 import Overview from "./home/OverviewSection";
+import FeaturedCarousel from "./home/Carousel";
 
 const menuItems = [
   "#AESTHETICS",
@@ -16,8 +17,9 @@ export default function Dashboard() {
   const { profile } = useOutletContext() || {};
 
   return (
-    <div className="w-full flex-col max-w-screen m-auto bg-[#1E2229] flex items-center justify-center">
-      <div className="w-full max-w-400 h-[70dvh] md:h-[95dvh] flex">
+    <div className="w-full space-y-3 flex-col max-w-screen m-auto bg-[#1E2229] flex items-center justify-center">
+
+      {/* <div className="w-full max-w-400 h-[70dvh] md:h-[95dvh] flex">
 
         <section className="w-1/2 hidden md:flex flex-col justify-center px-16 text-white space-y-6">
           <span className="border border-[#BE5EED] text-[#BE5EED] text-xs px-3 py-1 w-fit">
@@ -75,15 +77,17 @@ export default function Dashboard() {
             </div>
           </div>
         </section>
-      </div>
+      </div>  */}
+      
+       <FeaturedCarousel/>
 
       <div className="bg-[#0F141A] mt-0 hidden md:flex w-full items-center justify-center">
         <ul className="flex space-x-10 py-3 text-[14px] font-semibold">
-          {menuItems.map((item, index) => (
-            <li key={index} className="hover:text-purple-400 cursor-pointer">
-              {item}
-            </li>
-          ))}
+
+    <h6 className="neon-blink text-lg md:text-xl">
+  Participate in The Season to Win Big Prizes
+</h6>
+
         </ul>
       </div>
 

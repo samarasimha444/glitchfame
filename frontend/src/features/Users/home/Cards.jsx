@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const contests = [
   {
@@ -59,6 +60,9 @@ const contests = [
 ];
 
 const Cards = () => {
+
+  const navigate = useNavigate()
+
   return (
     <div className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 md:px-10 lg:px-20">
 
@@ -80,16 +84,17 @@ const Cards = () => {
       </section>
 
      
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <section className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6">
+
         {contests.map((item) => (
-          <article
+          <article onClick={()=>navigate("/arena")}
             key={item.id}
             className="bg-[#181B20] rounded-lg overflow-hidden border border-[#232A33] hover:border-purple-500 transition duration-300"
           >
             <img
               src={item.image}
               alt={item.title}
-              className="w-full h-64 sm:h-72 object-cover"
+              className="w-full h-[25vh] sm:h-72 object-cover"
             />
 
             <div className="flex flex-col justify-between p-4 space-y-3">
@@ -97,7 +102,7 @@ const Cards = () => {
                 <h4 className="text-white font-semibold text-sm sm:text-base">
                   {item.title}
                 </h4>
-                <span className="text-[#BE5EED] text-sm font-medium">
+                <span className="text-[#BE5EED] hidden sm:flex text-sm font-medium">
                   {item.prize}
                 </span>
               </div>

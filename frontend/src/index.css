@@ -19,3 +19,23 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+
+
+
+
+/* index.css */
+.neon-blink {
+  animation: neonBlink 1.5s infinite;
+  color: #ffffff; /* base text color */
+  font-weight: bold;
+}
+
+@keyframes neonBlink {
+  0%, 100% { 
+    text-shadow: 0 0 1px #BE5EED, 0 0 2px #BE5EED, 0 0 3px #BE5EED; 
+  }
+  50% { 
+    text-shadow: 0 0 1px #ffffff, 0 0 2px #601089, 0 0 3px #BE5EED; 
+  }
+}

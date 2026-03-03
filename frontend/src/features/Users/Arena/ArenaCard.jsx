@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const participants = [
   {
@@ -24,6 +25,7 @@ const participants = [
 ];
 
 const ArenaCard = () => {
+
   return (
     <section className="bg-black px-6 pb-20">
       <div className="max-w-screen w-full  mx-auto">
@@ -33,7 +35,7 @@ const ArenaCard = () => {
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {participants.map((user) => (
-            <div
+            <Link to="/details"
               key={user.id}
               className="relative w-full max-w-77.5 h-97 rounded-xl overflow-hidden border border-gray-800 hover:border-purple-500 transition"
             >
@@ -57,7 +59,7 @@ const ArenaCard = () => {
                   VOTE
                 </button>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

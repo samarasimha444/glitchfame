@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { UserPlus, Trash2, Search } from "lucide-react";
 import { usePosts } from "../hook";
+import Model from "./Model";
 
 
 
@@ -38,6 +39,8 @@ const data = [
 
 const ParticipantsTable = ({ type, className }) => {
 
+  const [isOpen,setIsOpen]= useState(false)
+
   const [page,setPage]= useState(1)
 
   const handleDelete = () => {};
@@ -51,6 +54,14 @@ const ParticipantsTable = ({ type, className }) => {
 
   return (
     <div className={` flex ${className ? className : "w-full"}`}>
+
+           
+             <Model
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      
+      />
+
       <div className=" relative w-full mt-12   border border-gray-700 p-8 ">
         <section className="absolute top-4 right-3">
           <div className="relative">
@@ -114,7 +125,7 @@ const ParticipantsTable = ({ type, className }) => {
 
                   <td className="text-right">
                     <div className="flex justify-end gap-3">
-                      <button className="bg-[#141821] border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-md hover:border-gray-500 transition">
+                      <button onClick={()=>setIsOpen(true)} className="bg-[#141821] border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-md hover:border-gray-500 transition">
                         Custom
                       </button>
 
