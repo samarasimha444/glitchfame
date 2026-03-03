@@ -14,7 +14,7 @@ const contests = [
     id: 2,
     title: "NEON TOKYO",
     image:
-      "https://tse2.mm.bing.net/th/id/OIF.JWAPf2AdUGp0hV8OWYFptQ?phttps://i.pinimg.com/originals/dc/e7/91/dce7915ba0c362c24426eccd27a00929.jpg",
+      "https://i.pinimg.com/originals/dc/e7/91/dce7915ba0c362c24426eccd27a00929.jpg",
     prize: "$1.8k",
     votes: "980",
     timeLeft: "12h",
@@ -32,12 +32,13 @@ const contests = [
     id: 4,
     title: "SPACE MUMBAI",
     image:
-      "https://i.ytimg.com/vi/k-n5PdPuQFM/oar2.jpg?sqp=-oaymwEYCJYEENAFSFqQAgHyq4qpAwcIARUAAIhC&rs=AOn4CLAJHnpjnC61IjWkDAeDJHqF4_Ee8g&usqp=CCk",
+      "https://i.ytimg.com/vi/k-n5PdPuQFM/oar2.jpg",
     prize: "$900",
     votes: "650",
     timeLeft: "6h",
   },
-  {
+ 
+    {
     id: 5,
     title: "DIGITAL PARIS",
     image:
@@ -59,68 +60,55 @@ const contests = [
 
 const Cards = () => {
   return (
-    <div className="flex flex-col px-20  w-full max-w-screen ">
-      <section className="w-full   py-16">
-        <div className="flex items-start justify-between">
+    <div className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 md:px-10 lg:px-20">
+
+     
+      <section className="w-full py-12 md:py-16">
+        <div className="flex flex-col items-start justify-between">
           <div className="space-y-3">
             <p className="text-[#BE5EED] text-[12px] tracking-widest font-semibold uppercase">
               Active Challenges
             </p>
 
-            <h2 className="text-5xl font-extrabold text-white tracking-tight">
-              THE FEED
+            <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
+             Vote Now
             </h2>
           </div>
-
-          <div className="flex items-center gap-4 mt-6">
-            <input
-              type="text"
-              placeholder="Find your vibe..."
-              className="bg-[#161C23] text-gray-300 placeholder-gray-500 
-                       px-5 py-3 rounded-md w-80 outline-none 
-                       border border-[#232A33] 
-                       focus:border-blue-500 transition"
-            />
-
-            <button
-              className="px-6 py-3 rounded-md border border-[#2A323C] 
-                       text-white text-sm font-semibold 
-                       hover:bg-[#1B2129] transition"
-            >
-              LATEST
-            </button>
-          </div>
+          
         </div>
+        
       </section>
 
-      <section>
-        <section className="flex  w-full justify-between  flex-wrap  gap-4">
-          {contests.map((item) => (
-            <article className="w-full  max-w-93.75 h-[406px] bg-[#181B20] rounded-lg overflow-hidden border border-[#232A33]">
-              <img
-                src={item.image}
-                alt="Cyberpunk Seoul"
-                className="w-full h-[80%] object-cover"
-              />
+     
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {contests.map((item) => (
+          <article
+            key={item.id}
+            className="bg-[#181B20] rounded-lg overflow-hidden border border-[#232A33] hover:border-purple-500 transition duration-300"
+          >
+            <img
+              src={item.image}
+              alt={item.title}
+              className="w-full h-64 sm:h-72 object-cover"
+            />
 
-              <div className="flex  flex-col justify-between h-[20%] p-4">
-                <div className="flex justify-between items-center">
-                  <h4 className="text-white font-semibold text-sm">
-                    {item.title}
-                  </h4>
-                  <span className="text-[#BE5EED] text-sm font-medium">
-                    {item.prize}
-                  </span>
-                </div>
-
-                <div className="flex gap-4 text-gray-400 text-xs">
-                  <span>{item.votes}</span>
-                  <span>{item.timeLeft}</span>
-                </div>
+            <div className="flex flex-col justify-between p-4 space-y-3">
+              <div className="flex justify-between items-center">
+                <h4 className="text-white font-semibold text-sm sm:text-base">
+                  {item.title}
+                </h4>
+                <span className="text-[#BE5EED] text-sm font-medium">
+                  {item.prize}
+                </span>
               </div>
-            </article>
-          ))}
-        </section>
+
+              <div className="flex gap-4 text-gray-400 text-xs sm:text-sm">
+                <span>{item.votes} votes</span>
+                <span>{item.timeLeft} left</span>
+              </div>
+            </div>
+          </article>
+        ))}
       </section>
     </div>
   );

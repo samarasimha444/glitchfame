@@ -2,6 +2,7 @@ import React from "react";
 import { MoreVertical } from "lucide-react";
 
 const SeasonSummary = ({ title, subtitle, data }) => {
+  
   return (
     <div className="w-full bg-[#0f1115] flex ">
         

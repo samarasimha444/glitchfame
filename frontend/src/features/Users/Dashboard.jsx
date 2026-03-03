@@ -16,9 +16,10 @@ export default function Dashboard() {
   const { profile } = useOutletContext() || {};
 
   return (
-    <div className="w-full flex-col  bg-[#1E2229] flex items-center justify-center">
-      <div className="w-full max-w-400 h-[95dvh] flex">
-        <section className="w-1/2 flex flex-col justify-center px-16 text-white space-y-6">
+    <div className="w-full flex-col max-w-screen m-auto bg-[#1E2229] flex items-center justify-center">
+      <div className="w-full max-w-400 h-[70dvh] md:h-[95dvh] flex">
+
+        <section className="w-1/2 hidden md:flex flex-col justify-center px-16 text-white space-y-6">
           <span className="border border-[#BE5EED] text-[#BE5EED] text-xs px-3 py-1 w-fit">
             #FeaturedChallenge
           </span>
@@ -46,7 +47,7 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <section className="w-1/2 relative">
+        <section className="md:w-1/2 relative">
           <img
             src="https://www.creativeboom.com/upload/articles/77/77020aee1b9abf5dbf7f8437aa500cdb7046dfc8_944.jpg"
             alt="Neon Seoul"
@@ -76,7 +77,7 @@ export default function Dashboard() {
         </section>
       </div>
 
-      <div className="bg-[#0F141A] mt-0 flex w-full items-center justify-center">
+      <div className="bg-[#0F141A] mt-0 hidden md:flex w-full items-center justify-center">
         <ul className="flex space-x-10 py-3 text-[14px] font-semibold">
           {menuItems.map((item, index) => (
             <li key={index} className="hover:text-purple-400 cursor-pointer">

@@ -31,16 +31,16 @@ const artworks = [
 
 const Gallery = () => {
   return (
-    <div className=" w-full mt-12 px-20  flex flex-col items-center justify-center">
+    <div className=" w-full mt-12 px-6 md:px-20  flex flex-col items-center justify-center overflow-x-hidden">
 
   <section className="w-full   py-16">
         <div className="flex items-start justify-between">
           <div className="space-y-3">
-            <p className="text-[#BE5EED] text-[12px] tracking-widest font-semibold uppercase">
+            <p className="text-[#BE5EED] text-xs md:text-[12px] tracking-widest font-semibold uppercase">
               Trending Submissions
             </p>
 
-            <h2 className="text-5xl font-extrabold text-white tracking-tight">
+            <h2 className=" text-4xl md:text-5xl font-extrabold text-white tracking-tight">
               BEST OF THE WEEK
             </h2>
           </div>
@@ -49,7 +49,7 @@ const Gallery = () => {
         
 
             <button
-              className="px-6 py-3 rounded-md border border-[#2A323C] 
+              className="px-6 py-3 hidden md:flex rounded-md border border-[#2A323C] 
                        text-white text-sm font-semibold 
                        hover:bg-[#1B2129] transition"
             >
@@ -60,23 +60,23 @@ const Gallery = () => {
       </section>
 
 
-  <div className="grid grid-cols-4 gap-6">
+  <div className="flex  md:grid md:grid-cols-4 gap-6 overflow-x-auto">
   {artworks.map((item) => (
     <article
       key={item.id}
-      className="relative w-[320px] h-87.5 border border-[#2A323C] bg-[#181B20] overflow-hidden"
+      className="relative w-[320px] h-87.5 border border-[#2A323C] bg-[#181B20] "
     >
-      {/* Image */}
+      
       <img
         className="w-full h-full object-cover"
         src={item.image}
         alt={item.username}
       />
 
-      {/* Gradient Overlay */}
+     
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
-      {/* Profile Section */}
+     
       <div className="absolute bottom-4 left-4 flex items-center gap-3">
         <img
           className="w-10 h-10 rounded-full border border-white/20 object-cover"

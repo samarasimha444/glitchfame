@@ -1,5 +1,9 @@
-import React from "react";
-import { UserPlus, Trash2 } from "lucide-react";
+import React, { useState } from "react";
+import { UserPlus, Trash2, Search } from "lucide-react";
+import { usePosts } from "../hook";
+
+
+
 
 const data = [
   {
@@ -32,32 +36,63 @@ const data = [
   },
 ];
 
-const ParticipantsTable = ({ type,className,userData}) => {
+const ParticipantsTable = ({ type, className }) => {
+
+  const [page,setPage]= useState(1)
+
+  const handleDelete = () => {};
+
+  // const {data,isLoading}= usePosts(page)
+
+ const totalPages = Math.ceil(20/3);
+
+  // if (isLoading) return <p>Loading...</p>;
+
 
   return (
-
     <div className={` flex ${className ? className : "w-full"}`}>
+      <div className=" relative w-full mt-12   border border-gray-700 p-8 ">
+        <section className="absolute top-4 right-3">
+          <div className="relative">
+            <Search
+              size={18}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-500"
+            />
 
-      <div className="w-full mt-12   border border-gray-700 p-8 ">
-        <h3 className="text-xl flex gap-3 font-semibold"><UserPlus/> Active Contestants</h3>
+            <input
+              type="text"
+              placeholder="Search by name or id"
+              className="pl-10 pr-4 py-2 text-[13px] 
+                 border border-gray-500 
+                 rounded-lg 
+                 focus:outline-none 
+                 focus:ring-2 focus:ring-blue-600 
+                 focus:border-blue-600
+                 transition-all duration-200"
+            />
+          </div>
+        </section>
+
+        <h3 className="text-xl flex gap-3 font-semibold">
+          <UserPlus /> Active Contestants
+        </h3>
         <div className="overflow-x-auto">
           <table className="w-full  text-left border-collapse">
             <thead>
               <tr className="border-b border-gray-700 text-gray-400 text-sm">
                 <th className="py-4">Contestant</th>
-                 <th className="py-4">Season</th>
+                <th className="py-4">Season</th>
                 <th>Votes</th>
                 <th className="text-right">Actions</th>
               </tr>
             </thead>
 
             <tbody>
-              {data.map((item) => (
+              {data?.map((item) => (
                 <tr
                   key={item.id}
                   className="border-b border-gray-800 hover:bg-[#141821] transition"
                 >
-                  
                   <td className="py-5">
                     <div className="flex items-center gap-4">
                       <img
@@ -66,39 +101,31 @@ const ParticipantsTable = ({ type,className,userData}) => {
                         className="w-10 h-10 rounded-full object-cover"
                       />
                       <span className="text-white text-xs font-medium">
-                        {item.name}
+                        {item.title}
                       </span>
                     </div>
                   </td>
 
-                  
-                  <td className="text-gray-400">
-                    {item.location}
-                  </td>
+                  <td className="text-gray-400">{item.location}</td>
 
                   <td className="text-blue-400 font-semibold">
                     {item.votes.toLocaleString()}
                   </td>
 
-                 
                   <td className="text-right">
                     <div className="flex justify-end gap-3">
-
-                       <button className="bg-[#141821] border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-md hover:border-gray-500 transition">
+                      <button className="bg-[#141821] border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-md hover:border-gray-500 transition">
                         Custom
                       </button>
-                      
-                      <button className="bg-[#141821] border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-md hover:border-gray-500 transition">
-                        +5
-                      </button>
-
-                      
 
                       <button className="bg-[#141821] border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-md hover:border-gray-500 transition">
                         +10
                       </button>
 
-                      <button className="text-red-500 hover:text-red-400 transition">
+                      <button
+                        onClick={handleDelete}
+                        className="text-red-500 hover:text-red-400 transition"
+                      >
                         <Trash2 size={18} />
                       </button>
                     </div>
@@ -108,16 +135,36 @@ const ParticipantsTable = ({ type,className,userData}) => {
             </tbody>
           </table>
         </div>
-         
-         <section className="w-full  flex items-center mt-4 justify-center">
-              <button className="bg-blue-500 px-4 py-2 rounded-xs">Load More</button>
 
-         </section>
-       
+     <section className="flex justify-center items-center gap-2 mt-6 flex-wrap">
 
+  
+  
+
+  {/* Page Numbers */}
+  {Array.from({ length: totalPages }, (_, index) => {
+    const pageNumber = index + 1;
+
+    return (
+      <button
+        key={pageNumber}
+        onClick={() => setPage(pageNumber)}
+        className={`px-3 py-1 rounded-md text-sm
+          ${
+            page === pageNumber
+              ? "bg-blue-500"
+              : "bg-[#141821] hover:bg-gray-700"
+          }`}
+      >
+        {pageNumber}
+      </button>
+    );
+  })}
+
+ 
+
+</section>
       </div>
-
-      
     </div>
   );
 };

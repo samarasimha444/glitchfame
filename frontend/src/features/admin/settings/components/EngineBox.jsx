@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Timer, RotateCcw } from "lucide-react";
 
 const SessionEngineTimer = () => {
-  const [time, setTime] = useState(4 * 3600 + 12 * 60 + 8); // initial 04:12:08
+  const [time, setTime] = useState(4 * 3600 + 12 * 60 + 8); 
   const [running, setRunning] = useState(true);
   const [adjustHours, setAdjustHours] = useState(4);
   const [adjustMins, setAdjustMins] = useState(12);

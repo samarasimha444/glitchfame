@@ -17,6 +17,8 @@ import Testing from "./Testing";
 import AdminLayout from "./features/admin/layout/AdminLayout";
 import SeasonPage from "./features/admin/seasons/SeasonPage";
 import AdminDashboard from "./features/admin/dashboard/AdminDashboard";
+import LeaderBoard from "./features/Users/LeaderBoard";
+import SeasonDetails from "./features/Users/SeasonDetails";
 
 
 export default function App() {
@@ -40,7 +42,11 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/enter" element={<EntryForm />} />
+           <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/arena" element={<Arena />} />
+
+          <Route path="/season" element={<SeasonDetails />} />
+
           <Route path="/details" element={<PlayerDetail />} />
         </Route>
       {/* </Route> */}
