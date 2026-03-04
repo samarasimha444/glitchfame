@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 
 const AdminLayout = () => {
+  
   const profile = JSON.parse(localStorage.getItem("profile"));
 
   return (

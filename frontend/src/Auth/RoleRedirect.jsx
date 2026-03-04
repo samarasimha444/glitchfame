@@ -5,7 +5,7 @@ const fetchProfile = async () => {
   const token = localStorage.getItem("token");
 
   const res = await fetch(
-    `${import.meta.env.VITE_BASE_URL}/profile`,
+    `${import.meta.env.VITE_BASE_URL}/profile/me`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -13,7 +13,9 @@ const fetchProfile = async () => {
     }
   );
 
-  if (!res.ok) throw new Error("Unauthorized");
+  if (!res.ok) {
+    throw new Error("Unauthorized");
+  }
 
   return res.json();
 };
@@ -28,17 +30,19 @@ const RoleRedirect = () => {
   const { data: profile, isLoading, isError } = useQuery({
     queryKey: ["profile"],
     queryFn: fetchProfile,
+    enabled: !!token,   // important
     retry: false,
   });
 
   if (isLoading) return <h3>Loading...</h3>;
+
   if (isError) return <Navigate to="/login" replace />;
 
-  if (profile.role === "ADMIN") {
+  if (profile?.role === "ADMIN") {
     return <Navigate to="/admin" replace />;
   }
 
-  if (profile.role === "USER") {
+  if (profile?.role === "USER") {
     return <Navigate to="/dashboard" replace />;
   }
 

@@ -2,11 +2,10 @@ import { Outlet, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 const fetchProfile = async () => {
-  
   const token = localStorage.getItem("token");
 
   const res = await fetch(
-    `${import.meta.env.VITE_BASE_URL}/profile`,
+    `${import.meta.env.VITE_BASE_URL}/profile/me`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -27,8 +26,9 @@ const fetchProfile = async () => {
 
 const ProtectedRoute = ({ allowedRole }) => {
   const token = localStorage.getItem("token");
+  console.log(token)
 
-  // 🚫 No token → straight to login
+  // 🚫 No token → login
   if (!token) {
     return <Navigate to="/login" replace />;
   }
@@ -40,9 +40,9 @@ const ProtectedRoute = ({ allowedRole }) => {
   } = useQuery({
     queryKey: ["profile"],
     queryFn: fetchProfile,
-    enabled: !!token,           // Only run if token exists
-    retry: false,               // No retry loop
-    staleTime: 1000 * 60 * 5,   // Cache for 5 minutes
+    enabled: !!token,
+    retry: false,
+    staleTime: 1000 * 60 * 5,
   });
 
   if (isLoading) {
@@ -50,12 +50,11 @@ const ProtectedRoute = ({ allowedRole }) => {
   }
 
   if (isError) {
-    // ⚠️ Do NOT remove token blindly
     return <Navigate to="/login" replace />;
   }
 
   // 🔒 Role check
-  if (allowedRole && profile.role !== allowedRole) {
+  if (allowedRole && profile?.role !== allowedRole) {
     return <Navigate to="/login" replace />;
   }
 

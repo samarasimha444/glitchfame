@@ -6,6 +6,10 @@ import SeasonsTable from './components/SeasonTable'
 
 
 const AdminDashboard = () => {
+
+  const token = localStorage.getItem("token");
+console.log("TOKEN:", token);
+
   return (
     <div className='flex flex-col w-full h-screen '>
 
