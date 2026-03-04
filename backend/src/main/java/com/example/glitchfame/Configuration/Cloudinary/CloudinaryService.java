@@ -2,7 +2,9 @@ package com.example.glitchfame.Configuration.Cloudinary;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,10 +18,13 @@ public class CloudinaryService {
 
     private final Cloudinary cloudinary;
 
-    private static final long MAX_SIZE = 1 * 1024 * 1024; // 1MB
+    private static final long MAX_SIZE = 5 * 1024 * 1024; // 5MB
+
     private static final List<String> ALLOWED_TYPES =
             List.of("image/jpeg", "image/png", "image/jpg");
 
+
+    // Upload image
     public String uploadImage(MultipartFile file) {
 
         if (file.isEmpty()) {
@@ -27,7 +32,7 @@ public class CloudinaryService {
         }
 
         if (file.getSize() > MAX_SIZE) {
-            throw new RuntimeException("File size must be less than 1MB");
+            throw new RuntimeException("File size must be less than 5MB");
         }
 
         if (!ALLOWED_TYPES.contains(file.getContentType())) {
@@ -35,6 +40,7 @@ public class CloudinaryService {
         }
 
         try {
+
             Map<?, ?> result = cloudinary.uploader().upload(
                     file.getBytes(),
                     ObjectUtils.asMap(
@@ -49,4 +55,34 @@ public class CloudinaryService {
             throw new RuntimeException("Upload failed", e);
         }
     }
+
+
+    // Delete entire folder
+    public void deleteFolderCompletely(String folder) {
+
+        try {
+
+            // delete all assets inside the folder
+            cloudinary.api().deleteResourcesByPrefix(
+                    folder + "/",
+                    ObjectUtils.emptyMap()
+            );
+
+            // delete subfolders
+            cloudinary.api().deleteFolder(
+                    folder + "/contestants",
+                    ObjectUtils.emptyMap()
+            );
+
+            // delete main folder
+            cloudinary.api().deleteFolder(
+                    folder,
+                    ObjectUtils.emptyMap()
+            );
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete folder: " + folder, e);
+        }
+    }
+
 }

@@ -1,9 +1,7 @@
 package com.example.glitchfame.Admin.Votes;
-
 import com.example.glitchfame.User.Leadboard.LeaderboardService;
 import com.example.glitchfame.User.Contestants.Participation;
 import com.example.glitchfame.User.Contestants.ContestantRepository;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

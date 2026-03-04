@@ -1,9 +1,9 @@
 package com.example.glitchfame.Admin.Contestants;
-
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import com.example.glitchfame.User.Contestants.Participation;
 import com.example.glitchfame.User.Contestants.DTO.ContestantByName;
 import com.example.glitchfame.User.Contestants.DTO.ContestantsDTO;
@@ -247,5 +247,10 @@ public interface AdminContestantRepository extends JpaRepository<Participation, 
             @Param("name") String name,
             Pageable pageable
     );
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM participations WHERE season_id = :seasonId", nativeQuery = true)
+    void resetSeason(Long seasonId);
 
 }

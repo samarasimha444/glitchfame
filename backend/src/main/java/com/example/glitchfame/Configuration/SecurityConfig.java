@@ -25,8 +25,15 @@ public class SecurityConfig {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(auth -> auth
-                    .anyRequest().permitAll() // allow everything
-            );
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                    .requestMatchers("/auth/signup", "/auth/login","ws/**","/test/**","/auth/verify-otp","auth/forgot-password", "auth/reset-password").permitAll()
+                    .requestMatchers("/v3/api-docs/**",
+                                     "/swagger-ui/**",
+                                     "/swagger-ui.html").permitAll()
+                    // .requestMatchers("/admin/**").hasRole("ADMIN")
+                    .anyRequest().authenticated()
+            )
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

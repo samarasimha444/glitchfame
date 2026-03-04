@@ -22,6 +22,8 @@ import LeaderBoard from "./features/user/leaderboard/LeaderBoard";
 import SeasonDetails from "./features/user/season/SeasonDetails";
 import PlayerDetails from "./features/user/details/PlayerDetails";
 import Arena from "./features/user/arena/Arena";
+import ForgotPassword from "./Auth/ForgotPassword";
+import Testupload from "./TestUpload";
 
 
 export default function App() {
@@ -37,7 +39,8 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
     { <Route path="/testing" element={<Testing />} /> }
-
+      <Route path="/forgot" element={<ForgotPassword/>}  />
+      <Route path="/testupload" element={<Testupload/>}/>
 
 
       {/* USER Protected Routes */}

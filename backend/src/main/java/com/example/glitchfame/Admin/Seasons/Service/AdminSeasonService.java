@@ -1,4 +1,4 @@
-package com.example.glitchfame.Admin.Seasons;
+package com.example.glitchfame.Admin.Seasons.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
-
+import com.example.glitchfame.Admin.Contestants.AdminContestantRepository;
+import com.example.glitchfame.Admin.Seasons.AdminSeasonRepository;
 import com.example.glitchfame.Admin.Seasons.DTO.SeasonFormDTO;
 import com.example.glitchfame.Admin.Seasons.DTO.UpdateSeasonDTO;
 import com.example.glitchfame.Configuration.Cloudinary.CloudinaryService;
@@ -23,6 +24,7 @@ public class AdminSeasonService {
 
     private final AdminSeasonRepository repository;
     private final CloudinaryService cloudinaryService;
+    private final AdminContestantRepository contestantRepository;
 
     private Pageable buildPageable(int page, int size) {
         if (size > 50) size = 50;
@@ -173,6 +175,24 @@ public class AdminSeasonService {
 
         return "Season updated successfully";
     }
+
+  
+
+
+
+    //season reset by admin
+    @Transactional
+    public void resetSeason(Long seasonId) {
+
+        // delete contestants of that season
+        contestantRepository.resetSeason(seasonId);
+
+    }
+
+    
+
+
+
 
     // Delete season
     @Transactional
