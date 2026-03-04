@@ -38,6 +38,7 @@ const Signup = () => {
     setLoading(true);
 
     try {
+<<<<<<< HEAD
 
       const response = await fetch(
         `${import.meta.env.VITE_BASE_URL}/auth/signup`,
@@ -55,6 +56,24 @@ const Signup = () => {
         }
       );
 
+=======
+
+     const response = await fetch(
+  `${import.meta.env.VITE_BASE_URL}/auth/signup`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: formData.email,
+      username: formData.username,
+      mobileNumber: formData.mobileNumber,
+      password: formData.password,
+    }),
+  }
+);
+>>>>>>> 81f37febd958d830201edfceb1e0e78601c5d850
       const message = await response.text();
 
       if (response.status === 201 || response.status === 200) {
