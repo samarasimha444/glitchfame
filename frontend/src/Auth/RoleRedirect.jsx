@@ -2,10 +2,9 @@ import { Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 const fetchProfile = async () => {
-  const token = localStorage.getItem("token");
-
+const token = localStorage.getItem("token");
   const res = await fetch(
-    `${import.meta.env.VITE_BASE_URL}/profile`,
+    `${import.meta.env.VITE_BASE_URL}/profile/me`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

@@ -19,7 +19,7 @@ public class UpdateSeasonDTO {
     private MultipartFile Image;
 
 
-    private Boolean voteLock;
+private Boolean voteLock;
 private Boolean participationLock;
 private Boolean seasonLock;
 }
