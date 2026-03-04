@@ -33,7 +33,9 @@ const features = [
 
 const Overview = () => {
   return (
-    <div className="w-full mt-12 bg-[#1E2229] py-16 md:py-24 flex justify-center">
+
+    
+    <div className="w-full mt-4 bg-[#1E2229] py-3 md:py-24 flex justify-center">
 
       <div className="w-full max-w-7xl px-6 md:px-16 flex flex-col md:flex-row justify-between gap-12 md:gap-20">
 
@@ -63,26 +65,28 @@ const Overview = () => {
         </div>
 
        
-        <div className="w-full md:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {features.map((item) => {
-            const Icon = item.icon;
+        <div className="w-full md:w-1/2 grid grid-cols-2 sm:grid-cols-2 gap-6">
+  {features.map((item, index) => {
+    const Icon = item.icon;
 
-            return (
-              <div
-                key={item.id}
-                className="border border-gray-700 p-6 md:p-8 space-y-4 hover:border-[#BE5EED] transition"
-              >
-                <Icon className="text-[#BE5EED]" size={32} />
-                <h3 className="text-white font-bold text-lg">
-                  {item.title}
-                </h3>
-                <p className="text-gray-400 text-sm">
-                  {item.description}
-                </p>
-              </div>
-            );
-          })}
-        </div>
+    return (
+      <div
+        key={item.id}
+        className={`border border-gray-700 p-6 md:p-8 space-y-4 hover:border-[#BE5EED] transition
+        ${index >= 2 ? "hidden md:block" : ""}
+        `}
+      >
+        <Icon className="text-[#BE5EED]" size={26} sm:size={32} />
+        <h3 className="text-white font-bold text-lg">
+          {item.title}
+        </h3>
+        <p className="text-gray-400  text-xs sm:text-sm">
+          {item.description}
+        </p>
+      </div>
+    );
+  })}
+</div>
 
       </div>
     </div>

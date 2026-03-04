@@ -1,8 +1,9 @@
 import { Outlet, useOutletContext } from "react-router-dom";
-import Cards from "./home/Cards";
-import Gallery from "./home/Gallery";
-import Overview from "./home/OverviewSection";
-import FeaturedCarousel from "./home/Carousel";
+import FeaturedCarousel from "./components/Carousel";
+import Cards from "./components/Cards";
+import Gallery from "./components/Gallery";
+import Overview from "./components/OverviewSection";
+
 
 const menuItems = [
   "#AESTHETICS",
@@ -13,7 +14,8 @@ const menuItems = [
   "Portrait",
 ];
 
-export default function Dashboard() {
+const Home =() =>{
+
   const { profile } = useOutletContext() || {};
 
   return (
@@ -91,11 +93,17 @@ export default function Dashboard() {
         </ul>
       </div>
 
-      <Cards />
+<section className="w-full bg-[#181B20]">
+  <Cards />
 
-      <Gallery />
+     <Gallery />
+
+</section>
+      
 
       <Overview />
     </div>
   );
 }
+
+export default Home

@@ -2,6 +2,7 @@ import { Outlet, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 const fetchProfile = async () => {
+  
   const token = localStorage.getItem("token");
 
   const res = await fetch(

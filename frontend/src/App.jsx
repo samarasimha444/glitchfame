@@ -1,14 +1,13 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import Layout from "./Auth/Layout";
-import Dashboard from "./features/Users/Dashboard";
+
 
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
 import RoleRedirect from "./Auth/RoleRedirect";
-import EntryForm from "./features/Users/EntryForm";
-import Arena from "./features/Users/Arena";
-import PlayerDetail from "./features/Users/PlayerDetails";
+
+
 
 
 import AdminSettings from "./features/admin/settings/SettingPage";
@@ -17,8 +16,12 @@ import Testing from "./Testing";
 import AdminLayout from "./features/admin/layout/AdminLayout";
 import SeasonPage from "./features/admin/seasons/SeasonPage";
 import AdminDashboard from "./features/admin/dashboard/AdminDashboard";
-import LeaderBoard from "./features/Users/LeaderBoard";
-import SeasonDetails from "./features/Users/SeasonDetails";
+import Home from "./features/user/home/Home";
+import ArenaForm from "./features/user/entryForm/Arena";
+import LeaderBoard from "./features/user/leaderboard/LeaderBoard";
+import SeasonDetails from "./features/user/season/SeasonDetails";
+import PlayerDetails from "./features/user/details/PlayerDetails";
+import Arena from "./features/user/arena/Arena";
 
 
 export default function App() {
@@ -40,14 +43,14 @@ export default function App() {
       {/* USER Protected Routes */}
       {/* <Route element={<ProtectedRoute allowedRole="USER" />}> */}
         <Route element={<Layout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/enter" element={<EntryForm />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/enter" element={<ArenaForm />} />
            <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/arena" element={<Arena />} />
 
           <Route path="/season" element={<SeasonDetails />} />
 
-          <Route path="/details" element={<PlayerDetail />} />
+          <Route path="/details" element={<PlayerDetails />} />
         </Route>
       {/* </Route> */}
 

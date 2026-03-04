@@ -35,7 +35,7 @@ const RoleRedirect = () => {
   if (isError) return <Navigate to="/login" replace />;
 
   if (profile.role === "ADMIN") {
-    return <Navigate to="/admin-dashboard" replace />;
+    return <Navigate to="/admin" replace />;
   }
 
   if (profile.role === "USER") {

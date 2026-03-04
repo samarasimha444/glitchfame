@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Modal from "./Model";
 import { TimerReset } from 'lucide-react';
 import { RotateCcw } from 'lucide-react';
 import { LockOpen } from 'lucide-react';
@@ -31,6 +30,10 @@ const seasons = [
   },
 ];
 
+
+export const toggleLock = ()=>{
+
+}
 
 
 const getStatusStyle = (status) => {
@@ -120,7 +123,7 @@ const SeasonsTable = () => {
              
 
                   <button
-                    onClick={() => setModalType("reset")}
+                    onClick={() => toggleLock("")}
                     className=" cursor-pointer hover:text-purple-300 text-sm"
                   >
                    <LockOpen />
@@ -133,15 +136,7 @@ const SeasonsTable = () => {
           </tbody>
         </table>
 
-        <Modal
-          type={modalType}
-          onClose={() => setModalType(null)}
-          onConfirm={() => {
-            console.log("Season Reset");
-            setModalType(null);
-          }}
-        />
-
+      
         <div className="py-2  border-t bg-[#1E2229] px-4 border-gray-800 flex justify-between items-center text-xs text-gray-400">
           <span>Showing 1 to {seasons.length} seasons</span>
           <div className="space-x-2">

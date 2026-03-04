@@ -1,5 +1,5 @@
 import { Upload } from "lucide-react";
-import Form from "./Upload/Form";
+import Form from "./ui/Form";
 
 
 const ArenaForm = () => {

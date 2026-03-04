@@ -1,6 +1,6 @@
 import React from 'react'
-import Cards from './home/Cards'
-import TournamentCard from './home/TournamentCard'
+import TournamentCard from './seasonui/TournamentCard'
+
 
 const SeasonDetails = () => {
   return (

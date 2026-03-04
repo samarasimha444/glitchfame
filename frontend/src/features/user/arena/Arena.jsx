@@ -1,5 +1,6 @@
 import React from 'react'
-import ArenaCard from './Arena/ArenaCard'
+import ArenaCard from './ui/ArenaCard'
+
 
 const Arena = () => {
   return (
@@ -7,7 +8,7 @@ const Arena = () => {
     <section className="bg-black text-white py-20 px-6">
       <div className="max-w-6xl mx-auto text-center">
 
-        {/* Title */}
+        
         <h1 className="text-5xl md:text-6xl font-extrabold">
           <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
             GLITCHFAME

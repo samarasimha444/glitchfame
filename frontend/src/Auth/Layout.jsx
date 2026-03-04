@@ -11,7 +11,7 @@ const Layout = () => {
     avatar: "https://via.placeholder.com/100",
   };
 
-  // Fallback to dummyProfile if no context
+  
   const { profile } = useOutletContext() || { profile: dummyProfile };
 
   return (
