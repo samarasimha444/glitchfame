@@ -41,7 +41,7 @@ public class AdminSeasonController {
     }
 
     // Create a new season
-    @PostMapping(consumes = "multipart/form-data")
+    @PostMapping( value ="/create", consumes = "multipart/form-data")
     public ResponseEntity<String> createSeason(
             @ModelAttribute @Valid SeasonFormDTO dto) {
 

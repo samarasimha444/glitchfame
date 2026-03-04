@@ -6,12 +6,11 @@ import SeasonForm from "./SeasonForm";
 const AdminCard = ({ className, type, cardsInfo, data }) => {
   console.log(cardsInfo);
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   return (
     <div className={`flex flex-col w-full  py-4 ${className}`}>
-      {type &&
-        (() => {
+      
           <Modal
             className="w-full "
             open={open}
@@ -20,7 +19,7 @@ const AdminCard = ({ className, type, cardsInfo, data }) => {
           >
             <SeasonForm />
           </Modal>;
-        })}
+      
 
       <section className="flex w-full  justify-between items-start ">
         <h3 className="flex flex-col font-semibold text-3xl">
@@ -31,15 +30,14 @@ const AdminCard = ({ className, type, cardsInfo, data }) => {
           </p>
         </h3>
 
-        {type == "home" &&
-          (() => {
+        
             <button
               onClick={() => setOpen(!open)}
               className="bg-blue-400 px-3 py-2"
             >
               +Create Season
-            </button>;
-          })}
+            </button>
+         
       </section>
 
       <section className="mt-12 flex  gap-2 w-full justify-between ">

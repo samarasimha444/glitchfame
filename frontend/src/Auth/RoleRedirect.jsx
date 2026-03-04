@@ -13,10 +13,12 @@ const fetchProfile = async () => {
     }
   );
 
+  
   if (!res.ok) {
     throw new Error("Unauthorized");
   }
-
+  
+  console.log(res.json())
   return res.json();
 };
 

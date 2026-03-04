@@ -20,15 +20,16 @@ const fetchProfile = async () => {
   if (!res.ok) {
     throw new Error("Something went wrong");
   }
-
+   console.log(res.json())
   return res.json();
 };
 
 const ProtectedRoute = ({ allowedRole }) => {
+
   const token = localStorage.getItem("token");
   console.log(token)
 
-  // 🚫 No token → login
+  
   if (!token) {
     return <Navigate to="/login" replace />;
   }
@@ -53,11 +54,11 @@ const ProtectedRoute = ({ allowedRole }) => {
     return <Navigate to="/login" replace />;
   }
 
-  // 🔒 Role check
+
   if (allowedRole && profile?.role !== allowedRole) {
     return <Navigate to="/login" replace />;
   }
-
+   console.log(profile)
   return <Outlet context={{ profile }} />;
 };
 

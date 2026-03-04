@@ -1,23 +1,22 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
-
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -30,31 +29,38 @@ const Login = () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(formData),
         }
       );
 
-      const token = await response.text();
+      const data = await response.text(); // assuming backend returns token directly
 
-      if (response.status === 200) {
-
-        localStorage.setItem("token", token);
-
-        const decoded = jwtDecode(token);
-        const role = decoded.role;
-
-        if (role === "ADMIN") {
-          navigate("/admin");
-        } else {
-          navigate("/home");
-        }
-
-      } else {
-        setError(token);
+      if (!response.ok) {
+        setError(data || "Login failed");
+        return;
       }
 
-    } catch {
-      setError("Network error.");
+      console.log("TOKEN:", data);
+
+      // Save token
+      localStorage.setItem("token", data);
+
+      // Decode token
+      const decoded = jwtDecode(data);
+      console.log("DECODED:", decoded);
+
+      const role = decoded.role;
+
+      
+      if (role === "ADMIN") {
+        navigate("/admin");
+      } else {
+        navigate("/home");
+      }
+
+    } catch (err) {
+      console.error(err);
+      setError("Network error. Please try again.");
     }
   };
 
@@ -73,6 +79,7 @@ const Login = () => {
           required
         />
         <br />
+
         <input
           type="password"
           name="password"
@@ -81,6 +88,7 @@ const Login = () => {
           required
         />
         <br />
+
         <button type="submit">Login</button>
       </form>
     </div>

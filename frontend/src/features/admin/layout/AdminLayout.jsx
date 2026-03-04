@@ -2,8 +2,9 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 
 const AdminLayout = () => {
-  
+
   const profile = JSON.parse(localStorage.getItem("profile"));
+  console.log(profile)
 
   return (
     <div className="flex  min-h-screen  w-full max-w-screen text-white">

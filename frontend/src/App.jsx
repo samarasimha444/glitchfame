@@ -54,7 +54,7 @@ export default function App() {
         </Route>
       {/* </Route> */}
 
-      <Route element={<ProtectedRoute allowedRole="ADMIN" />}>
+      {/* <Route element={<ProtectedRoute allowedRole="ADMIN" />}> */}
 
         <Route path="/admin" element={<AdminLayout />}>  
         <Route index element={<Navigate to="dashboard" replace />} />
@@ -64,7 +64,7 @@ export default function App() {
         <Route path="settings" element={<AdminSettings/>} />
         
       </Route>
-       </Route>
+       {/* </Route> */}
    
     </Routes>
   );
