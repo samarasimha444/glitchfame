@@ -15,54 +15,64 @@ import org.springframework.data.domain.Pageable;
 public interface AdminContestantRepository extends JpaRepository<Participation, Long> {
 
 
-    // LIVE SEASONS FILTERED BY STATUS
-    @Query(value = """
-        SELECT 
-            p.id AS participationId,
-            p.name AS participantName,
-            p.photo_url AS participantPhotoUrl,
-            p.date_of_birth AS dateOfBirth,
-            p.location AS location,
-            p.description AS description,
-            p.status AS status,
-            p.created_at AS createdAt,
-            p.user_id AS userId,
+// LIVE SEASONS FILTERED BY STATUS
+@Query(value = """
+    SELECT 
+        p.id AS participationId,
+        p.name AS participantName,
+        p.photo_url AS participantPhotoUrl,
+        p.date_of_birth AS dateOfBirth,
+        p.location AS location,
+        p.description AS description,
+        p.status AS status,
+        p.created_at AS createdAt,
+        p.user_id AS userId,
 
-            s.id AS seasonId,
-            s.name AS seasonName,
-            s.prize_money AS prizeMoney,
-            s.photo_url AS seasonPhotoUrl,
-            s.registration_start_date AS registrationStartDate,
-            s.registration_end_date AS registrationEndDate,
-            s.voting_start_date AS votingStartDate,
-            s.voting_end_date AS votingEndDate,
+        s.id AS seasonId,
+        s.name AS seasonName,
+        s.prize_money AS prizeMoney,
+        s.photo_url AS seasonPhotoUrl,
+        s.registration_start_date AS registrationStartDate,
+        s.registration_end_date AS registrationEndDate,
+        s.voting_start_date AS votingStartDate,
+        s.voting_end_date AS votingEndDate,
 
-            COUNT(DISTINCT v.id) AS voteCount
+        COALESCE(COUNT(DISTINCT v.id),0) +
+        CASE 
+            WHEN p.status = 'APPROVED'
+            THEN COALESCE(av.admin_vote_count,0)
+            ELSE 0
+        END AS voteCount
 
-        FROM participations p
-        JOIN seasons s ON p.season_id = s.id
-        LEFT JOIN votes v ON v.contestant_id = p.id
+    FROM participations p
+    JOIN seasons s ON p.season_id = s.id
+    LEFT JOIN votes v ON v.contestant_id = p.id
+    LEFT JOIN admin_votes av ON av.participation_id = p.id
 
-        WHERE 
-            NOW() BETWEEN s.registration_start_date AND s.voting_end_date
-        AND (:status IS NULL OR :status = 'ALL' OR p.status = :status)
+    WHERE 
+        NOW() BETWEEN s.registration_start_date AND s.voting_end_date
+    AND (:status IS NULL OR :status = 'ALL' OR p.status = :status)
 
-        GROUP BY p.id, s.id
-        ORDER BY p.created_at DESC
-    """,
-    countQuery = """
-        SELECT COUNT(DISTINCT p.id)
-        FROM participations p
-        JOIN seasons s ON p.season_id = s.id
-        WHERE 
-            NOW() BETWEEN s.registration_start_date AND s.voting_end_date
-        AND (:status IS NULL OR :status = 'ALL' OR p.status = :status)
-    """,
-    nativeQuery = true)
-    Page<ContestantsDTO> findLiveSeasonContestantsByStatus(
-            @Param("status") String status,
-            Pageable pageable
-    );
+    GROUP BY 
+        p.id,
+        s.id,
+        av.admin_vote_count
+
+    ORDER BY p.created_at DESC
+""",
+countQuery = """
+    SELECT COUNT(DISTINCT p.id)
+    FROM participations p
+    JOIN seasons s ON p.season_id = s.id
+    WHERE 
+        NOW() BETWEEN s.registration_start_date AND s.voting_end_date
+    AND (:status IS NULL OR :status = 'ALL' OR p.status = :status)
+""",
+nativeQuery = true)
+Page<ContestantsDTO> findLiveSeasonContestantsByStatus(
+        @Param("status") String status,
+        Pageable pageable
+);
 
 
 

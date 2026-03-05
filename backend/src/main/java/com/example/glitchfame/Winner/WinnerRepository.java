@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface WinnerRepository extends JpaRepository<SeasonWinner, Long> {
 
-    // insert winners for a season
-   @Modifying
+   //insert winner
+@Modifying
 @Transactional
 @Query(value = """
 INSERT INTO season_winners
@@ -24,16 +24,18 @@ SELECT
     p.name,
     p.photo_url,
     s.prize_money,
-    COUNT(v.id)
+    COUNT(v.id) + COALESCE(av.admin_vote_count, 0) AS total_votes
 
 FROM seasons s
 JOIN participations p ON p.season_id = s.id
 LEFT JOIN votes v ON v.contestant_id = p.id
+LEFT JOIN admin_votes av ON av.participation_id = p.id
 
 WHERE s.id = :seasonId
+AND p.status = 'APPROVED'
 
-GROUP BY p.id
-ORDER BY COUNT(v.id) DESC
+GROUP BY p.id, av.admin_vote_count
+ORDER BY total_votes DESC
 LIMIT 1
 """, nativeQuery = true)
 void insertSeasonWinner(@Param("seasonId") Long seasonId);

@@ -1,4 +1,5 @@
 package com.example.glitchfame.User.Votes;
+
 import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
 import com.example.glitchfame.User.Contestants.ContestantRepository;
 import com.example.glitchfame.User.Contestants.Participation;
@@ -22,132 +23,135 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class VoteService {
 
-    private final VotesRepository votesRepository;
-    private final ContestantRepository contestantRepository;
-    private final AuthRepository userRepository;
-    private final ExtractJwtData extractJwtData;
-    private final SimpMessagingTemplate messagingTemplate;
-    private final LeaderboardService leaderboardService;
 
-    @Transactional
-    public VoteResponse toggleVote(Long participationId) {
+private final VotesRepository votesRepository;
+private final ContestantRepository contestantRepository;
+private final AuthRepository userRepository;
+private final ExtractJwtData extractJwtData;
+private final SimpMessagingTemplate messagingTemplate;
+private final LeaderboardService leaderboardService;
 
-        // 🔥 Get logged-in user id
-        Long userId = extractJwtData.getUserId();
+@Transactional
+public VoteResponse toggleVote(Long participationId) {
 
-        // 🔥 Fetch user
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "User not found"
-                ));
+    // Get logged in user
+    Long userId = extractJwtData.getUserId();
 
-        // 🔥 Check if admin disabled voting for this user
-        if (!user.isCanVote()) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "Voting access denied by admin."
-            );
-        }
+    User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "User does not exist"
+            ));
 
-        // 🔥 Fetch participation
-        Participation participation = contestantRepository
-                .findById(participationId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Contestant not found"
-                ));
+    // Check if admin disabled voting
+    if (!user.isCanVote()) {
+        throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "Voting access has been disabled for your account"
+        );
+    }
 
-        // 🔥 Get season
-        var season = participation.getSeason();
+    // Fetch contestant participation
+    Participation participation = contestantRepository
+            .findById(participationId)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Contestant not found"
+            ));
 
-        // 🔒 Check if entire season is locked
-        if (season.isSeasonLock()) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "Season is closed."
-            );
-        }
+    var season = participation.getSeason();
 
-        // 🔒 Check if voting is locked
-        if (season.isVoteLock()) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "Voting for this season is closed."
-            );
-        }
+    // Season lock check
+    if (season.isSeasonLock()) {
+        throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "This season is closed"
+        );
+    }
 
-        // 🔒 Check voting end date
-        if (LocalDateTime.now().isAfter(season.getVotingEndDate())) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "Voting period has ended."
-            );
-        }
+    // Vote lock check
+    if (season.isVoteLock()) {
+        throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "Voting for this season is currently disabled"
+        );
+    }
 
-        // 🔥 Get season id
-        Long seasonId = season.getId();
+    // Voting end date check
+    if (LocalDateTime.now().isAfter(season.getVotingEndDate())) {
+        throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "Voting period has ended"
+        );
+    }
 
-        // 🔥 Check if user already voted this contestant
-        boolean alreadyVoted =
-                votesRepository.existsByContestant_IdAndVoter_Id(
-                        participationId, userId
-                );
+    Long seasonId = season.getId();
 
-        // 🔥 Enforce max 5 votes per season (only when adding new vote)
-        if (!alreadyVoted) {
-
-            long votesInSeason =
-                    votesRepository.countVotesByUserInSeason(
-                            userId, seasonId
-                    );
-
-            if (votesInSeason >= 5) {
-                throw new ResponseStatusException(
-                        HttpStatus.FORBIDDEN,
-                        "You can only vote 5 times in this season."
-                );
-            }
-        }
-
-        // 🔥 Toggle vote
-        if (alreadyVoted) {
-
-            votesRepository.deleteByContestant_IdAndVoter_Id(
+    // Check if user already voted this contestant
+    boolean alreadyVoted =
+            votesRepository.existsByContestant_IdAndVoter_Id(
                     participationId, userId
             );
 
-        } else {
+    // Enforce max 5 votes per season
+    if (!alreadyVoted) {
 
-            Vote vote = Vote.builder()
-                    .contestant(participation)
-                    .voter(user)
-                    .build();
+        long votesInSeason =
+                votesRepository.countVotesByUserInSeason(
+                        userId, seasonId
+                );
 
-            votesRepository.save(vote);
+        if (votesInSeason >= 5) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Maximum vote limit (5) reached for this season"
+            );
         }
-
-        // 🔥 Get updated vote count for this contestant
-        long updatedCount =
-                votesRepository.countByContestant_Id(participationId);
-
-        // 🔥 Broadcast individual vote update
-        messagingTemplate.convertAndSend(
-                "/topic/votes",
-                Map.of(
-                        "participationId", participationId,
-                        "voteCount", updatedCount
-                )
-        );
-
-        // 🔥 Broadcast updated top 3 leaderboard
-        leaderboardService.broadcastTop3Leaderboard(seasonId);
-
-        // 🔥 Return response
-        return new VoteResponse(
-                participationId,
-                updatedCount,
-                !alreadyVoted
-        );
     }
+
+    // Toggle vote
+    if (alreadyVoted) {
+
+        votesRepository.deleteByContestant_IdAndVoter_Id(
+                participationId, userId
+        );
+
+    } else {
+
+        Vote vote = Vote.builder()
+                .contestant(participation)
+                .voter(user)
+                .build();
+
+        votesRepository.save(vote);
+    }
+
+    // Get updated vote count
+    Long updatedCount = votesRepository.getTotalVotes(participationId);
+
+    if (updatedCount == null) {
+        updatedCount = 0L;
+    }
+
+    // Broadcast vote update
+    messagingTemplate.convertAndSend(
+            "/topic/votes",
+            Map.of(
+                    "participationId", participationId,
+                    "voteCount", updatedCount
+            )
+    );
+
+    // Broadcast leaderboard update
+    leaderboardService.broadcastTop3Leaderboard(seasonId);
+
+    // Return JSON response
+    return new VoteResponse(
+            participationId,
+            updatedCount,
+            !alreadyVoted
+    );
+}
+
+
 }

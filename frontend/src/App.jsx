@@ -27,7 +27,7 @@ import Testupload from "./Testing/TestUpload";
 import TestingDashboard from "./Testing/TestingDashboard/TestingDashboard";
 import TestSeasonId from "./Testing/TestSeasonId";
 import TestingParticipation from "./Testing/TestingParticipation";
-
+import Leadboard  from "./Testing/LeadBoard";
 
 export default function App() {
   return (
@@ -48,7 +48,10 @@ export default function App() {
       <Route path="/testupload" element={<Testupload/>}/>
       <Route path="/testing-dashboard" element={<TestingDashboard/>}/>
       <Route path="/testing-season/:seasonId" element={<TestSeasonId/>}/>
-      <Route path="/testing-participation/:seasonId" element={<TestingParticipation />} />
+      <Route path="/testing-participation/:seasonId" element={<TestingParticipation />}
+       />
+
+      <Route path="/leadboard" element={<Leadboard/>}/>
 
 
       {/* USER Protected Routes */}
