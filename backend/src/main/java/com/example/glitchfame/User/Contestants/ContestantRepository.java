@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.example.glitchfame.User.Contestants.DTO.ContestantByName;
 import com.example.glitchfame.User.Contestants.DTO.ContestantsDTO;
 import com.example.glitchfame.User.Contestants.DTO.SeasonContestants;
+import com.example.glitchfame.User.Contestants.DTO.MyApplicationsDTO;
 
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Page;
@@ -311,7 +312,27 @@ Page<SeasonContestants> searchSeasonContestantsByName(
 
 
 
+//track my applications
 
+// track user applications
+@Query(value = """
+    SELECT
+        p.id AS participationId,
+        s.id AS seasonId,
+        s.name AS seasonName,
+        p.status AS status
+
+    FROM participations p
+    JOIN seasons s ON p.season_id = s.id
+
+    WHERE p.user_id = :userId
+
+    ORDER BY p.created_at DESC
+""", nativeQuery = true)
+Page<MyApplicationsDTO> findUserApplications(
+        @Param("userId") Long userId,
+        Pageable pageable
+);
 
 
 

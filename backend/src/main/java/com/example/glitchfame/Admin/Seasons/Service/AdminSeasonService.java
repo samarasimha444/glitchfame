@@ -17,6 +17,7 @@ import com.example.glitchfame.Admin.Seasons.DTO.UpdateSeasonDTO;
 import com.example.glitchfame.Configuration.Cloudinary.CloudinaryService;
 import com.example.glitchfame.User.Seasons.Seasons;
 import com.example.glitchfame.User.Seasons.DTO.SeasonsDTO;
+import com.example.glitchfame.Winner.WinnerRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class AdminSeasonService {
     private final AdminSeasonRepository repository;
     private final CloudinaryService cloudinaryService;
     private final AdminContestantRepository contestantRepository;
+    private final WinnerRepository winnerRepository;
 
     private Pageable buildPageable(int page, int size) {
         if (size > 50) size = 50;
@@ -188,6 +190,39 @@ public class AdminSeasonService {
         contestantRepository.resetSeason(seasonId);
 
     }
+
+
+
+    
+// ================= END SEASON NOW =================
+@Transactional
+public String endSeasonNow(Long seasonId) {
+
+    Seasons season = repository.findById(seasonId)
+            .orElseThrow(() ->
+                    new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "Season not found"));
+
+    // end voting immediately
+    season.setVotingEndDate(LocalDateTime.now());
+
+    repository.save(season);
+
+    // insert winner only if not already inserted
+    if (!winnerRepository.existsBySeasonId(seasonId)) {
+        winnerRepository.insertSeasonWinner(seasonId);
+    }
+
+    return "Season ended and winner calculated";
+}
+
+
+
+
+
+
+
 
     
 

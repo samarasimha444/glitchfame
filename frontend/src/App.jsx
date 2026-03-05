@@ -11,7 +11,7 @@ import RoleRedirect from "./Auth/RoleRedirect";
 
 
 import AdminSettings from "./features/admin/settings/SettingPage";
-import Testing from "./Testing";
+import Testing from "./Testing/Testing"
 
 import AdminLayout from "./features/admin/layout/AdminLayout";
 import SeasonPage from "./features/admin/seasons/SeasonPage";
@@ -23,7 +23,10 @@ import SeasonDetails from "./features/user/season/SeasonDetails";
 import PlayerDetails from "./features/user/details/PlayerDetails";
 import Arena from "./features/user/arena/Arena";
 import ForgotPassword from "./Auth/ForgotPassword";
-import Testupload from "./TestUpload";
+import Testupload from "./Testing/TestUpload";
+import TestingDashboard from "./Testing/TestingDashboard/TestingDashboard";
+import TestSeasonId from "./Testing/TestSeasonId";
+import TestingParticipation from "./Testing/TestingParticipation";
 
 
 export default function App() {
@@ -38,9 +41,14 @@ export default function App() {
       {/* Public Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+
+
     { <Route path="/testing" element={<Testing />} /> }
       <Route path="/forgot" element={<ForgotPassword/>}  />
       <Route path="/testupload" element={<Testupload/>}/>
+      <Route path="/testing-dashboard" element={<TestingDashboard/>}/>
+      <Route path="/testing-season/:seasonId" element={<TestSeasonId/>}/>
+      <Route path="/testing-participation/:seasonId" element={<TestingParticipation />} />
 
 
       {/* USER Protected Routes */}
@@ -54,6 +62,9 @@ export default function App() {
           <Route path="/season" element={<SeasonDetails />} />
 
           <Route path="/details" element={<PlayerDetails />} />
+
+
+
         </Route>
       {/* </Route> */}
 

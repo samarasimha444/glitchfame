@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SeasonScheduler {
 
-    private final SeasonFinalizerService seasonFinalizerService;
+    private final WinnerService seasonFinalizerService;
 
     // runs every 60 seconds
     @Scheduled(fixedRate = 60000)

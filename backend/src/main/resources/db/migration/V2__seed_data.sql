@@ -1,5 +1,5 @@
 /* =========================================================
-   1️⃣ 500 USERS
+1️⃣ USERS
 ========================================================= */
 
 INSERT INTO auth_users (email, username, mobile_number, password)
@@ -17,12 +17,36 @@ FROM seq;
 
 
 
+INSERT INTO auth_users (email, username, mobile_number, password, role)
+VALUES (
+'admin@example.com',
+'admin',
+'6302519077',
+'$2a$10$hl.RZ5oFQDBM/m8tG4eyi.q0WgSfF7DmuuoEuIF0okVMmkkhsuVRC',
+'ADMIN'
+);
+
+
+INSERT INTO auth_users (email, username, mobile_number, password)
+VALUES (
+'samarasimha124@gmail.com',
+'samarasimha124',
+'7732048716',
+'$2a$10$1RizkCusYgLPeRq/q1CCQeAwmb3VOGMoJS15lrLqeHvqXyd3lnp8u'
+);
+
+
+
 /* =========================================================
-   2️⃣ 6 SEASONS (2 LIVE, 2 PAST, 2 UPCOMING)
+2️⃣ SEASONS
+2 REGISTRATION OPEN
+2 VOTING OPEN
+2 PAST
 ========================================================= */
 
 INSERT INTO seasons (
-    name, prize_money,
+    name,
+    prize_money,
     registration_start_date,
     registration_end_date,
     voting_start_date,
@@ -31,22 +55,58 @@ INSERT INTO seasons (
 )
 VALUES
 
--- LIVE
-('Live Season 1', 200000, NOW()-INTERVAL 10 DAY, NOW()-INTERVAL 5 DAY, NOW()-INTERVAL 2 DAY, NOW()+INTERVAL 5 DAY, 'https://ex.com/live1.jpg'),
-('Live Season 2', 220000, NOW()-INTERVAL 10 DAY, NOW()-INTERVAL 5 DAY, NOW()-INTERVAL 2 DAY, NOW()+INTERVAL 5 DAY, 'https://ex.com/live2.jpg'),
+-- REGISTRATION OPEN
+('Registration Season 1', 200000,
+ NOW()-INTERVAL 2 DAY,
+ NOW()+INTERVAL 5 DAY,
+ NOW()+INTERVAL 6 DAY,
+ NOW()+INTERVAL 12 DAY,
+ 'https://ex.com/reg1.jpg'),
+
+('Registration Season 2', 220000,
+ NOW()-INTERVAL 1 DAY,
+ NOW()+INTERVAL 6 DAY,
+ NOW()+INTERVAL 7 DAY,
+ NOW()+INTERVAL 13 DAY,
+ 'https://ex.com/reg2.jpg'),
+
+
+-- VOTING OPEN
+('Voting Season 1', 250000,
+ NOW()-INTERVAL 20 DAY,
+ NOW()-INTERVAL 15 DAY,
+ NOW()-INTERVAL 2 DAY,
+ NOW()+INTERVAL 5 DAY,
+ 'https://ex.com/vote1.jpg'),
+
+('Voting Season 2', 260000,
+ NOW()-INTERVAL 20 DAY,
+ NOW()-INTERVAL 15 DAY,
+ NOW()-INTERVAL 1 DAY,
+ NOW()+INTERVAL 6 DAY,
+ 'https://ex.com/vote2.jpg'),
+
 
 -- PAST
-('Past Season 1', 180000, NOW()-INTERVAL 60 DAY, NOW()-INTERVAL 50 DAY, NOW()-INTERVAL 45 DAY, NOW()-INTERVAL 30 DAY, 'https://ex.com/past1.jpg'),
-('Past Season 2', 190000, NOW()-INTERVAL 60 DAY, NOW()-INTERVAL 50 DAY, NOW()-INTERVAL 45 DAY, NOW()-INTERVAL 30 DAY, 'https://ex.com/past2.jpg'),
+('Past Season 1', 180000,
+ NOW()-INTERVAL 60 DAY,
+ NOW()-INTERVAL 50 DAY,
+ NOW()-INTERVAL 45 DAY,
+ NOW()-INTERVAL 30 DAY,
+ 'https://ex.com/past1.jpg'),
 
--- UPCOMING
-('Upcoming Season 1', 250000, NOW()+INTERVAL 10 DAY, NOW()+INTERVAL 20 DAY, NOW()+INTERVAL 25 DAY, NOW()+INTERVAL 35 DAY, 'https://ex.com/up1.jpg'),
-('Upcoming Season 2', 260000, NOW()+INTERVAL 10 DAY, NOW()+INTERVAL 20 DAY, NOW()+INTERVAL 25 DAY, NOW()+INTERVAL 35 DAY, 'https://ex.com/up2.jpg');
+('Past Season 2', 190000,
+ NOW()-INTERVAL 60 DAY,
+ NOW()-INTERVAL 50 DAY,
+ NOW()-INTERVAL 45 DAY,
+ NOW()-INTERVAL 30 DAY,
+ 'https://ex.com/past2.jpg');
 
 
 
 /* =========================================================
-   3️⃣ 3000 PARTICIPATIONS (ALL USERS IN ALL SEASONS)
+3️⃣ PARTICIPATIONS
+Only for non-registration seasons
 ========================================================= */
 
 INSERT INTO participations
@@ -57,10 +117,7 @@ SELECT
     s.id,
     CONCAT('User', u.id, '_Season', s.id),
     'Mass Participation',
-    CASE 
-        WHEN s.name LIKE 'Upcoming%' THEN 'PENDING'
-        ELSE 'APPROVED'
-    END,
+    'APPROVED',
     '1995-01-01',
     CASE 
         WHEN u.id % 3 = 0 THEN 'Hyderabad'
@@ -68,14 +125,16 @@ SELECT
         ELSE 'Delhi'
     END,
     CONCAT('https://ex.com/u', u.id, 's', s.id, '.jpg')
+
 FROM auth_users u
-CROSS JOIN seasons s;
+CROSS JOIN seasons s
+WHERE s.name NOT LIKE 'Registration%';
 
 
 
 /* =========================================================
-   4️⃣ HEAVY VOTING
-   ~60 votes per approved participation
+4️⃣ HEAVY VOTES
+~60 votes per participation
 ========================================================= */
 
 INSERT IGNORE INTO votes (contestant_id, voter_id)
@@ -96,16 +155,14 @@ JOIN (
     UNION ALL SELECT 46 UNION ALL SELECT 47 UNION ALL SELECT 48 UNION ALL SELECT 49 UNION ALL SELECT 50
     UNION ALL SELECT 51 UNION ALL SELECT 52 UNION ALL SELECT 53 UNION ALL SELECT 54 UNION ALL SELECT 55
     UNION ALL SELECT 56 UNION ALL SELECT 57 UNION ALL SELECT 58 UNION ALL SELECT 59 UNION ALL SELECT 60
-) x
-WHERE p.status = 'APPROVED';
+) x;
 
 
 
 /* =========================================================
-   5️⃣ ADMIN BOOST VOTES
+5️⃣ ADMIN BOOST VOTES
 ========================================================= */
 
 INSERT INTO admin_votes (participation_id, admin_vote_count)
 SELECT id, FLOOR(20 + RAND() * 100)
-FROM participations
-WHERE status = 'APPROVED';
+FROM participations;

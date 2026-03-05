@@ -63,9 +63,12 @@ public class ContestantService {
 
 
 
-   //user applying for the season
-   public String apply(CreateContestantDTO request) {
-   Long userId = getUserId();
+
+
+  // user applying for the season
+public String apply(CreateContestantDTO request) {
+
+    Long userId = getUserId();
     Long seasonId = request.getSeasonId();
 
     // ================= USER CHECK =================
@@ -110,6 +113,13 @@ public class ContestantService {
     // ================= REGISTRATION WINDOW =================
     LocalDateTime now = LocalDateTime.now();
 
+    if (season.getRegistrationStartDate() == null || season.getRegistrationEndDate() == null) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Registration dates are not configured"
+        );
+    }
+
     if (now.isBefore(season.getRegistrationStartDate())) {
         throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
@@ -127,13 +137,29 @@ public class ContestantService {
     // ================= DUPLICATE APPLICATION =================
     if (contestantRepository.existsByUserIdAndSeasonId(userId, seasonId)) {
         throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.CONFLICT,
                 "You have already applied for this season"
         );
     }
 
+    // ================= IMAGE VALIDATION =================
+    if (request.getImage() == null || request.getImage().isEmpty()) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Image is required"
+        );
+    }
+
     // ================= IMAGE UPLOAD =================
-    String imageUrl = cloudinaryService.uploadImage(request.getImage());
+    String imageUrl;
+    try {
+        imageUrl = cloudinaryService.uploadImage(request.getImage());
+    } catch (Exception e) {
+        throw new ResponseStatusException(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Image upload failed"
+        );
+    }
 
     // ================= CREATE PARTICIPATION =================
     Participation participation = Participation.builder()
@@ -231,6 +257,25 @@ public Page<SeasonContestants> getApprovedSeasonContestants(
             buildPageable(page, size)
     );
 }
+
+// ================= TRACK MY APPLICATIONS =================
+public Page<MyApplicationsDTO> trackMyApplications(int page, int size) {
+
+    return contestantRepository.findUserApplications(
+            getUserId(),
+            buildPageable(page, size)
+    );
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

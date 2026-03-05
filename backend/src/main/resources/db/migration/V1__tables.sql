@@ -127,3 +127,42 @@ CREATE TABLE admin_votes (
     CONSTRAINT uk_admin_votes_participation
         UNIQUE (participation_id)
 );
+
+
+
+
+
+
+-- season winners
+
+CREATE TABLE season_winners (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    season_id BIGINT NOT NULL,
+    season_name VARCHAR(100),
+
+    contestant_id BIGINT NOT NULL,
+    contestant_name VARCHAR(100),
+
+    photo_url VARCHAR(255),
+
+    prize_money DECIMAL(15,2),
+
+    total_votes INT,
+
+    CONSTRAINT fk_winner_season
+        FOREIGN KEY (season_id)
+        REFERENCES seasons(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_winner_contestant
+        FOREIGN KEY (contestant_id)
+        REFERENCES participations(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT uk_season_winner UNIQUE (season_id)
+);
+
+
+CREATE INDEX idx_winner_season
+ON season_winners(season_id);

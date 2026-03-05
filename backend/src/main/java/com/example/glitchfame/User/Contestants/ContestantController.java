@@ -63,16 +63,13 @@ public ResponseEntity<Page<SeasonContestants>> getSeasonContestants(
 
 
 
-   //apply
-    @PostMapping("/apply")
-    public ResponseEntity<String> apply(
-            @ModelAttribute CreateContestantDTO request) {
+  @PostMapping(value = "/apply", consumes = "multipart/form-data")
+public ResponseEntity<String> apply(
+        @ModelAttribute CreateContestantDTO request) {
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.apply(request));
-    }
-
-  
+    return ResponseEntity.status(HttpStatus.CREATED)
+            .body(service.apply(request));
+}
 
 
     
@@ -95,9 +92,20 @@ public ResponseEntity<Page<SeasonContestants>> searchSeasonContestants(
 }
 
 
+//track my applications
+@GetMapping("/my-applications")
+public ResponseEntity<Page<MyApplicationsDTO>> trackMyApplications(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "20") int size) {
 
+    return ResponseEntity.ok(
+            service.trackMyApplications(page, size)
+    );
+}
 
-    //delete
+ 
+
+//delete
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         return ResponseEntity.ok(
