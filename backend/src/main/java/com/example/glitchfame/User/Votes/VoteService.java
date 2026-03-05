@@ -1,5 +1,4 @@
 package com.example.glitchfame.User.Votes;
-
 import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
 import com.example.glitchfame.User.Contestants.ContestantRepository;
 import com.example.glitchfame.User.Contestants.Participation;
@@ -9,12 +8,14 @@ import com.example.glitchfame.Auth.User;
 import com.example.glitchfame.Auth.AuthRepository;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
@@ -41,7 +42,7 @@ public class VoteService {
                         "User not found"
                 ));
 
-        // 🔥 Check if admin disabled voting
+        // 🔥 Check if admin disabled voting for this user
         if (!user.isCanVote()) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
@@ -57,8 +58,35 @@ public class VoteService {
                         "Contestant not found"
                 ));
 
+        // 🔥 Get season
+        var season = participation.getSeason();
+
+        // 🔒 Check if entire season is locked
+        if (season.isSeasonLock()) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Season is closed."
+            );
+        }
+
+        // 🔒 Check if voting is locked
+        if (season.isVoteLock()) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Voting for this season is closed."
+            );
+        }
+
+        // 🔒 Check voting end date
+        if (LocalDateTime.now().isAfter(season.getVotingEndDate())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Voting period has ended."
+            );
+        }
+
         // 🔥 Get season id
-        Long seasonId = participation.getSeason().getId();
+        Long seasonId = season.getId();
 
         // 🔥 Check if user already voted this contestant
         boolean alreadyVoted =

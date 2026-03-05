@@ -1,13 +1,15 @@
-package com.example.glitchfame.Admin.Seasons;
+package com.example.glitchfame.Admin.Seasons.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-
+import com.example.glitchfame.Admin.Contestants.*;
 import com.example.glitchfame.Admin.Seasons.DTO.SeasonFormDTO;
 import com.example.glitchfame.Admin.Seasons.DTO.UpdateSeasonDTO;
+import com.example.glitchfame.Admin.Seasons.Service.AdminSeasonService;
+import com.example.glitchfame.User.Contestants.ContestantRepository;
 import com.example.glitchfame.User.Seasons.DTO.SeasonsDTO;
 
 import jakarta.validation.Valid;
@@ -18,6 +20,8 @@ import jakarta.validation.Valid;
 public class AdminSeasonController {
 
     private final AdminSeasonService service;
+    private final AdminContestantRepository contestantRepository;
+
 
     // Get seasons with optional status filter
     @GetMapping
@@ -40,6 +44,9 @@ public class AdminSeasonController {
         return ResponseEntity.ok(service.search(name, status, page, size));
     }
 
+
+
+
     // Create a new season
     @PostMapping(value= "/create" ,consumes = "multipart/form-data")
     public ResponseEntity<String> createSeason(
@@ -50,6 +57,10 @@ public class AdminSeasonController {
                 .body(service.createSeason(dto));
     }
 
+
+
+
+
     // Update season details
     @PatchMapping(value = "/{id}", consumes = "multipart/form-data")
     public ResponseEntity<String> updateSeason(
@@ -58,6 +69,20 @@ public class AdminSeasonController {
 
         return ResponseEntity.ok(service.updateSeason(id, dto));
     }
+ 
+   
+  
+
+    //admin season lock
+//reset season
+   @DeleteMapping("/reset/{seasonId}")
+    public ResponseEntity<String> resetSeason(@PathVariable Long seasonId) {
+
+        service.resetSeason(seasonId);
+return ResponseEntity.ok("Season reset successfully");
+    }
+
+
 
     // Delete season by id
     @DeleteMapping("/{id}")

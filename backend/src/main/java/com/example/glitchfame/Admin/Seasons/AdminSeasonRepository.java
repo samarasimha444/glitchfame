@@ -1,9 +1,9 @@
 package com.example.glitchfame.Admin.Seasons;
-
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
+import java.util.List;
 import com.example.glitchfame.User.Seasons.Seasons;
 import com.example.glitchfame.User.Seasons.DTO.SeasonsDTO;
 
@@ -96,4 +96,17 @@ boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
             @Param("status") String status,
             Pageable pageable
     );
+
+
+
+
+//season lock based on time
+@Query(value = """
+SELECT * FROM seasons
+WHERE voting_end_date <= NOW()
+AND season_lock = false
+""", nativeQuery = true)
+List<Seasons> findSeasonsToFinalize();
+
+  
 }

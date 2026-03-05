@@ -1,17 +1,12 @@
 package com.example.glitchfame.User.Contestants;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import com.example.glitchfame.Auth.User;
 import com.example.glitchfame.Auth.AuthRepository;
 import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
@@ -51,6 +46,8 @@ public class ContestantService {
         );
     }
 
+
+
     //get contestant by id
     public ContestantsDTO getById(Long id) {
 
@@ -63,60 +60,97 @@ public class ContestantService {
                         ));
     }
 
-    
 
-    //apply for season
-    public String apply(CreateContestantDTO request) {
 
-        Long userId = getUserId();
-        Long seasonId = request.getSeasonId();
 
-        User user = authRepository.findById(userId)
-                .orElseThrow(() ->
-                        new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
-                                "User not found"
-                        ));
+   //user applying for the season
+   public String apply(CreateContestantDTO request) {
+   Long userId = getUserId();
+    Long seasonId = request.getSeasonId();
 
-        if (!user.isCanParticipate()) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "You are not allowed to participate"
-            );
-        }
+    // ================= USER CHECK =================
+    User user = authRepository.findById(userId)
+            .orElseThrow(() ->
+                    new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "User not found"
+                    ));
 
-        if (!seasonsRepository.existsById(seasonId)) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Season not found"
-            );
-        }
-
-        if (contestantRepository.existsByUserIdAndSeasonId(userId, seasonId)) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Already applied for this season"
-            );
-        }
-
-        String imageUrl = cloudinaryService.uploadImage(request.getImage());
-        Seasons season = seasonsRepository.getReferenceById(seasonId);
-
-        Participation participation = Participation.builder()
-                .user(user)
-                .season(season)
-                .name(request.getName())
-                .description(request.getDescription())
-                .dateOfBirth(request.getDateOfBirth())
-                .location(request.getLocation())
-                .photoUrl(imageUrl)
-                .status(Participation.Status.PENDING)
-                .build();
-
-        contestantRepository.save(participation);
-
-        return "Application submitted successfully. Status: PENDING";
+    if (!user.isCanParticipate()) {
+        throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "You are not allowed to participate"
+        );
     }
+
+    // ================= SEASON CHECK =================
+    Seasons season = seasonsRepository.findById(seasonId)
+            .orElseThrow(() ->
+                    new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "Season not found"
+                    ));
+
+    // ===== GLOBAL SEASON LOCK =====
+    if (season.isSeasonLock()) {
+        throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "Season is locked"
+        );
+    }
+
+    // ===== PARTICIPATION LOCK =====
+    if (season.isParticipationLock()) {
+        throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "Participation is locked for this season"
+        );
+    }
+
+    // ================= REGISTRATION WINDOW =================
+    LocalDateTime now = LocalDateTime.now();
+
+    if (now.isBefore(season.getRegistrationStartDate())) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Registration has not started yet"
+        );
+    }
+
+    if (now.isAfter(season.getRegistrationEndDate())) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Registration has ended"
+        );
+    }
+
+    // ================= DUPLICATE APPLICATION =================
+    if (contestantRepository.existsByUserIdAndSeasonId(userId, seasonId)) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "You have already applied for this season"
+        );
+    }
+
+    // ================= IMAGE UPLOAD =================
+    String imageUrl = cloudinaryService.uploadImage(request.getImage());
+
+    // ================= CREATE PARTICIPATION =================
+    Participation participation = Participation.builder()
+            .user(user)
+            .season(season)
+            .name(request.getName())
+            .description(request.getDescription())
+            .dateOfBirth(request.getDateOfBirth())
+            .location(request.getLocation())
+            .photoUrl(imageUrl)
+            .status(Participation.Status.PENDING)
+            .build();
+
+    contestantRepository.save(participation);
+
+    return "Application submitted successfully. Status: PENDING";
+}
 
 
 
