@@ -1,9 +1,18 @@
 import { Lock, Save } from "lucide-react"
 import { useState } from "react"
 
-const Controls = () => {
+const Controls = ({id}) => {
   const [votingOpen, setVotingOpen] = useState(false)
   const [prizePool, setPrizePool] = useState(12500)
+
+  const toggleVoting=(id)=>{
+
+  }
+
+
+  const handleChangePricePool = ()=>{
+    
+  }
 
   return (
     <div className="  border border-white/10 mt-4 rounded-xl p-4 w-full  ">

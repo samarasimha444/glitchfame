@@ -11,14 +11,14 @@ const AdminCard = ({ className, type, cardsInfo, data }) => {
   return (
     <div className={`flex flex-col w-full  py-4 ${className}`}>
       
-          <Modal
+          {/* <Modal
             className="w-full "
             open={open}
             onClose={() => setOpen(false)}
             title="Create Season"
           >
             <SeasonForm />
-          </Modal>;
+          </Modal>; */}
       
 
       <section className="flex w-full  justify-between items-start ">

@@ -2,8 +2,7 @@ import React from 'react'
 import AdminCard from '../dashboard/components/AdminCard'
 import Approval from './components/Approval'
 import ParticipantsTable from './components/UserTable'
-
-import { dashCards } from '../../../lib/admin'
+import { dashCards } from '../../../constants/admin'
 
 const SeasonPage = () => {
   return (

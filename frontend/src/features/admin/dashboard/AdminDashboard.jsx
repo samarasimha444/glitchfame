@@ -1,6 +1,5 @@
 import React from 'react'
-
-import { dashCards } from '../../../lib/admin'
+import { dashCards } from '../../../constants/admin'
 import AdminCard from './components/AdminCard'
 import SeasonsTable from './components/SeasonTable'
 
@@ -8,7 +7,7 @@ import SeasonsTable from './components/SeasonTable'
 const AdminDashboard = () => {
 
   const token = localStorage.getItem("token");
-console.log("TOKEN:", token);
+  console.log("TOKEN:", token);
 
   return (
     <div className='flex flex-col w-full h-screen '>

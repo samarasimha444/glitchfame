@@ -1,22 +1,39 @@
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-export const createSeason = async (data) => {
-  const token = localStorage.getItem("token");
+const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1MTQiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3MjcwMDg0MywiZXhwIjoxNzcyNzA0NDQzfQ.YIYZabbRt06NVEhF89beUlhSFYXB4F_aZdctQCGlinA"
 
-  const res = await fetch(`${BASE_URL}/admin/seasons`, {
-    method: "POST",
+export const createSeason = async (formData) => {
+  const res = await fetch(
+    "http://localhost:3000/admin/seasons/create",
+    {
+      method: "POST",
+      body: formData, 
+    }
+  );
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Failed to create season");
+  }
+
+  return res.text(); 
+};
+
+export const fetchSeasons = async () => {
+ 
+  const response = await fetch("http://localhost:3000/seasons", {
+    method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
   });
 
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.message || "Failed to create season");
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || "Failed to fetch seasons");
   }
 
-  return res.json();
+  return response.json();
 };

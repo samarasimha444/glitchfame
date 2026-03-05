@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { TimerReset } from 'lucide-react';
 import { RotateCcw } from 'lucide-react';
 import { LockOpen } from 'lucide-react';
+import { useFetchSeasons } from "../hooks";
 
 const seasons = [
   {
@@ -52,6 +53,13 @@ const getStatusStyle = (status) => {
 const SeasonsTable = () => {
   const [modalType, setModalType] = useState(null);
 
+   const { data:seasons, isLoading, isError, error } = useFetchSeasons();
+   console.log(seasons)
+
+  if (isLoading) return <p>Loading seasons...</p>;
+
+  if (isError) return <p>Error: {error.message}</p>;
+
   return (
     <>
       <div className="p-4 w-full justify-between border-b border-gray-800 flex  items-center">
@@ -88,35 +96,35 @@ const SeasonsTable = () => {
           </thead>
 
           <tbody>
-            {seasons.map((season) => (
+            {seasons?.map((season) => (
               <tr
                 key={season.id}
                 className="border-t border-gray-800 hover:bg-[#1E2229] transition"
               >
                 <td className="px-6 py-4">
-                  <div className="font-medium text-white">{season.name}</div>
-                  <div className="text-xs text-gray-500">{season.id}</div>
+                  <div className="font-medium text-white">{season.seasonName}</div>
+                  <div className="text-xs text-gray-500">{season.seasonId}</div>
                 </td>
 
                 <td className="px-6 py-4">
                   <span
-                    className={`px-3 py-1 rounded-full text-xs ${getStatusStyle(
-                      season.status,
-                    )}`}
-                  >
-                    {season.status}
-                  </span>
+      className={`px-3 py-1 rounded-full text-xs ${getStatusStyle(
+        season.seasonLock ? "Closed" : "Active"
+      )}`}
+    >
+      {season.seasonLock ? "Closed" : "Active"}
+    </span>
                 </td>
 
                 <td className="px-6 py-4 text-blue-400 font-medium">
-                  {season.prize}
+                  {season.prizeMoney}
                 </td>
 
                 <td className="px-6 py-4 text-gray-400">
-                  {season.registration}
+                  {season.registrationStartDate}
                 </td>
 
-                <td className="px-6 py-4 text-gray-400">{season.voting}</td>
+                <td className="px-6 py-4 text-gray-400">{season.votingEndDate}</td>
 
                 <td className="px-6 py-4 space-x-3 text-right ">
 

@@ -1,54 +1,10 @@
 import { useState } from "react";
-import { useCreateSeason } from "../hooks";
+import { initialState } from "../../../../constants/admin";
+import { fields } from "../../../../constants/admin";
 
-const initialState = {
-  name: "",
-  prizeMoney: "",
 
-  registrationStartDateDate: "",
-  registrationStartDateTime: "",
-
-  registrationEndDateDate: "",
-  registrationEndDateTime: "",
-
-  votingStartDateDate: "",
-  votingStartDateTime: "",
-
-  votingEndDateDate: "",
-  votingEndDateTime: "",
-
-  image: "",
-};
-
-const fields = [
-  {
-    label: "Season Name *",
-    name: "name",
-    type: "text",
-    required: true,
-    full: true,
-  },
-  { label: "Prize Money", name: "prizeMoney", type: "number" },
-
-  {
-    label: "Registration Start",
-    name: "registrationStartDate",
-    type: "datetime",
-  },
-  { label: "Registration End", name: "registrationEndDate", type: "datetime" },
-
-  { label: "Voting Start", name: "votingStartDate", type: "datetime" },
-  { label: "Voting End", name: "votingEndDate", type: "datetime" },
-
-  { label: "Image URL", name: "image", type: "text" },
-
-  { label: "Description", name: "description", type: "textarea", full: true },
-];
 
 const SeasonForm = ({ initialData = {}, loading }) => {
-
-  const createSeasonMutation = useCreateSeason();
-
   const [form, setForm] = useState({ ...initialState, ...initialData });
 
   const handleChange = (e) => {
@@ -56,59 +12,12 @@ const SeasonForm = ({ initialData = {}, loading }) => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  const token = localStorage.getItem("token");
-  console.log(token)
-
-  const formattedData = {
-    name: form.name,
-    prizeMoney: Number(form.prizeMoney),
-
-    registrationStartDate:
-      form.registrationStartDateDate && form.registrationStartDateTime
-        ? new Date(
-            `${form.registrationStartDateDate}T${form.registrationStartDateTime}`
-          ).toISOString()
-        : null,
-
-    registrationEndDate:
-      form.registrationEndDateDate && form.registrationEndDateTime
-        ? new Date(
-            `${form.registrationEndDateDate}T${form.registrationEndDateTime}`
-          ).toISOString()
-        : null,
-
-    votingStartDate:
-      form.votingStartDateDate && form.votingStartDateTime
-        ? new Date(
-            `${form.votingStartDateDate}T${form.votingStartDateTime}`
-          ).toISOString()
-        : null,
-
-    votingEndDate:
-      form.votingEndDateDate && form.votingEndDateTime
-        ? new Date(
-            `${form.votingEndDateDate}T${form.votingEndDateTime}`
-          ).toISOString()
-        : null,
-
-    image: form.image || "",
+  
+  const handleSubmit = (e) => {
+    
+    e.preventDefault();
+  
   };
-
-     createSeasonMutation.mutate(formattedData, {
-      onSuccess: () => {
-        alert("Season created successfully!");
-      },
-      onError: (err) => {
-        alert(err.message);
-      },
-    });
- 
-};
-
-
 
 
   const renderInput = (field) => {
