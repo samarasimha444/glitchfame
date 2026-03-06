@@ -1,24 +1,37 @@
 import { useState } from "react";
 import { initialState } from "../../../../constants/admin";
 import { fields } from "../../../../constants/admin";
-
-
+import { useCreateSeason } from "../hooks";
 
 const SeasonForm = ({ initialData = {}, loading }) => {
+
+  const { mutate: createSeason, isPending } = useCreateSeason();
   const [form, setForm] = useState({ ...initialState, ...initialData });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    const { name, value, files } = e.target;
+
+    if (files) {
+      setForm((prev) => ({ ...prev, [name]: files[0] }));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
-  
   const handleSubmit = (e) => {
-    
     e.preventDefault();
-  
-  };
 
+    const formData = new FormData();
+
+    Object.keys(form).forEach((key) => {
+      formData.append(key, form[key]);
+    });
+      
+    for (let [key, value] of formData.entries()) {
+    console.log(key, value);
+  }
+    createSeason(formData)
+  };
 
   const renderInput = (field) => {
     const commonClasses =
@@ -56,18 +69,28 @@ const SeasonForm = ({ initialData = {}, loading }) => {
             <input
               type="date"
               name={`${field.name}Date`}
-              value={form[`${field.name}Date`]}
+              value={form[`${field.name}Date`] || ""}
               onChange={handleChange}
               className={`${commonClasses} w-2/3`}
             />
             <input
               type="time"
               name={`${field.name}Time`}
-              value={form[`${field.name}Time`]}
+              value={form[`${field.name}Time`] || ""}
               onChange={handleChange}
               className={`${commonClasses} w-1/3`}
             />
           </div>
+        );
+
+      case "file":
+        return (
+          <input
+            type="file"
+            name={field.name}
+            onChange={handleChange}
+            className={commonClasses}
+          />
         );
 
       default:
@@ -75,7 +98,7 @@ const SeasonForm = ({ initialData = {}, loading }) => {
           <input
             type={field.type}
             name={field.name}
-            value={form[field.name]}
+            value={form[field.name] || ""}
             onChange={handleChange}
             required={field.required}
             className={commonClasses}

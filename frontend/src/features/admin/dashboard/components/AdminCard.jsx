@@ -3,40 +3,39 @@ import Modal from "./Model";
 import SeasonForm from "./SeasonForm";
 
 
-const AdminCard = ({ className, type, cardsInfo, data }) => {
+const AdminCard = ({ title,paragraph, className, type, cardsInfo, data }) => {
   console.log(cardsInfo);
+  console.log(type)
 
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   return (
     <div className={`flex flex-col w-full  py-4 ${className}`}>
       
-          {/* <Modal
+          <Modal
             className="w-full "
             open={open}
             onClose={() => setOpen(false)}
             title="Create Season"
           >
             <SeasonForm />
-          </Modal>; */}
+          </Modal>
       
 
       <section className="flex w-full  justify-between items-start ">
         <h3 className="flex flex-col font-semibold text-3xl">
-          Season Management
+          {title}
           <p className="text-[13px] max-w-xl text-gray-300">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum
-            doloremque, quam exercitationem !
+            {paragraph}
           </p>
         </h3>
 
-        
-            <button
-              onClick={() => setOpen(!open)}
-              className="bg-blue-400 px-3 py-2"
-            >
-              +Create Season
-            </button>
+        {type === "home" && (
+          <button  onClick={() => setOpen(!open)}
+          className="bg-blue-600 px-3 py-2">
+    + Create Season
+  </button>
+)}
          
       </section>
 

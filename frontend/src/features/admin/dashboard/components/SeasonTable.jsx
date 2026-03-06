@@ -1,43 +1,11 @@
 import React, { useState } from "react";
-import { TimerReset } from 'lucide-react';
-import { RotateCcw } from 'lucide-react';
-import { LockOpen } from 'lucide-react';
+import { LockOpen, Lock } from 'lucide-react';
 import { useFetchSeasons } from "../hooks";
-
-const seasons = [
-  {
-    id: "S-101",
-    name: "Cyber-Nexus Elite 2024",
-    status: "Active",
-    prize: "$25,000",
-    registration: "2024-01-15 — 2024-02-15",
-    voting: "2024-03-01 — 2024-04-01",
-  },
-  {
-    id: "S-102",
-    name: "Neo-Tokyo Underground",
-    status: "Draft",
-    prize: "$12,500",
-    registration: "2024-05-20 — 2024-06-20",
-    voting: "2024-07-01 — 2024-08-01",
-  },
-  {
-    id: "S-103",
-    name: "Void Runner Invitational",
-    status: "Ended",
-    prize: "$50,000",
-    registration: "2023-10-01 — 2023-11-01",
-    voting: "2023-11-15 — 2023-12-15",
-  },
-];
+import { useToggleSeasonLock } from "../../settings/hooks";
 
 
-export const toggleLock = ()=>{
 
-}
-
-
-const getStatusStyle = (status) => {
+ const getStatusStyle = (status) => {
   switch (status) {
     case "Active":
       return "bg-green-500/10 text-green-400 border border-green-500/20";
@@ -51,10 +19,14 @@ const getStatusStyle = (status) => {
 };
 
 const SeasonsTable = () => {
-  const [modalType, setModalType] = useState(null);
+
+
 
    const { data:seasons, isLoading, isError, error } = useFetchSeasons();
    console.log(seasons)
+
+    const {mutate: toggleSeasonLock,isPending: seasonPending,} = useToggleSeasonLock();
+
 
   if (isLoading) return <p>Loading seasons...</p>;
 
@@ -96,7 +68,7 @@ const SeasonsTable = () => {
           </thead>
 
           <tbody>
-            {seasons?.map((season) => (
+            {seasons?.content.map((season) => (
               <tr
                 key={season.id}
                 className="border-t border-gray-800 hover:bg-[#1E2229] transition"
@@ -108,12 +80,11 @@ const SeasonsTable = () => {
 
                 <td className="px-6 py-4">
                   <span
-      className={`px-3 py-1 rounded-full text-xs ${getStatusStyle(
-        season.seasonLock ? "Closed" : "Active"
-      )}`}
-    >
-      {season.seasonLock ? "Closed" : "Active"}
-    </span>
+            className={`px-3 py-1 rounded-full text-xs ${getStatusStyle(
+              season.seasonLock ? "Closed" : "Active"
+             )}`} >
+              {season.seasonLock ? "Closed" : "Active"}
+                </span>
                 </td>
 
                 <td className="px-6 py-4 text-blue-400 font-medium">
@@ -131,10 +102,13 @@ const SeasonsTable = () => {
              
 
                   <button
-                    onClick={() => toggleLock("")}
+                    onClick={() => toggleSeasonLock(season.seasonId)}
                     className=" cursor-pointer hover:text-purple-300 text-sm"
                   >
-                   <LockOpen />
+                     {season.seasonLock ? <Lock /> : <LockOpen />}
+                    
+
+                  
                   </button>
 
                   

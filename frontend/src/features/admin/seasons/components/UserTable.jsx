@@ -39,8 +39,6 @@ const data = [
 
 const ParticipantsTable = ({ type, className }) => {
 
-  const [isOpen,setIsOpen]= useState(false)
-
   const [page,setPage]= useState(1)
 
   const handleDelete = () => {};
@@ -56,11 +54,7 @@ const ParticipantsTable = ({ type, className }) => {
     <div className={` flex ${className ? className : "w-full"}`}>
 
            
-             <Model
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-      
-      />
+        
 
       <div className=" relative w-full mt-12   border border-gray-700 p-8 ">
         <section className="absolute top-4 right-3">

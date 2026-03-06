@@ -4,73 +4,74 @@ import SeasonSummary from "./components/SeasonSummary";
 import Controls from "./components/Controls";
 import SessionEngineTimer from "./components/EngineBox";
 import { Plus } from "lucide-react";
-import { useFetchSeasonDetails } from "./hooks";
+import { useDeleteSeason, useFetchSeasonDetails } from "./hooks";
 import { useFetchSeasons } from "../dashboard/hooks";
-
-
+import { dashCards } from "../../../constants/admin";
+import SeasonScheduleBox from "./components/EngineBox";
 
 const AdminSettings = () => {
-
- 
   const { data: seasons = [], isLoading: isSeasonsLoading } = useFetchSeasons();
 
-  
+  const { mutate: deleteSeason } = useDeleteSeason();
+
   const [selectedSeasonId, setSelectedSeasonId] = useState(null);
 
-  console.log(selectedSeasonId)
+  console.log(selectedSeasonId);
 
-
-  const { data: seasonData,isLoading: isSeasonLoading,isError: isSeasonError,
+  const {
+    data: seasonData,
+    isLoading: isSeasonLoading,
+    isError: isSeasonError,
   } = useFetchSeasonDetails(selectedSeasonId);
 
   console.log("Seasons:", seasons);
   console.log("Selected Season Data:", seasonData);
 
+  const handleDelete = () => {
+    deleteSeason(selectedSeasonId);
+  };
+
+  const handleRemove = () => {};
+
   return (
     <div className="mt-6 w-full flex flex-col gap-6">
- 
       <section className="w-full">
         <select
           value={selectedSeasonId}
           onChange={(e) => setSelectedSeasonId(e.target.value)}
           className="w-full bg-[#2C2C2E] max-w-xs text-white px-3 py-2 rounded-xs 
-          border border-gray-400 focus:outline-none 
-          focus:ring-2 focus:ring-blue-500 transition"
+  border border-gray-400 focus:outline-none 
+  focus:ring-2 focus:ring-blue-500 transition"
         >
           <option value="">Choose Event</option>
 
-          {seasons?.map((item) => (
-            <option key={item.seasonId} value={item._id}>
-              {item.seasonId}
+          {seasons?.content?.map((item) => (
+            <option key={item.seasonId} value={item.seasonId}>
+              {item.seasonName} {item.seasonId}
             </option>
           ))}
         </select>
       </section>
 
       <section className="w-full flex items-start justify-between gap-6">
-
-    
         <div className="flex-none self-start">
 
-          <AdminCard className="max-w-4xl" />
+          <AdminCard title="Settings" paragraph="Note actions perform here can change the db use it carefully" cardsInfo={dashCards} className="max-w-4xl" />
 
-         
-          {isSeasonLoading ? (
+          {isSeasonLoading ?
             <p className="text-white mt-4">Loading season details...</p>
-          ) : isSeasonError ? (
+          : isSeasonError ?
             <p className="text-red-500 mt-4">Failed to load season data</p>
-          ) : (
-            <SeasonSummary
+          : <SeasonSummary
               title="Season Summary"
               subtitle="Overview of registration and performance metrics"
               data={seasonData || []}
             />
-          )}
+          }
 
           <section className="flex space-x-3">
 
-            <div className="flex px-6 rounded-xs flex-wrap max-w-xs gap-4 mt-6 border py-3 border-gray-800">
-
+            {/* <div className="flex px-6 rounded-xs flex-wrap max-w-xs gap-4 mt-6 border py-3 border-gray-800">
               <h5 className="w-full text-sm font-semibold text-white">
                 Quick Vote Modifiers
               </h5>
@@ -88,17 +89,15 @@ const AdminSettings = () => {
               <p className="text-xs text-gray-400">
                 Applied globally to all the contestants
               </p>
+            </div> */}
 
-            </div>
-
-           
             <div className="flex flex-col px-6 py-4 rounded-lg max-w-xs gap-4 mt-6 border border-gray-800 bg-[#181B20]">
-
               <h5 className="w-full text-sm font-semibold text-red-500">
                 Event Actions
               </h5>
 
               <button
+                onClick={handleDelete}
                 className="flex items-center gap-2 px-5 py-2 rounded-lg border border-red-600 text-red-400 hover:bg-red-600 hover:text-white transition text-sm font-medium"
               >
                 <Plus size={16} />
@@ -106,6 +105,7 @@ const AdminSettings = () => {
               </button>
 
               <button
+                onClick={handleRemove}
                 className="flex items-center gap-2 px-5 py-2 rounded-lg border border-purple-600 text-purple-400 hover:bg-purple-600 hover:text-white transition text-sm font-medium"
               >
                 <Plus size={16} />
@@ -115,20 +115,20 @@ const AdminSettings = () => {
               <p className="text-xs text-gray-400">
                 These actions are irreversible. Use carefully!
               </p>
-
             </div>
-
           </section>
-
         </div>
 
         <div className="max-w-xl space-y-3">
-          <SessionEngineTimer />
-          <Controls />
+          <SeasonScheduleBox data ={seasonData} />
+          <Controls
+            id={selectedSeasonId}
+            voteLock={seasonData?.voteLock}
+            seasonLock={seasonData?.seasonLock}
+            prizeMoney={seasonData?.prizeMoney}
+          />
         </div>
-
       </section>
-
     </div>
   );
 };

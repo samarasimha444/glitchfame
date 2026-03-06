@@ -40,6 +40,12 @@ export const fields = [
   { label: "Voting Start", name: "votingStartDate", type: "datetime" },
   { label: "Voting End", name: "votingEndDate", type: "datetime" },
 
+    {
+    label: "image",
+    name: "image",
+    type: "file",
+    accept: "image/*",
+  },
 
 
   { label: "Description", name: "description", type: "textarea", full: true },
