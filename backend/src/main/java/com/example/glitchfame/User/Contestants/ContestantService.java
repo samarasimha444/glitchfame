@@ -14,6 +14,7 @@ import com.example.glitchfame.User.Contestants.DTO.*;
 import com.example.glitchfame.User.Seasons.Seasons;
 import com.example.glitchfame.User.Seasons.SeasonsRepository;
 import com.example.glitchfame.Configuration.Cloudinary.CloudinaryService;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -63,9 +64,7 @@ public class ContestantService {
 
 
 
-
-
-  // user applying for the season
+// user applying for the season
 public String apply(CreateContestantDTO request) {
 
     Long userId = getUserId();
@@ -94,7 +93,6 @@ public String apply(CreateContestantDTO request) {
                             "Season not found"
                     ));
 
-    // ===== GLOBAL SEASON LOCK =====
     if (season.isSeasonLock()) {
         throw new ResponseStatusException(
                 HttpStatus.FORBIDDEN,
@@ -102,7 +100,6 @@ public String apply(CreateContestantDTO request) {
         );
     }
 
-    // ===== PARTICIPATION LOCK =====
     if (season.isParticipationLock()) {
         throw new ResponseStatusException(
                 HttpStatus.FORBIDDEN,
@@ -134,14 +131,6 @@ public String apply(CreateContestantDTO request) {
         );
     }
 
-    // ================= DUPLICATE APPLICATION =================
-    if (contestantRepository.existsByUserIdAndSeasonId(userId, seasonId)) {
-        throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "You have already applied for this season"
-        );
-    }
-
     // ================= IMAGE VALIDATION =================
     if (request.getImage() == null || request.getImage().isEmpty()) {
         throw new ResponseStatusException(
@@ -161,7 +150,43 @@ public String apply(CreateContestantDTO request) {
         );
     }
 
-    // ================= CREATE PARTICIPATION =================
+    // ================= CHECK EXISTING PARTICIPATION =================
+    Optional<Participation> existing =
+            contestantRepository.findByUserIdAndSeasonId(userId, seasonId);
+
+    if (existing.isPresent()) {
+
+        Participation p = existing.get();
+
+        if (p.getStatus() == Participation.Status.PENDING) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Your application is already pending"
+            );
+        }
+
+        if (p.getStatus() == Participation.Status.APPROVED) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "You are already approved for this season"
+            );
+        }
+
+        // ================= REJECTED → RESUBMIT =================
+        p.setName(request.getName());
+        p.setDescription(request.getDescription());
+        p.setDateOfBirth(request.getDateOfBirth());
+        p.setLocation(request.getLocation());
+        p.setPhotoUrl(imageUrl);
+        p.setStatus(Participation.Status.PENDING);
+       
+
+        contestantRepository.save(p);
+
+        return "Application resubmitted successfully. Status: PENDING";
+    }
+
+    // ================= CREATE NEW PARTICIPATION =================
     Participation participation = Participation.builder()
             .user(user)
             .season(season)
@@ -177,7 +202,6 @@ public String apply(CreateContestantDTO request) {
 
     return "Application submitted successfully. Status: PENDING";
 }
-
 
 
 

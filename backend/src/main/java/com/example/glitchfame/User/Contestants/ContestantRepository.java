@@ -18,6 +18,7 @@ import java.util.Optional;
 @Repository
 public interface ContestantRepository extends JpaRepository<Participation, Long> {
 
+Optional<Participation> findByUserIdAndSeasonId(Long userId, Long seasonId);
 boolean existsByUserIdAndSeasonId(Long userId, Long seasonId);
 boolean existsByIdAndUserId(Long id, Long userId);
 void deleteByIdAndUserId(Long id, Long userId);
@@ -49,8 +50,10 @@ GET CONTESTANT BY ID
         s.voting_start_date AS votingStartDate,
         s.voting_end_date AS votingEndDate,
 
-        COALESCE(COUNT(DISTINCT v.id),0) 
-        + COALESCE(av.admin_vote_count,0) AS voteCount,
+        GREATEST(
+            COALESCE(COUNT(DISTINCT v.id),0) + COALESCE(av.admin_vote_count,0),
+            0
+        ) AS voteCount,
 
         CASE 
             WHEN :userId IS NOT NULL 
@@ -107,8 +110,10 @@ ALL LIVE APPROVED CONTESTANTS
         s.voting_start_date AS votingStartDate,
         s.voting_end_date AS votingEndDate,
 
-        COALESCE(COUNT(DISTINCT v.id),0) 
-        + COALESCE(av.admin_vote_count,0) AS voteCount,
+        GREATEST(
+            COALESCE(COUNT(DISTINCT v.id),0) + COALESCE(av.admin_vote_count,0),
+            0
+        ) AS voteCount,
 
         CASE 
             WHEN :userId IS NOT NULL 
@@ -207,8 +212,10 @@ CONTESTANTS OF A SEASON
         s.voting_start_date AS votingStartDate,
         s.voting_end_date AS votingEndDate,
 
-        COALESCE(COUNT(DISTINCT v.id),0) 
-        + COALESCE(av.admin_vote_count,0) AS totalVotes,
+        GREATEST(
+            COALESCE(COUNT(DISTINCT v.id),0) + COALESCE(av.admin_vote_count,0),
+            0
+        ) AS totalVotes,
 
         CASE 
             WHEN :userId IS NOT NULL 
@@ -275,8 +282,10 @@ SEARCH CONTESTANTS IN SEASON
         s.voting_start_date AS votingStartDate,
         s.voting_end_date AS votingEndDate,
 
-        COALESCE(COUNT(DISTINCT v.id),0) 
-        + COALESCE(av.admin_vote_count,0) AS totalVotes,
+        GREATEST(
+            COALESCE(COUNT(DISTINCT v.id),0) + COALESCE(av.admin_vote_count,0),
+            0
+        ) AS totalVotes,
 
         CASE 
             WHEN :userId IS NOT NULL 

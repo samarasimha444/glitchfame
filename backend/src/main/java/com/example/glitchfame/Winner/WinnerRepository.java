@@ -10,7 +10,11 @@ import java.util.List;
 @Repository
 public interface WinnerRepository extends JpaRepository<SeasonWinner, Long> {
 
-   //insert winner
+
+/* =========================================================
+INSERT SEASON WINNER
+========================================================= */
+
 @Modifying
 @Transactional
 @Query(value = """
@@ -24,43 +28,71 @@ SELECT
     p.name,
     p.photo_url,
     s.prize_money,
-    COUNT(v.id) + COALESCE(av.admin_vote_count, 0) AS total_votes
+
+    GREATEST(
+        COUNT(v.id) + COALESCE(av.admin_vote_count, 0),
+        0
+    ) AS total_votes
 
 FROM seasons s
-JOIN participations p ON p.season_id = s.id
-LEFT JOIN votes v ON v.contestant_id = p.id
-LEFT JOIN admin_votes av ON av.participation_id = p.id
+JOIN participations p 
+    ON p.season_id = s.id
+
+LEFT JOIN votes v 
+    ON v.contestant_id = p.id
+
+LEFT JOIN admin_votes av 
+    ON av.participation_id = p.id
 
 WHERE s.id = :seasonId
 AND p.status = 'APPROVED'
 
-GROUP BY p.id, av.admin_vote_count
+GROUP BY
+    s.id,
+    s.name,
+    s.prize_money,
+    p.id,
+    p.name,
+    p.photo_url,
+    av.admin_vote_count
+
 ORDER BY total_votes DESC
 LIMIT 1
 """, nativeQuery = true)
 void insertSeasonWinner(@Param("seasonId") Long seasonId);
 
-   //cheeck winner is there or not
-   boolean existsBySeasonId(Long seasonId);
+
+
+/* =========================================================
+CHECK IF WINNER ALREADY EXISTS
+========================================================= */
+
+boolean existsBySeasonId(Long seasonId);
 
 
 
+/* =========================================================
+GET WINNERS OF ALL SEASONS
+========================================================= */
 
-    // get winners of ALL seasons
-    @Query(value = """
-        SELECT *
-        FROM season_winners
-        ORDER BY season_id DESC
-    """, nativeQuery = true)
-    List<SeasonWinner> findAllSeasonWinners();
+@Query(value = """
+SELECT *
+FROM season_winners
+ORDER BY season_id DESC
+""", nativeQuery = true)
+List<SeasonWinner> findAllSeasonWinners();
 
 
-    // get winners of a specific season
-    @Query(value = """
-        SELECT *
-        FROM season_winners
-        WHERE season_id = :seasonId
-    """, nativeQuery = true)
-    List<SeasonWinner> findWinnersBySeason(@Param("seasonId") Long seasonId);
+
+/* =========================================================
+GET WINNER OF A SPECIFIC SEASON
+========================================================= */
+
+@Query(value = """
+SELECT *
+FROM season_winners
+WHERE season_id = :seasonId
+""", nativeQuery = true)
+List<SeasonWinner> findWinnersBySeason(@Param("seasonId") Long seasonId);
 
 }

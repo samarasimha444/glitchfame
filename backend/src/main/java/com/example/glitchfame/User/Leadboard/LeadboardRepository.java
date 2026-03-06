@@ -76,17 +76,16 @@ public interface LeadboardRepository extends JpaRepository<Participation, Long> 
                 LEFT JOIN votes v ON v.contestant_id = p.id
                 LEFT JOIN admin_votes a ON a.participation_id = p.id
                 WHERE p.status = 'APPROVED'
-                AND NOW() BETWEEN s.voting_start_date AND s.voting_end_date
+                AND s.voting_start_date <= NOW()
                 GROUP BY p.id, a.admin_vote_count
             ) ranked_inner
         ) ranked_outer
         WHERE rank_position <= 3
         ORDER BY season_id, rank_position
         """, nativeQuery = true)
-    List<LeaderboardProjection> findTop3OfAllSeasons(
-            @Param("userId") Long userId
-    );
-
+List<LeaderboardProjection> findTop3OfAllSeasons(
+        @Param("userId") Long userId
+);
 
     // ============================================================
     // 🔥 TOP 3 OF ONE SEASON

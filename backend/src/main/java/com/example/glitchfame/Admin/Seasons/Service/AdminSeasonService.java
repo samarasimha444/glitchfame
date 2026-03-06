@@ -210,7 +210,6 @@ public String createSeason(SeasonFormDTO dto) {
 
 
 
-
 // ================= END SEASON NOW =================
 @Transactional
 public String endSeasonNow(Long seasonId) {
@@ -221,18 +220,24 @@ public String endSeasonNow(Long seasonId) {
                             HttpStatus.NOT_FOUND,
                             "Season not found"));
 
-    // end voting immediately
-    season.setVotingEndDate(LocalDateTime.now());
+    LocalDateTime now = LocalDateTime.now();
+
+    // force the entire lifecycle to end
+    season.setRegistrationStartDate(now); // prevents UI thinking registration hasn't started
+    season.setRegistrationEndDate(now);   // closes registration
+    season.setVotingStartDate(now);       // prevents UI thinking voting hasn't started
+    season.setVotingEndDate(now);         // closes voting
 
     repository.save(season);
 
-    // insert winner only if not already inserted
+    // calculate winner only once
     if (!winnerRepository.existsBySeasonId(seasonId)) {
         winnerRepository.insertSeasonWinner(seasonId);
     }
 
     return "Season ended and winner calculated";
 }
+
 
 
 

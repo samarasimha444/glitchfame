@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 export default function ForgotPassword(){
 
   const navigate = useNavigate();
-
   const [email,setEmail] = useState("");
   const [otp,setOtp] = useState("");
   const [newPassword,setNewPassword] = useState("");
@@ -14,10 +13,13 @@ export default function ForgotPassword(){
   const [error,setError] = useState("");
   const [loading,setLoading] = useState(false);
 
-  // ===== send OTP =====
+  const token = localStorage.getItem("token");
+
+  // ================= SEND OTP =================
   const handleSendOtp = async (e) => {
 
-    e.preventDefault();
+    if(e) e.preventDefault();
+
     setError("");
     setLoading(true);
 
@@ -53,7 +55,7 @@ export default function ForgotPassword(){
   };
 
 
-  // ===== reset password =====
+  // ================= RESET PASSWORD =================
   const handleResetPassword = async (e) => {
 
     e.preventDefault();
@@ -114,7 +116,7 @@ export default function ForgotPassword(){
             required
           />
 
-          <br/>
+          <br/><br/>
 
           <button disabled={loading}>
             {loading ? "Sending OTP..." : "Send OTP"}
@@ -134,7 +136,7 @@ export default function ForgotPassword(){
             required
           />
 
-          <br/>
+          <br/><br/>
 
           <input
             type="password"
@@ -144,10 +146,20 @@ export default function ForgotPassword(){
             required
           />
 
-          <br/>
+          <br/><br/>
 
           <button disabled={loading}>
             {loading ? "Resetting..." : "Reset Password"}
+          </button>
+
+          <br/><br/>
+
+          <button
+            type="button"
+            onClick={handleSendOtp}
+            disabled={loading}
+          >
+            {loading ? "Sending..." : "Resend OTP"}
           </button>
 
         </form>
@@ -157,4 +169,5 @@ export default function ForgotPassword(){
     </div>
 
   );
+
 }

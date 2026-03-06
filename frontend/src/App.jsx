@@ -28,6 +28,7 @@ import TestingDashboard from "./Testing/TestingDashboard/TestingDashboard";
 import TestSeasonId from "./Testing/TestSeasonId";
 import TestingParticipation from "./Testing/TestingParticipation";
 import Leadboard  from "./Testing/LeadBoard";
+import Winners from "./Testing/Winners";
 
 export default function App() {
   return (
@@ -52,6 +53,10 @@ export default function App() {
        />
 
       <Route path="/leadboard" element={<Leadboard/>}/>
+      <Route path="/winners"  element={<Winners/>}/>
+
+
+
 
 
       {/* USER Protected Routes */}

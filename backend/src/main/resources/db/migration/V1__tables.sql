@@ -59,7 +59,7 @@ CREATE TABLE participations (
     location VARCHAR(150) NOT NULL,
     photo_url VARCHAR(500) NOT NULL,
 
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_participation_user
         FOREIGN KEY (user_id)

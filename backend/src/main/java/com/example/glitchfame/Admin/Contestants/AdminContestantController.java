@@ -55,7 +55,7 @@ public class AdminContestantController {
         );
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/status/{id}")
     public ResponseEntity<String> updateStatus(
             @PathVariable Long id,
             @RequestParam String action) {

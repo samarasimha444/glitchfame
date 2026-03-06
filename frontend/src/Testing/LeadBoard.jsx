@@ -15,7 +15,6 @@ useEffect(()=>{
 
 const fetchLeaderboard = async()=>{
 
-
 try{
 
     const res = await fetch(
@@ -45,7 +44,6 @@ try{
 
 }
 
-
 };
 
 fetchLeaderboard();
@@ -56,10 +54,9 @@ fetchLeaderboard();
 
 useEffect(()=>{
 
-if(!token) return;
+if(!token || leaders.length === 0) return;
 
 const client = new Client({
-
 
 brokerURL:`${import.meta.env.VITE_BASE_URL.replace("http","ws")}/ws`,
 
@@ -71,13 +68,9 @@ reconnectDelay:5000,
 
 debug:()=>{}
 
-
 });
 
 client.onConnect = ()=>{
-
-
-console.log("Leaderboard socket connected");
 
 const seasonIds = [...new Set(leaders.map(l=>l.season_id))];
 
@@ -100,7 +93,6 @@ seasonIds.forEach(seasonId=>{
     });
 
 });
-
 
 };
 
@@ -130,15 +122,30 @@ return acc;
 
 },{});
 
-// ================= UI =================
+// ================= SPLIT LIVE / PAST =================
 
-return(
+const now = new Date();
 
-<div>
+const liveSeasons = [];
+const pastSeasons = [];
 
-<h2>Live Season Leaders</h2>
+Object.values(grouped).forEach(seasonLeaders=>{
 
-{Object.values(grouped).map(seasonLeaders=>{
+const season = seasonLeaders[0];
+
+const votingEnd = new Date(season.voting_end_date);
+
+if(now <= votingEnd){
+liveSeasons.push(seasonLeaders);
+}else{
+pastSeasons.push(seasonLeaders);
+}
+
+});
+
+// ================= RENDER SEASON BLOCK =================
+
+const renderSeason = (seasonLeaders)=>{
 
 const season = seasonLeaders[0];
 
@@ -193,7 +200,26 @@ style={{objectFit:"cover"}}
 
 );
 
-})}
+};
+
+// ================= UI =================
+
+return(
+
+<div>
+
+<h2>Live Seasons</h2>
+
+{liveSeasons.length === 0 && <p>No live seasons</p>}
+
+{liveSeasons.map(renderSeason)}
+
+
+<h2 style={{marginTop:"50px"}}>Past Seasons</h2>
+
+{pastSeasons.length === 0 && <p>No past seasons</p>}
+
+{pastSeasons.map(renderSeason)}
 
 </div>
 

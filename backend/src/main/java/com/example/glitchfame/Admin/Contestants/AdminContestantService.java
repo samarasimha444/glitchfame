@@ -62,6 +62,8 @@ public class AdminContestantService {
     }
 
 
+
+
   //get season contestants filter by participants status
    public Page<SeasonContestants> getSeasonContestants(
             Long seasonId,
@@ -90,7 +92,7 @@ public class AdminContestantService {
 
 
 
-    //upadate status(approved or reject)
+//upadate status(approved or reject)
    @Transactional
 public String updateStatus(Long id, String action) {
 

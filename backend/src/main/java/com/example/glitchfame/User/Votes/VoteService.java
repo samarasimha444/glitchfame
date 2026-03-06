@@ -126,12 +126,12 @@ public VoteResponse toggleVote(Long participationId) {
         votesRepository.save(vote);
     }
 
-    // Get updated vote count
-    Long updatedCount = votesRepository.getTotalVotes(participationId);
+   Long updatedCount = votesRepository.getTotalVotes(participationId);
 
-    if (updatedCount == null) {
-        updatedCount = 0L;
-    }
+// ensure vote count never becomes negative
+if (updatedCount == null || updatedCount < 0) {
+    updatedCount = 0L;
+}
 
     // Broadcast vote update
     messagingTemplate.convertAndSend(

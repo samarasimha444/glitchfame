@@ -24,63 +24,69 @@ public class AdminVoteService {
     private final SimpMessagingTemplate messagingTemplate;
     private final LeaderboardService leaderboardService;
 
-    @Transactional
-    public String adjustVotes(Long participationId, int value) {
+@Transactional
+public String adjustVotes(Long participationId, int value) {
 
-        if (participationId == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Participation id is required"
-            );
-        }
-
-        Participation participation = participationRepository
-                .findById(participationId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Participation not found"
-                ));
-
-        AdminVotes adminVotes = adminVotesRepository
-                .findByParticipationId(participationId)
-                .orElseGet(() -> AdminVotes.builder()
-                        .participationId(participationId)
-                        .adminVoteCount(0)
-                        .build());
-
-        int updatedAdminVotes = adminVotes.getAdminVoteCount() + value;
-
-        if (updatedAdminVotes < 0) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Vote count cannot be negative"
-            );
-        }
-
-        adminVotes.setAdminVoteCount(updatedAdminVotes);
-        adminVotesRepository.save(adminVotes);
-
-        Long seasonId = participation.getSeason().getId();
-
-        // 🔥 Calculate total votes (user votes + admin votes)
-        Long totalVotes = votesRepository.getTotalVotes(participationId);
-
-        if (totalVotes == null) {
-            totalVotes = 0L;
-        }
-
-        // 🔥 Broadcast vote update to contestant dashboard
-        messagingTemplate.convertAndSend(
-                "/topic/votes",
-                Map.of(
-                        "participationId", participationId,
-                        "voteCount", totalVotes
-                )
+    if (participationId == null) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Participation id is required"
         );
-
-        // 🔥 Broadcast leaderboard update
-        leaderboardService.broadcastTop3Leaderboard(seasonId);
-
-        return "Admin votes updated successfully";
     }
+
+    Participation participation = participationRepository
+            .findById(participationId)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Participation not found"
+            ));
+
+    // get admin vote row
+    AdminVotes adminVotes = adminVotesRepository
+            .findByParticipationId(participationId)
+            .orElseGet(() -> AdminVotes.builder()
+                    .participationId(participationId)
+                    .adminVoteCount(0)
+                    .build());
+
+    // get current total votes
+    Long currentTotalVotes = votesRepository.getTotalVotes(participationId);
+
+    if (currentTotalVotes == null) {
+        currentTotalVotes = 0L;
+    }
+
+    // check new total votes
+    long newTotalVotes = currentTotalVotes + value;
+
+    if (newTotalVotes < 0) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Total votes cannot be negative"
+        );
+    }
+
+    // update admin vote adjustment
+    int updatedAdminVotes = adminVotes.getAdminVoteCount() + value;
+    adminVotes.setAdminVoteCount(updatedAdminVotes);
+
+    adminVotesRepository.save(adminVotes);
+
+    Long seasonId = participation.getSeason().getId();
+
+    // broadcast vote update
+    messagingTemplate.convertAndSend(
+            "/topic/votes",
+            Map.of(
+                    "participationId", participationId,
+                    "voteCount", newTotalVotes
+            )
+    );
+
+    // update leaderboard
+    leaderboardService.broadcastTop3Leaderboard(seasonId);
+
+    return "Admin votes updated successfully";
+}
+
 }

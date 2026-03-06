@@ -143,6 +143,7 @@ public class AuthService {
         return ResponseEntity.ok("OTP sent to your email");
     }
 
+    
     // ================= RESET PASSWORD =================
     @Transactional
     public ResponseEntity<String> resetPassword(
