@@ -235,13 +235,12 @@ public Page<SeasonContestants> getApprovedSeasonContestants(
         String name,
         int page,
         int size) {
-
-    if (seasonId == null) {
+if (seasonId == null) {
         throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
                 "Season id is required"
         );
-    }
+}
 
     if (name != null && name.trim().length() < 2) {
         throw new ResponseStatusException(
@@ -258,6 +257,11 @@ public Page<SeasonContestants> getApprovedSeasonContestants(
     );
 }
 
+
+
+
+
+
 // ================= TRACK MY APPLICATIONS =================
 public Page<MyApplicationsDTO> trackMyApplications(int page, int size) {
 
@@ -266,14 +270,6 @@ public Page<MyApplicationsDTO> trackMyApplications(int page, int size) {
             buildPageable(page, size)
     );
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -290,9 +286,7 @@ public Page<MyApplicationsDTO> trackMyApplications(int page, int size) {
                     "You can delete only your own participation"
             );
         }
-
         contestantRepository.deleteByIdAndUserId(id, userId);
-
         return "Participation deleted successfully";
     }
 }

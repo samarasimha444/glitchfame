@@ -76,66 +76,73 @@ public class AdminSeasonService {
         );
     }
 
-    // Create season
-    @Transactional
-    public String createSeason(SeasonFormDTO dto) {
 
-        LocalDateTime now = LocalDateTime.now();
-        String name = dto.getName().trim();
 
-        if (repository.existsByNameIgnoreCase(name)) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Season name already exists"
-            );
-        }
 
-        if (dto.getRegistrationStartDate().isBefore(now)) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Registration start date cannot be in the past"
-            );
-        }
 
-        if (dto.getRegistrationStartDate().isAfter(dto.getRegistrationEndDate())) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Registration end must be after registration start"
-            );
-        }
 
-        if (dto.getRegistrationEndDate().isAfter(dto.getVotingStartDate())) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Voting must start after registration ends"
-            );
-        }
+//create season
+@Transactional
+public String createSeason(SeasonFormDTO dto) {
 
-        if (dto.getVotingStartDate().isAfter(dto.getVotingEndDate())) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Voting end must be after voting start"
-            );
-        }
+    LocalDateTime now = LocalDateTime.now();
+    String name = dto.getName().trim();
 
-        String imageUrl = cloudinaryService.uploadImage(dto.getImage());
-
-        Seasons season = Seasons.builder()
-                .name(name)
-                .prizeMoney(dto.getPrizeMoney())
-                .registrationStartDate(dto.getRegistrationStartDate())
-                .registrationEndDate(dto.getRegistrationEndDate())
-                .votingStartDate(dto.getVotingStartDate())
-                .votingEndDate(dto.getVotingEndDate())
-                .photoUrl(imageUrl)
-                .build();
-
-        repository.save(season);
-
-        return "Season created successfully";
+    if (repository.existsByNameIgnoreCase(name)) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Season name already exists"
+        );
     }
 
-    // Update season
+    if (dto.getRegistrationStartDate().isBefore(now)) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Registration start date cannot be in the past"
+        );
+    }
+
+    if (dto.getRegistrationStartDate().isAfter(dto.getRegistrationEndDate())) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Registration end must be after or equal to registration start"
+        );
+    }
+
+    if (dto.getVotingStartDate().isBefore(dto.getRegistrationStartDate())) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Voting start must be after or equal to registration start"
+        );
+    }
+
+    if (dto.getVotingStartDate().isAfter(dto.getVotingEndDate())) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Voting end must be after or equal to voting start"
+        );
+    }
+
+    String imageUrl = cloudinaryService.uploadImage(dto.getImage());
+
+    Seasons season = Seasons.builder()
+            .name(name)
+            .prizeMoney(dto.getPrizeMoney())
+            .registrationStartDate(dto.getRegistrationStartDate())
+            .registrationEndDate(dto.getRegistrationEndDate())
+            .votingStartDate(dto.getVotingStartDate())
+            .votingEndDate(dto.getVotingEndDate())
+            .photoUrl(imageUrl)
+            .build();
+
+    repository.save(season);
+
+    return "Season created successfully";
+}
+
+
+
+// Update season
     @Transactional
     public String updateSeason(Long id, UpdateSeasonDTO dto) {
 
@@ -182,6 +189,11 @@ public class AdminSeasonService {
 
 
 
+
+
+
+
+
     //season reset by admin
     @Transactional
     public void resetSeason(Long seasonId) {
@@ -193,7 +205,12 @@ public class AdminSeasonService {
 
 
 
-    
+
+
+
+
+
+
 // ================= END SEASON NOW =================
 @Transactional
 public String endSeasonNow(Long seasonId) {
@@ -216,15 +233,6 @@ public String endSeasonNow(Long seasonId) {
 
     return "Season ended and winner calculated";
 }
-
-
-
-
-
-
-
-
-    
 
 
 
