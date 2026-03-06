@@ -61,9 +61,6 @@ public class ContestantService {
                         ));
     }
 
-
-
-
 // user applying for the season
 public String apply(CreateContestantDTO request) {
 

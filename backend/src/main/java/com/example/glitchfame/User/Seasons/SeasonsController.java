@@ -23,6 +23,15 @@ public class SeasonsController {
         );
     }
 
+// ================= GET LIVE + UPCOMING SEASONS =================
+@GetMapping("/live-upcoming")
+public ResponseEntity<List<SeasonsDTO>> getLiveAndUpcomingSeasons() {
+
+    return ResponseEntity.ok(
+            seasonsService.getLiveAndUpcomingSeasons()
+    );
+}
+
     // ================= GET SEASON DETAILS =================
     @GetMapping("/{seasonId}")
     public ResponseEntity<SeasonDetailsDTO> getSeasonDetails(

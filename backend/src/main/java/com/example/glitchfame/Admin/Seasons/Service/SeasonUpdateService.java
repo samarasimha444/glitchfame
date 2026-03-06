@@ -45,6 +45,10 @@ public class SeasonUpdateService {
         return "Prize money updated";
     }
 
+
+
+
+
     // update registration dates
     @Transactional
     public String updateRegistrationDates(
@@ -97,6 +101,11 @@ public class SeasonUpdateService {
         return "Voting dates updated";
     }
 
+
+
+
+
+
     // toggle vote lock
     @Transactional
     public String toggleVoteLock(Long id) {
@@ -122,6 +131,10 @@ public class SeasonUpdateService {
                 ? "Participation locked"
                 : "Participation unlocked";
     }
+
+
+
+    
 
     // toggle season lock
     @Transactional

@@ -76,8 +76,15 @@ public VoteResponse toggleVote(Long participationId) {
                 "Voting for this season is currently disabled"
         );
     }
+    // Voting start date check
+if (LocalDateTime.now().isBefore(season.getVotingStartDate())) {
+    throw new ResponseStatusException(
+            HttpStatus.FORBIDDEN,
+            "Voting has not started yet"
+    );
+}
 
-    // Voting end date check
+// Voting end date check
     if (LocalDateTime.now().isAfter(season.getVotingEndDate())) {
         throw new ResponseStatusException(
                 HttpStatus.FORBIDDEN,

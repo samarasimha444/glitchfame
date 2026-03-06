@@ -22,6 +22,15 @@ public class SeasonsService {
         );
     }
 
+// ================= GET LIVE + UPCOMING SEASONS =================
+public List<SeasonsDTO> getLiveAndUpcomingSeasons() {
+
+    Long userId = extractJwtData.getUserId(); // get logged-in user id
+
+    return seasonsRepository.findLiveAndUpcomingSeasons(userId); // fetch seasons
+}
+
+
     // ================= GET SEASON DETAILS =================
     public SeasonDetailsDTO getSeasonDetails(Long seasonId) {
 
