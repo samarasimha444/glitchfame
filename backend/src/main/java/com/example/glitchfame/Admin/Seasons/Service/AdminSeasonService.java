@@ -80,13 +80,13 @@ public class AdminSeasonService {
 
 
 
-
-//create season
+// create season
 @Transactional
 public String createSeason(SeasonFormDTO dto) {
 
     LocalDateTime now = LocalDateTime.now();
     String name = dto.getName().trim();
+    String description = dto.getSeasonDesc().trim();
 
     if (repository.existsByNameIgnoreCase(name)) {
         throw new ResponseStatusException(
@@ -127,6 +127,7 @@ public String createSeason(SeasonFormDTO dto) {
 
     Seasons season = Seasons.builder()
             .name(name)
+            .seasonDesc(description) // added description
             .prizeMoney(dto.getPrizeMoney())
             .registrationStartDate(dto.getRegistrationStartDate())
             .registrationEndDate(dto.getRegistrationEndDate())
@@ -139,7 +140,6 @@ public String createSeason(SeasonFormDTO dto) {
 
     return "Season created successfully";
 }
-
 
 
 // Update season

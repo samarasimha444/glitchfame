@@ -35,6 +35,12 @@ public class SeasonFormDTO {
 
     @NotBlank(message = "Photo URL is required")
     private MultipartFile Image;
+    
+
+    @NotBlank(message = "Season description is required")
+    private String seasonDesc;
+
+
 
 
 }

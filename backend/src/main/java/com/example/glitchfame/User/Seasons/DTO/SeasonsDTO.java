@@ -2,6 +2,8 @@ package com.example.glitchfame.User.Seasons.DTO;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+
+
 public interface SeasonsDTO {
 
    Long getSeasonId();
@@ -16,4 +18,7 @@ public interface SeasonsDTO {
     Boolean getVoteLock();
     Boolean getParticipationLock();
     Boolean getSeasonLock();
+    String getSeasonDesc();
+
+     
 }

@@ -57,5 +57,8 @@ public class Seasons {
         @Column(name = "season_lock", nullable = false)
         private boolean seasonLock = false;
 
+        @Column(name = "season_desc", columnDefinition = "TEXT")
+        private String seasonDesc;
+
 
 }

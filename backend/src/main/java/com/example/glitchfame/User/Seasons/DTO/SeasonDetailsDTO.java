@@ -17,6 +17,7 @@ public interface SeasonDetailsDTO {
      Boolean getVoteLock();
     Boolean getParticipationLock();
     Boolean getSeasonLock();
+    String getSeasonDesc();
 
      
 }

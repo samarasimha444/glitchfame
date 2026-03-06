@@ -18,7 +18,7 @@ public class CloudinaryService {
 
     private final Cloudinary cloudinary;
 
-    private static final long MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    private static final long MAX_SIZE = 5 * 1024 * 1024*2; // 5MB
 
     private static final List<String> ALLOWED_TYPES =
             List.of("image/jpeg", "image/png", "image/jpg");
@@ -48,6 +48,18 @@ public class CloudinaryService {
                             "resource_type", "image"
                     )
             );
+
+            // ===== DEBUG CONSOLE OUTPUT =====
+            System.out.println("===== CLOUDINARY RESPONSE =====");
+            System.out.println(result);
+
+            System.out.println("Secure URL: " + result.get("secure_url"));
+            System.out.println("Public ID: " + result.get("public_id"));
+            System.out.println("URL: " + result.get("url"));
+            System.out.println("Format: " + result.get("format"));
+            System.out.println("Width: " + result.get("width"));
+            System.out.println("Height: " + result.get("height"));
+            System.out.println("================================");
 
             return result.get("secure_url").toString();
 
@@ -84,5 +96,4 @@ public class CloudinaryService {
             throw new RuntimeException("Failed to delete folder: " + folder, e);
         }
     }
-
 }

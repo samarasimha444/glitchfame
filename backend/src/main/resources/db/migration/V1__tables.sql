@@ -29,6 +29,8 @@ CREATE TABLE seasons (
     registration_start_date DATETIME NOT NULL,
     registration_end_date DATETIME NOT NULL,
 
+     season_desc varchar(100) default NULL,
+
     voting_start_date DATETIME NOT NULL,
     voting_end_date DATETIME NOT NULL,
 
