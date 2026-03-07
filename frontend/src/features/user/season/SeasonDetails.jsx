@@ -4,15 +4,15 @@ import TournamentCard from './seasonui/TournamentCard'
 
 const SeasonDetails = () => {
   return (
-    <div  className='min-h-screen  flex px-20'>
+    <div  className='min-h-screen w-full   flex sm:px-20'>
          
-        <div className='flex flex-col'>
+        <div className='flex flex-col w-full'>
          
 
-         <section className='px-20 py-6'>
+         <section className='sm:px-20 px-6 py-6'>
               
-                <h5 className='text-5xl font-semibold'>Enter the <span className='text-purple-500'>Arena</span></h5>
-                <p className='text-gray-400 text-[13px] max-w-xl'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic repudiandae ea quos itaque aliquid delectus iste, vel enim laborum. Maxime, nemo minima natus doloremque aspernatur praesentium quos id earum repudiandae!</p>
+                <h5 className='text-3xl sm:text-5xl font-semibold'>Enter the <span className='text-purple-500'>Arena</span></h5>
+                <p className='text-gray-400 text-xs sm:text-[13px] max-w-xl'>Make sure to follow the guidelines while submitting your work. Each participant is allowed to submit according to the rules defined for this season. Submissions that do not meet the requirements may be rejected by the administrators.</p>
          
          </section>
        

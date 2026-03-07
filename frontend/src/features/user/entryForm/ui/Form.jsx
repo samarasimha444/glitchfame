@@ -1,13 +1,10 @@
 import React, { useState } from "react";
+import { formFields } from "../../../../constants/userdata";
+import { useSubmitEntry } from "../../home/hooks";
 
-const Form = () => {
+const Form = ({seasonId,image}) => {
 
-  const fields = [
-    { label: "In-game Name", name: "name", type: "text" },
-    { label: "Mobile Number", name: "mobile", type: "text" },
-    { label: "Age (Min 18)", name: "age", type: "number" },
-    { label: "Location", name: "location", type: "text" }
-  ];
+ 
 
   const [formData, setFormData] = useState({
     name: "",
@@ -17,6 +14,8 @@ const Form = () => {
     bio: ""
   });
 
+    const { mutate: submitEntry, isLoading, isError, isSuccess, error } = useSubmitEntry();
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -24,10 +23,20 @@ const Form = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
-  };
+const handleSubmit = (e) => {
+  e.preventDefault();
+
+  const data = new FormData();
+
+  Object.keys(formData).forEach((key) => {
+    data.append(key, formData[key]);
+  });
+
+  data.append("image", image);
+
+  data.append("seasonId", seasonId);
+  console.log("Submitting:", formData, image);
+};
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -38,7 +47,7 @@ const Form = () => {
 
    
       <div className="grid grid-cols-2 gap-4">
-        {fields.map((field) => (
+        {formFields?.map((field) => (
           <input
             key={field.name}
             type={field.type}

@@ -29,3 +29,16 @@ export const formatAndValidateSeasonForm = (form) => {
 };
 
 
+export const isSeasonLive = (season) => {
+  const now = new Date();
+
+  const registrationStart = new Date(season.registrationStartDate);
+  const registrationEnd = new Date(season.registrationEndDate);
+  const votingStart = new Date(season.votingStartDate);
+  const votingEnd = new Date(season.votingEndDate);
+
+  const isRegistrationOpen = now >= registrationStart && now <= registrationEnd;
+  const isVotingLive = now >= votingStart && now <= votingEnd;
+
+  return isRegistrationOpen || isVotingLive;
+};

@@ -1,7 +1,7 @@
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 
-const token ="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1MTIiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzI3NTUwMTgsImV4cCI6MTc3Mjc1ODYxOH0.DBkOHHKo9NSGGm3sf-cTXEhmPodH5wYDwqLR3pSG6A0"
+const token ="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjgiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzI4MzA5MzIsImV4cCI6MTc3MjgzNDUzMn0.VxVcItyvNwqIlTq-WQbVXYTB-ZqpleUFmdcU3rnq4G8"
 
 export const fetchSeasonById = async (seasonId) => {
 

@@ -173,7 +173,7 @@ const Gallery = () => {
             <img
               src={item.image}
               alt={item.title}
-              className="w-full h-full object-cover"
+              className="w-fullh-full object-cover"
             />
 
             

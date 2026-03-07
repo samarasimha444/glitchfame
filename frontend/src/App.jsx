@@ -29,6 +29,7 @@ import TestSeasonId from "./Testing/TestSeasonId";
 import TestingParticipation from "./Testing/TestingParticipation";
 import Leadboard  from "./Testing/LeadBoard";
 import Winners from "./Testing/Winners";
+import ChallengeDetail from "./features/user/details/ChallangeDetails";
 
 export default function App() {
   return (
@@ -39,7 +40,6 @@ export default function App() {
       {/* Root role-based redirect */}
       <Route path="/" element={<RoleRedirect />} />
 
-      {/* Public Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 
@@ -63,13 +63,15 @@ export default function App() {
       {/* <Route element={<ProtectedRoute allowedRole="USER" />}> */}
         <Route element={<Layout />}>
           <Route path="/home" element={<Home />} />
-          <Route path="/enter" element={<ArenaForm />} />
+          <Route path="/enter/:id" element={<ArenaForm />} />
            <Route path="/leaderboard" element={<LeaderBoard />} />
-          <Route path="/arena" element={<Arena />} />
+          <Route path="/arena/:id" element={<Arena />} />
 
           <Route path="/season" element={<SeasonDetails />} />
 
-          <Route path="/details" element={<PlayerDetails />} />
+            <Route path="/seasonInfo" element={<ChallengeDetail />} />
+
+          <Route path="/details/:id" element={<PlayerDetails />} />
 
 
 

@@ -1,8 +1,26 @@
 import { Upload } from "lucide-react";
 import Form from "./ui/Form";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 
 const ArenaForm = () => {
+    const { id } = useParams(); 
+  console.log(id);
+
+
+const [image, setImage] = useState(null);
+const [preview, setPreview] = useState(null);
+
+
+const handleImageChange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  setImage(file);
+  setPreview(URL.createObjectURL(file));
+};
+  
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-[#0f0f18] via-[#141a24] to-[#0c1b22] flex flex-col items-center justify-center py-5  px-6">
 
@@ -16,10 +34,10 @@ const ArenaForm = () => {
           JOIN THE <span className="text-[#BE5EED]">ARENA</span>
         </h1>
 
-        {/* <p className="text-gray-400 mt-4 max-w-xl">
+        <p className="text-gray-400 mt-4 max-w-xl">
           Upload your best look and claim your spot in the GlitchFame spotlight.
           Real-time voting starts as soon as you're approved.
-        </p> */}
+        </p>
 
       </div>
 
@@ -28,27 +46,44 @@ const ArenaForm = () => {
 
         <div className="border border-dashed border-gray-600 rounded-xl p-8 flex flex-col items-center justify-center text-center space-y-6">
 
-          <div className="w-14 h-14 flex items-center justify-center rounded-full bg-[#BE5EED]/20">
-            <Upload className="text-[#BE5EED]" />
-          </div>
+  {preview ? (
+    <img
+      src={preview}
+      alt="preview"
+      className="w-48 h-48 object-cover rounded-lg"
+    />
+  ) : (
+    <>
+      <div className="w-14 h-14 flex items-center justify-center rounded-full bg-[#BE5EED]/20">
+        <Upload className="text-[#BE5EED]" />
+      </div>
 
-          <div>
-            <p className="text-white font-semibold">Drag & Drop or Click</p>
-            <p className="text-gray-400 text-sm">PNG, JPG up to 10MB</p>
-          </div>
+      <div>
+        <p className="text-white font-semibold">Drag & Drop or Click</p>
+        <p className="text-gray-400 text-sm">PNG, JPG up to 10MB</p>
+      </div>
+    </>
+  )}
 
-          <button className="bg-black text-white px-5 py-2 rounded-md border border-gray-700 hover:border-[#BE5EED] transition">
-            Browse Files
-          </button>
+  <label className="bg-black text-white px-5 py-2 rounded-md border border-gray-700 hover:border-[#BE5EED] transition cursor-pointer">
+    Browse Files
+    <input
+      type="file"
+      accept="image/*"
+      className="hidden"
+      onChange={handleImageChange}
+    />
+  </label>
 
-          <p className="text-xs text-gray-500 mt-6">
-            Submission guidelines: Ensure proper lighting, no masks,
-            and centered subject for better voting engagement.
-          </p>
-        </div>
+  <p className="text-xs text-gray-500 mt-6">
+    Submission guidelines: Ensure proper lighting, no masks,
+    and centered subject for better voting engagement.
+  </p>
+
+</div>
 
       
-       <Form/>
+       <Form seasonId = {id} image={image}/>
       </div>
 
       <div className="flex gap-10 mt-10 text-gray-500 text-sm">

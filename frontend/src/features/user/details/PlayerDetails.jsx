@@ -3,9 +3,9 @@ import { Zap } from "lucide-react";
 
 const PlayerDetails = () => {
   return (
-    <div className="flex w-full  justify-evenly min-h-screen bg-black text-white">
+    <div className="flex flex-col md:flex-row w-full  justify-evenly min-h-screen bg-black text-white">
 
-      <section className="w-[45%] rounded-2xl h-[95dvh] mt-3 relative overflow-hidden">
+      <section className="h-[40dvh] w-full md:w-[45%] md:rounded-2xl md:h-[95dvh]  relative overflow-hidden">
 
         
         <img
@@ -30,21 +30,21 @@ const PlayerDetails = () => {
       </section>
 
   
-      <section className="max-w-xl p-12 space-y-8 ">
+      <section className="max-w-xl  p-4 md:p-12 md:space-y-8 ">
 
      
-        <div className="bg-[#0f1720] max-w-[530px] p-8 rounded-2xl border border-cyan-500/20">
+        <div className="md:bg-[#0f1720] max-w-[530px] p-8 rounded-2xl md:border border-cyan-500/20">
           <p className="text-xs text-gray-400 mb-2">
             CURRENT ENERGY LEVEL
           </p>
 
-          <h2 className="text-5xl font-extrabold text-cyan-400">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-cyan-400">
             42,892
           </h2>
 
           <button className="mt-6 w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-lg text-black font-semibold hover:opacity-90 transition">
             <Zap size={18} />
-            BOOST VOTE
+            Vote Xia
           </button>
 
           <p className="text-xs text-gray-500 mt-3 text-center">
@@ -58,7 +58,7 @@ const PlayerDetails = () => {
             🎤 Artist Manifesto
           </h3>
 
-          <p className="text-gray-400 text-sm leading-relaxed">
+          <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
             Digital disruptor and street photographer. Capturing the neon pulse
             of the underground. I'm here to break the system and claim the crown.
             Every vote is a spark for the revolution. Join the Viper nest.

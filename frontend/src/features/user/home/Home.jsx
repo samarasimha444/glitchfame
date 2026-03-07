@@ -4,7 +4,6 @@ import Cards from "./components/Cards";
 import Gallery from "./components/Gallery";
 import Overview from "./components/OverviewSection";
 
-
 const menuItems = [
   "#AESTHETICS",
   "ALL Challanges",
@@ -14,13 +13,12 @@ const menuItems = [
   "Portrait",
 ];
 
-const Home =() =>{
-
+const Home = () => {
+  
   const { profile } = useOutletContext() || {};
 
   return (
-    <div className="w-full space-y-3 flex-col max-w-screen m-auto bg-[#1E2229] flex items-center justify-center">
-
+    <div className="w-full space-y-3 flex-col max-w-screen m-auto bg-[#000000] md:bg-[#1E2229] flex items-center justify-center">
       {/* <div className="w-full max-w-400 h-[70dvh] md:h-[95dvh] flex">
 
         <section className="w-1/2 hidden md:flex flex-col justify-center px-16 text-white space-y-6">
@@ -80,30 +78,26 @@ const Home =() =>{
           </div>
         </section>
       </div>  */}
-      
-       <FeaturedCarousel/>
+
+      <FeaturedCarousel />
 
       <div className="bg-[#0F141A] mt-0 hidden md:flex w-full items-center justify-center">
         <ul className="flex space-x-10 py-3 text-[14px] font-semibold">
-
-    <h6 className="neon-blink text-lg md:text-xl">
-  Participate in The Season to Win Big Prizes
-</h6>
-
+          <h6 className="neon-blink text-lg md:text-xl">
+            Participate in The Season to Win Big Prizes
+          </h6>
         </ul>
       </div>
 
-<section className="w-full bg-[#181B20]">
-  <Cards />
+      <section className="w-full md:bg-[#181B20]">
+        <Cards />
 
-     <Gallery />
-
-</section>
-      
+        <Gallery />
+      </section>
 
       <Overview />
     </div>
   );
-}
+};
 
-export default Home
+export default Home;
