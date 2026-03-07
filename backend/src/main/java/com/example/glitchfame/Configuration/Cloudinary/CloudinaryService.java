@@ -18,7 +18,7 @@ public class CloudinaryService {
 
     private final Cloudinary cloudinary;
 
-    private static final long MAX_SIZE = 5 * 1024 * 1024*2; // 5MB
+    private static final long MAX_SIZE = 5 * 1024 * 1024*2; // 10MB
 
     private static final List<String> ALLOWED_TYPES =
             List.of("image/jpeg", "image/png", "image/jpg");
