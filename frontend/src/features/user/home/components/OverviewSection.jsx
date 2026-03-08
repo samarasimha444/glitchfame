@@ -35,15 +35,15 @@ const Overview = () => {
   return (
 
     
-    <div className="w-full mt-4 bg-[#1E2229] py-3 md:py-24 flex justify-center">
+    <div className="w-full mt-4 md:bg-[#1E2229] py-3 md:py-24 flex justify-center">
 
       <div className="w-full max-w-7xl px-6 md:px-16 flex flex-col md:flex-row justify-between gap-12 md:gap-20">
 
       
         <div className="w-full md:w-1/2 text-white space-y-6">
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight">
-            NOT JUST <br />
-            ANOTHER <br />
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight">
+            NOT JUST 
+            ANOTHER 
             PICTURE.
           </h2>
 
@@ -54,11 +54,11 @@ const Overview = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
-            <button className="bg-[#BE5EED] text-black px-6 py-3 font-semibold hover:opacity-90 transition w-full sm:w-auto">
+            <button className="bg-[#BE5EED] text-xs sm:text-base  text-black px-6 py-3 md:font-semibold hover:opacity-90 transition w-full sm:w-auto">
               START SUBMISSION
             </button>
 
-            <button className="border border-gray-600 px-6 py-3 font-semibold hover:border-[#BE5EED] hover:text-[#BE5EED] transition w-full sm:w-auto">
+            <button className="border text-xs sm:text-base border-gray-600 px-6 py-3 font-semibold hover:border-[#BE5EED] hover:text-[#BE5EED] transition w-full sm:w-auto">
               HOW IT WORKS
             </button>
           </div>

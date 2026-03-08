@@ -4,9 +4,6 @@ const BASE_URL = "http://localhost:3000"; //
 const token = localStorage.getItem("token")
 
 export const getVotersById = async (seasonId) => {
-    console.log()
-  
-
   const response = await fetch(`${BASE_URL}/contestants/season/${seasonId}`, {
     method: "GET",
     headers: {
@@ -18,6 +15,23 @@ export const getVotersById = async (seasonId) => {
   console.log(response)
   if (!response.ok) {
     throw new Error("Failed to fetch season data");
+  }
+
+  return response.json();
+};
+
+
+export const getContestantDetails = async (id) => {
+  const response = await fetch(`${BASE_URL}/contestants/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch contestant details");
   }
 
   return response.json();

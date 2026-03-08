@@ -1,80 +1,101 @@
 import React from "react";
-import { Trophy, Flame } from "lucide-react";
-import { PodiumCard } from "./ui/PodiumCard";
 
-const leaderboardData = [
-  { rank: 4, name: "Luna Spark", score: "782.1K", change: "+12" },
-  { rank: 5, name: "Void Walker", score: "740.5K", change: "+8" },
-  { rank: 6, name: "Neon Nexus", score: "690.2K", change: "+5" },
-  { rank: 7, name: "Ghost Pro", score: "650.0K", change: "+3" },
+const leaderboard = [
+  { id: 1, name: "Harold Rhodes", score: 2300, img: "https://randomuser.me/api/portraits/men/11.jpg" },
+  { id: 2, name: "Phyllis Woods", score: 2127, img: "https://randomuser.me/api/portraits/women/21.jpg" },
+  { id: 3, name: "Frank Guy", score: 1982, img: "https://randomuser.me/api/portraits/men/31.jpg" },
+  { id: 4, name: "Connie Gregg", score: 1943, img: "https://randomuser.me/api/portraits/women/41.jpg" },
+  { id: 5, name: "Alex Woods", score: 1884, img: "https://randomuser.me/api/portraits/men/51.jpg" },
 ];
 
 const Leaderboard = () => {
   return (
-    <div className="min-h-screen bg-[#0B0F14] text-white px-6 md:px-20 py-16">
+    <div className="w-full min-h-screen bg-black  flex justify-center py-10">
 
+      <div className="w-full max-w-6xl bg-black text-white rounded-xl shadow-2xl overflow-hidden">
 
-      <section className="flex flex-col md:flex-row justify-center items-end gap-8 mb-20">
-
-        <PodiumCard position="2nd" name="Luna Spark" score="842.5K" />
-        <PodiumCard position="1st" name="Xander Glitch" score="1.2M" large />
-        <PodiumCard position="3rd" name="Void Walker" score="790.1K" />
-
-      </section>
-
-      
-      <section>
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold tracking-wide">
-            RANKED FEED
-          </h2>
-
-          <div className="flex gap-3">
-            <button className="px-4 py-2 bg-[#11161D] border border-[#1F2A35] rounded-lg text-sm">
-              Showing 1–50
-            </button>
-            <button className="px-4 py-2 bg-[#0E1C23] text-cyan-400 rounded-lg text-sm">
-              Verified Only
-            </button>
-          </div>
+        
+        <div className="flex items-center justify-between px-6 py-5 md:hidden border-b border-gray-800">
+          <span className="text-xl cursor-pointer">←</span>
+          <h2 className="font-semibold text-lg md:text-3xl">Leaderboard</h2>
+          <span></span>
         </div>
 
-        <div className="bg-[#11161D] border border-[#1F2A35] rounded-2xl overflow-hidden">
-          {leaderboardData.map((player) => (
+  
+        <div className="flex justify-center md:justify-between items-end px-6 pt-10 pb-10 gap-6">
+
+         
+          <div className="flex flex-col items-center text-center">
+            <img
+              src={leaderboard[1]?.img}
+              className="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-gray-300"
+            />
+            <p className="mt-2 text-sm md:text-base">{leaderboard[1]?.name}</p>
+            <p className="text-gray-300">{leaderboard[1]?.score}</p>
+          </div>
+
+          <div className="flex flex-col items-center text-center px-5 py-5 rounded-xl shadow-lg -mt-8 bg-[#111]">
+            <span className="text-yellow-400 text-3xl">👑</span>
+
+            <img
+              src={leaderboard[0]?.img}
+              className="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-yellow-400 mt-2"
+            />
+
+            <p className="mt-2 font-semibold text-base md:text-lg">
+              {leaderboard[0]?.name}
+            </p>
+
+            <p className="text-yellow-300 font-semibold">
+              {leaderboard[0]?.score}
+            </p>
+          </div>
+
+        
+          <div className="flex flex-col items-center text-center">
+            <img
+              src={leaderboard[2]?.img}
+              className="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-gray-400"
+            />
+            <p className="mt-2 text-sm md:text-base">{leaderboard[2]?.name}</p>
+            <p className="text-gray-300">{leaderboard[2]?.score}</p>
+          </div>
+
+        </div>
+
+        <div className="px-4 md:px-8 pb-8 space-y-3">
+
+          {leaderboard.slice(3).map((player, index) => (
             <div
-              key={player.rank}
-              className="flex justify-between items-center px-6 py-4 border-b border-[#1F2A35] hover:bg-[#151C24] transition"
+              key={player.id}
+              className="flex items-center justify-between bg-[#111] hover:bg-[#1a1a1a] transition rounded-lg px-4 py-3"
             >
-              <div className="flex items-center gap-6">
+
+              <div className="flex items-center gap-4">
                 <span className="text-gray-400 w-6">
-                  #{player.rank}
+                  {index + 4}
                 </span>
-                <div>
-                  <p className="font-semibold">{player.name}</p>
-                  <p className="text-xs text-gray-500">
-                    Votes Aggregated
-                  </p>
-                </div>
+
+                <img
+                  src={player.img}
+                  className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover"
+                />
+
+                <p className="text-sm md:text-base">
+                  {player.name}
+                </p>
               </div>
 
-              <div className="flex items-center gap-8">
-                <span className="font-semibold">
-                  {player.score}
-                </span>
+              <p className="font-semibold text-sm md:text-base">
+                {player.score}
+              </p>
 
-                <span className="text-green-400 text-sm flex items-center gap-1">
-                  <Flame size={14} />
-                  {player.change}
-                </span>
-
-                <button className="px-4 py-2 bg-cyan-500/20 text-cyan-400 rounded-lg text-sm hover:bg-cyan-500/30 transition">
-                  Boost
-                </button>
-              </div>
             </div>
           ))}
+
         </div>
-      </section>
+
+      </div>
 
     </div>
   );

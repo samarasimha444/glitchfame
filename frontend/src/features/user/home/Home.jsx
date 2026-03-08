@@ -1,17 +1,11 @@
+import React, { Suspense, lazy } from "react";
 import { Outlet, useOutletContext } from "react-router-dom";
 import FeaturedCarousel from "./components/Carousel";
-import Cards from "./components/Cards";
-import Gallery from "./components/Gallery";
+const Cards = lazy(() => import("./components/Cards"));
+const Gallery = lazy(() => import("./components/Gallery"));
 import Overview from "./components/OverviewSection";
 
-const menuItems = [
-  "#AESTHETICS",
-  "ALL Challanges",
-  "Neon NIghts",
-  "Retro Nights",
-  "Street Art",
-  "Portrait",
-];
+
 
 const Home = () => {
   
@@ -19,6 +13,7 @@ const Home = () => {
 
   return (
     <div className="w-full space-y-3 flex-col max-w-screen m-auto bg-[#000000] md:bg-[#1E2229] flex items-center justify-center">
+      
       {/* <div className="w-full max-w-400 h-[70dvh] md:h-[95dvh] flex">
 
         <section className="w-1/2 hidden md:flex flex-col justify-center px-16 text-white space-y-6">
@@ -90,9 +85,13 @@ const Home = () => {
       </div>
 
       <section className="w-full md:bg-[#181B20]">
-        <Cards />
+       <Suspense fallback={<p className="text-white"> cards Loading...</p>}>
+          <Cards />
+        </Suspense>
 
-        <Gallery />
+        <Suspense fallback={<p className="text-white"> GalleryLoading...</p>}>
+          <Gallery />
+        </Suspense>
       </section>
 
       <Overview />

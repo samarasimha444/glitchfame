@@ -7,7 +7,7 @@ const Navbar = () => {
 
   
   return (
-    <nav className="bg-[#181B20] px-8 py-5 flex items-center justify-between relative">
+    <nav className=" bg-black md:bg-[#181B20] px-8 py-5 flex items-center justify-between relative">
       <div className="flex items-center space-x-2">
         <div className="bg-purple-500 p-2 rounded-md">
           <span className="font-bold">Fire</span>

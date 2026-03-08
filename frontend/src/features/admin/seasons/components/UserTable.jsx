@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { UserPlus, Trash2, Search } from "lucide-react";
-import { usePosts } from "../hook";
+
 import Model from "./Model";
 
 

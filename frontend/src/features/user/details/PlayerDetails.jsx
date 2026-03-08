@@ -1,15 +1,30 @@
 import React from "react";
 import { Zap } from "lucide-react";
+import { useContestantDetails } from "../arena/hooks";
+import { useParams } from "react-router-dom";
 
 const PlayerDetails = () => {
+
+   const { id } = useParams(); 
+   console.log(id)
+
+const { data, isLoading, error } = useContestantDetails(id);
+ console.log(data)
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error fetching data</p>;
+
+  
+
   return (
+
+
     <div className="flex flex-col md:flex-row w-full  justify-evenly min-h-screen bg-black text-white">
 
       <section className="h-[40dvh] w-full md:w-[45%] md:rounded-2xl md:h-[95dvh]  relative overflow-hidden">
 
         
         <img
-          src="https://images.unsplash.com/photo-1494790108377-be9c29b29330"
+          src={data?.seasonPhotoUrl}
           alt="Player"
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -20,10 +35,12 @@ const PlayerDetails = () => {
        
         <div className="absolute bottom-0 left-0 p-8">
           <h1 className="text-3xl font-bold">
-            Xyla 'Viper' Chen
+            {data?.participantName}
           </h1>
-          <p className="text-gray-400 text-sm mt-1">
-            Neo-Tokyo Sector 7 • Joined Sept 2024
+          <p className="text-gray-400  text-sm mt-1">
+            {data?.dateOfBirth}
+            <span> {data?.location}</span>
+           
           </p>
         </div>
 
@@ -35,20 +52,20 @@ const PlayerDetails = () => {
      
         <div className="md:bg-[#0f1720] max-w-[530px] p-8 rounded-2xl md:border border-cyan-500/20">
           <p className="text-xs text-gray-400 mb-2">
-            CURRENT ENERGY LEVEL
+            CURRENT STANDINGS
           </p>
 
           <h2 className="text-3xl md:text-5xl font-extrabold text-cyan-400">
-            42,892
+            {data.voteCount}
           </h2>
 
           <button className="mt-6 w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-lg text-black font-semibold hover:opacity-90 transition">
             <Zap size={18} />
-            Vote Xia
+            Vote {data?.participantName}
           </button>
 
           <p className="text-xs text-gray-500 mt-3 text-center">
-            LIMITED TO 1 VOTE PER ARENA CYCLE
+            LIMITED TO 5 VOTE PER ARENA CYCLE
           </p>
         </div>
 
@@ -59,19 +76,18 @@ const PlayerDetails = () => {
           </h3>
 
           <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
-            Digital disruptor and street photographer. Capturing the neon pulse
-            of the underground. I'm here to break the system and claim the crown.
-            Every vote is a spark for the revolution. Join the Viper nest.
+            {data?.description}
+
           </p>
 
           <p className="text-purple-400 text-sm mt-4">
-            #GlitchFame #CyberpunkVibes #NeoTokyo
+            #GlitchFame #{data?.seasonName}
           </p>
         </div>
 
        
-        <div className="bg-[#0f1720] p-6 rounded-xl border border-gray-800 flex items-center justify-between">
-          <div className="flex -space-x-3">
+        <div className="bg-[#0f1720] p-6 mt-4 rounded-xl border border-gray-800 flex items-center justify-between">
+          {/* <div className="flex -space-x-3">
             {[1, 2, 3, 4, 5].map((item) => (
               <img
                 key={item}
@@ -79,10 +95,11 @@ const PlayerDetails = () => {
                 className="w-10 h-10 rounded-full border-2 border-black"
               />
             ))}
-          </div>
+          </div> */}
+          <p>Season Pool</p>
 
           <p className="text-sm text-gray-400">
-            Top Supporters
+            Rs{data?.prizeMoney}
           </p>
         </div>
 

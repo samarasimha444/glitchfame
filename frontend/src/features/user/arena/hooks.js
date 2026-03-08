@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getVotersById } from "./api";
+import { getContestantDetails, getVotersById } from "./api";
 
 
 
@@ -12,3 +12,11 @@ export const useContestantsById = (seasonId) => {
     enabled: !!seasonId, 
   });
 };
+
+export const useContestantDetails = (id) => {
+  return useQuery({
+    queryKey: ["contestant-details", id],
+    queryFn: () => getContestantDetails(id),
+    enabled: !!id, 
+  })
+}

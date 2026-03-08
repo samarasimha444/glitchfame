@@ -50,7 +50,7 @@ const ArenaCard = ({id}) => {
 
           {contestants?.content.map((user) => (
 
-            <Link to={`/details/${user,user.id}`}
+            <Link to={`/details/${user.id}`}
               key={user.id}
               className="relative w-full  sm:max-w-77.5 h-[35dvh] sm:h-97 rounded-xl overflow-hidden border border-gray-800 hover:border-purple-500 transition"
             >
@@ -70,7 +70,7 @@ const ArenaCard = ({id}) => {
                   {user.name}
                 </h3>
 
-                <button className="mt-3 text-xs sm:text-normal w-full bg-gradient-to-r from-purple-500 to-pink-500 py-2 rounded-md text-black font-semibold hover:opacity-90 transition">
+                <button className="mt-3 text-xs sm:text-base w-full bg-gradient-to-r from-purple-500 to-pink-500 py-2 rounded-md text-black font-semibold hover:opacity-90 transition">
                   VOTE
                 </button>
               </div>

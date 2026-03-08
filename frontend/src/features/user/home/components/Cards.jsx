@@ -3,63 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLiveUpcomingSeasons } from "../hooks";
 import { isSeasonLive } from "../../../../lib/helper";
 
-const contests = [
-  {
-    id: 1,
-    title: "CYBERPUNK SEOUL",
-    image:
-      "https://i.pinimg.com/474x/99/ed/1b/99ed1bf6223ed9863fca27fd838959d8.jpg?nii=t",
-    prize: "$2.5k",
-    votes: "1.2k",
-    timeLeft: "24h",
-  },
-  {
-    id: 2,
-    title: "NEON TOKYO",
-    image:
-      "https://i.pinimg.com/originals/dc/e7/91/dce7915ba0c362c24426eccd27a00929.jpg",
-    prize: "$1.8k",
-    votes: "980",
-    timeLeft: "12h",
-  },
-  {
-    id: 3,
-    title: "FUTURE DUBAI",
-    image:
-      "https://i.pinimg.com/originals/2d/5a/d4/2d5ad4cb9aee6b11b3ad4352998814d6.jpg",
-    prize: "$3k",
-    votes: "2.1k",
-    timeLeft: "48h",
-  },
-  {
-    id: 4,
-    title: "SPACE MUMBAI",
-    image:
-      "https://i.ytimg.com/vi/k-n5PdPuQFM/oar2.jpg",
-    prize: "$900",
-    votes: "650",
-    timeLeft: "6h",
-  },
- 
-    {
-    id: 5,
-    title: "DIGITAL PARIS",
-    image:
-      "https://i.pinimg.com/originals/f8/19/e4/f819e4d4f5b6a266a71f8a5248003e39.jpg",
-    prize: "$2k",
-    votes: "1.5k",
-    timeLeft: "36h",
-  },
-  {
-    id: 6,
-    title: "AI NEW YORK",
-    image:
-      "https://tse3.mm.bing.net/th/id/OIF.sThQPvxMvK2ZSwZeNgudhQ?pid=Api&P=0&h=180",
-    prize: "$4k",
-    votes: "3.4k",
-    timeLeft: "72h",
-  },
-];
+
 
 const Cards = () => {
 
@@ -167,6 +111,8 @@ const Cards = () => {
           </Link>
         ))}
       </section>
+
+      
     </div>
   );
 };

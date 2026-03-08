@@ -1,34 +1,40 @@
-import axios from "axios";
 
-export const getPosts = async (page = 1) => {
-  const { data } = await axios.get(
-    `https://jsonplaceholder.typicode.com/posts?_page=${page}&_limit=6`
-  );
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
+
+const token = localStorage.getItem("token")
+
+export const getContestants = async () => {
+
+  const response = await fetch(`${BASE_URL}/admin/contestants`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch contestant data");
+  }
+
+  const data = await response.json();
   return data;
 };
 
 
+export const get = async () => {
 
-export const getPendingUser = async()=>{
-    
-}
+  const response = await fetch(`${BASE_URL}/admin/contestants`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-export const search = async()=>{
+  if (!response.ok) {
+    throw new Error("Failed to fetch contestant data");
+  }
 
-}
-
-
-export const toggleAccepDelete = async()=>{
-
-}
-
-
-export const deleteVotingUser= async()=>{
-
-}
-
-
-export const IncrementVotes = async()=>{
-    
-}
+  const data = await response.json();
+  return data;
+};

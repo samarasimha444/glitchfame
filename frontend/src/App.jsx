@@ -30,6 +30,7 @@ import TestingParticipation from "./Testing/TestingParticipation";
 import Leadboard  from "./Testing/LeadBoard";
 import Winners from "./Testing/Winners";
 import ChallengeDetail from "./features/user/details/ChallangeDetails";
+import AuthLayout from "./Auth/AuthLayout";
 
 export default function App() {
   return (
@@ -39,10 +40,13 @@ export default function App() {
 
       {/* Root role-based redirect */}
       <Route path="/" element={<RoleRedirect />} />
+        
 
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-
+     
+  <Route element={<AuthLayout />}>
+    <Route path="/login" element={<Login />} />
+    <Route path="/signup" element={<Signup />} />
+  </Route>
 
     { <Route path="/testing" element={<Testing />} /> }
       <Route path="/forgot" element={<ForgotPassword/>}  />

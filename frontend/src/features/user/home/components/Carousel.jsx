@@ -46,6 +46,11 @@ export default function FeaturedCarousel() {
 
    const { data: seasons = [], isLoading } = useLiveUpcomingSeasons();
 
+
+   const fallback =
+  "https://tse2.mm.bing.net/th/id/OIP.tfkDUK4e10qzf8T8ls2g-AHaE7?pid=Api&P=0&h=180";
+   console.log(seasons)
+
   return (
   
    <Swiper
@@ -63,7 +68,8 @@ export default function FeaturedCarousel() {
 >
       {seasons?.slice(0,1).map((season) => (
 
-        <SwiperSlide key={season.seasonId}>
+    <SwiperSlide key={season.seasonId}>
+
 <div className="w-full relative mt-6 md:mt-0 justify-center items-center md:justify-start max-w-400 m-auto h-full md:h-[95dvh] flex">
 
  
@@ -100,13 +106,14 @@ export default function FeaturedCarousel() {
   </section>
 
 
-  <section className="border md:border-none md:rounded-none border-gray-600 rounded-xl max-w-[360px] h-[50vh] md:h-full md:w-1/2 md:max-w-screen relative overflow-hidden">
+  <section className="border md:border-none md:rounded-none border-gray-600 rounded-xl w-full max-w-90 h-[50vh] md:h-full md:w-1/2 md:max-w-screen relative overflow-hidden">
 
-    <img
-      src="https://tse2.mm.bing.net/th/id/OIP.Nnj2r0ke_6XOBZVRCnOafQHaEK?pid=Api&P=0&h=180"
-      alt="event"
-      className="w-full h-full object-cover"
-    />
+  <img
+  src={season?.seasonPhotoUrl || fallback}
+  alt="event"
+  className="w-full h-full object-cover"
+  onError={(e) => (e.target.src = fallback)}
+/>
 
     
    <button className="absolute top-3 left-3 flex items-center gap-2 bg-[#BE5EED] text-white px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl">
