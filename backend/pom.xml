@@ -153,6 +153,12 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
+    <!--postgrel-->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
 <!--add more depencies-->
 
 
