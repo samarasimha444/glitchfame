@@ -1,7 +1,7 @@
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 
-const token ="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjgiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzI4MzA5MzIsImV4cCI6MTc3MjgzNDUzMn0.VxVcItyvNwqIlTq-WQbVXYTB-ZqpleUFmdcU3rnq4G8"
+const token =localStorage.getItem("token")
 
 export const fetchSeasonById = async (seasonId) => {
 

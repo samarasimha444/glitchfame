@@ -25,7 +25,7 @@ public class AdminContestantService {
     private final ExtractJwtData extractJwtData;
     private final AdminVotesRepository adminVotesRepository;
 
-    public Page<ContestantsDTO> getContestants(String status, int page, int size) {
+    public Page<ContestantsDTO> getLiveContestants(String status, int page, int size) {
         if (size > 50) size = 50;
         return repository.findLiveSeasonContestantsByStatus(
                 status,

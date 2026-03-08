@@ -1,7 +1,7 @@
 const BASE_URL = "http://localhost:3000"; // 
 
 
-const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjgiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzI4NDQ2MzksImV4cCI6MTc3Mjg0ODIzOX0.qDpgCMmAp2bMq25KAJ8O7rShPPIS1fy3C9RlMn-pDVY"
+const token = localStorage.getItem("token")
 
 export const getVotersById = async (seasonId) => {
     console.log()

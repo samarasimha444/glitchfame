@@ -2,7 +2,7 @@
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 
-const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjgiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzI4NDgzNjIsImV4cCI6MTc3Mjg1MTk2Mn0.YgFBk4d04oQt0d7J5BjOffKXkJFGWRneTbmfpL--74o"
+const token = localStorage.getItem("token")
 
 export const getLiveUpcomingSeasons = async () => {
   const res = await fetch(`${BASE_URL}/seasons/live-upcoming`,{

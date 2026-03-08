@@ -18,14 +18,14 @@ public class AdminContestantController {
 
     private final AdminContestantService service;
 
-    @GetMapping
-    public ResponseEntity<Page<ContestantsDTO>> getContestants(
+    @GetMapping("/live")
+    public ResponseEntity<Page<ContestantsDTO>> getLiveContestants(
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
 
         return ResponseEntity.ok(
-                service.getContestants(status, page, size)
+                service.getLiveContestants(status, page, size)
         );
     }
 

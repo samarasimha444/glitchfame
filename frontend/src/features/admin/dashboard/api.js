@@ -1,11 +1,11 @@
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const token ="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjgiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzI4MzA5MzIsImV4cCI6MTc3MjgzNDUzMn0.VxVcItyvNwqIlTq-WQbVXYTB-ZqpleUFmdcU3rnq4G8"
+const token =localStorage.getItem("token")
 
 export const createSeason = async (formData) => {
   const res = await fetch(
-    "http://localhost:3000/admin/seasons/create",
+    `${BASE_URL}/admin/seasons/create`,
     {
       method: "POST",
      headers: {
@@ -26,7 +26,7 @@ export const createSeason = async (formData) => {
 
 export const fetchSeasons = async () => {
  
-  const response = await fetch("http://localhost:3000/admin/seasons", {
+  const response = await fetch(`${BASE_URL}/admin/seasons`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
