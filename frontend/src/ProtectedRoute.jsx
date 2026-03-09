@@ -30,7 +30,7 @@ const ProtectedRoute = ({ allowedRole }) => {
 
   
   if (!token) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/auth" replace />;
   }
 
   const {
@@ -50,12 +50,12 @@ const ProtectedRoute = ({ allowedRole }) => {
   }
 
   if (isError) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/aith" replace />;
   }
 
 
   if (allowedRole && profile?.role !== allowedRole) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/auth" replace />;
   }
    console.log(profile)
   return <Outlet context={{ profile }} />;
