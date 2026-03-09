@@ -50,7 +50,7 @@ const ProtectedRoute = ({ allowedRole }) => {
   }
 
   if (isError) {
-    return <Navigate to="/aith" replace />;
+    return <Navigate to="/auth" replace />;
   }
 
 

@@ -25,7 +25,7 @@ const RoleRedirect = () => {
   const token = localStorage.getItem("token");
 
   if (!token) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/auth" replace />;
   }
 
   const { data: profile, isLoading, isError } = useQuery({
