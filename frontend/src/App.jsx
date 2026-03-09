@@ -39,7 +39,9 @@ export default function App() {
       
 
       {/* Root role-based redirect */}
-      <Route path="/" element={<RoleRedirect />} />
+
+
+      {/* <Route path="/" element={<RoleRedirect />} /> */}
         
 
      
