@@ -37,7 +37,7 @@ const RoleRedirect = () => {
 
   if (isLoading) return <h3>Loading...</h3>;
 
-  if (isError) return <Navigate to="/login" replace />;
+  if (isError) return <Navigate to="/auth" replace />;
 
   if (profile?.role === "ADMIN") {
     return <Navigate to="/admin" replace />;
@@ -47,7 +47,7 @@ const RoleRedirect = () => {
     return <Navigate to="/dashboard" replace />;
   }
 
-  return <Navigate to="/login" replace />;
+  return <Navigate to="/auth" replace />;
 };
 
 export default RoleRedirect;
