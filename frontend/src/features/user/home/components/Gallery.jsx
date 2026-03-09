@@ -14,7 +14,6 @@ const Gallery = () => {
   return (
     <>
 
-{/* ---------------- MOBILE VIEW ---------------- */}
 
 <div className="w-full sm:hidden min-h-screen mt-12 bg-gradient-to-b text-white flex justify-center">
 
