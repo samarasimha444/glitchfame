@@ -45,10 +45,10 @@ export default function App() {
         
 
      
-  <Route path="/auth" element={<AuthLayout />}>
+  {/* <Route path="/auth" element={<AuthLayout />}> */}
     {/* <Route path="/login" element={<Login />} />
     <Route path="/signup" element={<Signup />} /> */}
-  </Route>
+  {/* </Route> */}
 
     { <Route path="/testing" element={<Testing />} /> }
       <Route path="/forgot" element={<ForgotPassword/>}  />
@@ -68,7 +68,7 @@ export default function App() {
       {/* USER Protected Routes */}
       {/* <Route element={<ProtectedRoute allowedRole="USER" />}> */}
         <Route element={<Layout />}>
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/enter/:id" element={<ArenaForm />} />
            <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/arena/:id" element={<Arena />} />
