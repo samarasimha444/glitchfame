@@ -1,96 +1,56 @@
 import React, { useState } from "react";
 import { UserPlus, Trash2, Search } from "lucide-react";
-
-import Model from "./Model";
 import { useDeleteContestant, useVoteContestant } from "../hook";
+import VoteModal from "./VoteModel";
 
+const ParticipantsTable = ({ data, className }) => {
+  const [page, setPage] = useState(1);
+  const [selectedContestant, setSelectedContestant] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
+  const { mutate: vote, isLoading: voteLoading } = useVoteContestant();
+  const { mutate: deleteUser, isLoading: deleteLoading } = useDeleteContestant();
 
+  const handleVote = (contestantId, votes) => {
+    vote({ contestantId, votes });
+  };
 
-const data = [
-  {
-    id: 1,
-    name: "Sarah Connor",
-    location: "Resistance Camp",
-    votes: 12450,
-    avatar: "https://i.pravatar.cc/100?img=45",
-  },
-  {
-    id: 2,
-    name: "Deckard Blade",
-    location: "Los Angeles 2019",
-    votes: 9820,
-    avatar: "https://i.pravatar.cc/100?img=12",
-  },
-  {
-    id: 3,
-    name: "Major Kusanagi",
-    location: "Section 9",
-    votes: 15600,
-    avatar: "https://i.pravatar.cc/100?img=5",
-  },
-  {
-    id: 4,
-    name: "Neo Anderson",
-    location: "Zion Mainframe",
-    votes: 11200,
-    avatar: "https://i.pravatar.cc/100?img=33",
-  },
-];
+  const handleCustomClick = (contestant) => {
+    setSelectedContestant(contestant);
+    setShowModal(true);
+  };
 
-const ParticipantsTable = ({ type, className }) => {
+  const handleCustomSubmit = (votes) => {
+    if (!selectedContestant) return;
+    handleVote(selectedContestant.id, votes);
+  };
 
-  const [page,setPage]= useState(1)
+  const handleDelete = (id) => {
+    deleteUser(id);
+  };
 
-  const handleDelete = () => {};
-
-  // const {data,isLoading}= usePosts(page)
-
- const totalPages = Math.ceil(20/3);
-
-  // if (isLoading) return <p>Loading...</p>;
-
-
-  const { mutate: vote } = useVoteContestant();
-
-  const { mutate: deleteUser } = useDeleteContestant();
-
+  const totalPages = Math.ceil(20 / 3); 
 
   return (
-    <div className={` flex ${className ? className : "w-full"}`}>
+    <div className={`flex flex-col ${className || "w-full"}`}>
+      {showModal && (
+        <VoteModal
+          open={showModal}
+          onClose={() => setShowModal(false)}
+          onSubmit={handleCustomSubmit}
+        />
+      )}
 
-           
-        
-
-      <div className=" relative w-full mt-12   border border-gray-700 p-8 ">
-        <section className="absolute top-4 right-3">
-          <div className="relative">
-            <Search
-              size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-500"
-            />
-
-            <input
-              type="text"
-              placeholder="Search by name or id"
-              className="pl-10 pr-4 py-2 text-[13px] 
-                 border border-gray-500 
-                 rounded-lg 
-                 focus:outline-none 
-                 focus:ring-2 focus:ring-blue-600 
-                 focus:border-blue-600
-                 transition-all duration-200"
-            />
-          </div>
-        </section>
-
-        <h3 className="text-xl flex gap-3 font-semibold">
+      <div className="relative w-full mt-12 border border-gray-700 p-4 sm:p-8 rounded-lg bg-[#111418]">
+    
+        <h3 className="text-xl flex gap-3 font-semibold mb-4 sm:mb-6">
           <UserPlus /> Active Contestants
         </h3>
+
         <div className="overflow-x-auto">
-          <table className="w-full  text-left border-collapse">
+          <table className="w-full text-left border-collapse min-w-[600px] sm:min-w-full">
             <thead>
-              <tr className="border-b border-gray-700 text-gray-400 text-sm">
+              <tr className="border-b border-gray-700 text-gray-400 text-xs sm:text-sm">
                 <th className="py-4">Contestant</th>
                 <th className="py-4">Season</th>
                 <th>Votes</th>
@@ -100,44 +60,32 @@ const ParticipantsTable = ({ type, className }) => {
 
             <tbody>
               {data?.map((item) => (
-                <tr
-                  key={item.id}
-                  className="border-b border-gray-800 hover:bg-[#141821] transition"
-                >
-                  <td className="py-5">
-                    <div className="flex items-center gap-4">
-                      <img
-                        src={item.avatar}
-                        alt={item.name}
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
-                      <span className="text-white text-xs font-medium">
-                        {item.title}
-                      </span>
-                    </div>
+                <tr key={item.id} className="border-b border-gray-800 hover:bg-[#141821] transition">
+                  <td className="py-3 sm:py-5 flex items-center gap-3 sm:gap-4">
+                    <img src={item.avatar} alt={item.name} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover" />
+                    <span className="text-white text-[11px] sm:text-xs font-medium">{item.name}</span>
                   </td>
-
-                  <td className="text-gray-400">{item.location}</td>
-
-                  <td className="text-blue-400 font-semibold">
-                    {item.votes.toLocaleString()}
-                  </td>
-
+                  <td className="text-gray-400 text-[11px] sm:text-sm">{item.location}</td>
+                  <td className="text-blue-400 font-semibold text-[11px] sm:text-sm">{item.votes.toLocaleString()}</td>
                   <td className="text-right">
-                    <div className="flex justify-end gap-3">
-                      <button onClick={()=>setIsOpen(true)} className="bg-[#141821] border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-md hover:border-gray-500 transition">
+                    <div className="flex flex-wrap justify-end gap-2 sm:gap-3">
+                      <button
+                        onClick={() => handleCustomClick(item)}
+                        className="bg-[#141821] border border-gray-700 text-gray-300 text-xs sm:text-[12px] px-2 sm:px-3 py-1 rounded-md hover:border-gray-500 transition"
+                      >
                         Custom
                       </button>
-
-                      <button className="bg-[#141821] border border-gray-700 text-gray-300 text-xs px-3 py-1.5 rounded-md hover:border-gray-500 transition">
+                      <button
+                        onClick={() => handleVote(item.id, 10)}
+                        className="bg-[#141821] border border-gray-700 text-gray-300 text-xs sm:text-[12px] px-2 sm:px-3 py-1 rounded-md hover:border-gray-500 transition"
+                      >
                         +10
                       </button>
-
                       <button
-                        onClick={handleDelete}
+                        onClick={() => handleDelete(item.id)}
                         className="text-red-500 hover:text-red-400 transition"
                       >
-                        <Trash2 size={18} />
+                        <Trash2 size={16} />
                       </button>
                     </div>
                   </td>
@@ -147,34 +95,23 @@ const ParticipantsTable = ({ type, className }) => {
           </table>
         </div>
 
-     <section className="flex justify-center items-center gap-2 mt-6 flex-wrap">
-
-  
-  
-
-  {/* Page Numbers */}
-  {Array.from({ length: totalPages }, (_, index) => {
-    const pageNumber = index + 1;
-
-    return (
-      <button
-        key={pageNumber}
-        onClick={() => setPage(pageNumber)}
-        className={`px-3 py-1 rounded-md text-sm
-          ${
-            page === pageNumber
-              ? "bg-blue-500"
-              : "bg-[#141821] hover:bg-gray-700"
-          }`}
-      >
-        {pageNumber}
-      </button>
-    );
-  })}
-
- 
-
-</section>
+        {/* Pagination */}
+        <section className="flex justify-center items-center gap-2 mt-4 sm:mt-6 flex-wrap">
+          {Array.from({ length: totalPages }, (_, index) => {
+            const pageNumber = index + 1;
+            return (
+              <button
+                key={pageNumber}
+                onClick={() => setPage(pageNumber)}
+                className={`px-3 py-1 rounded-md text-sm ${
+                  page === pageNumber ? "bg-blue-500 text-white" : "bg-[#141821] text-gray-300 hover:bg-gray-700"
+                }`}
+              >
+                {pageNumber}
+              </button>
+            );
+          })}
+        </section>
       </div>
     </div>
   );

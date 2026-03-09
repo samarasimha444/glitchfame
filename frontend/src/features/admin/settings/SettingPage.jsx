@@ -11,10 +11,11 @@ import { dashCards } from "../../../constants/admin";
 
 const AdminSettings = () => {
   const { data: seasons = [], isLoading: isSeasonsLoading } = useFetchSeasons();
+  console.log(seasons)
 
   const { mutate: deleteSeason } = useDeleteSeason();
 
-  const [selectedSeasonId, setSelectedSeasonId] = useState(null);
+  const [selectedSeasonId, setSelectedSeasonId] = useState();
 
   console.log(selectedSeasonId);
 
@@ -53,10 +54,10 @@ const AdminSettings = () => {
         </select>
       </section>
 
-      <section className="w-full flex items-start justify-between gap-6">
+      <section className="w-full flex flex-col items-center justify-center sm:flex-row sm:items-start sm:justify-between gap-6">
         <div className="flex-none self-start">
 
-          <AdminCard title="Settings" paragraph="Note actions perform here can change the db use it carefully" cardsInfo={dashCards} className="max-w-4xl" />
+          <AdminCard title="Settings" paragraph="Note actions perform here can change the db use it carefully" cardsInfo={dashCards} className="max-w-4xl hidden sm:flex" />
 
           {isSeasonLoading ?
             <p className="text-white mt-4">Loading season details...</p>

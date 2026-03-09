@@ -2,79 +2,77 @@ import React, { useState } from "react";
 import Modal from "./Model";
 import SeasonForm from "./SeasonForm";
 
-
-const AdminCard = ({ title,paragraph, className, type, cardsInfo, data }) => {
-  console.log(cardsInfo);
-  console.log(type)
-
+const AdminCard = ({ title, paragraph, className, type, cardsInfo, data }) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className={`flex flex-col w-full  py-4 ${className}`}>
-      
-          <Modal
-            className="w-full "
-            open={open}
-            onClose={() => setOpen(false)}
-            title="Create Season"
+ <div className={`flex flex-col  w-full py-4 ${className}`}>
+
+  <Modal
+    className="w-full"
+    open={open}
+    onClose={() => setOpen(false)}
+    title="Create Season"
+  >
+    <SeasonForm />
+  </Modal>
+
+  
+  <section className="flex w-full flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
+    <h3 className="flex flex-col font-semibold text-2xl sm:text-3xl">
+      {title}
+      <p className="text-[13px] max-w-full sm:max-w-xl text-gray-300 mt-1">
+        {paragraph}
+      </p>
+    </h3>
+
+    {type === "home" && (
+      <button
+        onClick={() => setOpen(!open)}
+        className="bg-blue-600 px-3 py-2 rounded-md text-white text-sm sm:text-base hover:opacity-90 transition"
+      >
+        + Create Season
+      </button>
+    )}
+  </section>
+
+  
+  <section className="mt-8 sm:mt-12 w-full 
+                      grid grid-cols-2 sm:grid-cols-2 md:flex md:flex-wrap gap-4 sm:gap-6">
+    {cardsInfo?.map((item, idx) => {
+      const Icon = item.icon;
+
+      return (
+        <div
+          key={idx}
+          className="relative bg-[#111418] border border-[#1E232B] rounded-2xl p-4 sm:p-6 flex-1 sm:min-w-[200px] sm:min-w-[0]"
+        >
+          <div className="space-y-2">
+            <h3 className="text-gray-400 text-[12px] sm:text-sm font-medium">
+              {item.title}
+            </h3>
+
+            <p className="text-xl sm:text-3xl font-semibold text-white">
+              {item.total}
+            </p>
+
+            <p className="text-xs text-gray-500">
+              +15% across 2 continents
+            </p>
+          </div>
+
+          <div
+            className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2
+                       w-10 h-10 sm:w-14 sm:h-14 rounded-full 
+                       bg-[#1B2330] flex items-center justify-center"
           >
-            <SeasonForm />
-          </Modal>
-      
-
-      <section className="flex w-full  justify-between items-start ">
-        <h3 className="flex flex-col font-semibold text-3xl">
-          {title}
-          <p className="text-[13px] max-w-xl text-gray-300">
-            {paragraph}
-          </p>
-        </h3>
-
-        {type === "home" && (
-          <button  onClick={() => setOpen(!open)}
-          className="bg-blue-600 px-3 py-2">
-    + Create Season
-  </button>
-)}
-         
-      </section>
-
-      <section className="mt-12 flex  gap-2 w-full justify-between ">
-        {cardsInfo?.map((item, idx) => {
-          const Icon = item.icon; 
-
-          return (
-            <div
-              key={idx}
-              className="relative bg-[#111418] border border-[#1E232B] 
-                  rounded-2xl p-6 w-full max-w-85"
-            >
-              <div className="space-y-2">
-                <h3 className="text-gray-400 text-sm font-medium">
-                  {item.title}
-                </h3>
-
-                <p className="text-3xl font-semibold text-white">
-                  {item.total}
-                </p>
-
-                <p className="text-xs text-gray-500">
-                  +15% across 2 continents
-                </p>
-              </div>
-
-              <div
-                className="absolute right-6 top-1/2 -translate-y-1/2
-                    w-14 h-14 rounded-full 
-                    bg-[#1B2330] flex items-center justify-center"
-              >
-                <Icon className="text-blue-400" size={24} />
-              </div>
-            </div>
-          );
-        })}
-      </section>
-    </div>
+            <Icon className="text-blue-400" size={16} sm:size={24} />
+          </div>
+        </div>
+      );
+    })}
+  </section>
+</div>
   );
 };
 

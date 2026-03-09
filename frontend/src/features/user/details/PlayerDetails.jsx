@@ -1,37 +1,52 @@
-import React from "react";
+import React, { useState } from "react";
 import { Zap } from "lucide-react";
 import { useContestantDetails, useToggleVote } from "../arena/hooks";
 import { useParams } from "react-router-dom";
 
+
+const data = {
+  participationId: 101,
+  participantName: "Alex Maverick",
+  dateOfBirth: "2000-06-15",
+  location: "Karimpur, India",
+  seasonPhotoUrl: "https://images.unsplash.com/photo-1622347434466-147a44cffda7?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  voteCount: 4523,
+  description: "I'm Alex Maverick, bringing my unique style and energy to the stage. Music is my life and I aim to make every performance unforgettable!",
+  seasonName: "Summer Battle 2026",
+  prizeMoney: 10000 // assuming in rupees
+};
+
 const PlayerDetails = () => {
 
-   const { id } = useParams(); 
-   console.log(id)
+  const [loading,setIsLoading]=useState(false)
+
+  //  const { id } = useParams(); 
+  //  console.log(id)
 
 
 
 
-  const { data, isLoading, error } = useContestantDetails(id);
-  const { mutate: voteToggle, isPending } = useToggleVote();
+  // const { data, isLoading, error } = useContestantDetails(id);
+  // const { mutate: voteToggle, isPending } = useToggleVote();
 
-  const handleVote = (contestantId) => {
-    if (!contestantId) return;
+  // const handleVote = (contestantId) => {
+  //   if (!contestantId) return;
 
-    voteToggle(contestantId, {
-      onSuccess: () => {
-        alert("Vote submitted successfully!");
-      },
-      onError: () => {
-        alert("Failed to vote");
-      },
-    });
-  };
+  //   voteToggle(contestantId, {
+  //     onSuccess: () => {
+  //       alert("Vote submitted successfully!");
+  //     },
+  //     onError: () => {
+  //       alert("Failed to vote");
+  //     },
+  //   });
+  // };
 
 
   return (
 
 
-    <div className="flex flex-col md:flex-row w-full  justify-evenly min-h-screen bg-black text-white">
+    <div className="flex  flex-col md:flex-row w-full  justify-evenly min-h-screen bg-black text-white">
 
       <section className="h-[40dvh] w-full md:w-[45%] md:rounded-2xl md:h-[95dvh]  relative overflow-hidden">
 

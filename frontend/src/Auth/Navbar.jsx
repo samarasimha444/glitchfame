@@ -9,7 +9,7 @@ const Navbar = () => {
  
   
   const menuItems = [
-    { label: "Live Arena", path: "/arena", icon: Zap },
+    { label: "Live Arena", path: "/arena/123", icon: Zap },
     { label: "LeaderBoard", path: "/leaderboard", icon: Award },
     { label: "How it Works", path: null, icon: Info },
   ];
@@ -52,17 +52,16 @@ const Navbar = () => {
       </div>
 
    
-      <div className="hidden md:block">
+      <div className="hidden sm:flex md:block">
         <Link to={actionButton.path} className="flex items-center space-x-4">
           <button className="border border-purple-500 text-[14px] text-purple-500 px-4 py-2 rounded-md hover:bg-purple-500 hover:text-white transition">
             {actionButton.label}
           </button>
-          <img
-            src={actionButton.img}
-            alt=""
-            className="w-10 h-10 bg-contain rounded-full border-2 border-purple-500"
-          />
+          
+         
         </Link>
+
+        
       </div>
 
       <button
@@ -74,7 +73,7 @@ const Navbar = () => {
 
      
       <AnimatePresence>
-  {isOpen && (
+    {isOpen && (
     <>
     
       <motion.div

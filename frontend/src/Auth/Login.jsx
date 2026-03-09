@@ -10,6 +10,8 @@ const Login = () => {
     password: "",
   });
 
+ 
+
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -25,7 +27,7 @@ const Login = () => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/auth/login`,
+      'https://glitchfame.onrender.com/auth/login',
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

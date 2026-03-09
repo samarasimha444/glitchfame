@@ -1,28 +1,74 @@
 import React, { useState } from "react";
 import { data, Link } from "react-router-dom";
 import { useContestantsById} from "../hooks";
+import ShimmerCard from "../../../../components/ShimmerCard";
+
+
+const contestants = [
+  {
+    id: 1,
+    name: "Sarah Connor",
+    photoUrl: "https://images.pexels.com/photos/3031397/pexels-photo-3031397.jpeg",
+  },
+  {
+    id: 2,
+    name: "Deckard Blade",
+    photoUrl: "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg",
+  },
+  {
+    id: 3,
+    name: "Major Kusanagi",
+    photoUrl: "https://images.pexels.com/photos/5273717/pexels-photo-5273717.jpeg",
+  },
+  {
+    id: 4,
+    name: "Neo Anderson",
+    photoUrl: "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg",
+  },
+  {
+    id: 5,
+    name: "Trinity",
+    photoUrl: "https://images.pexels.com/photos/5889715/pexels-photo-5889715.jpeg",
+  },
+  {
+    id: 6,
+    name: "John Wick",
+    photoUrl: "https://i.pravatar.cc/200?img=20",
+  },
+  {
+    id: 7,
+    name: "Ellen Ripley",
+    photoUrl: "https://i.pravatar.cc/200?img=30",
+  },
+  {
+    id: 8,
+    name: "Katniss Everdeen",
+    photoUrl: "https://i.pravatar.cc/200?img=25",
+  },
+];
 
 
 const ArenaCard = ({id}) => {
 
-  console.log(id)
+  const [isLoading,setIsLoading]= useState(false)
+  // console.log(id)
    
-   const [voted,setVoted]= useState([])
+  //  const [voted,setVoted]= useState([])
 
 
-   const addVote = ()=>{
+  //  const addVote = ()=>{
      
-   }
+  //  }
 
-    const { data: contestants = [], isLoading, isError } =
-    useContestantsById(id);
+  //   const { data: contestants = [], isLoading, isError } =
+  //   useContestantsById(id);
 
-    const totalPages = contestants?.pageable?.pageSize || 0
-    console.log(totalPages)
+  //   const totalPages = contestants?.pageable?.pageSize || 0
+  //   console.log(totalPages)
 
-  if (isLoading) return <p className="text-white">Loading...</p>;
-  if (isError) return <p className="text-red-500">Error loading contestants</p>;
-  console.log(contestants);
+  
+  // if (isError) return <p className="text-red-500">Error loading contestants</p>;
+  // console.log(contestants);
 
   return (
     <section className="bg-black mt-6 px-1 sm:px-6 pb-20">
@@ -33,8 +79,17 @@ const ArenaCard = ({id}) => {
 
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 space-y-6 sm:gap-8">
 
-          {contestants?.content.map((user) => (
+               {isLoading
+            ? 
+              Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="flex  justify-center">
+                  <ShimmerCard />
+                </div>
+              ))
 
+          // :contestants?.content.map((user) => (
+
+            :contestants?.map((user) => (
             <Link to={`/details/${user.id}`}
               key={user.id}
               className="relative w-full  sm:max-w-77.5 h-[35dvh] sm:h-97 rounded-xl overflow-hidden border border-gray-800 hover:border-purple-500 transition"
@@ -46,7 +101,6 @@ const ArenaCard = ({id}) => {
                 className="w-full h-full object-cover"
               />
 
-           
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
 
              

@@ -1,21 +1,66 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLiveUpcomingSeasons } from "../hooks";
 import { Timer } from "lucide-react";
 import { isSeasonLive } from "../../../../lib/helper";
 import { getTimeLeft } from "../../../../lib/helper";
+import ShimmerCard from "../../../../components/ShimmerCard";
+
+
+const liveSeasons =[
+  {
+    "seasonId": 1,
+    "seasonName": "Summer Battle 2026",
+    "seasonPhotoUrl": "https://images.pexels.com/photos/7005759/pexels-photo-7005759.jpeg",
+    "prizeMoney": "$10,000",
+    "votingEndDate": "2026-03-15T18:00:00Z",
+    "timeLeft": "6d 12h"
+  },
+  {
+    "seasonId": 2,
+    "seasonName": "Winter Clash 2026",
+    "seasonPhotoUrl": "https://images.pexels.com/photos/13923711/pexels-photo-13923711.jpeg",
+    "prizeMoney": "$7,500",
+    "votingEndDate": "2026-03-20T20:00:00Z",
+    "timeLeft": "11d 14h"
+  },
+  {
+    "seasonId": 3,
+    "seasonName": "Spring Showdown 2026",
+    "seasonPhotoUrl": "https://images.pexels.com/photos/6632526/pexels-photo-6632526.jpeg",
+    "prizeMoney": "$12,000",
+    "votingEndDate": "2026-03-25T22:00:00Z",
+    "timeLeft": "16d 16h"
+  },
+  {
+    "seasonId": 4,
+    "seasonName": "Autumn Arena 2026",
+    "seasonPhotoUrl": "https://images.pexels.com/photos/6806082/pexels-photo-6806082.jpeg",
+    "prizeMoney": "$5,000",
+    "votingEndDate": "2026-03-18T15:00:00Z",
+    "timeLeft": "9d 9h"
+  }
+]
+
 
 const Cards = () => {
+
   const navigate = useNavigate();
-  const { data: seasons = [], isLoading } = useLiveUpcomingSeasons();
 
-  if (isLoading) return <p>Loading seasons...</p>;
+const [isLoading, setIsLoading] = useState(false);
 
-  const liveSeasons = seasons.filter(isSeasonLive);
-  console.log(liveSeasons);
+  // const { data: seasons = [], isLoading } = useLiveUpcomingSeasons();
+
+
+
+  // const liveSeasons = seasons.filter(isSeasonLive);
+  // console.log(liveSeasons);
 
   return (
+     <>
     <div className="w-full max-w-screen mx-auto px-4 sm:px-6 md:px-10 lg:px-20">
+
+      {/* Header */}
       <section className="w-full py-12 md:py-16">
         <div className="flex w-full items-start justify-between">
           <div className="space-y-3 w-full">
@@ -57,7 +102,12 @@ const Cards = () => {
         </div>
       </section>
 
-      {liveSeasons.length === 0 ? (
+      {isLoading ? (
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6">
+          <ShimmerCard />
+          <ShimmerCard />
+        </section>
+      ) : liveSeasons.length === 0 ? (
         <div className="w-full text-center py-20 text-gray-400 text-xl">
           No live seasons found.
         </div>
@@ -102,6 +152,7 @@ const Cards = () => {
         </section>
       )}
     </div>
+      </>
   );
 };
 

@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation,  useQueryClient } from "@tanstack/react-query";
 import { deleteContestant, getContestants, voteContestant } from "./api";
 
 
@@ -37,7 +37,6 @@ export const useDeleteContestant = () => {
     mutationFn: deleteContestant,
 
     onSuccess: () => {
-      // refresh contestants list
       queryClient.invalidateQueries(["contestants"]);
     },
   });

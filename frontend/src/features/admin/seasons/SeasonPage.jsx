@@ -7,7 +7,8 @@ import { dashCards } from '../../../constants/admin'
 const SeasonPage = () => {
   return (
     <div className='flex min-h-screen'>
-    <section className='flex flex-col  space-y-6 w-full h-full px-6'>
+    <section className='flex flex-col space-y-6 w-full h-full md:px-6'>
+      
       <AdminCard cardsInfo={dashCards}/>
       
       <aside className='flex flex-col w-full  max-w-screen '>

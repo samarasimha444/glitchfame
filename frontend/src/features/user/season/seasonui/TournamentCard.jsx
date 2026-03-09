@@ -1,23 +1,58 @@
-import React from "react";
+import React, { useState } from "react";
 import { data, Link, useNavigate } from "react-router-dom";
 import { useLiveUpcomingSeasons } from "../../home/hooks";
+import ShimmerCard from "../../../../components/ShimmerCard";
 
 
-
+const activeRegistrations = [
+  {
+    seasonId: 1,
+    seasonName: "Champions Arena",
+    registrationStartDate: "2026-03-01",
+    registrationEndDate: "2026-03-15",
+    prizeMoney: 5000,
+    featured: true,             // corresponds to FEATURED badge
+    category: "FPS Tactical",    // corresponds to FPS Tactical badge
+    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Moles!", 
+    imageUrl: "https://images.pexels.com/photos/416911/pexels-photo-416911.jpeg"
+  },
+  {
+    seasonId: 2,
+    seasonName: "Battle Royale Masters",
+    registrationStartDate: "2026-03-05",
+    registrationEndDate: "2026-03-20",
+    prizeMoney: 8000,
+    featured: false,
+    category: "FPS Tactical",
+    description: "Join the ultimate FPS tactical showdown and win big prizes!",
+    imageUrl: "https://images.pexels.com/photos/3583571/pexels-photo-3583571.jpeg"
+  },
+  {
+    seasonId: 3,
+    seasonName: "Sniper Elite League",
+    registrationStartDate: "2026-03-10",
+    registrationEndDate: "2026-03-25",
+    prizeMoney: 10000,
+    featured: true,
+    category: "FPS Tactical",
+    description: "Test your aiming skills in the sniper elite league.",
+    imageUrl: "https://images.pexels.com/photos/1707213/pexels-photo-1707213.jpeg"
+  }
+];
 
 const TournamentCard = () => {
-
-   const { data: seasons = [], isLoading } = useLiveUpcomingSeasons();
-   console.log(seasons)
+const [isLoading,setIsLoading]= useState()
+//    const { data: seasons = [], isLoading } = useLiveUpcomingSeasons();
+//    console.log(seasons)
     const navigate = useNavigate()
 
-    const now = new Date();
+//     const now = new Date();
 
-   const activeRegistrations = seasons.filter((season) => {
-   return new Date(season.registrationEndDate) > now;
-});
+//    const activeRegistrations = seasons.filter((season) => {
+//    return new Date(season.registrationEndDate) > now;
+// });
 
-   console.log(activeRegistrations)
+//    console.log(activeRegistrations)
 
 
 return (
@@ -25,7 +60,15 @@ return (
 
   <section className="flex w-full flex-wrap gap-6 justify-center sm:justify-between">
 
-    {activeRegistrations.map((item, index) => (
+    {
+    isLoading
+          ? Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="w-full sm:w-[48%] lg:max-w-95 flex justify-center">
+                <ShimmerCard />
+              </div>
+            ))
+
+    :activeRegistrations.map((item, index) => (
 
       <article
         key={index}
@@ -36,7 +79,7 @@ return (
         <Link to="/details" className="relative w-full">
 
           <img
-            src="https://tse3.mm.bing.net/th/id/OIP.NC_e6GoCMQHiKWKltN8V2wHaEK?pid=Api&P=0&h=180"
+            src={item.imageUrl}
             alt={item.title}
             className="w-full h-[150px] sm:h-[220px] object-cover"
           />

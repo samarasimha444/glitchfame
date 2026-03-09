@@ -48,6 +48,7 @@ const Leaderboard = () => {
   return (
 
     <div className="w-full min-h-screen bg-black flex justify-center py-10">
+      
 
       <div className="w-full max-w-6xl bg-black text-white rounded-xl shadow-2xl overflow-hidden">
 
