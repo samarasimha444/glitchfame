@@ -18,20 +18,55 @@ const SeasonForm = ({ initialData = {}, loading }) => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-    const formData = new FormData();
+  const formData = new FormData();
 
-    Object.keys(form).forEach((key) => {
-      formData.append(key, form[key]);
-    });
-      
-    for (let [key, value] of formData.entries()) {
-    console.log(key, value);
-  }
-    createSeason(formData)
+  const combineDateTime = (date, time) => {
+    if (!date || !time) return "";
+    return `${date}T${time}:00`;
   };
+
+  const processedKeys = new Set();
+
+  Object.keys(form).forEach((key) => {
+    if (processedKeys.has(key)) return;
+
+   
+    if (key.endsWith("Date")) {
+      const baseKey = key.replace("Date", "");
+      const date = form[`${baseKey}Date`];
+      const time = form[`${baseKey}Time`];
+
+      const combined = combineDateTime(date, time);
+
+      formData.append(baseKey, combined);
+
+      processedKeys.add(`${baseKey}Date`);
+      processedKeys.add(`${baseKey}Time`);
+    }
+
+    else if (!key.endsWith("Time")) {
+      formData.append(key, form[key]);
+    }
+  });
+
+ for (let pair of formData.entries()) {
+  console.log(pair[0], pair[1]);
+}
+
+    createSeason(formData, {
+    onSuccess: (data) => {
+     alert(data?.message || "Season created successfully!");
+    },
+    onError: (error) => {
+      alert(error?.message || "Failed to create season");
+    },
+  });
+};
+
+
 
   const renderInput = (field) => {
     const commonClasses =

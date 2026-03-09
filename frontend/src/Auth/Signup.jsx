@@ -1,25 +1,55 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
+ const inputFields = [
+    {
+      label: "Email Address",
+      name: "email",
+      type: "email",
+      placeholder: "vote@glitchfame.com",
+    },
+    {
+      label: "Username",
+      name: "username",
+      type: "text",
+      placeholder: "Enter username",
+    },
+    {
+      label: "Mobile Number",
+      name: "mobileNumber",
+      type: "text",
+      placeholder: "+91 ...",
+    },
+    {
+      label: "Password",
+      name: "password",
+      type: "password",
+      placeholder: "Enter password",
+    },
+    {
+      label: "Confirm Password",
+      name: "confirmPassword",
+      type: "password",
+      placeholder: "Confirm password",
+    },
+  ];
+
 const Signup = () => {
 
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    username: "",
-    mobileNumber: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const [formData, setFormData] = useState({email: "",username: "",mobileNumber: "",password: "",confirmPassword: "",});
 
   const [otp, setOtp] = useState("");
   const [otpStage, setOtpStage] = useState(false);
-
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+ 
+
   const handleChange = (e) => {
+
     const { name, value } = e.target;
 
     setFormData((prev) => ({
@@ -62,7 +92,6 @@ const Signup = () => {
 
       if (response.status === 200) {
 
-        // OTP sent
         setOtpStage(true);
 
       } else {
@@ -121,103 +150,103 @@ const Signup = () => {
   };
 
   return (
-    <div>
 
-      <h2>Signup</h2>
+  <div className="space-y-2">
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    {error && (
+      <p className="text-red-500 text-sm">
+        {error}
+      </p>
+    )}
 
-      {!otpStage ? (
+    {!otpStage ? (
 
-        <form onSubmit={handleSignup}>
+      <form onSubmit={handleSignup} className="space-y-4">
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter your email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-          <br />
+        {inputFields.map((field) => (
 
-          <input
-            type="text"
-            name="username"
-            placeholder="Enter username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
-          <br />
+          <div key={field.name}>
 
-          <input
-            type="text"
-            name="mobileNumber"
-            placeholder="Enter mobile number"
-            value={formData.mobileNumber}
-            onChange={handleChange}
-            required
-          />
-          <br />
+            <label className="text-xs text-gray-400 uppercase">
+              {field.label}
+            </label>
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-          <br />
+            <input
+              type={field.type}
+              name={field.name}
+              placeholder={field.placeholder}
+              value={formData[field.name]}
+              onChange={handleChange}
+              required
+              className="mt-1 w-full bg-[#111418] border border-[#1E232B]
+              rounded-lg px-4 py-1 text-white placeholder-gray-500
+              focus:outline-none focus:border-purple-500"
+            />
 
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            required
-          />
-          <br />
+          </div>
 
-          <button type="submit" disabled={loading}>
-            {loading ? "Sending OTP..." : "Sign Up"}
-          </button>
+        ))}
 
-        </form>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-2 rounded-xl
+          bg-gradient-to-r from-purple-500 to-pink-500
+          text-white font-medium
+          hover:opacity-90 transition"
+        >
+          {loading ? "Sending OTP..." : "Sign Up"}
+        </button>
 
-      ) : (
+      </form>
 
-        <form onSubmit={handleVerifyOtp}>
+    ) : (
 
-          <h3>Enter OTP sent to your email</h3>
+      <form onSubmit={handleVerifyOtp} className="space-y-4">
 
-          <input
-            type="text"
-            placeholder="Enter OTP"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            required
-          />
+        <h3 className="text-lg font-medium text-white">
+          Verify Email
+        </h3>
 
-          <br />
+        <p className="text-gray-400 text-sm">
+          Enter the OTP sent to {formData.email}
+        </p>
 
-          <button type="submit" disabled={loading}>
-            {loading ? "Verifying..." : "Verify OTP"}
-          </button>
-         
+        <input
+          type="text"
+          placeholder="Enter OTP"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          required
+          className="w-full bg-[#111418] border border-[#1E232B]
+          rounded-lg px-4 py-3 text-white placeholder-gray-500
+          focus:outline-none focus:border-purple-500"
+        />
 
-        </form>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-3 rounded-xl
+          bg-gradient-to-r from-purple-500 to-pink-500
+          text-white font-medium"
+        >
+          {loading ? "Verifying..." : "Verify OTP"}
+        </button>
 
-      )}
-       <button type="button"
-  onClick={() => navigate("/forgot")}
->
-  Forgot Password?
-</button>
+      </form>
 
-    </div>
+    )}
+
+    <button
+      type="button"
+      onClick={() => navigate("/forgot")}
+      className="text-sm text-purple-400 hover:text-purple-300"
+    >
+      Forgot Password?
+    </button>
+
+  </div>
+
   );
 };
 

@@ -12,7 +12,7 @@ const Home = () => {
   const { profile } = useOutletContext() || {};
 
   return (
-    <div className="w-full space-y-3 flex-col max-w-screen m-auto bg-[#000000] md:bg-[#1E2229] flex items-center justify-center">
+    <div className="w-full  flex-col max-w-screen m-auto bg-[#000000] md:bg-[#1E2229] flex items-center justify-center">
       
       {/* <div className="w-full max-w-400 h-[70dvh] md:h-[95dvh] flex">
 

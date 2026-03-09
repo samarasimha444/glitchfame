@@ -51,51 +51,9 @@ export const toggleVoteLock = async (id) => {
   return res.text();
 };
 
-export const updateVotingDates = async (id, start, end) => {
-  const params = new URLSearchParams();
 
-  if (start) params.append("start", start);
-  if (end) params.append("end", end);
 
-  const res = await fetch(
-    `${BASE_URL}/${id}/voting-dates?${params.toString()}`,
-    {
-      method: "PATCH",
-      headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    }
-  );
 
-  if (!res.ok) {
-    throw new Error(await res.text());
-  }
-
-  return res.text();
-};
-
-export const updateRegistrationDates = async (id, start, end) => {
-  const params = new URLSearchParams();
-
-  if (start) params.append("start", start);
-  if (end) params.append("end", end);
-
-  const res = await fetch(
-    `${BASE_URL}/${id}/registration-dates?${params.toString()}`,
-    {
-      method: "PATCH",
-       headers: {
-      Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  if (!res.ok) {
-    throw new Error(await res.text());
-  }
-
-  return res.text();
-};
 
 export const deleteSeason = async (id) => {
   console.log(id)
@@ -172,4 +130,23 @@ export const participationLock = async ({ id}) => {
   }
 
   return res.text();
+};
+
+
+export const updateRegistrationDates = async ({ id, start, end }) => {
+  const response = await fetch(
+    `${BASE_URL}/admin/seasons/${id}/registration-dates?start=${start}&end=${end}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to update registration dates");
+  }
+
+  return response.json();
 };

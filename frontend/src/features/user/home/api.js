@@ -2,11 +2,9 @@
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 
-<<<<<<< HEAD
+
 const token = localStorage.getItem("token")
-=======
-const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjgiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzI5MjU0ODksImV4cCI6MTc3MjkyOTA4OX0.CunBTsVPbP7Pl4uoRUnsxdW91hGFnFJII6x7lg3-Iyo"
->>>>>>> 50dc5ee (user)
+console.log(token)
 
 export const getLiveUpcomingSeasons = async () => {
   const res = await fetch(`${BASE_URL}/seasons/live-upcoming`,{
@@ -37,3 +35,15 @@ export const submitEntry = async()=>{
   return response.json()
 
 }
+
+export const getWinners = async () => {
+  const response = await fetch(`${BASE_URL}/winners`, {
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch winners");
+  }
+
+  return response.json();
+};

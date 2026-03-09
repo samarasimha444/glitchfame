@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getLiveUpcomingSeasons, submitEntry } from "./api";
+import { getLiveUpcomingSeasons, getWinners, submitEntry } from "./api";
 
 
 
@@ -23,5 +23,13 @@ export const useSubmitEntry = () => {
     onError: (error) => {
       console.error("Error submitting entry:", error);
     },
+  });
+};
+
+
+export const useWinners = () => {
+  return useQuery({
+    queryKey: ["winners"],
+    queryFn: getWinners,
   });
 };

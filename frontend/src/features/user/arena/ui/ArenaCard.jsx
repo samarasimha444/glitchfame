@@ -1,33 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { data, Link } from "react-router-dom";
 import { useContestantsById} from "../hooks";
 
-// const participants = [
-//   {
-//     id: 1,
-//     name: "Luna Void",
-//     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
-//   },
-//   {
-//     id: 2,
-//     name: "Cyborg Ken",
-//     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
-//   },
-//   {
-//     id: 3,
-//     name: "Neon Pixie",
-//     image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1",
-//   },
-//   {
-//     id: 4,
-//     name: "Drake Glitch",
-//     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
-//   },
-// ];
 
 const ArenaCard = ({id}) => {
 
   console.log(id)
+   
+   const [voted,setVoted]= useState([])
+
+
+   const addVote = ()=>{
+     
+   }
 
     const { data: contestants = [], isLoading, isError } =
     useContestantsById(id);

@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { getContestantDetails, getVotersById } from "./api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getContestantDetails, getLeaderboard, getVotersById, toggleVote } from "./api";
 
 
 
@@ -20,3 +20,26 @@ export const useContestantDetails = (id) => {
     enabled: !!id, 
   })
 }
+
+export const useToggleVote = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (participationId) => toggleVote(participationId),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries(["contestantDetails"]);
+    },
+  });
+};
+
+
+
+export const useLeaderboard = () => {
+  return useQuery({
+    queryKey: ["leaderboard"], 
+    queryFn: getLeaderboard,
+    // staleTime: 1000 * 60,      
+    // refetchInterval: 5000,  
+  });
+};

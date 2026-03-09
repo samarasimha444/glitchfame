@@ -1,42 +1,25 @@
-import React from 'react'
+import React from "react";
 import { CheckCircle, XCircle, ShieldAlert } from "lucide-react";
+import { useContestants } from "../hook";
 
-const participants = [
-  {
-    id: 1,
-    name: "Xander Glitch",
-    location: "Neo-Tokyo Sector 7",
-    time: "Submitted 2 mins ago",
-    avatar: "https://i.pravatar.cc/100?img=11",
-    isNew: true,
-  },
-  {
-    id: 2,
-    name: "Luna Spark",
-    location: "Cyber-Valley Center",
-    time: "Submitted 15 mins ago",
-    avatar: "https://i.pravatar.cc/100?img=32",
-    isNew: true,
-  },
-  {
-    id: 3,
-    name: "Void Walker",
-    location: "Unknown Grid",
-    time: "Submitted 1 hour ago",
-    avatar: "https://i.pravatar.cc/100?img=15",
-    isNew: true,
-  },
-];
+const Approval = ({ className }) => {
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useContestants();
 
+  const contestants =
+    data?.pages.flatMap((page) => page.content) ?? [];
 
-const Approval = ({className}) => {
+    console.log(data)
 
-
-   return (
-    <div className={`w-full bg-[#0f1115] flex justify-center ${className}`
-    }>
-      <div className="w-full  bg-[#1a1f2b] rounded-2xl p-6 shadow-xs border border-gray-800">
-        
+  return (
+    <div
+      className={`w-full bg-[#0f1115] flex justify-center ${className}`}
+    >
+      <div className="w-full bg-[#1a1f2b] rounded-2xl p-6 shadow-xs border border-gray-800">
         
         <div className="flex justify-between items-start mb-6">
           <div className="flex gap-3">
@@ -56,17 +39,16 @@ const Approval = ({className}) => {
           </button>
         </div>
 
-       
         <div className="space-y-3">
-          {participants.map((user) => (
+          {contestants.map((user) => (
             <div
               key={user.id}
               className="flex items-center justify-between bg-[#141821] border border-gray-700 rounded-xl p-5 hover:border-gray-500 transition"
             >
-             
+              
               <div className="flex items-center gap-4">
                 <img
-                  src={user.avatar}
+                  src={user.avatar || "https://i.pravatar.cc/100"}
                   alt={user.name}
                   className="w-12 h-12 rounded-full object-cover"
                 />
@@ -94,8 +76,7 @@ const Approval = ({className}) => {
                 </div>
               </div>
 
-              
-              <div className="flex items-center gap-3  text-[13px]">
+              <div className="flex items-center gap-3 text-[13px]">
                 <button className="flex items-center gap-2 bg-black border border-gray-600 text-white px-4 py-2 rounded-lg hover:border-gray-400 transition">
                   <CheckCircle size={16} />
                   Approve
@@ -110,16 +91,22 @@ const Approval = ({className}) => {
           ))}
         </div>
 
-       
         <div className="text-center mt-3">
-          <button className="text-gray-400 text-sm hover:text-white transition">
-            Load More Pending Entries (39 remaining)
-          </button>
+          {hasNextPage && (
+            <button
+              onClick={fetchNextPage}
+              disabled={isFetchingNextPage}
+              className="text-gray-400 text-sm hover:text-white transition"
+            >
+              {isFetchingNextPage
+                ? "Loading..."
+                : "Load More Pending Entries"}
+            </button>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-
-export default Approval
+export default Approval;

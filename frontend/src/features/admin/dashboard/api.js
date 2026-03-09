@@ -8,11 +8,10 @@ export const createSeason = async (formData) => {
     `${BASE_URL}/admin/seasons/create`,
     {
       method: "POST",
-     headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-      body: formData, 
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
     }
   );
 
@@ -21,7 +20,7 @@ export const createSeason = async (formData) => {
     throw new Error(errorText || "Failed to create season");
   }
 
-  return res.text(); 
+  return res.text();
 };
 
 export const fetchSeasons = async () => {

@@ -48,7 +48,7 @@ export const fields = [
   },
 
 
-  { label: "Description", name: "description", type: "textarea", full: true },
+  { label: "Description", name: "seasonDesc", type: "textarea", full: true },
 ];
 
 

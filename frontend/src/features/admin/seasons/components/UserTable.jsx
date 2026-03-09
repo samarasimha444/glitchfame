@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { UserPlus, Trash2, Search } from "lucide-react";
 
 import Model from "./Model";
+import { useDeleteContestant, useVoteContestant } from "../hook";
 
 
 
@@ -48,6 +49,11 @@ const ParticipantsTable = ({ type, className }) => {
  const totalPages = Math.ceil(20/3);
 
   // if (isLoading) return <p>Loading...</p>;
+
+
+  const { mutate: vote } = useVoteContestant();
+
+  const { mutate: deleteUser } = useDeleteContestant();
 
 
   return (

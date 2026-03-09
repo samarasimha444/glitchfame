@@ -1,6 +1,6 @@
 import React from "react";
 import { Zap } from "lucide-react";
-import { useContestantDetails } from "../arena/hooks";
+import { useContestantDetails, useToggleVote } from "../arena/hooks";
 import { useParams } from "react-router-dom";
 
 const PlayerDetails = () => {
@@ -8,12 +8,25 @@ const PlayerDetails = () => {
    const { id } = useParams(); 
    console.log(id)
 
-const { data, isLoading, error } = useContestantDetails(id);
- console.log(data)
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error fetching data</p>;
 
-  
+
+
+  const { data, isLoading, error } = useContestantDetails(id);
+  const { mutate: voteToggle, isPending } = useToggleVote();
+
+  const handleVote = (contestantId) => {
+    if (!contestantId) return;
+
+    voteToggle(contestantId, {
+      onSuccess: () => {
+        alert("Vote submitted successfully!");
+      },
+      onError: () => {
+        alert("Failed to vote");
+      },
+    });
+  };
+
 
   return (
 
@@ -56,10 +69,11 @@ const { data, isLoading, error } = useContestantDetails(id);
           </p>
 
           <h2 className="text-3xl md:text-5xl font-extrabold text-cyan-400">
-            {data.voteCount}
+            {data?.voteCount}
           </h2>
 
-          <button className="mt-6 w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-lg text-black font-semibold hover:opacity-90 transition">
+          <button onClick={()=>handleVote(data?.participationId)}
+           className="mt-6 w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-lg text-black font-semibold hover:opacity-90 transition">
             <Zap size={18} />
             Vote {data?.participantName}
           </button>

@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 import { MoreVertical } from "lucide-react";
 import { useEndSeasonNow, useParticipationLock } from "../hooks";
+import Model from "./Model";
 
 const menuItems = [
   { id: 2, label: "Participation Lock", color: "text-gray-300" },
   { id: 3, label: "End Now", color: "text-red-400" },
+    { id: 3, label: "Modify Registration", color: "text-gray-300" },
+     { id: 3, label: "Modify Voting ", color: "text-gray-300" },
 ];
 
 const SeasonSummary = ({ title, subtitle, data }) => {
   console.log(data)
 
-  const [showMenu, setShowMenu] = useState(false);
+  const [showMenu, setShowMenu] = useState(true);
   const [seasonId,setSeasonId]= useState(data.id)
+  const [selected,setSelected]= useState("")
+  const [active,setActive]= useState(false)
 
   console.log(seasonId)
 
@@ -33,26 +38,45 @@ const SeasonSummary = ({ title, subtitle, data }) => {
 
 
 const { mutate: endSeason, isLoading } = useEndSeasonNow();
+
 const { mutate: lockParticipation, isLoading: locking } = useParticipationLock();
 
 
-    const handleClick= (item)=>{
-    console.log(item);
+   const handleClick = (item) => {
+  console.log(item);
 
-    if (item.label === "Participation Lock"){
-      lockParticipation({id:seasonId})
+  if (item.label === "Participation Lock") {
+    lockParticipation({ id: seasonId });
 
-    }else if(item.label ==="End NOW"){
-      endSeason({ id: seasonId });
-    }
-      setShowMenu(false)
+  } else if (item.label === "End Now") {
+    endSeason({ id: seasonId });
 
-    }
+  } else if (item.label === "Modify Registration") {
+    setSelected("registration");
+    setActive(true);
+
+  } else if (item.label === "Modify Voting") {
+    setSelected("voting");
+    setActive(true);
+  }
+
+  setShowMenu(false);
+};
 
 
   return (
     <div className="w-full bg-[#0f1115] flex">
-      <div className="w-full max-w-[780px] border border-gray-900 relative">
+
+  {active && (
+      <Model
+        type={selected}
+        seasonId={seasonId}
+        onClose={() => setActive(false)}
+      />
+    )}
+        
+
+      <div className="w-full max-w-195 border border-gray-900 relative">
         
         <div className="flex items-start justify-between p-6">
           <div>

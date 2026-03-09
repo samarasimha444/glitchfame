@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import AdminCard from "../dashboard/components/AdminCard";
 import SeasonSummary from "./components/SeasonSummary";
 import Controls from "./components/Controls";
-import SessionEngineTimer from "./components/EngineBox";
+
 import { Plus } from "lucide-react";
 import { useDeleteSeason, useFetchSeasonDetails } from "./hooks";
 import { useFetchSeasons } from "../dashboard/hooks";
 import { dashCards } from "../../../constants/admin";
-import SeasonScheduleBox from "./components/EngineBox";
+
 
 const AdminSettings = () => {
   const { data: seasons = [], isLoading: isSeasonsLoading } = useFetchSeasons();
@@ -69,27 +69,17 @@ const AdminSettings = () => {
             />
           }
 
-          <section className="flex space-x-3">
+         
+        </div>
 
-            {/* <div className="flex px-6 rounded-xs flex-wrap max-w-xs gap-4 mt-6 border py-3 border-gray-800">
-              <h5 className="w-full text-sm font-semibold text-white">
-                Quick Vote Modifiers
-              </h5>
-
-              <button className="flex items-center gap-2 px-5 py-2 rounded-lg border border-purple-600 text-purple-400 hover:bg-purple-600 hover:text-white transition text-sm font-medium">
-                <Plus size={16} />
-                +5 Votes
-              </button>
-
-              <button className="flex items-center gap-2 px-5 py-2 rounded-lg border border-blue-600 text-blue-400 hover:bg-blue-600 hover:text-white transition text-sm font-medium">
-                <Plus size={16} />
-                +10 Votes
-              </button>
-
-              <p className="text-xs text-gray-400">
-                Applied globally to all the contestants
-              </p>
-            </div> */}
+        <div className="max-w-xl mt-28 space-y-3">
+        
+          <Controls
+            id={selectedSeasonId}
+            voteLock={seasonData?.voteLock}
+            seasonLock={seasonData?.seasonLock}
+            prizeMoney={seasonData?.prizeMoney}
+          />
 
             <div className="flex flex-col px-6 py-4 rounded-lg max-w-xs gap-4 mt-6 border border-gray-800 bg-[#181B20]">
               <h5 className="w-full text-sm font-semibold text-red-500">
@@ -116,17 +106,7 @@ const AdminSettings = () => {
                 These actions are irreversible. Use carefully!
               </p>
             </div>
-          </section>
-        </div>
 
-        <div className="max-w-xl space-y-3">
-          <SeasonScheduleBox data ={seasonData} />
-          <Controls
-            id={selectedSeasonId}
-            voteLock={seasonData?.voteLock}
-            seasonLock={seasonData?.seasonLock}
-            prizeMoney={seasonData?.prizeMoney}
-          />
         </div>
       </section>
     </div>

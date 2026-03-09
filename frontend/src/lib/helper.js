@@ -42,3 +42,51 @@ export const isSeasonLive = (season) => {
 
   return isRegistrationOpen || isVotingLive;
 };
+
+
+
+export const buildLeaderboard = (users) => {
+
+  if (!users) return [];
+
+  return users
+    .map((user) => ({
+      id: user.participation_id,
+      name: user.participant_name,
+      score: user.vote_count,
+      img: user.photo_url
+    }))
+    .sort((a, b) => b.score - a.score)
+    .map((p, index) => ({
+      ...p,
+      rank: index + 1
+    }));
+
+};
+
+ export const getTimeLeft=(time) =>{
+    const endDate = new Date(time);
+    const now = new Date();
+
+    let diffInMs = endDate - now;
+
+    if (diffInMs <= 0) {
+      return "Voting Ended";
+    }
+
+    const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+    diffInMs -= days * 1000 * 60 * 60 * 24;
+
+    const hours = Math.floor(diffInMs / (1000 * 60 * 60));
+    diffInMs -= hours * 1000 * 60 * 60;
+
+    const minutes = Math.floor(diffInMs / (1000 * 60));
+
+    if (days > 0) {
+      return `${days} day${days > 1 ? "s" : ""} ${hours} hour${hours > 1 ? "s" : ""} left`;
+    } else if (hours > 0) {
+      return `${hours} hour${hours > 1 ? "s" : ""} ${minutes} minute${minutes > 1 ? "s" : ""} left`;
+    } else {
+      return `${minutes} minute${minutes > 1 ? "s" : ""} left`;
+    }
+  }

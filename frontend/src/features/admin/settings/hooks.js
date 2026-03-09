@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteSeason, endSeasonNow, fetchSeasonById, participationLock, toggleSeasonLock, toggleVoteLock, updatePrizePool } from "./api";
+import { deleteSeason, endSeasonNow, fetchSeasonById, participationLock, toggleSeasonLock, toggleVoteLock, updatePrizePool, updateRegistrationDates } from "./api";
 
 
 export const useFetchSeasonDetails = (seasonId) => {
@@ -81,5 +81,12 @@ export const useParticipationLock = () => {
     onError: (err) => {
       console.error("Participation lock error:", err);
     },
+  });
+};
+
+
+export const useUpdateRegistrationDates = () => {
+  return useMutation({
+    mutationFn: updateRegistrationDates,
   });
 };
