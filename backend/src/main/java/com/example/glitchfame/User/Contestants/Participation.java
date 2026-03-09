@@ -56,10 +56,10 @@ public class Participation {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    @Builder.Default
-    private Status status = Status.PENDING;
+  @Enumerated(EnumType.STRING)
+@Column(nullable = false)
+@Builder.Default
+private Status status = Status.PENDING;
 
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;

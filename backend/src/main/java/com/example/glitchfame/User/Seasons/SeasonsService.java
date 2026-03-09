@@ -15,21 +15,23 @@ public class SeasonsService {
     private final SeasonsRepository seasonsRepository;
     private final ExtractJwtData extractJwtData;
 
-    // ================= GET LIVE SEASONS =================
-    public List<SeasonsDTO> getLiveSeasons() {
-        return seasonsRepository.findLiveSeasons(
-                extractJwtData.getUserId()
-        );
+    // ================= GET SEASONS BY TYPE all/live/upcoming =================
+    public List<SeasonsDTO> getSeasons(String type) {
+
+        Long userId = extractJwtData.getUserId();
+
+        if (type == null || type.isBlank()) {
+            type = "all";
+        }
+
+        type = type.toLowerCase();
+
+        if (!type.equals("all") && !type.equals("live") && !type.equals("upcoming")) {
+            throw new IllegalArgumentException("Invalid season type");
+        }
+
+        return seasonsRepository.findSeasons(userId, type);
     }
-
-// ================= GET LIVE + UPCOMING SEASONS =================
-public List<SeasonsDTO> getLiveAndUpcomingSeasons() {
-
-    Long userId = extractJwtData.getUserId(); // get logged-in user id
-
-    return seasonsRepository.findLiveAndUpcomingSeasons(userId); // fetch seasons
-}
-
 
     // ================= GET SEASON DETAILS =================
     public SeasonDetailsDTO getSeasonDetails(Long seasonId) {

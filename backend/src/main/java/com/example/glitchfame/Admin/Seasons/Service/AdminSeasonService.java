@@ -18,6 +18,7 @@ import com.example.glitchfame.Configuration.Cloudinary.CloudinaryService;
 import com.example.glitchfame.User.Seasons.Seasons;
 import com.example.glitchfame.User.Seasons.DTO.SeasonsDTO;
 import com.example.glitchfame.Winner.WinnerRepository;
+import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
@@ -78,68 +79,81 @@ public class AdminSeasonService {
 
 
 
-
-
-// create season
+//create season
 @Transactional
 public String createSeason(SeasonFormDTO dto) {
+Instant now = Instant.now();
 
-    LocalDateTime now = LocalDateTime.now();
-    String name = dto.getName().trim();
-    String description = dto.getSeasonDesc().trim();
+String name = dto.getName().trim();
+String description = dto.getSeasonDesc().trim();
 
-    if (repository.existsByNameIgnoreCase(name)) {
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Season name already exists"
-        );
-    }
+// Convert DTO times to UTC once
+Instant registrationStart = dto.getRegistrationStartDate().toInstant();
+Instant registrationEnd   = dto.getRegistrationEndDate().toInstant();
+Instant votingStart       = dto.getVotingStartDate().toInstant();
+Instant votingEnd         = dto.getVotingEndDate().toInstant();
 
-    if (dto.getRegistrationStartDate().isBefore(now)) {
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Registration start date cannot be in the past"
-        );
-    }
-
-    if (dto.getRegistrationStartDate().isAfter(dto.getRegistrationEndDate())) {
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Registration end must be after or equal to registration start"
-        );
-    }
-
-    if (dto.getVotingStartDate().isBefore(dto.getRegistrationStartDate())) {
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Voting start must be after or equal to registration start"
-        );
-    }
-
-    if (dto.getVotingStartDate().isAfter(dto.getVotingEndDate())) {
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Voting end must be after or equal to voting start"
-        );
-    }
-
-    String imageUrl = cloudinaryService.uploadImage(dto.getImage());
-
-    Seasons season = Seasons.builder()
-            .name(name)
-            .seasonDesc(description) // added description
-            .prizeMoney(dto.getPrizeMoney())
-            .registrationStartDate(dto.getRegistrationStartDate())
-            .registrationEndDate(dto.getRegistrationEndDate())
-            .votingStartDate(dto.getVotingStartDate())
-            .votingEndDate(dto.getVotingEndDate())
-            .photoUrl(imageUrl)
-            .build();
-
-    repository.save(season);
-
-    return "Season created successfully";
+// Check duplicate season name
+if (repository.existsByNameIgnoreCase(name)) {
+    throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Season name already exists"
+    );
 }
+
+// Validation checks
+if (registrationStart.isBefore(now)) {
+    throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Registration start date cannot be in the past"
+    );
+}
+
+if (registrationStart.isAfter(registrationEnd)) {
+    throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Registration end must be after or equal to registration start"
+    );
+}
+
+if (votingStart.isBefore(registrationStart)) {
+    throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Voting start must be after or equal to registration start"
+    );
+}
+
+if (votingStart.isAfter(votingEnd)) {
+    throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Voting end must be after or equal to voting start"
+    );
+}
+
+String imageUrl = cloudinaryService.uploadImage(dto.getImage());
+
+Seasons season = Seasons.builder()
+        .name(name)
+        .seasonDesc(description)
+        .prizeMoney(dto.getPrizeMoney())
+        .registrationStartDate(registrationStart)
+        .registrationEndDate(registrationEnd)
+        .votingStartDate(votingStart)
+        .votingEndDate(votingEnd)
+        .photoUrl(imageUrl)
+        .build();
+
+repository.save(season);
+
+return "Season created successfully";
+
+
+}
+
+
+
+
+
 
 
 // Update season
@@ -220,13 +234,13 @@ public String endSeasonNow(Long seasonId) {
                             HttpStatus.NOT_FOUND,
                             "Season not found"));
 
-    LocalDateTime now = LocalDateTime.now();
+    Instant now = Instant.now();
 
-    // force the entire lifecycle to end
-    season.setRegistrationStartDate(now); // prevents UI thinking registration hasn't started
-    season.setRegistrationEndDate(now);   // closes registration
-    season.setVotingStartDate(now);       // prevents UI thinking voting hasn't started
-    season.setVotingEndDate(now);         // closes voting
+    // force lifecycle end
+    season.setRegistrationStartDate(now);
+    season.setRegistrationEndDate(now);
+    season.setVotingStartDate(now);
+    season.setVotingEndDate(now);
 
     repository.save(season);
 
@@ -237,7 +251,6 @@ public String endSeasonNow(Long seasonId) {
 
     return "Season ended and winner calculated";
 }
-
 
 
 

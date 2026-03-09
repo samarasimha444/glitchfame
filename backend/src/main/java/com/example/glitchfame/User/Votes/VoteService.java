@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Map;
 
 @Service
@@ -34,7 +34,7 @@ private final LeaderboardService leaderboardService;
 @Transactional
 public VoteResponse toggleVote(Long participationId) {
 
-    // Get logged in user
+    // Get logged-in user
     Long userId = extractJwtData.getUserId();
 
     User user = userRepository.findById(userId)
@@ -43,7 +43,7 @@ public VoteResponse toggleVote(Long participationId) {
                     "User does not exist"
             ));
 
-    // Check if admin disabled voting
+    // Check if voting disabled for this user
     if (!user.isCanVote()) {
         throw new ResponseStatusException(
                 HttpStatus.FORBIDDEN,
@@ -76,16 +76,20 @@ public VoteResponse toggleVote(Long participationId) {
                 "Voting for this season is currently disabled"
         );
     }
-    // Voting start date check
-if (LocalDateTime.now().isBefore(season.getVotingStartDate())) {
-    throw new ResponseStatusException(
-            HttpStatus.FORBIDDEN,
-            "Voting has not started yet"
-    );
-}
 
-// Voting end date check
-    if (LocalDateTime.now().isAfter(season.getVotingEndDate())) {
+    // Current UTC time
+    Instant now = Instant.now();
+
+    // Voting start date check
+    if (now.isBefore(season.getVotingStartDate())) {
+        throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "Voting has not started yet"
+        );
+    }
+
+    // Voting end date check
+    if (now.isAfter(season.getVotingEndDate())) {
         throw new ResponseStatusException(
                 HttpStatus.FORBIDDEN,
                 "Voting period has ended"
@@ -133,12 +137,12 @@ if (LocalDateTime.now().isBefore(season.getVotingStartDate())) {
         votesRepository.save(vote);
     }
 
-   Long updatedCount = votesRepository.getTotalVotes(participationId);
+    Long updatedCount = votesRepository.getTotalVotes(participationId);
 
-// ensure vote count never becomes negative
-if (updatedCount == null || updatedCount < 0) {
-    updatedCount = 0L;
-}
+    // ensure vote count never becomes negative
+    if (updatedCount == null || updatedCount < 0) {
+        updatedCount = 0L;
+    }
 
     // Broadcast vote update
     messagingTemplate.convertAndSend(

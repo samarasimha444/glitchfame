@@ -71,7 +71,7 @@ boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
             s.participation_lock AS participationLock,
             s.season_lock AS seasonLock
         FROM seasons s
-        WHERE s.name LIKE CONCAT('%', :name, '%')
+        WHERE s.name ILIKE '%' || :name || '%'
         AND (
             (:status = 'ALL')
             OR (:status = 'UPCOMING' AND NOW() < s.registration_start_date)
@@ -83,7 +83,7 @@ boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
     countQuery = """
         SELECT COUNT(*)
         FROM seasons s
-        WHERE s.name LIKE CONCAT('%', :name, '%')
+       WHERE s.name ILIKE '%' || :name || '%'
         AND (
             (:status = 'ALL')
             OR (:status = 'UPCOMING' AND NOW() < s.registration_start_date)

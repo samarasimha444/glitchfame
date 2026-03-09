@@ -1,15 +1,12 @@
 package com.example.glitchfame.Admin.Seasons.DTO;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
+import java.time.OffsetDateTime;
 import org.springframework.web.multipart.MultipartFile;
-
-
-
 
 @Data
 public class SeasonFormDTO {
@@ -22,25 +19,20 @@ public class SeasonFormDTO {
     private BigDecimal prizeMoney;
 
     @NotNull(message = "Registration start date is required")
-    private LocalDateTime registrationStartDate;
+    private OffsetDateTime registrationStartDate;
 
     @NotNull(message = "Registration end date is required")
-    private LocalDateTime registrationEndDate;
+    private OffsetDateTime registrationEndDate;
 
     @NotNull(message = "Voting start date is required")
-    private LocalDateTime votingStartDate;
+    private OffsetDateTime votingStartDate;
 
     @NotNull(message = "Voting end date is required")
-    private LocalDateTime votingEndDate;
-
-    @NotBlank(message = "Photo URL is required")
-    private MultipartFile Image;
-    
+    private OffsetDateTime votingEndDate;
 
     @NotBlank(message = "Season description is required")
     private String seasonDesc;
 
-
-
-
+    @NotNull(message = "Image is required")
+    private MultipartFile image;
 }

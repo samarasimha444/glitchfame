@@ -11,141 +11,131 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
 public class SeasonUpdateService {
 
-    private final AdminSeasonRepository repository;
 
-    // fetch season or throw error
-    private Seasons getSeason(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() ->
-                        new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
-                                "Season not found"));
+private final AdminSeasonRepository repository;
+
+// fetch season or throw error
+private Seasons getSeason(Long id) {
+    return repository.findById(id)
+            .orElseThrow(() ->
+                    new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "Season not found"));
+}
+
+// update prize money
+@Transactional
+public String updatePrizeMoney(Long id, BigDecimal prizeMoney) {
+
+    Seasons season = getSeason(id);
+
+    if (prizeMoney == null || prizeMoney.compareTo(BigDecimal.ZERO) <= 0) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Prize money must be greater than zero");
     }
 
-    // update prize money
-    @Transactional
-    public String updatePrizeMoney(Long id, BigDecimal prizeMoney) {
+    season.setPrizeMoney(prizeMoney);
 
-        Seasons season = getSeason(id);
+    return "Prize money updated";
+}
 
-        if (prizeMoney == null || prizeMoney.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Prize money must be greater than zero");
-        }
+// update registration dates
+@Transactional
+public String updateRegistrationDates(
+        Long id,
+        Instant start,
+        Instant end) {
 
-        season.setPrizeMoney(prizeMoney);
+    Seasons season = getSeason(id);
 
-        return "Prize money updated";
+    if (start != null) {
+        season.setRegistrationStartDate(start);
     }
 
-
-
-
-
-    // update registration dates
-    @Transactional
-    public String updateRegistrationDates(
-            Long id,
-            LocalDateTime start,
-            LocalDateTime end) {
-
-        Seasons season = getSeason(id);
-
-        if (start != null) {
-            season.setRegistrationStartDate(start);
-        }
-
-        if (end != null) {
-            season.setRegistrationEndDate(end);
-        }
-
-        if (start != null && end != null && end.isBefore(start)) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Registration end date must be after start date");
-        }
-
-        return "Registration dates updated";
+    if (end != null) {
+        season.setRegistrationEndDate(end);
     }
 
-    // update voting dates
-    @Transactional
-    public String updateVotingDates(
-            Long id,
-            LocalDateTime start,
-            LocalDateTime end) {
-
-        Seasons season = getSeason(id);
-
-        if (start != null) {
-            season.setVotingStartDate(start);
-        }
-
-        if (end != null) {
-            season.setVotingEndDate(end);
-        }
-
-        if (start != null && end != null && end.isBefore(start)) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Voting end date must be after start date");
-        }
-
-        return "Voting dates updated";
+    if (start != null && end != null && end.isBefore(start)) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Registration end date must be after start date");
     }
 
+    return "Registration dates updated";
+}
 
+// update voting dates
+@Transactional
+public String updateVotingDates(
+        Long id,
+        Instant start,
+        Instant end) {
 
+    Seasons season = getSeason(id);
 
-
-
-    // toggle vote lock
-    @Transactional
-    public String toggleVoteLock(Long id) {
-
-        Seasons season = getSeason(id);
-
-        season.setVoteLock(!season.isVoteLock());
-
-        return season.isVoteLock()
-                ? "Voting locked"
-                : "Voting unlocked";
+    if (start != null) {
+        season.setVotingStartDate(start);
     }
 
-    // toggle participation lock
-    @Transactional
-    public String toggleParticipationLock(Long id) {
-
-        Seasons season = getSeason(id);
-
-        season.setParticipationLock(!season.isParticipationLock());
-
-        return season.isParticipationLock()
-                ? "Participation locked"
-                : "Participation unlocked";
+    if (end != null) {
+        season.setVotingEndDate(end);
     }
 
-
-
-    
-
-    // toggle season lock
-    @Transactional
-    public String toggleSeasonLock(Long id) {
-
-        Seasons season = getSeason(id);
-
-        season.setSeasonLock(!season.isSeasonLock());
-
-        return season.isSeasonLock()
-                ? "Season locked"
-                : "Season unlocked";
+    if (start != null && end != null && end.isBefore(start)) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Voting end date must be after start date");
     }
+
+    return "Voting dates updated";
+}
+
+// toggle vote lock
+@Transactional
+public String toggleVoteLock(Long id) {
+
+    Seasons season = getSeason(id);
+
+    season.setVoteLock(!season.isVoteLock());
+
+    return season.isVoteLock()
+            ? "Voting locked"
+            : "Voting unlocked";
+}
+
+// toggle participation lock
+@Transactional
+public String toggleParticipationLock(Long id) {
+
+    Seasons season = getSeason(id);
+
+    season.setParticipationLock(!season.isParticipationLock());
+
+    return season.isParticipationLock()
+            ? "Participation locked"
+            : "Participation unlocked";
+}
+
+// toggle season lock
+@Transactional
+public String toggleSeasonLock(Long id) {
+
+    Seasons season = getSeason(id);
+
+    season.setSeasonLock(!season.isSeasonLock());
+
+    return season.isSeasonLock()
+            ? "Season locked"
+            : "Season unlocked";
+}
+
+
 }

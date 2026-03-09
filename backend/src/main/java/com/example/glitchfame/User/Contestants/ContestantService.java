@@ -1,7 +1,7 @@
 package com.example.glitchfame.User.Contestants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
@@ -105,7 +105,7 @@ public String apply(CreateContestantDTO request) {
     }
 
     // ================= REGISTRATION WINDOW =================
-    LocalDateTime now = LocalDateTime.now();
+    Instant now = Instant.now();
 
     if (season.getRegistrationStartDate() == null || season.getRegistrationEndDate() == null) {
         throw new ResponseStatusException(
