@@ -2,50 +2,12 @@ version: "3.9"
 
 services:
 
-  postgres:
-    image: postgres:16
-    container_name: glitchfame-postgres
-    restart: always
-    environment:
-      POSTGRES_DB: glitchfame
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      retries: 5
-
-  redis:
-    image: redis:7
-    container_name: glitchfame-redis
-    restart: always
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-
   backend:
     build: .
     container_name: glitchfame-backend
     restart: always
     ports:
       - "3000:3000"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_started
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/glitchfame
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_REDIS_HOST: redis
-      SPRING_REDIS_PORT: 6379
 
-volumes:
-  postgres_data:
-  redis_data:
+    env_file:
+      - .env
