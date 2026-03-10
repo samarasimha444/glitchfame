@@ -1,5 +1,12 @@
 package com.example.glitchfame.User.Contestants.DTO;
 
-public class MyApplicationsDTO {
-    
+public interface MyApplicationsDTO {
+
+    Long getParticipationId();
+
+    Long getSeasonId();
+
+    String getSeasonName();
+
+    String getStatus();
 }

@@ -64,7 +64,7 @@ public interface LeadboardRepository extends JpaRepository<Participation, Long> 
                     s.voting_end_date,
                     s.photo_url AS season_photo_url,
 
-                    COUNT(v.id) + COALESCE(a.admin_vote_count,0) AS vote_count,
+                    COALESCE(COUNT(v.id),0) + COALESCE(a.admin_vote_count,0) AS vote_count,
 
                     MAX(CASE 
                         WHEN v.voter_id = :userId THEN 1
@@ -137,7 +137,7 @@ List<LeaderboardProjection> findTop3OfAllSeasons(
                     s.voting_end_date,
                     s.photo_url AS season_photo_url,
 
-                    COUNT(v.id) + COALESCE(a.admin_vote_count,0) AS vote_count,
+                    COALESCE(COUNT(v.id),0) + COALESCE(a.admin_vote_count,0) AS vote_count,
 
                     MAX(CASE
                         WHEN v.voter_id = :userId THEN 1
@@ -212,7 +212,7 @@ List<LeaderboardProjection> findTop3OfAllSeasons(
                     s.voting_end_date,
                     s.photo_url AS season_photo_url,
 
-                    COUNT(v.id) + COALESCE(a.admin_vote_count,0) AS vote_count
+                    COALESCE(COUNT(v.id),0) + COALESCE(a.admin_vote_count,0) AS vote_count
 
                 FROM participations p
                 JOIN seasons s ON s.id = p.season_id

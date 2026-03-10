@@ -1,20 +1,15 @@
 package com.example.glitchfame.Auth.Service;
 
-import com.example.glitchfame.Auth.AuthRepository;
-import com.example.glitchfame.Auth.User;
-import com.example.glitchfame.Auth.DTO.LoginDTO;
-import com.example.glitchfame.Auth.DTO.ProfileResponseDTO;
-import com.example.glitchfame.Auth.DTO.RegisterDTO;
-import com.example.glitchfame.Auth.Service.emails.OtpService;
-import com.example.glitchfame.Auth.Service.emails.OtpType;
+import com.example.glitchfame.Auth.*;
+import com.example.glitchfame.Auth.DTO.*;
+import com.example.glitchfame.Auth.Service.OtpService;
 import com.example.glitchfame.Configuration.jwt.JwtUtil;
 import com.example.glitchfame.Configuration.jwt.ExtractJwtData;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +28,7 @@ public class AuthService {
     private final RedisTemplate<String,String> redisTemplate;
     private final OtpService otpService;
 
-    // ================= REGISTER (SEND OTP) =================
+    // ================= REGISTER =================
     public ResponseEntity<String> register(RegisterDTO dto){
 
         if(authRepository.existsByEmail(dto.getEmail())){
@@ -41,47 +36,37 @@ public class AuthService {
                     .body("Email already exists");
         }
 
-        if(authRepository.existsByUsername(dto.getUsername())){
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Username already exists");
-        }
-
-        if(authRepository.existsByMobileNumber(dto.getMobileNumber())){
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Mobile number already exists");
-        }
-
         String registerKey = "REGISTER:" + dto.getEmail();
 
         redisTemplate.opsForValue().set(
                 registerKey,
-                dto.getEmail() + "|" +
-                dto.getUsername() + "|" +
-                dto.getMobileNumber() + "|" +
-                dto.getPassword(),
+                dto.getEmail()+"|"+
+                dto.getUsername()+"|"+
+                dto.getMobileNumber()+"|"+
+                passwordEncoder.encode(dto.getPassword()),
                 Duration.ofMinutes(5)
         );
 
         otpService.sendOtp(dto.getEmail(), OtpType.REGISTER);
 
-        return ResponseEntity.ok("OTP sent to your email");
+        return ResponseEntity.ok("OTP sent to email");
     }
 
     // ================= VERIFY REGISTER OTP =================
     public ResponseEntity<String> verifyOtp(String email,String otp){
 
-        boolean valid = otpService.verifyOtp(email, otp, OtpType.REGISTER);
+        boolean valid = otpService.verifyOtp(email,otp,OtpType.REGISTER);
 
         if(!valid){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Invalid OTP");
         }
 
-        String userData = redisTemplate.opsForValue().get("REGISTER:" + email);
+        String userData = redisTemplate.opsForValue().get("REGISTER:"+email);
 
         if(userData == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Registration data expired");
+                    .body("Registration expired");
         }
 
         String[] parts = userData.split("\\|");
@@ -90,12 +75,12 @@ public class AuthService {
                 .email(parts[0])
                 .username(parts[1])
                 .mobileNumber(parts[2])
-                .password(passwordEncoder.encode(parts[3]))
+                .password(parts[3])
                 .build();
 
         authRepository.save(user);
 
-        redisTemplate.delete("REGISTER:" + email);
+        redisTemplate.delete("REGISTER:"+email);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("User registered successfully");
@@ -105,13 +90,17 @@ public class AuthService {
     public ResponseEntity<?> login(LoginDTO dto){
 
         User user = authRepository.findByEmail(dto.getEmail())
-                .orElse(null);
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.UNAUTHORIZED,
+                                "Invalid credentials"
+                        ));
 
-        if(user == null ||
-           !passwordEncoder.matches(dto.getPassword(), user.getPassword())){
-
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid credentials");
+        if(!passwordEncoder.matches(dto.getPassword(), user.getPassword())){
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Invalid credentials"
+            );
         }
 
         String token = jwtUtil.generateToken(
@@ -120,7 +109,7 @@ public class AuthService {
         );
 
         redisTemplate.opsForValue().set(
-                "auth:user:" + user.getId(),
+                "auth:user:"+user.getId(),
                 token,
                 Duration.ofHours(24)
         );
@@ -140,10 +129,9 @@ public class AuthService {
 
         otpService.sendOtp(user.getEmail(), OtpType.FORGOT_PASSWORD);
 
-        return ResponseEntity.ok("OTP sent to your email");
+        return ResponseEntity.ok("OTP sent");
     }
 
-    
     // ================= RESET PASSWORD =================
     @Transactional
     public ResponseEntity<String> resetPassword(
@@ -159,7 +147,7 @@ public class AuthService {
 
         if(!valid){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Invalid or expired OTP");
+                    .body("Invalid OTP");
         }
 
         User user = authRepository.findByEmail(email)
@@ -169,19 +157,13 @@ public class AuthService {
                                 "User not found"
                         ));
 
-        if(newPassword == null || newPassword.length() < 6){
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Password must be at least 6 characters"
-            );
-        }
-
         user.setPassword(passwordEncoder.encode(newPassword));
 
-        return ResponseEntity.ok("Password reset successfully");
+        return ResponseEntity.ok("Password reset successful");
     }
 
-    // ================= GET PROFILE =================
+    //get profile
+        // ================= GET PROFILE =================
     public ProfileResponseDTO getProfile(Long userId){
 
         User user = authRepository.findById(userId)
@@ -202,6 +184,7 @@ public class AuthService {
                 .profilePicture(user.getProfilePicture())
                 .build();
     }
+    
 
     // ================= DELETE ACCOUNT =================
     public void deleteMyAccount(){
@@ -214,4 +197,5 @@ public class AuthService {
 
         authRepository.deleteById(userId);
     }
+
 }

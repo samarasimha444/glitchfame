@@ -168,8 +168,8 @@ SELECT
 FROM participations p
 JOIN seasons s ON p.season_id = s.id
 WHERE p.status = 'APPROVED'
-AND NOW() BETWEEN s.registration_start_date AND s.voting_end_date
-AND (:name IS NULL OR p.name LIKE CONCAT('%', :name, '%'))
+AND CURRENT_TIMESTAMP BETWEEN s.registration_start_date AND s.voting_end_date
+AND (:name IS NULL OR p.name ILIKE '%' || :name || '%')
 ORDER BY p.name ASC
 """,
 countQuery = """
@@ -177,8 +177,8 @@ SELECT COUNT(*)
 FROM participations p
 JOIN seasons s ON p.season_id = s.id
 WHERE p.status = 'APPROVED'
-AND NOW() BETWEEN s.registration_start_date AND s.voting_end_date
-AND (:name IS NULL OR p.name LIKE CONCAT('%', :name, '%'))
+AND CURRENT_TIMESTAMP BETWEEN s.registration_start_date AND s.voting_end_date
+AND (:name IS NULL OR p.name ILIKE '%' || :name || '%')
 """,
 nativeQuery = true)
 Page<ContestantByName> searchByName(
@@ -261,7 +261,6 @@ Page<SeasonContestants> findApprovedSeasonContestantsWithVotes(
 /* =========================================================
 SEARCH CONTESTANTS IN SEASON
 ========================================================= */
-
 @Query(value = """
     SELECT 
         p.id AS id,
@@ -305,7 +304,7 @@ SEARCH CONTESTANTS IN SEASON
 
     WHERE p.season_id = :seasonId
     AND p.status = 'APPROVED'
-    AND (:name IS NULL OR p.name LIKE CONCAT('%', :name, '%'))
+    AND (:name IS NULL OR p.name ILIKE '%' || :name || '%')
 
     GROUP BY 
         p.id,
@@ -319,7 +318,7 @@ SELECT COUNT(*)
 FROM participations p
 WHERE p.season_id = :seasonId
 AND p.status = 'APPROVED'
-AND (:name IS NULL OR p.name LIKE CONCAT('%', :name, '%'))
+AND (:name IS NULL OR p.name ILIKE '%' || :name || '%')
 """,
 nativeQuery = true)
 Page<SeasonContestants> searchSeasonContestantsByName(
@@ -328,7 +327,6 @@ Page<SeasonContestants> searchSeasonContestantsByName(
         @Param("userId") Long userId,
         Pageable pageable
 );
-
 
 
 /* =========================================================

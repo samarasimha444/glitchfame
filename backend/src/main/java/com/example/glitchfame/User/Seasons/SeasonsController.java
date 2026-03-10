@@ -15,22 +15,15 @@ public class SeasonsController {
 
     private final SeasonsService seasonsService;
 
-    // ================= GET LIVE SEASONS =================
+    // ================= GET SEASONS  live/all/upcoming=================
     @GetMapping
-    public ResponseEntity<List<SeasonsDTO>> getLiveSeasons() {
+    public ResponseEntity<List<SeasonsDTO>> getSeasons(
+            @RequestParam(defaultValue = "all") String status) {
+
         return ResponseEntity.ok(
-                seasonsService.getLiveSeasons()
+                seasonsService.getSeasons(status)
         );
     }
-
-// ================= GET LIVE + UPCOMING SEASONS =================
-@GetMapping("/live-upcoming")
-public ResponseEntity<List<SeasonsDTO>> getLiveAndUpcomingSeasons() {
-
-    return ResponseEntity.ok(
-            seasonsService.getLiveAndUpcomingSeasons()
-    );
-}
 
     // ================= GET SEASON DETAILS =================
     @GetMapping("/{seasonId}")

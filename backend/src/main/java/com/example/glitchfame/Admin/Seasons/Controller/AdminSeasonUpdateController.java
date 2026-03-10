@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import com.example.glitchfame.Admin.Seasons.Service.SeasonUpdateService;
 
@@ -29,22 +29,30 @@ public class AdminSeasonUpdateController {
     @PatchMapping("/{id}/registration-dates")
     public ResponseEntity<String> updateRegistrationDates(
             @PathVariable Long id,
-            @RequestParam(required = false) LocalDateTime start,
-            @RequestParam(required = false) LocalDateTime end) {
+            @RequestParam(required = false) OffsetDateTime start,
+            @RequestParam(required = false) OffsetDateTime end) {
 
         return ResponseEntity.ok(
-                service.updateRegistrationDates(id, start, end));
+                service.updateRegistrationDates(
+                        id,
+                        start != null ? start.toInstant() : null,
+                        end != null ? end.toInstant() : null
+                ));
     }
 
     // update voting dates
     @PatchMapping("/{id}/voting-dates")
     public ResponseEntity<String> updateVotingDates(
             @PathVariable Long id,
-            @RequestParam(required = false) LocalDateTime start,
-            @RequestParam(required = false) LocalDateTime end) {
+            @RequestParam(required = false) OffsetDateTime start,
+            @RequestParam(required = false) OffsetDateTime end) {
 
         return ResponseEntity.ok(
-                service.updateVotingDates(id, start, end));
+                service.updateVotingDates(
+                        id,
+                        start != null ? start.toInstant() : null,
+                        end != null ? end.toInstant() : null
+                ));
     }
 
     // toggle vote lock

@@ -15,6 +15,8 @@ public class ContestantController {
 
     private final ContestantService service;
 
+
+    //all live approved contestants
     @GetMapping
     public ResponseEntity<Page<ContestantsDTO>> getContestants(
             @RequestParam(defaultValue = "0") int page,

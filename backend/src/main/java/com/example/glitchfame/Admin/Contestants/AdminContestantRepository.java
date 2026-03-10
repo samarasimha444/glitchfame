@@ -8,9 +8,10 @@ import com.example.glitchfame.User.Contestants.Participation;
 import com.example.glitchfame.User.Contestants.DTO.ContestantByName;
 import com.example.glitchfame.User.Contestants.DTO.ContestantsDTO;
 import com.example.glitchfame.User.Contestants.DTO.SeasonContestants;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+
 
 public interface AdminContestantRepository extends JpaRepository<Participation, Long> {
 
@@ -197,70 +198,73 @@ Page<ContestantsDTO> findLiveSeasonContestantsByStatus(
             Pageable pageable
     );
 
-    
 
-    // UNIFIED SEARCH (ALL COMBINATIONS SUPPORTED)
-    @Query(value = """
-        SELECT
-            p.id AS id,
-            p.name AS name,
-            p.photo_url AS photoUrl
-        FROM participations p
-        JOIN seasons s ON p.season_id = s.id
-        WHERE
-            (:seasonId IS NULL OR p.season_id = :seasonId)
-
-        AND (
-                :seasonType IS NULL
-             OR :seasonType = 'ALL'
-             OR (:seasonType = 'LIVE' AND 
-                 NOW() BETWEEN s.registration_start_date AND s.voting_end_date)
-             OR (:seasonType = 'PAST' AND 
-                 NOW() > s.voting_end_date)
-             OR (:seasonType = 'FUTURE' AND 
-                 NOW() < s.registration_start_date)
-            )
-
-        AND (:status IS NULL OR :status = 'ALL' OR p.status = :status)
-
-        AND (:name IS NULL OR p.name LIKE CONCAT('%', :name, '%'))
-
-        ORDER BY p.name ASC
-    """,
-    countQuery = """
-        SELECT COUNT(*)
-        FROM participations p
-        JOIN seasons s ON p.season_id = s.id
-        WHERE
-            (:seasonId IS NULL OR p.season_id = :seasonId)
-
-        AND (
-                :seasonType IS NULL
-             OR :seasonType = 'ALL'
-             OR (:seasonType = 'LIVE' AND 
-                 NOW() BETWEEN s.registration_start_date AND s.voting_end_date)
-             OR (:seasonType = 'PAST' AND 
-                 NOW() > s.voting_end_date)
-             OR (:seasonType = 'FUTURE' AND 
-                 NOW() < s.registration_start_date)
-            )
-
-        AND (:status IS NULL OR :status = 'ALL' OR p.status = :status)
-
-        AND (:name IS NULL OR p.name LIKE CONCAT('%', :name, '%'))
-    """,
-    nativeQuery = true)
-    Page<ContestantByName> searchContestants(
-            @Param("seasonId") Long seasonId,
-            @Param("seasonType") String seasonType,
-            @Param("status") String status,
-            @Param("name") String name,
-            Pageable pageable
-    );
-
+   //reset season
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM participations WHERE season_id = :seasonId", nativeQuery = true)
     void resetSeason(Long seasonId);
+
+
+    //unfied global search
+
+    // UNIFIED SEARCH (ALL COMBINATIONS SUPPORTED)
+@Query(value = """
+    SELECT
+        p.id AS id,
+        p.name AS name,
+        p.photo_url AS photoUrl
+    FROM participations p
+    JOIN seasons s ON p.season_id = s.id
+    WHERE
+        (:seasonId IS NULL OR p.season_id = :seasonId)
+
+    AND (
+            :seasonType IS NULL
+         OR :seasonType = 'ALL'
+         OR (:seasonType = 'LIVE'
+             AND NOW() BETWEEN s.registration_start_date AND s.voting_end_date)
+         OR (:seasonType = 'PAST'
+             AND NOW() > s.voting_end_date)
+         OR (:seasonType = 'FUTURE'
+             AND NOW() < s.registration_start_date)
+        )
+
+    AND (:status IS NULL OR :status = 'ALL' OR p.status = :status)
+
+    AND (:name IS NULL OR p.name ILIKE '%' || :name || '%')
+
+    ORDER BY p.name ASC
+""",
+countQuery = """
+    SELECT COUNT(*)
+    FROM participations p
+    JOIN seasons s ON p.season_id = s.id
+    WHERE
+        (:seasonId IS NULL OR p.season_id = :seasonId)
+
+    AND (
+            :seasonType IS NULL
+         OR :seasonType = 'ALL'
+         OR (:seasonType = 'LIVE'
+             AND NOW() BETWEEN s.registration_start_date AND s.voting_end_date)
+         OR (:seasonType = 'PAST'
+             AND NOW() > s.voting_end_date)
+         OR (:seasonType = 'FUTURE'
+             AND NOW() < s.registration_start_date)
+        )
+
+    AND (:status IS NULL OR :status = 'ALL' OR p.status = :status)
+
+    AND (:name IS NULL OR p.name ILIKE '%' || :name || '%')
+""",
+nativeQuery = true)
+Page<ContestantByName> searchContestants(
+        @Param("seasonId") Long seasonId,
+        @Param("seasonType") String seasonType,
+        @Param("status") String status,
+        @Param("name") String name,
+        Pageable pageable
+);
 
 }
