@@ -80,11 +80,11 @@ const PlayerDetails = () => {
      
         <div className="md:bg-[#0f1720] max-w-[530px] p-8 rounded-2xl md:border border-cyan-500/20">
           <p className="text-xs text-gray-400 mb-2">
-            CURRENT STANDINGS
+            CURRENT RANK
           </p>
 
           <h2 className="text-3xl md:text-5xl font-extrabold text-cyan-400">
-            {data?.voteCount}
+           #{data?.voteCount}
           </h2>
 
           <button onClick={()=>handleVote(data?.participationId)}
@@ -101,7 +101,7 @@ const PlayerDetails = () => {
         
         <div>
           <h3 className="text-lg font-semibold mb-3">
-            🎤 Artist Manifesto
+             About me
           </h3>
 
           <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
@@ -125,10 +125,10 @@ const PlayerDetails = () => {
               />
             ))}
           </div> */}
-          <p>Season Pool</p>
+          <p>Season </p>
 
           <p className="text-sm text-gray-400">
-            Rs{data?.prizeMoney}
+          
           </p>
         </div>
 

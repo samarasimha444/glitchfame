@@ -6,7 +6,7 @@ const footerData = {
   },
   platform: ["Active Contests", "Hall of Fame", "Community Guidelines"],
   support: ["Help Center", "Terms of Service", "Privacy"],
-  social: ["Instagram", "TikTok"],
+  social: ["Instagram", "Linkdin"],
 };
 
 const Footer=()=> {
@@ -14,7 +14,7 @@ const Footer=()=> {
   <footer className="bg-[#0F141A] border-t border-[#2A323C] text-gray-400">
   <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-10">
     
-    {/* Brand - Take full width on mobile */}
+    
     <div className="col-span-2 md:col-span-1">
       <h2 className="text-white font-semibold text-lg mb-4">
         {footerData.brand.name}
@@ -24,37 +24,9 @@ const Footer=()=> {
       </p>
     </div>
 
-    {/* Platform */}
-    <div>
-      <h4 className="text-white font-medium mb-4">PLATFORM</h4>
-      <ul className="space-y-2">
-        {footerData.platform.map((item, index) => (
-          <li
-            key={index}
-            className="hover:text-purple-400 cursor-pointer text-sm"
-          >
-            {item}
-          </li>
-        ))}
-      </ul>
-    </div>
+    
 
-    {/* Support */}
-    <div>
-      <h4 className="text-white font-medium mb-4">SUPPORT</h4>
-      <ul className="space-y-2">
-        {footerData.support.map((item, index) => (
-          <li
-            key={index}
-            className="hover:text-purple-400 cursor-pointer text-sm"
-          >
-            {item}
-          </li>
-        ))}
-      </ul>
-    </div>
-
-    {/* Social */}
+   
     <div className="col-span-2 md:col-span-1">
       <h4 className="text-white font-medium mb-4">STAY SYNCED</h4>
       <div className="flex flex-wrap gap-3">

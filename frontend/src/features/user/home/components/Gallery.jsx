@@ -180,11 +180,14 @@ https://images.pexels.com/photos/7005759/pexels-photo-7005759.jpeg
 ${size === "large" ? "w-[420px] h-[520px]" : "w-[320px] h-[420px]"}
 `}
                 >
-                  <img
-                    src={item.photoUrl}
-                    alt={item.contestantName}
-                    className="w-full h-full object-cover"
-                  />
+                <img
+  src={`${item.photoUrl}?auto=compress&cs=tinysrgb&w=600`}
+  alt={item.contestantName}
+  loading="lazy"
+  decoding="async"
+  fetchpriority="low"
+  className="w-full h-full object-cover"
+/>
 
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
 

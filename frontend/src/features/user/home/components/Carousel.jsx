@@ -39,82 +39,60 @@ export default function FeaturedCarousel() {
   }, [season]);
 
   return (
-    <div className="w-full relative mt-6 md:mt-0 justify-center items-center md:justify-start max-w-400 m-auto h-full md:h-[95dvh] flex">
+    
+    <div className="w-full relative mt-6 md:mt-3 flex justify-center items-center max-w-400 mx-auto h-full md:h-[95dvh]">
 
-      <section className="w-1/2 hidden md:flex flex-col justify-center px-16 text-white space-y-6">
+      <section className="border border-gray-600 rounded-xl w-full max-w-90 md:max-w-screen md:w-[1120px] h-62.5 md:h-160 relative overflow-hidden aspect-16\/9">
 
-        <span className="border border-[#BE5EED] text-[#BE5EED] text-xs px-3 py-1 w-fit">
-          #FeaturedChallenge
-        </span>
-
-        <h1 className="font-extrabold text-7xl max-w-[440px] leading-tight">
-         {season?.seasonName || "Upcoming Challenge"}
-        </h1>
-
-        <p className="text-gray-400 max-w-lg">
-          Participate in this photography season and compete with others.
-        </p>
-
-        <div className="flex items-center gap-6 pt-4">
-          <Link
-            to={season ? `/enter/${season.seasonId}` : "#"}
-            className="bg-[#BE5EED] hover:bg-purple-600 transition px-6 py-3 font-semibold text-black"
-          >
-            ENTER NOW
-          </Link>
-
-          <div>
-            <p className="text-xs text-gray-400">PRIZE POOL</p>
-            <p className="text-xl font-bold">
-              ₹{season?.prizeMoney?.toLocaleString() || "0"}
-            </p>
-          </div>
-        </div>
-
-      </section>
-
-      <section className="border md:border-none md:rounded-none border-gray-600 rounded-xl w-full max-w-90 h-[50vh] md:h-full md:w-1/2 md:max-w-screen relative overflow-hidden">
-
+       
         <img
-          src={season?.seasonPhotoUrl || fallback}
+          src={`${season?.seasonPhotoUrl || fallback}?auto=compress&cs=tinysrgb&w=1600`}
           alt="event"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
           className="w-full h-full object-cover"
           onError={(e) => (e.target.src = fallback)}
         />
 
-       <button className="absolute top-3 left-3 flex items-center gap-2 bg-[#BE5EED] text-white px-4 py-2 text-xs sm:text-[9px] font-bold rounded-3xl animate-pulse">
-  
-        <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
-        </span>
+        {/* DESKTOP UI */}
+        <section className="absolute hidden md:flex inset-0 flex-col items-center justify-center text-center text-white px-6">
 
-        Register Now
+          <span className="border border-purple-400 text-purple-300 text-xs px-4 py-1 rounded-full backdrop-blur bg-black/30">
+            NEXT CHALLENGE ANNOUNCEMENT
+          </span>
 
-      </button>
+          <h1 className="mt-6 font-extrabold leading-tight text-6xl lg:text-7xl">
+            THE{" "}
+            <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+              NEON
+            </span>
+          </h1>
 
-        <div className="absolute top-3 right-3 md:top-6 md:right-6 flex gap-2">
+          <h1 className="font-extrabold text-6xl lg:text-7xl">
+            FRONTIER
+          </h1>
 
-          <div className="bg-black/70 px-3 py-2 rounded text-center text-white">
-            <p className="font-bold">{timeLeft.days}</p>
-            <p className="text-[10px] text-gray-400">DAYS</p>
+          <p className="text-gray-300 mt-4 max-w-xl text-sm">
+            Push the boundaries of creativity in our biggest creative challenge.
+          </p>
+
+          <button className="mt-6 bg-[#BE5EED] hover:opacity-90 transition text-black font-semibold px-6 py-3 rounded-full">
+            Register Now →
+          </button>
+
+          <div className="flex items-center gap-8 mt-6 text-sm text-gray-300">
+            <span>₹{season?.prizeMoney?.toLocaleString()}</span>
+            <span>
+              ⏱ {timeLeft.days}D {timeLeft.hrs}H {timeLeft.min}M
+            </span>
           </div>
+        </section>
 
-          <div className="bg-black/70 px-3 py-2 rounded text-center text-white">
-            <p className="font-bold">{timeLeft.hrs}</p>
-            <p className="text-[10px] text-gray-400">HRS</p>
-          </div>
-
-          <div className="bg-black/70 px-3 py-2 rounded text-center text-white">
-            <p className="font-bold">{timeLeft.min}</p>
-            <p className="text-[10px] text-gray-400">MIN</p>
-          </div>
-
-        </div>
-
+        {/* MOBILE UI */}
         <section className="absolute sm:hidden bottom-0 left-0 w-full p-4 text-white bg-gradient-to-t from-black/90 via-black/60 to-transparent">
 
-          <span className="border border-[#BE5EED] font-semibold text-[#BE5EED] text-[9px] px-2 py-[2px] w-fit">
+          <span className="border border-[#BE5EED] font-semibold text-[#BE5EED] text-[9px] px-2 py-0.5 w-fit">
             #FEATUREDCHALLENGE
           </span>
 
@@ -140,11 +118,12 @@ export default function FeaturedCarousel() {
             </button>
 
           </div>
-
         </section>
 
       </section>
-
     </div>
+
+
+
   );
 }

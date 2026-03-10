@@ -49,13 +49,12 @@ fetchWinners();
 
 },[token]);
 
-// ================= UI STATES =================
+
 
 if(loading) return <div>Loading winners...</div>;
 
 if(error) return <div>Error: {error}</div>;
 
-// ================= UI =================
 
 return(
 

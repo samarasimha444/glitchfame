@@ -39,7 +39,7 @@ const Arena = () => {
         </div>
       </div>
 
-      <ArenaCard id={id} />
+     
     </section>
   );
 };

@@ -60,7 +60,7 @@ const [isLoading, setIsLoading] = useState(false);
      <>
     <div className="w-full max-w-screen mx-auto px-4 sm:px-6 md:px-10 lg:px-20">
 
-      {/* Header */}
+ 
       <section className="w-full py-12 md:py-16">
         <div className="flex w-full items-start justify-between">
           <div className="space-y-3 w-full">
@@ -121,8 +121,10 @@ const [isLoading, setIsLoading] = useState(false);
               className="bg-[#181B20] rounded-lg md:w-[374px] md:h-[403px] overflow-hidden border border-[#282e36] hover:border-purple-500 transition duration-300"
             >
               <img
-                src={item.seasonPhotoUrl}
+                 src={`${item.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=600`}
                 alt={item.seasonName}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-[25vh] sm:h-72 object-cover"
               />
 

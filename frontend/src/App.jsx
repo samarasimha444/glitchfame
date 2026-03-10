@@ -87,6 +87,7 @@ export default function App() {
       {/* <Route element={<ProtectedRoute allowedRole="ADMIN" />}> */}
 
         <Route path="/admin" element={<AdminLayout />}>  
+        
         <Route index element={<Navigate to="dashboard" replace />} />
 
         <Route path="dashboard" element={<AdminDashboard />} />
