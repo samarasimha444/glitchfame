@@ -41,14 +41,11 @@ export default function App() {
       {/* Root role-based redirect */}
 
 
-      {/* <Route path="/" element={<RoleRedirect />} /> */}
-        
-
-     
-        <Route path="/auth" element={<AuthLayout />}> 
-     <Route path="auth/login" element={<Login />} />
-    <Route path="auth/signup" element={<Signup />} />
-   </Route> 
+      <Route path="/" element={<RoleRedirect />} />
+         
+     <Route path="/auth" element={<AuthLayout />}>
+   
+   </Route>
 
     { <Route path="/testing" element={<Testing />} /> }
       <Route path="/forgot" element={<ForgotPassword/>}  />
@@ -63,12 +60,10 @@ export default function App() {
 
 
 
-
-
       {/* USER Protected Routes */}
       {/* <Route element={<ProtectedRoute allowedRole="USER" />}> */}
         <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/enter/:id" element={<ArenaForm />} />
            <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/arena/:id" element={<Arena />} />
@@ -82,7 +77,13 @@ export default function App() {
 
 
         </Route>
-      {/* </Route> */}
+     
+
+
+
+
+
+
 
       {/* <Route element={<ProtectedRoute allowedRole="ADMIN" />}> */}
 

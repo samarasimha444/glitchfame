@@ -1,26 +1,54 @@
-import React, { useState } from "react";
+import React, { lazy, useState, Suspense } from "react";
 import { UserPlus, Trash2, Search } from "lucide-react";
-import { useDeleteContestant, useVoteContestant } from "../hook";
+import {
+  useDeleteContestant,
+  useLiveContestants,
+  useVoteContestant,
+} from "../hook";
 import VoteModal from "./VoteModel";
 
-const ParticipantsTable = ({ data, className }) => {
-  const [page, setPage] = useState(1);
+
+const ParticipantsTable = ({ className }) => {
+ 
+  const [page, setPage] = useState(0);
   const [selectedContestant, setSelectedContestant] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const { mutate: vote, isLoading: voteLoading } = useVoteContestant();
-  const { mutate: deleteUser, isLoading: deleteLoading } = useDeleteContestant();
 
-  const handleVote = (contestantId, votes) => {
-    vote({ contestantId, votes });
+
+  console.log("showModal:", showModal);
+
+  const { data, isLoading, error } = useLiveContestants(page, 6);
+  const { mutate: vote, isLoading: voteLoading } = useVoteContestant();
+  const { mutate: deleteUser, isLoading: deleteLoading } =useDeleteContestant();
+
+
+  console.log(data);
+
+  const handleVote = (participationId, votes) => {
+    console.log(participationId,votes)
+   vote({
+  participationId,
+  value: votes,
+});
   };
+
+
+
+
+
+
 
   const handleCustomClick = (contestant) => {
     setSelectedContestant(contestant);
     setShowModal(true);
   };
 
+
+
+
   const handleCustomSubmit = (votes) => {
+    console.log(votes)
     if (!selectedContestant) return;
     handleVote(selectedContestant.id, votes);
   };
@@ -29,26 +57,27 @@ const ParticipantsTable = ({ data, className }) => {
     deleteUser(id);
   };
 
-  const totalPages = Math.ceil(20 / 3); 
+  const totalPages = data?.totalPages || 0;
 
   return (
     <div className={`flex flex-col ${className || "w-full"}`}>
-      {showModal && (
-        <VoteModal
-          open={showModal}
-          onClose={() => setShowModal(false)}
-          onSubmit={handleCustomSubmit}
-        />
-      )}
+     
+        {showModal && (
+          <VoteModal
+            open={showModal}
+            onClose={() => setShowModal(!showModal)}
+            onSubmit={handleCustomSubmit}
+          />
+        )}
+    
 
       <div className="relative w-full mt-12 border border-gray-700 p-4 sm:p-8 rounded-lg bg-[#111418]">
-    
         <h3 className="text-xl flex gap-3 font-semibold mb-4 sm:mb-6">
           <UserPlus /> Active Contestants
         </h3>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[600px] sm:min-w-full">
+          <table className="w-full text-left border-collapse min-w-150 sm:min-w-full">
             <thead>
               <tr className="border-b border-gray-700 text-gray-400 text-xs sm:text-sm">
                 <th className="py-4">Contestant</th>
@@ -59,14 +88,28 @@ const ParticipantsTable = ({ data, className }) => {
             </thead>
 
             <tbody>
-              {data?.map((item) => (
-                <tr key={item.id} className="border-b border-gray-800 hover:bg-[#141821] transition">
+              {data?.content?.map((item) => (
+                <tr
+                  key={item.id}
+                  className="border-b border-gray-800 hover:bg-[#141821] transition"
+                >
                   <td className="py-3 sm:py-5 flex items-center gap-3 sm:gap-4">
-                    <img src={item.avatar} alt={item.name} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover" />
-                    <span className="text-white text-[11px] sm:text-xs font-medium">{item.name}</span>
+                    <img
+                      src={item?.seasonPhotoUrl}
+                      loading="lazy"
+                      alt={item.name}
+                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
+                    />
+                    <span className="text-white text-[11px] sm:text-xs font-medium">
+                      {item.seasonName}
+                    </span>
                   </td>
-                  <td className="text-gray-400 text-[11px] sm:text-sm">{item.location}</td>
-                  <td className="text-blue-400 font-semibold text-[11px] sm:text-sm">{item.votes.toLocaleString()}</td>
+                  <td className="text-gray-400 text-[11px] sm:text-sm">
+                    {item.location}
+                  </td>
+                  <td className="text-blue-400 font-semibold text-[11px] sm:text-sm">
+                    {item.voteCount}
+                  </td>
                   <td className="text-right">
                     <div className="flex flex-wrap justify-end gap-2 sm:gap-3">
                       <button
@@ -76,7 +119,7 @@ const ParticipantsTable = ({ data, className }) => {
                         Custom
                       </button>
                       <button
-                        onClick={() => handleVote(item.id, 10)}
+                        onClick={() => handleVote(item.participationId, 10)}
                         className="bg-[#141821] border border-gray-700 text-gray-300 text-xs sm:text-[12px] px-2 sm:px-3 py-1 rounded-md hover:border-gray-500 transition"
                       >
                         +10
@@ -95,23 +138,24 @@ const ParticipantsTable = ({ data, className }) => {
           </table>
         </div>
 
-        {/* Pagination */}
         <section className="flex justify-center items-center gap-2 mt-4 sm:mt-6 flex-wrap">
-          {Array.from({ length: totalPages }, (_, index) => {
-            const pageNumber = index + 1;
-            return (
-              <button
-                key={pageNumber}
-                onClick={() => setPage(pageNumber)}
-                className={`px-3 py-1 rounded-md text-sm ${
-                  page === pageNumber ? "bg-blue-500 text-white" : "bg-[#141821] text-gray-300 hover:bg-gray-700"
-                }`}
-              >
-                {pageNumber}
-              </button>
-            );
-          })}
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index}
+              onClick={() => setPage(index)}
+              className={`px-3 py-1 rounded-md text-sm ${
+                page === index ?
+                  "bg-blue-500 text-white"
+                : "bg-[#141821] text-gray-300 hover:bg-gray-700"
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
         </section>
+
+
+
       </div>
     </div>
   );

@@ -27,7 +27,8 @@ const Login = () => {
 
     try {
       const response = await fetch(
-      'https://glitchfame.onrender.com/auth/login',
+      // 'https://glitchfame.onrender.com/auth/login',
+      'http://localhost:3000/auth/login',
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

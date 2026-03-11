@@ -5,14 +5,13 @@ import { getLiveUpcomingSeasons, getWinners, submitEntry } from "./api";
 
 
 
-export const useLiveUpcomingSeasons = () => {
+export const useLiveUpcomingSeasons = (status) => {
   return useQuery({
-    queryKey: ["liveUpcomingSeasons"],
-    queryFn: getLiveUpcomingSeasons,
+    queryKey: ["liveUpcomingSeasons", status],
+    queryFn: () => getLiveUpcomingSeasons(status),
     staleTime: 1000 * 60 * 5,
   });
 };
-
 export const useSubmitEntry = () => {
 
   return useMutation({
@@ -31,5 +30,6 @@ export const useWinners = () => {
   return useQuery({
     queryKey: ["winners"],
     queryFn: getWinners,
+   keepPreviousData: true,
   });
 };

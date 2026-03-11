@@ -8,20 +8,22 @@ const token = localStorage.getItem("token")
 console.log(token)
 
 
-export const getLiveUpcomingSeasons = async () => {
-  const res = await fetch(`${BASE_URL}/seasons/live-upcoming`,{
+export const getLiveUpcomingSeasons = async (status) => {
+  const res = await fetch(`${BASE_URL}/seasons?status=${status}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  
-  console.log(res)
+
   if (!res.ok) {
     throw new Error("Failed to fetch seasons");
   }
 
   return res.json();
 };
+  
+
+  
 
 export const submitEntry = async()=>{
 

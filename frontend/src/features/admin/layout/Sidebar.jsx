@@ -44,7 +44,7 @@ const Sidebar = () => {
                 className={({ isActive }) =>
                   `flex items-center justify-start gap-3 w-full px-4 py-3 rounded-lg transition-all duration-200 ${
                     isActive ?
-                      "bg-purple-600 text-white"
+                      "bg-blue-600 text-white"
                     : "hover:bg-gray-800 hover:text-white"
                   }`
                 }

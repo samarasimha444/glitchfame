@@ -15,7 +15,7 @@ const Navbar = () => {
   ];
 
   const actionButton = {
-    label: "+ Enter Arena",
+    label: "Participate",
     path: "/season",
     img: "https://via.placeholder.com/40",
   };

@@ -5,13 +5,21 @@ const Cards = lazy(() => import("./components/Cards"));
 const Gallery = lazy(() => import("./components/Gallery"));
 import Overview from "./components/OverviewSection";
 import ArenaCard from "../arena/ui/ArenaCard";
+import { useLiveUpcomingSeasons } from "./hooks";
+import CountdownTimer from "./components/CountdownTimer";
 
 const Home = () => {
   const { profile } = useOutletContext() || {};
 
+    const { data: seasons = [], isLoading } = useLiveUpcomingSeasons("live");
+    
+  const season = seasons?.[0];
+
+  console.log(season)
+
   return (
     <div className="w-full  px-1 flex-col max-w-screen m-auto bg-[#000000] md:bg-[#1E2229] flex items-center justify-center">
-      <FeaturedCarousel />
+      <FeaturedCarousel season={season} />
 
       <div className="max-w-6xl px-2 w-full md:mb-6  mt-6 mx-auto text-center  sm:px-4">
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold">
@@ -30,7 +38,11 @@ const Home = () => {
               VOTING ENDS IN
             </p>
             <h2 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
-              02 : 14 : 55
+                {season?.votingEndDate ? (
+                <CountdownTimer endDate={season.votingEndDate} />
+              ) : (
+                "Loading..."
+              )}
             </h2>
           </div>
 
@@ -47,7 +59,7 @@ const Home = () => {
 
       <section className="w-full bg-black md:bg-[#181B20]">
         <Suspense fallback={<p className="text-white"> </p>}>
-          <ArenaCard />
+          <ArenaCard id={season?.seasonId} />
         </Suspense>
 
         <Suspense fallback={<p className="text-white"> GalleryLoading...</p>}>

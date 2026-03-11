@@ -13,7 +13,7 @@ const SeasonPage = () => {
       
       <aside className='flex flex-col w-full  max-w-screen '>
        
-     <Approval className="max-w-screen"/>
+       <Approval className="max-w-screen"/>
     
       <h5></h5>
      <ParticipantsTable type="initial" className="max-w-screen"/>
