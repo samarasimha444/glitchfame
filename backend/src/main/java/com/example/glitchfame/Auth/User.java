@@ -5,12 +5,12 @@ import lombok.*;
 
 @Entity
 @Table(
-    name = "auth_users",
-    uniqueConstraints = {
-        @UniqueConstraint(name = "uk_auth_users_email", columnNames = "email"),
-        @UniqueConstraint(name = "uk_auth_users_username", columnNames = "username"),
-        @UniqueConstraint(name = "uk_auth_users_mobile", columnNames = "mobile_number")
-    }
+        name = "auth_users",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_auth_users_email", columnNames = "email"),
+                @UniqueConstraint(name = "uk_auth_users_username", columnNames = "username"),
+                @UniqueConstraint(name = "uk_auth_users_mobile", columnNames = "mobile_number")
+        }
 )
 @Getter
 @Setter
@@ -35,8 +35,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    // PostgreSQL enum mapping
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "role", columnDefinition = "user_role", nullable = false)
     @Builder.Default
     private Role role = Role.USER;
 
@@ -52,17 +53,16 @@ public class User {
         ADMIN
     }
 
+    @Column(name = "can_participate", nullable = false)
+    @Builder.Default
+    private boolean canParticipate = true;
 
- @Column(name = "can_participate", nullable = false)
-private boolean canParticipate = true;
+    @Column(name = "can_vote", nullable = false)
+    @Builder.Default
+    private boolean canVote = true;
 
-
-
-@Column(name = "can_vote", nullable = false)
-private boolean canVote = true;
-
-@Column(name = "profile_picture", nullable = false, length = 500)
-@Builder.Default
-private String profilePicture =
-        "https://res.cloudinary.com/demo/image/upload/v1/default_profile.png";
+    @Column(name = "profile_picture", nullable = false, length = 500)
+    @Builder.Default
+    private String profilePicture =
+            "https://res.cloudinary.com/demo/image/upload/v1/default_profile.png";
 }

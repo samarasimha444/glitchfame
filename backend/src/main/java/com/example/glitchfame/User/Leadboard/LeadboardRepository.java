@@ -14,7 +14,7 @@ import java.util.List;
 public interface LeadboardRepository extends JpaRepository<Participation, Long> {
 
     // ============================================================
-    // 🔥 TOP 3 OF ALL SEASONS (Per Season)
+    // TOP 3 OF ALL SEASONS
     // ============================================================
 
     @Query(value = """
@@ -75,20 +75,41 @@ public interface LeadboardRepository extends JpaRepository<Participation, Long> 
                 JOIN seasons s ON s.id = p.season_id
                 LEFT JOIN votes v ON v.contestant_id = p.id
                 LEFT JOIN admin_votes a ON a.participation_id = p.id
+
                 WHERE p.status = 'APPROVED'
                 AND s.voting_start_date <= NOW()
-                GROUP BY p.id, a.admin_vote_count
+
+                GROUP BY
+                    p.id,
+                    p.user_id,
+                    p.season_id,
+                    p.name,
+                    p.description,
+                    p.status,
+                    p.date_of_birth,
+                    p.location,
+                    p.photo_url,
+                    p.created_at,
+                    s.name,
+                    s.prize_money,
+                    s.registration_start_date,
+                    s.registration_end_date,
+                    s.voting_start_date,
+                    s.voting_end_date,
+                    s.photo_url,
+                    a.admin_vote_count
             ) ranked_inner
         ) ranked_outer
         WHERE rank_position <= 3
         ORDER BY season_id, rank_position
         """, nativeQuery = true)
-List<LeaderboardProjection> findTop3OfAllSeasons(
-        @Param("userId") Long userId
-);
+    List<LeaderboardProjection> findTop3OfAllSeasons(
+            @Param("userId") Long userId
+    );
+
 
     // ============================================================
-    // 🔥 TOP 3 OF ONE SEASON
+    // TOP 3 OF ONE SEASON
     // ============================================================
 
     @Query(value = """
@@ -148,9 +169,29 @@ List<LeaderboardProjection> findTop3OfAllSeasons(
                 JOIN seasons s ON s.id = p.season_id
                 LEFT JOIN votes v ON v.contestant_id = p.id
                 LEFT JOIN admin_votes a ON a.participation_id = p.id
+
                 WHERE p.season_id = :seasonId
-                  AND p.status = 'APPROVED'
-                GROUP BY p.id, a.admin_vote_count
+                AND p.status = 'APPROVED'
+
+                GROUP BY
+                    p.id,
+                    p.user_id,
+                    p.season_id,
+                    p.name,
+                    p.description,
+                    p.status,
+                    p.date_of_birth,
+                    p.location,
+                    p.photo_url,
+                    p.created_at,
+                    s.name,
+                    s.prize_money,
+                    s.registration_start_date,
+                    s.registration_end_date,
+                    s.voting_start_date,
+                    s.voting_end_date,
+                    s.photo_url,
+                    a.admin_vote_count
             ) ranked_inner
         ) ranked_outer
         WHERE rank_position <= 3
@@ -163,7 +204,7 @@ List<LeaderboardProjection> findTop3OfAllSeasons(
 
 
     // ============================================================
-    // 🔥 TOP 3 FOR WEBSOCKET (NO USER CONTEXT)
+    // TOP 3 FOR WEBSOCKET
     // ============================================================
 
     @Query(value = """
@@ -218,9 +259,29 @@ List<LeaderboardProjection> findTop3OfAllSeasons(
                 JOIN seasons s ON s.id = p.season_id
                 LEFT JOIN votes v ON v.contestant_id = p.id
                 LEFT JOIN admin_votes a ON a.participation_id = p.id
+
                 WHERE p.season_id = :seasonId
-                  AND p.status = 'APPROVED'
-                GROUP BY p.id, a.admin_vote_count
+                AND p.status = 'APPROVED'
+
+                GROUP BY
+                    p.id,
+                    p.user_id,
+                    p.season_id,
+                    p.name,
+                    p.description,
+                    p.status,
+                    p.date_of_birth,
+                    p.location,
+                    p.photo_url,
+                    p.created_at,
+                    s.name,
+                    s.prize_money,
+                    s.registration_start_date,
+                    s.registration_end_date,
+                    s.voting_start_date,
+                    s.voting_end_date,
+                    s.photo_url,
+                    a.admin_vote_count
             ) ranked_inner
         ) ranked_outer
         WHERE rank_position <= 3

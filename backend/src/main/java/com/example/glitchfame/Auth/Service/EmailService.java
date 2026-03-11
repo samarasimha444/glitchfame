@@ -24,7 +24,7 @@ public class EmailService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String,Object> body = new HashMap<>();
-        body.put("from", "noreply@glitchfame.com"); // test sender
+        body.put("from", "GlitchFame <noreply@rentafellow.in>"); // test sender
         body.put("to", List.of(to));
         body.put("subject", subject);
         body.put("html", html);

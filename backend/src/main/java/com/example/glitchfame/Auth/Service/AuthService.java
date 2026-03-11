@@ -29,62 +29,101 @@ public class AuthService {
     private final OtpService otpService;
 
     // ================= REGISTER =================
-    public ResponseEntity<String> register(RegisterDTO dto){
+public ResponseEntity<String> register(RegisterDTO dto){
 
-        if(authRepository.existsByEmail(dto.getEmail())){
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Email already exists");
-        }
-
-        String registerKey = "REGISTER:" + dto.getEmail();
-
-        redisTemplate.opsForValue().set(
-                registerKey,
-                dto.getEmail()+"|"+
-                dto.getUsername()+"|"+
-                dto.getMobileNumber()+"|"+
-                passwordEncoder.encode(dto.getPassword()),
-                Duration.ofMinutes(5)
-        );
-
-        otpService.sendOtp(dto.getEmail(), OtpType.REGISTER);
-
-        return ResponseEntity.ok("OTP sent to email");
+    // check email
+    if(authRepository.existsByEmail(dto.getEmail())){
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("Email already registered");
     }
 
-    // ================= VERIFY REGISTER OTP =================
-    public ResponseEntity<String> verifyOtp(String email,String otp){
-
-        boolean valid = otpService.verifyOtp(email,otp,OtpType.REGISTER);
-
-        if(!valid){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Invalid OTP");
-        }
-
-        String userData = redisTemplate.opsForValue().get("REGISTER:"+email);
-
-        if(userData == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Registration expired");
-        }
-
-        String[] parts = userData.split("\\|");
-
-        User user = User.builder()
-                .email(parts[0])
-                .username(parts[1])
-                .mobileNumber(parts[2])
-                .password(parts[3])
-                .build();
-
-        authRepository.save(user);
-
-        redisTemplate.delete("REGISTER:"+email);
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body("User registered successfully");
+    // check mobile
+    if(authRepository.existsByMobileNumber(dto.getMobileNumber())){
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("Mobile number already registered");
     }
+
+    // check username
+    if(authRepository.existsByUsername(dto.getUsername())){
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("Username already taken");
+    }
+
+    String registerKey = "REGISTER:" + dto.getEmail();
+
+    redisTemplate.opsForValue().set(
+            registerKey,
+            dto.getEmail()+"|"+
+            dto.getUsername()+"|"+
+            dto.getMobileNumber()+"|"+
+            passwordEncoder.encode(dto.getPassword()),
+            Duration.ofMinutes(5)
+    );
+
+    otpService.sendOtp(dto.getEmail(), OtpType.REGISTER);
+
+    return ResponseEntity.ok("OTP sent to email");
+}
+
+// ================= VERIFY REGISTER OTP =================
+public ResponseEntity<String> verifyOtp(String email,String otp){
+
+    boolean valid = otpService.verifyOtp(email,otp,OtpType.REGISTER);
+
+    if(!valid){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Invalid OTP");
+    }
+
+    String userData = redisTemplate.opsForValue().get("REGISTER:"+email);
+
+    if(userData == null){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Registration expired");
+    }
+
+    String[] parts = userData.split("\\|");
+
+    String emailValue = parts[0];
+    String username = parts[1];
+    String mobile = parts[2];
+    String password = parts[3];
+
+    // safety check again before insert
+    if(authRepository.existsByEmail(emailValue)){
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("Email already registered");
+    }
+
+    if(authRepository.existsByMobileNumber(mobile)){
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("Mobile number already registered");
+    }
+
+    if(authRepository.existsByUsername(username)){
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("Username already taken");
+    }
+
+    User user = User.builder()
+            .email(emailValue)
+            .username(username)
+            .mobileNumber(mobile)
+            .password(password)
+            .build();
+
+    authRepository.save(user);
+
+    redisTemplate.delete("REGISTER:"+email);
+
+    return ResponseEntity.status(HttpStatus.CREATED)
+            .body("User registered successfully");
+}
+
+
+
+
+
 
     // ================= LOGIN =================
     public ResponseEntity<?> login(LoginDTO dto){

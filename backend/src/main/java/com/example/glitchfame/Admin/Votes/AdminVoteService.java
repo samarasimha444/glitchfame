@@ -40,6 +40,7 @@ public String adjustVotes(Long participationId, int value) {
                     HttpStatus.NOT_FOUND,
                     "Participation not found"
             ));
+            
 
     // get admin vote row
     AdminVotes adminVotes = adminVotesRepository

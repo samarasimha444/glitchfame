@@ -45,10 +45,10 @@ export default function App() {
         
 
      
-  {/* <Route path="/auth" element={<AuthLayout />}> */}
-    {/* <Route path="/login" element={<Login />} />
-    <Route path="/signup" element={<Signup />} /> */}
-  {/* </Route> */}
+        <Route path="/auth" element={<AuthLayout />}> 
+     <Route path="auth/login" element={<Login />} />
+    <Route path="auth/signup" element={<Signup />} />
+   </Route> 
 
     { <Route path="/testing" element={<Testing />} /> }
       <Route path="/forgot" element={<ForgotPassword/>}  />

@@ -33,7 +33,16 @@ public class SecurityConfig {
                      .requestMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
             )
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+.exceptionHandling(ex -> ex
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.setStatus(403);
+                    response.setContentType("application/json");
+                    response.getWriter().write(
+                            "{\"status\":403,\"message\":\"You are not authorized to access this resource\"}"
+                    );
+                })
+        )
+.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

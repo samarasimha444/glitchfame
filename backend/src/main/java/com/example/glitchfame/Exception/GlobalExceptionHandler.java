@@ -48,4 +48,20 @@ public ResponseEntity<Map<String, Object>> handleGeneral(Exception ex) {
 }
 
 
+
+
+
+@ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+public ResponseEntity<Map<String, Object>> handleAccessDenied(
+        org.springframework.security.access.AccessDeniedException ex) {
+
+    return ResponseEntity
+            .status(HttpStatus.FORBIDDEN)
+            .body(Map.of(
+                    "status", HttpStatus.FORBIDDEN.value(),
+                    "message", "You are not authorized to access this resource"
+            ));
+}
+
+
 }

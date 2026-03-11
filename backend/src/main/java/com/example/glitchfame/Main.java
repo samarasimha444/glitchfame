@@ -1,8 +1,5 @@
 package com.example.glitchfame;
 
-
-
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class Main {
