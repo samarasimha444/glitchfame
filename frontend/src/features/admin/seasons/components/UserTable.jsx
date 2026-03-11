@@ -1,5 +1,5 @@
-import React, { lazy, useState, Suspense } from "react";
-import { UserPlus, Trash2, Search } from "lucide-react";
+import React, { useState } from "react";
+import { UserPlus, Trash2 } from "lucide-react";
 import {
   useDeleteContestant,
   useLiveContestants,
@@ -7,50 +7,35 @@ import {
 } from "../hook";
 import VoteModal from "./VoteModel";
 
-
 const ParticipantsTable = ({ className }) => {
- 
   const [page, setPage] = useState(0);
-  const [selectedContestant, setSelectedContestant] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-
-
-
-  console.log("showModal:", showModal);
+  const [activeParticipationId, setActiveParticipationId] = useState(null);
 
   const { data, isLoading, error } = useLiveContestants(page, 6);
-  const { mutate: vote, isLoading: voteLoading } = useVoteContestant();
-  const { mutate: deleteUser, isLoading: deleteLoading } =useDeleteContestant();
-
-
-  console.log(data);
+  const { mutate: vote } = useVoteContestant();
+  const { mutate: deleteUser } = useDeleteContestant();
 
   const handleVote = (participationId, votes) => {
     console.log(participationId,votes)
-   vote({
-  participationId,
-  value: votes,
-});
+    vote(
+      {
+        participationId,
+        value: votes,
+      },
+      {
+        onSuccess: () => {
+          alert("Vote submitted successfully");
+          setActiveParticipationId(null);
+        },
+        onError: () => {
+          alert("Failed to submit vote");
+        },
+      }
+    );
   };
 
-
-
-
-
-
-
-  const handleCustomClick = (contestant) => {
-    setSelectedContestant(contestant);
-    setShowModal(true);
-  };
-
-
-
-
-  const handleCustomSubmit = (votes) => {
-    console.log(votes)
-    if (!selectedContestant) return;
-    handleVote(selectedContestant.id, votes);
+  const handleCustomClick = (participationId) => {
+    setActiveParticipationId(participationId);
   };
 
   const handleDelete = (id) => {
@@ -61,15 +46,13 @@ const ParticipantsTable = ({ className }) => {
 
   return (
     <div className={`flex flex-col ${className || "w-full"}`}>
-     
-        {showModal && (
-          <VoteModal
-            open={showModal}
-            onClose={() => setShowModal(!showModal)}
-            onSubmit={handleCustomSubmit}
-          />
-        )}
-    
+
+      <VoteModal
+        open={activeParticipationId !== null}
+        participationId={activeParticipationId}
+        onClose={() => setActiveParticipationId(null)}
+        onSubmit={handleVote}
+      />
 
       <div className="relative w-full mt-12 border border-gray-700 p-4 sm:p-8 rounded-lg bg-[#111418]">
         <h3 className="text-xl flex gap-3 font-semibold mb-4 sm:mb-6">
@@ -104,26 +87,33 @@ const ParticipantsTable = ({ className }) => {
                       {item.seasonName}
                     </span>
                   </td>
+
                   <td className="text-gray-400 text-[11px] sm:text-sm">
                     {item.location}
                   </td>
+
                   <td className="text-blue-400 font-semibold text-[11px] sm:text-sm">
                     {item.voteCount}
                   </td>
+
                   <td className="text-right">
                     <div className="flex flex-wrap justify-end gap-2 sm:gap-3">
                       <button
-                        onClick={() => handleCustomClick(item)}
+                        onClick={() => handleCustomClick(item.participationId)}
                         className="bg-[#141821] border border-gray-700 text-gray-300 text-xs sm:text-[12px] px-2 sm:px-3 py-1 rounded-md hover:border-gray-500 transition"
                       >
                         Custom
                       </button>
+
                       <button
-                        onClick={() => handleVote(item.participationId, 10)}
+                        onClick={() =>
+                          handleVote(item.participationId, 10)
+                        }
                         className="bg-[#141821] border border-gray-700 text-gray-300 text-xs sm:text-[12px] px-2 sm:px-3 py-1 rounded-md hover:border-gray-500 transition"
                       >
                         +10
                       </button>
+
                       <button
                         onClick={() => handleDelete(item.id)}
                         className="text-red-500 hover:text-red-400 transition"
@@ -138,24 +128,22 @@ const ParticipantsTable = ({ className }) => {
           </table>
         </div>
 
+     
         <section className="flex justify-center items-center gap-2 mt-4 sm:mt-6 flex-wrap">
           {Array.from({ length: totalPages }, (_, index) => (
             <button
               key={index}
               onClick={() => setPage(index)}
               className={`px-3 py-1 rounded-md text-sm ${
-                page === index ?
-                  "bg-blue-500 text-white"
-                : "bg-[#141821] text-gray-300 hover:bg-gray-700"
+                page === index
+                  ? "bg-blue-500 text-white"
+                  : "bg-[#141821] text-gray-300 hover:bg-gray-700"
               }`}
             >
               {index + 1}
             </button>
           ))}
         </section>
-
-
-
       </div>
     </div>
   );

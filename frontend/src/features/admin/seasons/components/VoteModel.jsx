@@ -1,27 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const VoteModal = ({ open, onClose, onSubmit }) => {
+const VoteModal = ({ open, onClose, onSubmit, participationId }) => {
   const [votes, setVotes] = useState("");
+
+  useEffect(() => {
+    if (open) {
+      setVotes("");
+    }
+  }, [open]);
 
   if (!open) return null;
 
   const handleSubmit = () => {
     if (!votes || Number(votes) <= 0) return;
-    onSubmit(Number(votes));
-    setVotes("");
+
+    onSubmit(participationId, Number(votes));
     onClose();
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      
       <div className="bg-[#111418] w-[380px] p-6 rounded-2xl shadow-xl border border-gray-700">
         
-    
         <h2 className="text-lg font-semibold text-white mb-6">
           Add Custom Votes
         </h2>
-/}
+
         <input
           type="number"
           placeholder="Enter votes"
@@ -31,7 +35,6 @@ const VoteModal = ({ open, onClose, onSubmit }) => {
           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
         />
 
-        {/* Buttons */}
         <div className="flex justify-end gap-3 mt-6">
           <button
             onClick={onClose}

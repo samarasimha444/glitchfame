@@ -27,8 +27,8 @@ export const getContestants = async ({pageParam = 0,status = "PENDING",size = 5,
 
 //custom vote
 export const voteContestant = async ({ participationId, value }) => {
-  console.log(participationId,value)
 
+  console.log(participationId,value)
   const response = await fetch(
     `${BASE_URL}/admin/votes/${participationId}?value=${value}`,
     {
@@ -39,15 +39,15 @@ export const voteContestant = async ({ participationId, value }) => {
     }
   );
 
-  console.log(response)
-
   if (!response.ok) {
     throw new Error("Failed to vote");
   }
 
-  return response.json();
-};
+  const data = await response.text(); 
+  console.log(data);
 
+  return data;
+};
 
 export const deleteContestant = async (contestantId) => {
   const response = await fetch(

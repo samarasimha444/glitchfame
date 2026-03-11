@@ -51,7 +51,7 @@ export const useUpdateContestantStatus = () => {
 
     onSuccess: () => {
       // Invalidate contestants query so it refetches
-      queryClient.invalidateQueries(["contestants"]);
+      queryClient.invalidateQueries(["liveContestants"]);
     },
 
     onError: (error) => {
