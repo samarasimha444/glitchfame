@@ -22,7 +22,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-black md:bg-[#181B20] px-8 py-5 flex items-center justify-between relative">
+    <nav className="bg-black md:bg-[#181B20] px-8 py-5  flex items-center justify-between relative">
       
       <div className="flex items-center space-x-2">
         <div className="mx-auto w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center shadow-[0_0_40px_rgba(168,85,247,0.5)]">

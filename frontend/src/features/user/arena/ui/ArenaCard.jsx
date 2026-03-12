@@ -44,6 +44,7 @@ const ContestantCard = React.memo(({ user, toggleVote, votingStatus, voteCount, 
   );
 });
 
+
 const ArenaCard = ({ contestantsData = { content: [] }, isLoading }) => {
   const navigate = useNavigate();
   const toggleVoteMutation = useToggleVote();
@@ -65,7 +66,7 @@ const ArenaCard = ({ contestantsData = { content: [] }, isLoading }) => {
             [userId]: prev[userId] ? prev[userId] + 1 : 1,
           }));
           setVotingStatus((prev) => ({ ...prev, [userId]: "success" }));
-           toast.success("Vote submitted successfully 🎉");
+           toast.success("Vote submitted successfully ");
         },
         onError: () => {
           setVotingStatus((prev) => ({ ...prev, [userId]: "error" }));

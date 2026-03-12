@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { formFields } from "../../../../constants/userdata";
 import { useSubmitEntry } from "../../home/hooks";
+import toast from "react-hot-toast";
 
 const Form = ({ seasonId, image }) => {
   const [formData, setFormData] = useState({
     name: "",
-    dateOfBirth: "", // added
+    dateOfBirth: "", 
     location: "",
-    bio: "", // will map to description
+    bio: "", 
   });
 
-  const { mutate: submitEntry, isLoading, isError, isSuccess, error } = useSubmitEntry();
+const { mutate: submitEntry, isPending } = useSubmitEntry();
 
   const handleChange = (e) => {
     setFormData({
@@ -19,25 +20,40 @@ const Form = ({ seasonId, image }) => {
     });
   };
 
- const handleSubmit = (e) => {
+const handleSubmit = (e) => {
   e.preventDefault();
+
+    if (!image) {
+    toast.error("Please upload an image before submitting.");
+    return;
+  }
+
 
   const data = new FormData();
   data.append("seasonId", seasonId);
   data.append("name", formData.name);
-  data.append("description", formData.bio); // bio → description
+  data.append("description", formData.bio);
   data.append("dateOfBirth", formData.dateOfBirth);
   data.append("location", formData.location);
-  data.append("image", image); // string or file
+  data.append("image", image);
 
-  // Loop through FormData to see the key-value pairs
-  console.log("FormData contents:");
-  for (let [key, value] of data.entries()) {
-    console.log(key, value);
-  }
+  submitEntry(data, {
+    onSuccess: () => {
+      toast.success("Arena entry submitted successfully 🚀");
 
-  submitEntry(data);
+      setFormData({
+        name: "",
+        dateOfBirth: "",
+        location: "",
+        bio: "",
+      });
+    },
+    onError: (err) => {
+      toast.error(err?.message || "Submission failed");
+    },
+  });
 };
+
   const handleCancel = () => {
     setFormData({
       name: "",
@@ -47,11 +63,16 @@ const Form = ({ seasonId, image }) => {
     });
   };
 
+  
+
+
   return (
+   
+    
     <form onSubmit={handleSubmit} className="space-y-6">
       <h3 className="text-white font-semibold text-lg">PROFILE INTELLIGENCE</h3>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 text-xs sm:text-base">
         {formFields?.map((field) => (
           <input
             key={field.name}
@@ -64,7 +85,7 @@ const Form = ({ seasonId, image }) => {
           />
         ))}
 
-        {/* Add dateOfBirth field */}
+      
         <input
           type="date"
           name="dateOfBirth"
@@ -81,29 +102,28 @@ const Form = ({ seasonId, image }) => {
         onChange={handleChange}
         placeholder="Tell the arena why you deserve the crown in 100 characters..."
         rows="4"
-        className="w-full bg-[#1a202c] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-[#BE5EED] outline-none resize-none"
+        className="w-full text-xs sm:text-base bg-[#1a202c] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-[#BE5EED] outline-none resize-none"
       />
 
-      {isSuccess && <p className="text-green-500">Entry submitted successfully!</p>}
-      {isError && <p className="text-red-500">{error?.message || "Something went wrong"}</p>}
+     
 
       <div className="flex justify-end gap-4 pt-4">
         <button
           type="button"
           onClick={handleCancel}
-          className="px-6 py-3 rounded-lg bg-black text-white border border-gray-700 hover:border-[#BE5EED] transition"
+          className="px-6 py-3 text-xs sm:text-base rounded-lg bg-black text-white border border-gray-700 hover:border-[#BE5EED] transition"
         >
           Cancel
         </button>
 
         <button
           type="submit"
-          disabled={isLoading}
-          className={`px-8 py-3 rounded-lg bg-gradient-to-r from-[#BE5EED] to-purple-600 text-black font-semibold hover:opacity-90 transition ${
-            isLoading ? "opacity-50 cursor-not-allowed" : ""
+          disabled={isPending}
+          className={`px-8 py-3 text-xs sm:text-base rounded-lg bg-gradient-to-r from-[#BE5EED] to-purple-600 text-black font-semibold hover:opacity-90 transition ${
+            isPending ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
-          {isLoading ? "Submitting..." : "Submit Arena Entry"}
+          {isPending ? "Submitting..." : "Submit Arena Entry"}
         </button>
       </div>
     </form>

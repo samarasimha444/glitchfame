@@ -4,10 +4,10 @@ import {  getContestantDetails, getLeaderboard, getVotersById, toggleVote } from
 
 
 
-export const useContestantsById = (seasonId, page = 0, size = 4) => {
+export const useContestantsById = (seasonId, page = 0, size = 4, name = "") => {
   return useQuery({
-    queryKey: ["contestants", seasonId, page, size], 
-    queryFn: () => getVotersById(seasonId, page, size),
+    queryKey: ["contestants", seasonId, page, size, name], // include name in the key
+    queryFn: () => getVotersById(seasonId, page, size, name), // pass name to API call
     enabled: !!seasonId, 
     keepPreviousData: true, 
     staleTime: 5000 * 60, 

@@ -18,7 +18,9 @@ const TournamentCard = () => {
 
   return (
     <div className="flex flex-col px-4 sm:px-10 lg:px-20 py-10 w-full">
-      <section className="flex w-full flex-wrap gap-6  ">
+
+     <section className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-6 w-full ">
+
         {isLoading ?
           Array.from({ length: 4 }).map((_, index) => (
             <div
@@ -32,8 +34,8 @@ const TournamentCard = () => {
 
 
            <article
-  key={index}
-  className="w-full sm:w-[48%] lg:max-w-[400px] bg-[#111418] border border-[#1E232B] 
+     key={index}
+  className="w-full sm:w-full lg:max-w-[400px] bg-[#111418] border border-[#1E232B] 
              rounded-2xl overflow-hidden flex flex-col justify-between shadow-md"
 >
   <Link to={`enter/${item.seasonId}`} className="relative w-full block">   

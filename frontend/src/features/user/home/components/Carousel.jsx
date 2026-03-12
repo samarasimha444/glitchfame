@@ -1,35 +1,50 @@
-import { useEffect, useState } from "react";
-import { useLiveUpcomingSeasons } from "../hooks";
+
 import { Link } from "react-router-dom";
 
-export default function FeaturedCarousel({season}) {
-
-  console.log(season);
+export default function FeaturedCarousel({ season }) {
+  
 
   const fallback =
     "https://images.pexels.com/photos/1707213/pexels-photo-1707213.jpeg";
 
- 
-
   return (
-    <div className="w-full relative mt-6 md:mt-3 flex justify-center items-center max-w-400 mx-auto h-full md:h-[95dvh]">
+    <div className="w-full relative mt-6 md:mt-0 flex justify-center items-center max-w-400 mx-auto  h-full md:h-[95dvh]">
 
-      <section className="border border-gray-600 rounded-xl w-full max-w-90 md:max-w-screen md:w-280 h-62.5 md:h-160 relative overflow-hidden aspect-16\/9">
+      {/* Hero */}
+      <section className=" w-full hidden md:flex  flex-col  max-w-4xl text-center mb-8 md:mb-6 px-4">
+        <h2 className="text-white text-xl md:text-5xl font-bold  max-w-xl tracking-wider uppercase">
+          ENTER THE{" "}
+          <span className="bg-gradient-to-r from-purple-300 to-purple-400 bg-clip-text text-transparent">
+            GLITCH ARENA
+          </span>
+        </h2>
 
+        <p className="text-gray-400 text-sm md:text-base mt-3  max-w-xl leading-relaxed">
+          Step into the digital spotlight and prove your presence. The Glitch
+          Arena is where creators, challengers, and rising icons compete for
+          recognition and rewards. Upload your entry, gather votes from the
+          community, and climb the leaderboard to claim your place among the
+          elite.
+        </p>
+
+        <p className="text-gray-500 text-xs max-w-xl md:text-sm mt-3">
+          Every season introduces a new challenge. Every vote pushes someone
+          closer to the crown. Are you ready to enter the arena?
+        </p>
+      </section>
+
+      <section className="border border-gray-600 rounded-xl md:rounded-none w-full max-w-90 md:max-w-screen md:w-280 h-62.5 md:h-160 relative overflow-hidden aspect-16\/9">
         <img
-          src={`${season?.seasonPhotoUrli || fallback}?auto=compress&cs=tinysrgb&w=1600`}
+          src={`${season?.seasonPhotoUrl || fallback}?auto=compress&cs=tinysrgb&w=1600`}
           alt="event"
           loading="eager"
-          fetchPriority="high"
           decoding="async"
           className="w-full h-full object-cover"
           onError={(e) => (e.target.src = fallback)}
         />
 
-      <div className="absolute hidden md:flex inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-  
- 
-  
+        <div className="absolute hidden md:flex inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+
         <section className="absolute hidden md:flex  inset-0 flex-col items-center justify-center text-center text-white px-6">
           <span className="border border-purple-400 max-w-xs text-purple-300 text-xs px-4 py-1 rounded-full backdrop-blur bg-black/30">
             NEXT CHALLENGE ANNOUNCEMENT
@@ -42,9 +57,7 @@ export default function FeaturedCarousel({season}) {
             </span>
           </h1>
 
-          {/* <h1 className="font-extrabold text-6xl lg:text-7xl">
-            FRONTIER
-          </h1> */}
+          
 
           <p className="text-gray-300 mt-4 max-w-xl text-sm">
             {season?.seasonDesc}
@@ -59,9 +72,12 @@ export default function FeaturedCarousel({season}) {
 
           <div className="flex items-center gap-8 mt-6 text-sm text-gray-300">
             <span>₹{season?.prizeMoney?.toLocaleString()}</span>
-            <span> {season?.registrationEndDate
-    ? new Date(season.registrationEndDate).toLocaleString()
-    : "TBD"}</span>
+            <span>
+              {" "}
+              {season?.registrationEndDate ?
+                new Date(season.registrationEndDate).toLocaleString()
+              : "TBD"}
+            </span>
           </div>
         </section>
 
@@ -75,9 +91,9 @@ export default function FeaturedCarousel({season}) {
           </h1>
 
           <p className="text-gray-300 text-xs mt-1">
-             {season?.registrationEndDate
-    ? new Date(season.registrationEndDate).toLocaleString()
-    : "TBD"}
+            {season?.registrationEndDate ?
+              new Date(season.registrationEndDate).toLocaleString()
+            : "TBD"}
           </p>
 
           <div className="flex items-center justify-between mt-3">
@@ -88,9 +104,12 @@ export default function FeaturedCarousel({season}) {
               </p>
             </div>
 
-            <button className="bg-[#BE5EED] rounded-full px-5 py-2 text-xs font-semibold">
-              LIVE NOW
-            </button>
+            <Link
+              to={`/enter/${season?.seasonId}`}
+              className="bg-[#BE5EED] cursor-pointer rounded-full px-5 py-2 text-xs font-semibold"
+            >
+              Register Now →
+            </Link>
           </div>
         </section>
       </section>

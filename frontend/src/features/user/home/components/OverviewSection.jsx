@@ -48,9 +48,7 @@ const Overview = () => {
           </h2>
 
           <p className="text-gray-400 max-w-xl text-base md:text-lg">
-            ShutterUp is where the next generation of visual artists
-            claim their crown. No filters, just vision.
-            Are you ready to submit?
+           GlitchFame is where creators compete and the community decides. Discover talent, cast your vote, and help crown the next digital icon.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 pt-4">

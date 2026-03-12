@@ -25,7 +25,7 @@ export const getContestants = async ({pageParam = 0,status = "PENDING",size = 5,
 };
 
 
-//custom vote
+
 export const voteContestant = async ({ participationId, value }) => {
 
   console.log(participationId,value)

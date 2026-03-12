@@ -185,7 +185,6 @@ ${size === "large" ? "w-[420px] h-[520px]" : "w-[320px] h-[420px]"}
   alt={item.contestantName}
   loading="lazy"
   decoding="async"
-  fetchpriority="low"
   className="w-full h-full object-cover"
 />
 

@@ -3,23 +3,21 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const token = localStorage.getItem("token")
 
-export const getVotersById = async (seasonId, page = 0, size = 4) => {
-  const response = await fetch(
-    `${BASE_URL}/contestants/season/${seasonId}?page=${page}&size=${size}`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+export const getVotersById = async ( seasonId, page = 0, size = 4, name = "")=> {
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch season data");
-  }
+  const url = name
+    ? `${BASE_URL}/contestants/season/${seasonId}/search?name=${name}&page=${page}&size=${size}`
+    : `${BASE_URL}/contestants/season/${seasonId}?page=${page}&size=${size}`;
 
-  return response.json(); 
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  return response.json();
 };
 
 

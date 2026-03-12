@@ -36,7 +36,8 @@ export const submitEntry = async (formData) => {
     body: formData,
   });
 
-  const data = await response.json();
+  console.log(response)
+  const data = await response.text();
 
   if (!response.ok) {
     console.error("Server error:", data);
