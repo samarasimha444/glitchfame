@@ -96,7 +96,7 @@ export const updateContestantStatus = async (id, action) => {
 
 export const getLiveContestants = async (page = 0, size = 6) => {
   const response = await fetch(
-    `http://localhost:3000/admin/contestants/live?page=${page}&size=${size}`,
+    `${BASE_URL}/admin/contestants/live?status=APPROVED&page=${page}&size=${size}`,
     {
       method: "GET",
       headers: {
