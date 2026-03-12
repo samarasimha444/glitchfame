@@ -23,6 +23,19 @@ public class LeaderboardController {
         return leaderboardService.getTop3OfAllSeasons();
     }
 
+
+    // ============================================================
+// 🔥 PAST SEASONS LEADERBOARD (TOP 6)
+// ============================================================
+
+@GetMapping("/past-seasons")
+public List<LeaderboardProjection> getPastSeasonsLeaderboard() {
+    return leaderboardService.getPastSeasonsLeaderboard();
+}
+
+
+
+
     // ============================================================
     // 🔥 TOP 3 OF ONE SEASON
     // ============================================================
