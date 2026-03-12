@@ -2,6 +2,8 @@ import { useState } from "react";
 import { initialState } from "../../../../constants/admin";
 import { fields } from "../../../../constants/admin";
 import { useCreateSeason } from "../hooks";
+import { prepareFormData, validateSeasonDates } from "../../../../lib/helper";
+
 
 const SeasonForm = ({ initialData = {}, loading }) => {
 
@@ -18,51 +20,27 @@ const SeasonForm = ({ initialData = {}, loading }) => {
     }
   };
 
+
+
 const handleSubmit = (e) => {
   e.preventDefault();
 
-  const formData = new FormData();
+  const { formData, dateTimes } = prepareFormData(form);
 
-  const combineDateTime = (date, time) => {
-    if (!date || !time) return "";
-    return `${date}T${time}:00`;
-  };
-
-  const processedKeys = new Set();
-
-  Object.keys(form).forEach((key) => {
-    if (processedKeys.has(key)) return;
-
-   
-    if (key.endsWith("Date")) {
-      const baseKey = key.replace("Date", "");
-      const date = form[`${baseKey}Date`];
-      const time = form[`${baseKey}Time`];
-
-      const combined = combineDateTime(date, time);
-
-      formData.append(baseKey, combined);
-
-      processedKeys.add(`${baseKey}Date`);
-      processedKeys.add(`${baseKey}Time`);
-    }
-
-    else if (!key.endsWith("Time")) {
-      formData.append(key, form[key]);
-    }
+  const errors = validateSeasonDates({
+    registrationStart: new Date(dateTimes.registrationStart),
+    registrationEnd: new Date(dateTimes.registrationEnd),
+    votingStart: new Date(dateTimes.votingStart),
+    votingEnd: new Date(dateTimes.votingEnd),
   });
 
- for (let pair of formData.entries()) {
-  console.log(pair[0], pair[1]);
-}
+  if (errors.length > 0) {
+    return alert(errors.join("\n"));
+  }
 
-    createSeason(formData, {
-    onSuccess: (data) => {
-     alert(data?.message || "Season created successfully!");
-    },
-    onError: (error) => {
-      alert(error?.message || "Failed to create season");
-    },
+  createSeason(formData, {
+    onSuccess: (data) => alert(data?.message || "Season created successfully!"),
+    onError: (error) => alert(error?.message || "Failed to create season"),
   });
 };
 
@@ -173,10 +151,10 @@ const handleSubmit = (e) => {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={isPending}
           className="px-4 py-2 text-sm rounded-lg bg-blue-600 hover:bg-blue-700 transition text-white font-medium disabled:opacity-50"
         >
-          {loading ? "Saving..." : "Save Season"}
+          {isPending ? "Saving..." : "Save Season"}
         </button>
       </div>
     </form>

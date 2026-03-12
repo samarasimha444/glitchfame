@@ -8,12 +8,13 @@ const token = localStorage.getItem("token")
 console.log(token)
 
 
-export const getLiveUpcomingSeasons = async (status) => {
-  const res = await fetch(`${BASE_URL}/seasons?status=${status}`, {
+export const getLiveUpcomingSeasons = async () => {
+  const res = await fetch(`${BASE_URL}/seasons`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+  console.log(res)
 
   if (!res.ok) {
     throw new Error("Failed to fetch seasons");
@@ -25,25 +26,32 @@ export const getLiveUpcomingSeasons = async (status) => {
 
   
 
-export const submitEntry = async()=>{
+export const submitEntry = async (formData) => {
 
-  const response = await fetch(`${BASE_URL}/contestants/apply`,{
-      headers: {
+  const response = await fetch(`${BASE_URL}/contestants/apply`, {
+    method: "POST",
+    headers: {
       Authorization: `Bearer ${token}`,
     },
-  })
+    body: formData,
+  });
 
-  if(!response.ok){
-     throw new Error("Failed to add entry");
+  const data = await response.json();
+
+  if (!response.ok) {
+    console.error("Server error:", data);
+    throw new Error(data.message || "Failed to add entry");
   }
-  console.log(response)
-  return response.json()
 
-}
+  return data;
+};
 
 export const getWinners = async () => {
   const response = await fetch(`${BASE_URL}/winners`, {
     method: "GET",
+     headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 
   if (!response.ok) {
@@ -52,3 +60,22 @@ export const getWinners = async () => {
 
   return response.json();
 };
+
+
+export const getSeasonById = async (id) => {
+  
+  const response = await fetch(`${BASE_URL}/seasons/${id}`, {
+    method: "GET",
+      headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch winners");
+  }
+
+  return response.json();
+};
+
+

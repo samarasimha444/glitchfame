@@ -2,45 +2,37 @@ import React, { useState } from "react";
 import { Zap } from "lucide-react";
 import { useContestantDetails, useToggleVote } from "../arena/hooks";
 import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 
-const data = {
-  participationId: 101,
-  participantName: "Alex Maverick",
-  dateOfBirth: "2000-06-15",
-  location: "Karimpur, India",
-  seasonPhotoUrl: "https://images.unsplash.com/photo-1622347434466-147a44cffda7?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  voteCount: 4523,
-  description: "I'm Alex Maverick, bringing my unique style and energy to the stage. Music is my life and I aim to make every performance unforgettable!",
-  seasonName: "Summer Battle 2026",
-  prizeMoney: 10000 // assuming in rupees
-};
+
 
 const PlayerDetails = () => {
 
   const [loading,setIsLoading]=useState(false)
 
-  //  const { id } = useParams(); 
-  //  console.log(id)
+   const { id } = useParams(); 
+   console.log(id)
 
 
 
 
-  // const { data, isLoading, error } = useContestantDetails(id);
-  // const { mutate: voteToggle, isPending } = useToggleVote();
+  const { data, isLoading, error } = useContestantDetails(id);
+  const { mutate: voteToggle, isPending } = useToggleVote();
 
-  // const handleVote = (contestantId) => {
-  //   if (!contestantId) return;
+  console.log(data)
+  const handleVote = (contestantId) => {
+    if (!contestantId) return;
 
-  //   voteToggle(contestantId, {
-  //     onSuccess: () => {
-  //       alert("Vote submitted successfully!");
-  //     },
-  //     onError: () => {
-  //       alert("Failed to vote");
-  //     },
-  //   });
-  // };
+    voteToggle(contestantId, {
+      onSuccess: () => {
+        toast.success("Vote submitted successfully!");
+      },
+      onError: () => {
+        toast.error("Failed to vote");
+      },
+    });
+  };
 
 
   return (
@@ -80,11 +72,11 @@ const PlayerDetails = () => {
      
         <div className="md:bg-[#0f1720] max-w-[530px] p-8 rounded-2xl md:border border-cyan-500/20">
           <p className="text-xs text-gray-400 mb-2">
-            CURRENT RANK
+            CURRENT VOTES
           </p>
 
           <h2 className="text-3xl md:text-5xl font-extrabold text-cyan-400">
-           #{data?.voteCount}
+           {data?.voteCount}
           </h2>
 
           <button onClick={()=>handleVote(data?.participationId)}
@@ -94,7 +86,7 @@ const PlayerDetails = () => {
           </button>
 
           <p className="text-xs text-gray-500 mt-3 text-center">
-            LIMITED TO 5 VOTE PER ARENA CYCLE
+            LIMITED TO 5 VOTES AS PER SEASON
           </p>
         </div>
 
@@ -125,7 +117,7 @@ const PlayerDetails = () => {
               />
             ))}
           </div> */}
-          <p>Season </p>
+          <p className="uppercase">{data?.seasonName} </p>
 
           <p className="text-sm text-gray-400">
           
@@ -133,26 +125,7 @@ const PlayerDetails = () => {
         </div>
 
     
-        <div>
-          <p className="text-sm text-gray-400 mb-3">
-            RECRUIT YOUR CREW
-          </p>
-
-          <div className="flex gap-4">
-            <button className="bg-[#11161f] p-3 rounded-lg hover:bg-purple-600 transition">
-              🔗
-            </button>
-            <button className="bg-[#11161f] p-3 rounded-lg hover:bg-purple-600 transition">
-              🐦
-            </button>
-            <button className="bg-[#11161f] p-3 rounded-lg hover:bg-purple-600 transition">
-              📸
-            </button>
-            <button className="bg-[#11161f] p-3 rounded-lg hover:bg-purple-600 transition">
-              📤
-            </button>
-          </div>
-        </div>
+       
 
       </section>
     </div>

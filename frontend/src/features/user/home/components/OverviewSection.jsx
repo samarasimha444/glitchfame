@@ -35,7 +35,7 @@ const Overview = () => {
   return (
 
     
-    <div className="w-full mt-4 md:bg-[#1E2229] py-3 md:py-24 flex justify-center">
+    <div className="w-full mt-4 md:bg-[#1E2229] py-3 mb-4 md:py-24 flex justify-center">
 
       <div className="w-full max-w-7xl px-6 md:px-16 flex flex-col md:flex-row justify-between gap-12 md:gap-20">
 

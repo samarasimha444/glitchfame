@@ -1,15 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getContestantDetails, getLeaderboard, getVotersById, toggleVote } from "./api";
+import {  getContestantDetails, getLeaderboard, getVotersById, toggleVote } from "./api";
 
 
 
 
-export const useContestantsById = (seasonId) => {
-    console.log(seasonId)
+export const useContestantsById = (seasonId, page = 0, size = 4) => {
   return useQuery({
-    queryKey: ["contestants", seasonId], 
-    queryFn: () => getVotersById(seasonId),
+    queryKey: ["contestants", seasonId, page, size], 
+    queryFn: () => getVotersById(seasonId, page, size),
     enabled: !!seasonId, 
+    keepPreviousData: true, 
+    staleTime: 5000 * 60, 
   });
 };
 
@@ -26,10 +27,6 @@ export const useToggleVote = () => {
 
   return useMutation({
     mutationFn: (participationId) => toggleVote(participationId),
-
-    onSuccess: () => {
-      queryClient.invalidateQueries(["contestantDetails"]);
-    },
   });
 };
 
@@ -43,3 +40,5 @@ export const useLeaderboard = () => {
     // refetchInterval: 5000,  
   });
 };
+
+

@@ -1,47 +1,5 @@
 // utils/format.js
 
-export const formatAndValidateSeasonForm = (form) => {
-  if (!form.name.trim()) {
-    return { error: "Name is required" };
-  }
-
-  if (!form.prizeMoney || form.prizeMoney <= 0) {
-    return { error: "Prize money must be greater than 0" };
-  }
-
-  if (!form.registrationStartDate ||
-      !form.registrationEndDate ||
-      !form.votingStartDate ||
-      !form.votingEndDate) {
-    return { error: "All dates are required" };
-  }
-
-  return {
-    data: {
-      name: form.name.trim(),
-      prizeMoney: form.prizeMoney,
-      registrationStartDate: form.registrationStartDate,
-      registrationEndDate: form.registrationEndDate,
-      votingStartDate: form.votingStartDate,
-      votingEndDate: form.votingEndDate
-    }
-  };
-};
-
-
-export const isSeasonLive = (season) => {
-  const now = new Date();
-
-  const registrationStart = new Date(season.registrationStartDate);
-  const registrationEnd = new Date(season.registrationEndDate);
-  const votingStart = new Date(season.votingStartDate);
-  const votingEnd = new Date(season.votingEndDate);
-
-  const isRegistrationOpen = now >= registrationStart && now <= registrationEnd;
-  const isVotingLive = now >= votingStart && now <= votingEnd;
-
-  return isRegistrationOpen || isVotingLive;
-};
 
 
 
@@ -64,29 +22,108 @@ export const buildLeaderboard = (users) => {
 
 };
 
- export const getTimeLeft=(time) =>{
-    const endDate = new Date(time);
+ export const getTimeLeft = (endDate) => {
     const now = new Date();
+    const end = new Date(endDate);
+    const diff = end - now > 0 ? end - now : 0; // no negative values
 
-    let diffInMs = endDate - now;
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
 
-    if (diffInMs <= 0) {
-      return "Voting Ended";
-    }
+    return `${days}d ${hours}h ${minutes}m`;
+  };
 
-    const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-    diffInMs -= days * 1000 * 60 * 60 * 24;
 
-    const hours = Math.floor(diffInMs / (1000 * 60 * 60));
-    diffInMs -= hours * 1000 * 60 * 60;
+  
+export const getVoteButtonProps = (status, votes = 0, maxVotes = 5) => {
+  const maxReached = votes >= maxVotes;
+  let text = "VOTE";
+  let className =
+    "bg-gradient-to-r from-purple-500 to-pink-500 text-black hover:opacity-90";
 
-    const minutes = Math.floor(diffInMs / (1000 * 60));
-
-    if (days > 0) {
-      return `${days} day${days > 1 ? "s" : ""} ${hours} hour${hours > 1 ? "s" : ""} left`;
-    } else if (hours > 0) {
-      return `${hours} hour${hours > 1 ? "s" : ""} ${minutes} minute${minutes > 1 ? "s" : ""} left`;
-    } else {
-      return `${minutes} minute${minutes > 1 ? "s" : ""} left`;
-    }
+  if (status === "loading") {
+    text = "Voting...";
+    className = "bg-gray-400 cursor-not-allowed text-black";
+  } else if (maxReached) {
+    text = "Max Votes";
+    className = "bg-pink-300 cursor-not-allowed text-white";
+  } else if (status === "success") {
+    text = "Voted";
+    className = "bg-pink-400 cursor-default text-white";
   }
+
+  return { text, className, disabled: status === "loading" || maxReached };
+};
+
+export const isRegistrationOpen = (season) => {
+  const now = new Date();
+  const registrationStart = new Date(season.registrationStartDate);
+  const registrationEnd = new Date(season.registrationEndDate);
+
+  return now >= registrationStart && now <= registrationEnd;
+};
+
+ export const isVotingLive = (season) => {
+  const now = new Date();
+  const votingStart = new Date(season.votingStartDate);
+  const votingEnd = new Date(season.votingEndDate);
+
+  return now >= votingStart && now <= votingEnd;
+};
+
+
+export const combineDateTimeToUTC = (date, time) => {
+  if (!date || !time) return "";
+  const [year, month, day] = date.split("-");
+  const [hours, minutes] = time.split(":");
+  const d = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0, 0));
+  return d.toISOString(); // "YYYY-MM-DDTHH:mm:ss.sssZ"
+};
+
+
+export const prepareFormData = (form) => {
+  const formData = new FormData();
+  const dateTimes = {};
+  const processedKeys = new Set();
+
+  Object.keys(form).forEach((key) => {
+    if (processedKeys.has(key)) return;
+
+    if (key.endsWith("Date")) {
+      const baseKey = key.replace("Date", "");
+      const date = form[`${baseKey}Date`];
+      const time = form[`${baseKey}Time`];
+      const combined = combineDateTimeToUTC(date, time);
+
+      formData.append(baseKey, combined);
+      dateTimes[baseKey] = combined;
+
+      processedKeys.add(`${baseKey}Date`);
+      processedKeys.add(`${baseKey}Time`);
+    } else if (!key.endsWith("Time")) {
+      formData.append(key, form[key]);
+    }
+  });
+
+  return { formData, dateTimes };
+};
+
+
+export const validateSeasonDates = ({ registrationStart, registrationEnd, votingStart, votingEnd }) => {
+  const errors = [];
+
+  if (registrationStart >= registrationEnd) {
+    errors.push("Registration start date must be before registration end date.");
+  }
+
+  if (votingStart >= votingEnd) {
+    errors.push("Voting start date must be before voting end date.");
+  }
+
+  if (votingStart <= registrationEnd) {
+    errors.push("Voting must start after registration ends.");
+  }
+
+  return errors; 
+};

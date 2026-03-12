@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, Zap, Award, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Logs } from 'lucide-react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,7 +10,7 @@ const Navbar = () => {
  
   
   const menuItems = [
-    { label: "Live Arena", path: "/arena/123", icon: Zap },
+    { label: "Live Arena", path: "/arena", icon: Zap },
     { label: "LeaderBoard", path: "/leaderboard", icon: Award },
     { label: "How it Works", path: null, icon: Info },
   ];
@@ -68,7 +69,7 @@ const Navbar = () => {
         className="md:hidden text-white"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <Menu size={28} className="animate-[wiggle_2s_ease-in-out_infinite]" />
+        <Logs size={28} className="animate-[wiggle_2s_ease-in-out_infinite]" />
       </button>
 
      

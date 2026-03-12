@@ -2,50 +2,55 @@ import React, { useState } from "react";
 import { formFields } from "../../../../constants/userdata";
 import { useSubmitEntry } from "../../home/hooks";
 
-const Form = ({seasonId,image}) => {
-
- 
-
+const Form = ({ seasonId, image }) => {
   const [formData, setFormData] = useState({
     name: "",
-    mobile: "",
-    age: "",
+    dateOfBirth: "", // added
     location: "",
-    bio: ""
+    bio: "", // will map to description
   });
 
-    const { mutate: submitEntry, isLoading, isError, isSuccess, error } = useSubmitEntry();
+  const { mutate: submitEntry, isLoading, isError, isSuccess, error } = useSubmitEntry();
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
-const handleSubmit = (e) => {
+ const handleSubmit = (e) => {
   e.preventDefault();
 
   const data = new FormData();
-
-  Object.keys(formData).forEach((key) => {
-    data.append(key, formData[key]);
-  });
-
-  data.append("image", image);
-
   data.append("seasonId", seasonId);
-  console.log("Submitting:", formData, image);
+  data.append("name", formData.name);
+  data.append("description", formData.bio); // bio → description
+  data.append("dateOfBirth", formData.dateOfBirth);
+  data.append("location", formData.location);
+  data.append("image", image); // string or file
+
+  // Loop through FormData to see the key-value pairs
+  console.log("FormData contents:");
+  for (let [key, value] of data.entries()) {
+    console.log(key, value);
+  }
+
+  submitEntry(data);
 };
+  const handleCancel = () => {
+    setFormData({
+      name: "",
+      dateOfBirth: "",
+      location: "",
+      bio: "",
+    });
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <h3 className="text-white font-semibold text-lg">PROFILE INTELLIGENCE</h3>
 
-      <h3 className="text-white font-semibold text-lg">
-        PROFILE INTELLIGENCE
-      </h3>
-
-   
       <div className="grid grid-cols-2 gap-4">
         {formFields?.map((field) => (
           <input
@@ -58,6 +63,16 @@ const handleSubmit = (e) => {
             className="bg-[#1a202c] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-[#BE5EED] outline-none"
           />
         ))}
+
+        {/* Add dateOfBirth field */}
+        <input
+          type="date"
+          name="dateOfBirth"
+          value={formData.dateOfBirth}
+          onChange={handleChange}
+          placeholder="Date of Birth"
+          className="bg-[#1a202c] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-[#BE5EED] outline-none"
+        />
       </div>
 
       <textarea
@@ -69,9 +84,13 @@ const handleSubmit = (e) => {
         className="w-full bg-[#1a202c] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-[#BE5EED] outline-none resize-none"
       />
 
+      {isSuccess && <p className="text-green-500">Entry submitted successfully!</p>}
+      {isError && <p className="text-red-500">{error?.message || "Something went wrong"}</p>}
+
       <div className="flex justify-end gap-4 pt-4">
         <button
           type="button"
+          onClick={handleCancel}
           className="px-6 py-3 rounded-lg bg-black text-white border border-gray-700 hover:border-[#BE5EED] transition"
         >
           Cancel
@@ -79,12 +98,14 @@ const handleSubmit = (e) => {
 
         <button
           type="submit"
-          className="px-8 py-3 rounded-lg bg-gradient-to-r from-[#BE5EED] to-purple-600 text-black font-semibold hover:opacity-90 transition"
+          disabled={isLoading}
+          className={`px-8 py-3 rounded-lg bg-gradient-to-r from-[#BE5EED] to-purple-600 text-black font-semibold hover:opacity-90 transition ${
+            isLoading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
-          Submit Arena Entry
+          {isLoading ? "Submitting..." : "Submit Arena Entry"}
         </button>
       </div>
-
     </form>
   );
 };

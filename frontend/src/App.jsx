@@ -31,6 +31,7 @@ import Leadboard  from "./Testing/LeadBoard";
 import Winners from "./Testing/Winners";
 import ChallengeDetail from "./features/user/details/ChallangeDetails";
 import AuthLayout from "./Auth/AuthLayout";
+import Vote from "./features/user/voting/Vote";
 
 export default function App() {
   return (
@@ -66,11 +67,12 @@ export default function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/enter/:id" element={<ArenaForm />} />
            <Route path="/leaderboard" element={<LeaderBoard />} />
-          <Route path="/arena/:id" element={<Arena />} />
-
+          <Route path="/arena" element={<Arena />} />
+           <Route path="/vote/:id" element={<Vote />} />
+         
           <Route path="/season" element={<SeasonDetails />} />
 
-            <Route path="/seasonInfo" element={<ChallengeDetail />} />
+            <Route path="/about us" element={<ChallengeDetail />} />
 
           <Route path="/details/:id" element={<PlayerDetails />} />
 

@@ -9,7 +9,7 @@ const [error,setError] = useState(null);
 
 const token = localStorage.getItem("token");
 
-// ================= FETCH LEADERBOARD =================
+
 
 useEffect(()=>{
 

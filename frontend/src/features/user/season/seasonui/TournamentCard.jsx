@@ -1,159 +1,117 @@
 import React, { useState } from "react";
-import { data, Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLiveUpcomingSeasons } from "../../home/hooks";
 import ShimmerCard from "../../../../components/ShimmerCard";
-
-
-// const activeRegistrations = [
-//   {
-//     seasonId: 1,
-//     seasonName: "Champions Arena",
-//     registrationStartDate: "2026-03-01",
-//     registrationEndDate: "2026-03-15",
-//     prizeMoney: 5000,
-//     featured: true,             // corresponds to FEATURED badge
-//     category: "FPS Tactical",    // corresponds to FPS Tactical badge
-//     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Moles!", 
-//     imageUrl: "https://images.pexels.com/photos/416911/pexels-photo-416911.jpeg"
-//   },
-//   {
-//     seasonId: 2,
-//     seasonName: "Battle Royale Masters",
-//     registrationStartDate: "2026-03-05",
-//     registrationEndDate: "2026-03-20",
-//     prizeMoney: 8000,
-//     featured: false,
-//     category: "FPS Tactical",
-//     description: "Join the ultimate FPS tactical showdown and win big prizes!",
-//     imageUrl: "https://images.pexels.com/photos/3583571/pexels-photo-3583571.jpeg"
-//   },
-//   {
-//     seasonId: 3,
-//     seasonName: "Sniper Elite League",
-//     registrationStartDate: "2026-03-10",
-//     registrationEndDate: "2026-03-25",
-//     prizeMoney: 10000,
-//     featured: true,
-//     category: "FPS Tactical",
-//     description: "Test your aiming skills in the sniper elite league.",
-//     imageUrl: "https://images.pexels.com/photos/1707213/pexels-photo-1707213.jpeg"
-//   }
-// ];
+import { isRegistrationOpen } from "../../../../lib/helper";
+import { MousePointerClick } from "lucide-react";
 
 const TournamentCard = () => {
+  const { data: seasons = [], isLoading } = useLiveUpcomingSeasons();
+  console.log(seasons);
+  const navigate = useNavigate();
 
-   const { data: seasons = [], isLoading } = useLiveUpcomingSeasons("upcoming");
-    console.log(seasons)
-    const navigate = useNavigate()
+  
+   const activeRegistrations = seasons.filter(isRegistrationOpen)
 
-    const now = new Date();
-
-   const activeRegistrations = seasons.filter((season) => {
-   return new Date(season.registrationEndDate) > now;
-});
-
-   console.log(activeRegistrations)
+   
 
 
-return (
- <div className="flex flex-col px-4 sm:px-10 lg:px-20 py-10 w-full">
-
-  err here check later
-
-  <section className="flex w-full flex-wrap gap-6 justify-center sm:justify-between">
-
-    {
-    isLoading
-          ? Array.from({ length: 4 }).map((_, index) => (
-              <div key={index} className="w-full sm:w-[48%] lg:max-w-95 flex justify-center">
-                <ShimmerCard />
-              </div>
-            ))
-
-    :activeRegistrations.map((item, index) => (
-
-      <article
-        key={index}
-        className="w-full sm:w-[48%] lg:max-w-95 bg-[#111418] border border-[#1E232B] 
-        rounded-2xl overflow-hidden flex flex-col justify-between"
-      >
-
-        <Link to="/details" className="relative w-full">
-
-          <img
-            src={item.imageUrl}
-            alt={item.title}
-            className="w-full h-[150px] sm:h-[220px] object-cover"
-          />
-
-          <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
-            <span className="bg-purple-600 text-white text-xs px-3 py-1 rounded-full font-medium">
-              FEATURED
-            </span>
-
-            <span className="bg-black/70 text-white text-xs px-3 py-1 rounded-full font-medium">
-              FPS Tactical
-            </span>
-          </div>
-        </Link>
-
-        <div className="p-5 sm:p-6 flex flex-col gap-4 flex-1">
-
-          <div className="flex justify-between items-start gap-4">
-            <h3 className="text-white font-semibold text-base sm:text-lg leading-tight">
-              {item.seasonName}
-            </h3>
-
-            <div className="text-right shrink-0">
-              <p className="text-gray-400 text-xs uppercase tracking-wide">
-                Prize Pool
-              </p>
-
-              <p className="text-[#39FFB6] font-bold text-lg">
-                ${item.prizeMoney}
-              </p>
+  return (
+    <div className="flex flex-col px-4 sm:px-10 lg:px-20 py-10 w-full">
+      <section className="flex w-full flex-wrap gap-6  ">
+        {isLoading ?
+          Array.from({ length: 4 }).map((_, index) => (
+            <div
+              key={index}
+              className="w-full sm:w-[48%]  lg:max-w-95 flex justify-center"
+            >
+              <ShimmerCard />
             </div>
-          </div>
+          ))
+        : activeRegistrations.map((item, index) => (
 
-          <p className="text-gray-400 text-sm leading-relaxed">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Moles!
-          </p>
 
-          <div className="border-t border-[#232A33]" />
+           <article
+  key={index}
+  className="w-full sm:w-[48%] lg:max-w-[400px] bg-[#111418] border border-[#1E232B] 
+             rounded-2xl overflow-hidden flex flex-col justify-between shadow-md"
+>
+  <Link to={`enter/${item.seasonId}`} className="relative w-full block">   
+  <div className="w-full h-36 sm:h-52 lg:h-60 overflow-hidden rounded-lg">
+    <img
+      src={item.seasonPhotoUrl}
+      alt={item.title}
+      loading="lazy"
+      className="w-full h-full object-cover"
+    />
+  </div>
 
-          <div className="flex justify-between text-sm">
-            <div>
-              <p className="text-gray-500 text-xs uppercase">Deadline</p>
-              <p className="text-white font-medium">
-                {item.registrationEndDate}
-              </p>
-            </div>
+  <div className="absolute top-2 left-2 flex gap-2 flex-wrap">
+    <span className="bg-purple-600 text-white text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium">
+      FEATURED
+    </span>
 
-            <div>
-              <p className="text-gray-500 text-xs uppercase">Starts</p>
-              <p className="text-white font-medium">
-                {item.registrationStartDate}
-              </p>
-            </div>
-          </div>
+    <span className="bg-black/70 text-white text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium">
+      GlitchFame
+    </span>
+  </div>
+</Link>
 
-          <button
-            onClick={() => navigate(`/enter/${item.seasonId}`)}
-            className="mt-4 w-full sm:w-auto sm:max-w-[170px] py-3 rounded-xl 
-            bg-gradient-to-r from-purple-500 to-purple-500 
-            font-semibold tracking-wide text-black text-[14px]
-            hover:opacity-90 transition"
-          >
-            REGISTER NOW ⚡
-          </button>
+  <div className="p-3 sm:p-4 flex flex-col gap-3 flex-1">
+    <div className="flex justify-between items-start gap-2">
+      <h3 className="text-white uppercase font-semibold text-sm sm:text-base leading-tight">
+        {item.seasonName}
+      </h3>
 
-        </div>
-      </article>
+      <div className="text-right shrink-0">
+        <p className="text-gray-400 text-[10px] sm:text-xs uppercase tracking-wide">
+          Prize Pool
+        </p>
+        <p className="text-[#39FFB6] font-bold text-base sm:text-lg">
+          ₹{item.prizeMoney}
+        </p>
+      </div>
+    </div>
 
-    ))}
-  </section>
-</div>
-);
+    <p className="text-gray-400 text-[12px] sm:text-sm leading-snug line-clamp-3">
+      {item.seasonDesc}
+    </p>
+
+    <div className="border-t border-[#232A33]" />
+
+    <div className="flex justify-between text-[10px] sm:text-xs">
+      <div>
+        <p className="text-gray-500 uppercase">Deadline</p>
+        <p className="text-white font-medium text-[12px] sm:text-sm">
+          {new Date(item.registrationEndDate).toLocaleDateString()}
+        </p>
+      </div>
+
+      <div>
+        <p className="text-gray-500 uppercase">Starts</p>
+        <p className="text-white font-medium text-[12px] sm:text-sm">
+          {new Date(item.registrationEndDate).toLocaleDateString()}
+        </p>
+      </div>
+    </div>
+
+    <button
+      onClick={() => navigate(`/enter/${item.seasonId}`)}
+      className="mt-3 w-full cursor-pointer sm:w-auto sm:max-w-[180px] py-2 sm:py-3 px-3 sm:px-5 rounded-xl 
+                 bg-gradient-to-r from-purple-500 to-purple-600 
+                 font-semibold tracking-wide flex items-center justify-center gap-2
+                 text-black text-[13px] sm:text-sm hover:opacity-90 transition"
+    >
+      REGISTER NOW
+      <MousePointerClick size={18} />
+    </button>
+  </div>
+</article>
+          ))
+        }
+      </section>
+    </div>
+  );
 };
 
 export default TournamentCard;

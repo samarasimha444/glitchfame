@@ -3,21 +3,23 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const token = localStorage.getItem("token")
 
-export const getVotersById = async (seasonId) => {
-  const response = await fetch(`${BASE_URL}/contestants/season/${seasonId}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
+export const getVotersById = async (seasonId, page = 0, size = 4) => {
+  const response = await fetch(
+    `${BASE_URL}/contestants/season/${seasonId}?page=${page}&size=${size}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
-  console.log(response)
   if (!response.ok) {
     throw new Error("Failed to fetch season data");
   }
 
-  return response.json();
+  return response.json(); 
 };
 
 
@@ -73,3 +75,5 @@ export const getLeaderboard = async () => {
 
   return response.json();
 };
+
+

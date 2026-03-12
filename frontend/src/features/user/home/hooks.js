@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getLiveUpcomingSeasons, getWinners, submitEntry } from "./api";
+import { getLiveUpcomingSeasons, getSeasonById, getWinners, submitEntry } from "./api";
 
 
 
@@ -13,14 +13,15 @@ export const useLiveUpcomingSeasons = (status) => {
   });
 };
 export const useSubmitEntry = () => {
-
   return useMutation({
-    mutationFn: (entryData) => submitEntry(entryData),
+    mutationFn: submitEntry,
+
     onSuccess: (data) => {
       console.log("Entry submitted successfully:", data);
     },
+
     onError: (error) => {
-      console.error("Error submitting entry:", error);
+      console.error("Entry submission failed:", error.message);
     },
   });
 };
@@ -31,5 +32,13 @@ export const useWinners = () => {
     queryKey: ["winners"],
     queryFn: getWinners,
    keepPreviousData: true,
+  });
+};
+
+export const useSeasonById = (id) => {
+  return useQuery({
+    queryKey: ["seasonId", id],
+    queryFn: () => getSeasonById(id),
+    enabled: !!id, 
   });
 };
