@@ -30,6 +30,22 @@ public class LeaderboardService {
         return leaderboardRepository.findTop3OfAllSeasons(userId);
     }
 
+
+
+    // ============================================================
+// 🔥 REST: PAST SEASONS LEADERBOARD (TOP 6)
+// ============================================================
+
+@Transactional(readOnly = true)
+public List<LeaderboardProjection> getPastSeasonsLeaderboard() {
+
+    Long userId = extractJwtData.getUserId(); // get logged-in user id
+
+    return leaderboardRepository.findPastSeasonLeaderboard(userId); // fetch leaderboard
+}
+
+
+
     // ============================================================
     // 🔥 REST: TOP 3 OF ONE SEASON
     // ============================================================

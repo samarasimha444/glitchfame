@@ -57,7 +57,7 @@ GROUP BY
     av.admin_vote_count
 
 ORDER BY total_votes DESC
-LIMIT 1
+LIMIT 6
 """, nativeQuery = true)
 void insertSeasonWinner(@Param("seasonId") Long seasonId);
 
