@@ -4,7 +4,7 @@ import { useToggleVote } from "../hooks";
 import ShimmerCard from "../../../../components/ShimmerCard";
 import { getVoteButtonProps } from "../../../../lib/helper";
 import toast from "react-hot-toast";
-import Error from "../../../../components/error";
+import Error from "../../../../components/Error";
 
 
 const ContestantCard = React.memo(({ user, toggleVote, votingStatus, voteCount, navigate }) => {

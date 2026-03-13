@@ -1,7 +1,6 @@
 import React from "react";
 
 import { Trophy, Users, Clock } from "lucide-react";
-import { useLiveUpcomingSeasons } from "../../home/hooks";
 import { getTimeLeft } from "../../../../lib/helper";
 import { Link } from "react-router-dom";
 
