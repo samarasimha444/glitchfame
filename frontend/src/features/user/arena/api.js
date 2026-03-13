@@ -2,6 +2,57 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 
 const token = localStorage.getItem("token")
+ 
+
+export const loginUser = async (formData) => {
+
+  const response = await fetch(`${BASE_URL}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(formData),
+  });
+   console.log(response)
+  const data = await response.text(); 
+
+  if (!response.ok) {
+    throw new Error(data || "Login failed");
+  }
+
+  return data; 
+};
+
+export const sendOtp = async (email) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_BASE_URL}/auth/forgot-password?email=${email}`,
+    { method: "POST" }
+  );
+
+  const message = await res.text();
+
+  if (!res.ok) {
+    throw new Error(message);
+  }
+
+  return message;
+};
+
+export const resetPassword = async ({ email, otp, newPassword }) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_BASE_URL}/auth/reset-password?email=${email}&otp=${otp}&newPassword=${newPassword}`,
+    { method: "POST" }
+  );
+
+  const message = await res.text();
+
+  if (!res.ok) {
+    throw new Error(message);
+  }
+
+  return message;
+};
+
+
+
 
 export const getVotersById = async ( seasonId, page = 0, size = 4, name = "")=> {
 

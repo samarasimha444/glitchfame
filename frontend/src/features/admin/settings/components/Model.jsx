@@ -13,6 +13,7 @@ const fieldConfig = {
 };
 
 const Model = ({ type, onClose }) => {
+  console.log(type)
 
   const fields = fieldConfig[type] || [];
 

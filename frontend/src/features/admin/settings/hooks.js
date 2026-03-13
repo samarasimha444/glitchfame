@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteSeason, endSeasonNow, fetchSeasonById, participationLock, toggleSeasonLock, toggleVoteLock, updatePrizePool, updateRegistrationDates } from "./api";
+import toast from "react-hot-toast";
 
 
 export const useFetchSeasonDetails = (seasonId) => {
@@ -66,6 +67,7 @@ export const useEndSeasonNow = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries(["season-details"]);
+      toast.success("success")
     },
   });
 }
@@ -77,9 +79,11 @@ export const useParticipationLock = () => {
     mutationFn: participationLock,
     onSuccess: () => {
       queryClient.invalidateQueries(["season-data"]);
+      toast.success("success")
     },
     onError: (err) => {
       console.error("Participation lock error:", err);
+      toast.error("something went wrong")
     },
   });
 };

@@ -2,6 +2,7 @@ import React from "react";
 import { CheckCircle, XCircle, ShieldAlert } from "lucide-react";
 
 import { useContestants, useUpdateContestantStatus } from "../hook";
+import toast from "react-hot-toast";
 
 const Approval = ({ className }) => {
  
@@ -17,10 +18,10 @@ const Approval = ({ className }) => {
       { id: userId, action },
       {
         onSuccess: () => {
-          alert(`Contestant ${action}ed successfully`);
+          toast.success("success");
         },
         onError: (error) => {
-          alert(error.message || "Failed to update contestant");
+          toast.error("something went wrong")
         },
       }
     );
@@ -29,7 +30,7 @@ const Approval = ({ className }) => {
   return (
     <div className={`w-full bg-[#0f1115] flex justify-center ${className}`}>
       <div className="w-full max-w-full bg-[#1a1f2b] rounded-xs p-4 sm:p-6 shadow-xs border border-gray-800">
-        {/* Header */}
+        
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
           <div className="flex gap-3 items-start sm:items-center">
             <ShieldAlert className="text-yellow-400 mt-1 sm:mt-0" size={22} />

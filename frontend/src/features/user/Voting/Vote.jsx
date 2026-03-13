@@ -33,7 +33,6 @@ const Vote = () => {
 
   const totalPages = useMemo(() => contestantsData?.totalPages || 0, [contestantsData]);
 
-  // Pagination handlers
   const handleNext = useCallback(() => {
     if (page + 1 < totalPages) setPage((prev) => prev + 1);
   }, [page, totalPages]);
@@ -42,7 +41,7 @@ const Vote = () => {
     if (page > 0) setPage((prev) => prev - 1);
   }, [page]);
 
-  // Reset page when search changes
+  
   useEffect(() => {
     setPage(0);
   }, [debouncedSearch]);
@@ -51,7 +50,6 @@ const Vote = () => {
     <div className="flex flex-col bg-black sm:bg-[#181B20] w-full m-auto max-w-400 px-1 min-h-screen">
       <VotingHeader id={seasonId} />
 
-      {/* Search Input */}
       <div className="md:flex md:px-12 max-w-[290px] flex-col md:flex-row gap-4 mt-4 mb-5 md:mt-10 md:mb-8">
         <div className="flex items-center bg-[#111418] border border-[#1E232B] rounded-lg px-7 md:min-w-xl w-full py-3 flex-1">
           <Search size={16} className="text-gray-400 mr-2" />
@@ -68,11 +66,11 @@ const Vote = () => {
 
       
       <section className="md:px-12">
-        {isError && (
+        {/* {isError && (
           <div className="text-red-500 text-center mt-4">
             Failed to load contestants.
           </div>
-        )}
+        )} */}
 
         {!isLoading && contestantsData?.items?.length === 0 && (
           <div className="text-gray-400 text-center mt-6">

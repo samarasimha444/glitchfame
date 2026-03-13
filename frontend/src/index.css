@@ -39,3 +39,18 @@
     text-shadow: 0 0 1px #ffffff, 0 0 2px #601089, 0 0 3px #BE5EED; 
   }
 }
+
+.scrollable-table::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollable-table::-webkit-scrollbar-track {
+  background: #1a1a1a; /* dark track */
+}
+
+.scrollable-table::-webkit-scrollbar-thumb {
+  background-color: #4b5563; /* dark thumb */
+  border-radius: 3px;
+}
+
+

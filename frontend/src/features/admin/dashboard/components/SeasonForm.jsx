@@ -1,12 +1,15 @@
-import { useState } from "react";
+import {  useState } from "react";
 import { initialState } from "../../../../constants/admin";
 import { fields } from "../../../../constants/admin";
 import { useCreateSeason } from "../hooks";
 import { prepareFormData, validateSeasonDates } from "../../../../lib/helper";
+import NeonLoader from "../../../../components/Loader";
+import toast from "react-hot-toast";
 
 
 const SeasonForm = ({ initialData = {}, loading }) => {
 
+  
   const { mutate: createSeason, isPending } = useCreateSeason();
   const [form, setForm] = useState({ ...initialState, ...initialData });
 
@@ -35,12 +38,12 @@ const handleSubmit = (e) => {
   });
 
   if (errors.length > 0) {
-    return alert(errors.join("\n"));
+    toast.error(errors.join("\n"));
   }
 
   createSeason(formData, {
-    onSuccess: (data) => alert(data?.message || "Season created successfully!"),
-    onError: (error) => alert(error?.message || "Failed to create season"),
+    onSuccess: (data) => toast.success(data?.message || "Season created successfully!"),
+    onError: (error) => toast.error(error?.message || "Failed to create season"),
   });
 };
 
@@ -120,6 +123,14 @@ const handleSubmit = (e) => {
     }
   };
 
+
+   if (isPending) {
+    return (
+        <NeonLoader />
+     
+    );
+  }
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -129,7 +140,7 @@ const handleSubmit = (e) => {
         Season Configuration
       </h2>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-2 gap-3 sm:gap-6">
         {fields.map((field) => (
           <div key={field.name} className={field.full ? "col-span-2" : ""}>
             <label className="block text-[10px] uppercase tracking-wider text-white/50 mb-2">

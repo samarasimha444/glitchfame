@@ -20,6 +20,8 @@ const Controls = ({ id, voteLock, seasonLock, prizeMoney }) => {
  const { mutate: updatePrizePool, isPending } = useUpdatePrizePool();
   const {mutate: toggleSeasonLock,isPending: seasonPending,} = useToggleSeasonLock();
 
+  const loading = isPending || votePending 
+
   const handleVoteToggle = () => {
    
     setVotingOpen((prev) => !prev);
@@ -42,7 +44,7 @@ const Controls = ({ id, voteLock, seasonLock, prizeMoney }) => {
    
       <div className="flex items-center gap-2 mb-6">
         <Lock className="w-5 h-5 text-white/70" />
-        <h2 className="text-white text-lg font-semibold">
+        <h2 className="text-white text-[16px] sm:text-lg font-semibold">
           Security Controls
         </h2>
       </div>

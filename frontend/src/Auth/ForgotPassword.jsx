@@ -15,7 +15,7 @@ export default function ForgotPassword(){
 
   const token = localStorage.getItem("token");
 
-  // ================= SEND OTP =================
+
   const handleSendOtp = async (e) => {
 
     if(e) e.preventDefault();
@@ -55,7 +55,7 @@ export default function ForgotPassword(){
   };
 
 
-  // ================= RESET PASSWORD =================
+
   const handleResetPassword = async (e) => {
 
     e.preventDefault();

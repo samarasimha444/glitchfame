@@ -1,13 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  getContestantDetails, getLeaderboard, getVotersById, toggleVote } from "./api";
+import {  getContestantDetails, getLeaderboard, getVotersById, loginUser, resetPassword, sendOtp, toggleVote } from "./api";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 
 
 
 export const useContestantsById = (seasonId, page = 0, size = 4, name = "") => {
   return useQuery({
-    queryKey: ["contestants", seasonId, page, size, name], // include name in the key
-    queryFn: () => getVotersById(seasonId, page, size, name), // pass name to API call
+    queryKey: ["contestants", seasonId, page, size, name], 
+    queryFn: () => getVotersById(seasonId, page, size, name), 
     enabled: !!seasonId, 
     keepPreviousData: true, 
     staleTime: 5000 * 60, 
@@ -42,3 +44,34 @@ export const useLeaderboard = () => {
 };
 
 
+export const useLogin = () => {
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: loginUser,
+    onSuccess: (token) => {
+      
+      localStorage.setItem("token", token);
+
+      const decoded = jwtDecode(token);
+      const role = decoded.role;
+      if (role === "ADMIN") navigate("/admin");
+      else navigate("/home");
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+};
+
+export const useSendOtp = () => {
+  return useMutation({
+    mutationFn: sendOtp,
+  });
+};
+
+export const useResetPassword = () => {
+  return useMutation({
+    mutationFn: resetPassword,
+  });
+};

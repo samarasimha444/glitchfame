@@ -31,7 +31,7 @@ const RoleRedirect = () => {
   const { data: profile, isLoading, isError } = useQuery({
     queryKey: ["profile"],
     queryFn: fetchProfile,
-    enabled: !!token,   // important
+    enabled: !!token,   
     retry: false,
   });
 

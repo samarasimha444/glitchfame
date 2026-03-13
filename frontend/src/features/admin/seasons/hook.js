@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useMutation,  useQuery,  useQueryClient } from "@tanstack/react-query";
-import { deleteContestant, getContestants, getLiveContestants, updateContestantStatus, voteContestant } from "./api";
+import { deleteContestant, getContestants, getLiveContestants, searchContestants, updateContestantStatus, voteContestant } from "./api";
 
 
 
@@ -50,7 +50,7 @@ export const useUpdateContestantStatus = () => {
     mutationFn: ({ id, action }) => updateContestantStatus(id, action),
 
     onSuccess: () => {
-      // Invalidate contestants query so it refetches
+      
       queryClient.invalidateQueries(["liveContestants"]);
     },
 
@@ -65,5 +65,14 @@ export const useLiveContestants = (page, size = 6) => {
     queryKey: ["liveContestants", page],
     queryFn: () => getLiveContestants(page, size),
     keepPreviousData: true,
+  });
+};
+
+export const useSearchContestants = (name, seasonId) => {
+  return useQuery({
+    queryKey: ["search-contestants", name, seasonId],
+    queryFn: () => searchContestants({ name, seasonId }),
+    enabled: !!name,
+    staleTime: 1000 * 60 * 5,
   });
 };

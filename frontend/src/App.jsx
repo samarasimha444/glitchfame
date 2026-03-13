@@ -39,7 +39,7 @@ export default function App() {
 
       
 
-      {/* Root role-based redirect */}
+     
 
 
       <Route path="/" element={<RoleRedirect />} />
@@ -79,6 +79,7 @@ export default function App() {
 
 
         </Route>
+        {/* </Route> */}
      
 
 

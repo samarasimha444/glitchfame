@@ -4,6 +4,7 @@ import { useToggleVote } from "../hooks";
 import ShimmerCard from "../../../../components/ShimmerCard";
 import { getVoteButtonProps } from "../../../../lib/helper";
 import toast from "react-hot-toast";
+import Error from "../../../../components/error";
 
 
 const ContestantCard = React.memo(({ user, toggleVote, votingStatus, voteCount, navigate }) => {
@@ -45,7 +46,9 @@ const ContestantCard = React.memo(({ user, toggleVote, votingStatus, voteCount, 
 });
 
 
-const ArenaCard = ({ contestantsData = { content: [] }, isLoading }) => {
+const ArenaCard = ({ contestantsData = { content: [] }, isLoading ,isError}) => {
+  
+  console.log(isLoading)
   const navigate = useNavigate();
   const toggleVoteMutation = useToggleVote();
 
@@ -80,34 +83,50 @@ const ArenaCard = ({ contestantsData = { content: [] }, isLoading }) => {
 
   const contestants = useMemo(() => contestantsData.content || [], [contestantsData]);
 
-  return (
-    <section className="flex flex-col px-1 sm:px-6 md:pb-20">
-      <div className="max-w-screen w-full mt-4 mx-auto">
-        <section className="flex justify-between">
-          <h2 className="text-white text-xl font-semibold mb-8">Current Participants</h2>
-        </section>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 space-y-6 sm:gap-8">
-          {isLoading
-            ? Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className="flex justify-center">
-                  <ShimmerCard />
-                </div>
-              ))
-            : contestants.map((user) => (
-                <ContestantCard
-                  key={user.id}
-                  user={user}
-                  toggleVote={toggleVote}
-                  votingStatus={votingStatus}
-                  voteCount={voteCount}
-                  navigate={navigate}
-                />
-              ))}
-        </div>
-      </div>
+
+ return (
+<section className="flex flex-col px-1 sm:px-6 md:pb-20">
+  <div className="max-w-screen w-full mt-4 mx-auto">
+
+    <section className="flex justify-between">
+      <h2 className="text-white text-xl font-semibold mb-8">
+        Current Participants
+      </h2>
     </section>
-  );
+
+    {(isError || (!isLoading && contestants.length === 0)) ? (
+      <Error />
+    ) : (
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-8">
+
+        {isLoading &&
+          Array.from({ length: 4 }).map((_, index) => (
+            <div key={index} className="flex  w-full justify-center">
+              <ShimmerCard />
+            </div>
+          ))}
+
+       
+        {!isLoading &&
+          contestants.length > 0 &&
+          contestants.map((user) => (
+            <ContestantCard
+              key={user.id}
+              user={user}
+              toggleVote={toggleVote}
+              votingStatus={votingStatus}
+              voteCount={voteCount}
+              navigate={navigate}
+            />
+          ))}
+
+      </div>
+    )}
+
+  </div>
+</section>
+);
 };
 
 export default ArenaCard;

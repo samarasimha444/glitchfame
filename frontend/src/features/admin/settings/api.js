@@ -76,6 +76,7 @@ export const deleteSeason = async (id) => {
 
 
 export const endSeasonNow = async ({ id }) => {
+  console.log(id)
   const res = await fetch(
     `${BASE_URL}/admin/seasons/${id}/end-now`,
     {

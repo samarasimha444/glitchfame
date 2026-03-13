@@ -89,7 +89,7 @@ export const updateContestantStatus = async (id, action) => {
     throw new Error(errorData.message || "Failed to update contestant status");
   }
 
-  return res.json();
+  return res.text();
 };
 
 
@@ -104,6 +104,37 @@ export const getLiveContestants = async (page = 0, size = 6) => {
       },
     }
   );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch contestants");
+  }
+
+  return response.json();
+};
+
+
+
+export const searchContestants = async ({ name, seasonId }) => {
+  console.log(name)
+  const params = new URLSearchParams({
+    name,
+  });
+
+  if (seasonId) {
+    params.append("seasonId", seasonId);
+  }
+
+  const response = await fetch(
+    `${BASE_URL}/admin/contestants/search?${params.toString()}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  console.log(response)
 
   if (!response.ok) {
     throw new Error("Failed to fetch contestants");

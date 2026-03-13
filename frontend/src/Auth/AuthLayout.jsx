@@ -58,8 +58,12 @@ bg-[radial-gradient(circle_at_top_left,_#3b0764,_#000000_40%,_#022c22)]">
  
 
 </div>
+
  
-      <div className="flex-1 flex items-center justify-center p-6">
+      <div className="flex-1 relative flex-col  flex items-center justify-center p-6">
+
+          
+
         <div className="w-full max-w-110 bg-[#0c0f14] border border-[#1E232B]
         rounded-3xl p-8 space-y-4 shadow-xl">
 

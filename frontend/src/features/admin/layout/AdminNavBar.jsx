@@ -12,16 +12,15 @@ const AdminNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-   <nav className="relative w-full bg-[#111418] border-b border-gray-700 shadow-sm px-4 py-3 flex justify-between items-center md:hidden">
-  {/* Logo */}
+   <nav className="relative w-full bg-[#111418] border-b border-gray-700 shadow-sm  py-3 flex justify-between items-center md:hidden">
+  
   <div className="text-white font-bold text-xl">Admin Dashboard</div>
 
-  {/* Hamburger Button */}
   <button onClick={() => setIsOpen(!isOpen)} className="text-white">
     {isOpen ? <X size={24} /> : <Menu size={24} />}
   </button>
 
-  {/* Mobile Menu */}
+  
   {isOpen && (
     <div className="absolute top-full left-0 w-full bg-[#111418] border-t border-gray-700 shadow-lg z-50">
       <ul className="flex flex-col p-4 gap-2">
@@ -35,7 +34,7 @@ const AdminNavbar = () => {
                 className={({ isActive }) =>
                   `flex items-center gap-2 px-3 py-2 rounded-md transition-all duration-200 text-base ${
                     isActive
-                      ? "bg-purple-600 text-white"
+                      ? "bg-blue-600 text-white"
                       : "text-gray-300 hover:bg-gray-800 hover:text-white"
                   }`
                 }

@@ -5,7 +5,7 @@ import CountdownTimer from "./CountdownTimer";
 
 
 export const StickyHeader = memo(({ liveSeason, season }) => (
-  <div className="sticky top-0 z-50 w-full bg-opacity-50 backdrop-blur-sm md:static">
+  <div className="sticky top-0 z-30 w-full bg-opacity-50 backdrop-blur-sm md:static">
     <div className="max-w-6xl px-2 w-full md:mb-6 mt-6 mx-auto text-center sm:px-4">
       <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold">
         <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">

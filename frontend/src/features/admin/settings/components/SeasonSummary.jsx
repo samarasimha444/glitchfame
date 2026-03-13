@@ -2,82 +2,77 @@ import React, { useState } from "react";
 import { MoreVertical } from "lucide-react";
 import { useEndSeasonNow, useParticipationLock } from "../hooks";
 import Model from "./Model";
+import NeonLoader from "../../../../components/Loader";
 
 const menuItems = [
-  { id: 2, label: "Participation Lock", color: "text-gray-300" },
-  { id: 3, label: "End Now", color: "text-red-400" },
-    { id: 3, label: "Modify Registration", color: "text-gray-300" },
-     { id: 3, label: "Modify Voting ", color: "text-gray-300" },
+  { id: 1, label: "Participation Lock", action: "lock", color: "text-gray-300" },
+  { id: 2, label: "End Now", action: "end", color: "text-red-400" },
+  { id: 3, label: "Modify Registration", action: "registration", color: "text-gray-300" },
+  // { id: 4, label: "Modify Voting", action: "voting", color: "text-gray-300" },
 ];
 
 const SeasonSummary = ({ title, subtitle, data }) => {
-  console.log(data)
+  const [showMenu, setShowMenu] = useState(false);
+  const [selected, setSelected] = useState("");
+  const [active, setActive] = useState(false);
 
-  const [showMenu, setShowMenu] = useState(true);
-  const [seasonId,setSeasonId]= useState(data.id)
-  const [selected,setSelected]= useState("")
-  const [active,setActive]= useState(false)
+  const seasonId = data?.id;
 
-  console.log(seasonId)
+  const { mutate: endSeason, isPending } = useEndSeasonNow();
+  const { mutate: lockParticipation, isPending: locking } = useParticipationLock();
+
+  const loading = isPending || locking;
 
   const formattedData =
-    data ?
-      Object.entries(data).map(([key, value]) => {
-        let formattedValue = value;
+    data
+      ? Object.entries(data).map(([key, value]) => {
+          let formattedValue = value;
 
-        if (key.toLowerCase().includes("date") && typeof value === "string") {
-          formattedValue = new Date(value).toLocaleString();
-        }
+          if (key.toLowerCase().includes("date") && typeof value === "string") {
+            formattedValue = new Date(value).toLocaleString();
+          }
 
-        return {
-          label: key.replace(/([A-Z])/g, " $1"),
-          value: String(formattedValue),
-        };
-      })
-    : [];
+          return {
+            label: key.replace(/([A-Z])/g, " $1"),
+            value: String(formattedValue),
+          };
+        })
+      : [];
 
+  const handleClick = (item) => {
+    if (item.action === "lock") {
+      lockParticipation({ id: seasonId });
+    } else if (item.action === "end") {
+      endSeason({ id: seasonId });
+    } else {
+      setSelected(item.action);
+      setActive(true);
+    }
 
-const { mutate: endSeason, isLoading } = useEndSeasonNow();
+    setShowMenu(false);
+  };
 
-const { mutate: lockParticipation, isLoading: locking } = useParticipationLock();
-
-
-   const handleClick = (item) => {
-  console.log(item);
-
-  if (item.label === "Participation Lock") {
-    lockParticipation({ id: seasonId });
-
-  } else if (item.label === "End Now") {
-    endSeason({ id: seasonId });
-
-  } else if (item.label === "Modify Registration") {
-    setSelected("registration");
-    setActive(true);
-
-  } else if (item.label === "Modify Voting") {
-    setSelected("voting");
-    setActive(true);
+  if (loading) {
+    return (
+      <section className="w-full h-full flex items-center justify-center">
+        <NeonLoader />
+      </section>
+    );
   }
 
-  setShowMenu(false);
-};
-
-
   return (
-    <div className="w-full bg-[#0f1115] flex">
+    <div className="w-full max-w-200 bg-[#0f1115] flex">
 
-  {active && (
-      <Model
-        type={selected}
-        seasonId={seasonId}
-        onClose={() => setActive(false)}
-      />
-    )}
-        
+      {active && (
+        <Model
+          type={selected}
+          seasonId={seasonId}
+          onClose={() => setActive(false)}
+        />
+      )}
 
       <div className="w-full max-w-195 border border-gray-900 relative">
-        
+
         <div className="flex items-start justify-between p-6">
           <div>
             <h2 className="text-white text-xl font-semibold">{title}</h2>
@@ -93,10 +88,11 @@ const { mutate: lockParticipation, isLoading: locking } = useParticipationLock()
             </button>
 
             {showMenu && (
-              <div className="absolute right-0 mt-2 w-40 bg-[#171A1F] border border-gray-800 rounded-lg shadow-lg z-50">
+              <div className="absolute right-1 mt-2 w-44 bg-[#171A1F] border border-gray-800 rounded-lg shadow-lg z-50">
                 {menuItems.map((item) => (
-                  <button onClick={()=>handleClick(item)}
+                  <button
                     key={item.id}
+                    onClick={() => handleClick(item)}
                     className={`w-full text-left px-4 py-2 text-sm ${item.color} hover:bg-gray-800`}
                   >
                     {item.label}
@@ -110,13 +106,17 @@ const { mutate: lockParticipation, isLoading: locking } = useParticipationLock()
         <div className="p-6">
           <div className="grid grid-cols-2 gap-y-6 gap-x-12 text-sm">
             {formattedData?.map((item, index) => (
-              <div key={index} className="flex justify-between">
+              <div
+                key={index}
+                className="flex text-xs sm:text-base justify-between"
+              >
                 <span className="text-gray-400">{item.label}</span>
                 <span className="text-white font-medium">{item.value}</span>
               </div>
             ))}
           </div>
         </div>
+
       </div>
     </div>
   );
