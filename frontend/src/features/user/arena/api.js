@@ -38,6 +38,7 @@ export const sendOtp = async (email) => {
 };
 
 export const resetPassword = async ({ email, otp, newPassword }) => {
+   
   const res = await fetch(
     `${import.meta.env.VITE_BASE_URL}/auth/reset-password?email=${email}&otp=${otp}&newPassword=${newPassword}`,
     { method: "POST" }
@@ -93,6 +94,7 @@ export const getContestantDetails = async (id) => {
 
 
 export const toggleVote = async (participationId) => {
+   const token = localStorage.getItem("token")
   console.log()
   const response = await fetch(`${BASE_URL}/votes/toggle/${participationId}`, {
     method: "POST", 
@@ -111,6 +113,7 @@ export const toggleVote = async (participationId) => {
 };
 
 export const getLeaderboard = async () => {
+   const token = localStorage.getItem("token")
   
   const response = await fetch(`${BASE_URL}/leaderboard`, {
     method: "GET", 
