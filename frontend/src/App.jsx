@@ -31,7 +31,7 @@ import Leadboard  from "./Testing/LeadBoard";
 import Winners from "./Testing/Winners";
 import ChallengeDetail from "./features/user/details/ChallangeDetails";
 import AuthLayout from "./Auth/AuthLayout";
-import Vote from "./features/user/voting/Vote";
+import Vote from "./features/user/Voting/Vote";
 
 export default function App() {
   return (

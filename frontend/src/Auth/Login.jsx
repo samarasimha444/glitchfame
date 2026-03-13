@@ -73,17 +73,16 @@ const Login = () => {
           />
         </div>
 
-        <button
-          type="submit"
-          className="w-full py-3 mt-4 rounded-xl
-          bg-[#BE5EED]
-          text-white font-medium
-          hover:opacity-90 transition"
-          disabled={loginMutation.isLoading}
-        >
-          {loginMutation.isLoading ? "Logging in..." : "Login"}
-        </button>
-
+       <button
+  type="submit"
+  className="w-full py-3 mt-4 rounded-xl bg-[#BE5EED] text-white font-medium flex items-center justify-center gap-2 hover:opacity-90 transition"
+  disabled={loginMutation.isPending}
+>
+  {loginMutation.isPending && (
+    <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+  )}
+  {loginMutation.isPending ? "Logging in..." : "Login"}
+</button>
       </form>
 
       <button

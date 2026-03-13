@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { useContestantsById } from "../arena/hooks";
 import { Search } from "lucide-react";
 
-// Custom debounce hook
+
 const useDebounce = (value, delay = 500) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
