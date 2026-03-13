@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { createLeaderboardSocket } from "../../../lib/stompLeaderBoard";
 import { buildLeaderboard } from "../../../lib/helper";
 import LeaderboardLoading from "./ui/LeaderBoardCarousel";
-import Error from "../../../components/error";
+import Error from "../../../components/Error";
 
 const Leaderboard = () => {
 
