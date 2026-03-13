@@ -4,6 +4,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 const token =localStorage.getItem("token")
 
 export const fetchSeasonById = async (seasonId) => {
+   const token = localStorage.getItem("token")
 
   const response = await fetch(`${BASE_URL}/seasons/${seasonId}`, {
     headers: {
@@ -22,6 +23,7 @@ export const fetchSeasonById = async (seasonId) => {
 
 
 export const toggleSeasonLock = async (id) => {
+   const token = localStorage.getItem("token")
   const res = await fetch(`${BASE_URL}/admin/seasons/${id}/season-lock`, {
     method: "PATCH",
    headers: {
@@ -37,6 +39,7 @@ export const toggleSeasonLock = async (id) => {
 };
 
 export const toggleVoteLock = async (id) => {
+   const token = localStorage.getItem("token")
   const res = await fetch(`${BASE_URL}/admin/seasons/${id}/vote-lock`, {
     method: "PATCH",
     headers: {
@@ -56,6 +59,7 @@ export const toggleVoteLock = async (id) => {
 
 
 export const deleteSeason = async (id) => {
+   const token = localStorage.getItem("token")
   console.log(id)
   const res = await fetch(`${BASE_URL}/admin/seasons/${id}`, {
     method: "DELETE",
@@ -76,6 +80,7 @@ export const deleteSeason = async (id) => {
 
 
 export const endSeasonNow = async ({ id }) => {
+   const token = localStorage.getItem("token")
   console.log(id)
   const res = await fetch(
     `${BASE_URL}/admin/seasons/${id}/end-now`,

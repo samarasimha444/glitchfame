@@ -4,6 +4,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 const token =localStorage.getItem("token")
 
 export const createSeason = async (formData) => {
+   const token = localStorage.getItem("token")
   const res = await fetch(
     `${BASE_URL}/admin/seasons/create`,
     {
@@ -24,6 +25,7 @@ export const createSeason = async (formData) => {
 };
 
 export const fetchSeasons = async () => {
+   const token = localStorage.getItem("token")
  
   const response = await fetch(`${BASE_URL}/admin/seasons`, {
     method: "GET",

@@ -7,6 +7,7 @@ const token = localStorage.getItem("token")
 
 export const getContestants = async ({pageParam = 0,status = "PENDING",size = 5,
 }) => {
+   const token = localStorage.getItem("token")
   const response = await fetch(
     `${BASE_URL}/admin/contestants/live?status=${status}&page=${pageParam}&size=${size}`,
     {
@@ -27,6 +28,7 @@ export const getContestants = async ({pageParam = 0,status = "PENDING",size = 5,
 
 
 export const voteContestant = async ({ participationId, value }) => {
+   const token = localStorage.getItem("token")
 
   console.log(participationId,value)
   const response = await fetch(
@@ -50,6 +52,7 @@ export const voteContestant = async ({ participationId, value }) => {
 };
 
 export const deleteContestant = async (contestantId) => {
+   const token = localStorage.getItem("token")
   const response = await fetch(
     `${BASE_URL}/admin/contestants/${contestantId}`,
     {
@@ -71,6 +74,7 @@ export const deleteContestant = async (contestantId) => {
 
 //approve reject 
 export const updateContestantStatus = async (id, action) => {
+   const token = localStorage.getItem("token")
   console.log("Updating contestant:", id, action);
 
   const res = await fetch(`${BASE_URL}/admin/contestants/status/${id}?action=${action}`, {
@@ -95,6 +99,7 @@ export const updateContestantStatus = async (id, action) => {
 
 
 export const getLiveContestants = async (page = 0, size = 6) => {
+   const token = localStorage.getItem("token")
   const response = await fetch(
     `${BASE_URL}/admin/contestants/live?status=APPROVED&page=${page}&size=${size}`,
     {
@@ -115,6 +120,7 @@ export const getLiveContestants = async (page = 0, size = 6) => {
 
 
 export const searchContestants = async ({ name, seasonId }) => {
+   const token = localStorage.getItem("token")
   console.log(name)
   const params = new URLSearchParams({
     name,

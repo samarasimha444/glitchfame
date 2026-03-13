@@ -9,6 +9,7 @@ console.log(token)
 
 
 export const getLiveUpcomingSeasons = async () => {
+  const token = localStorage.getItem("token")
   const res = await fetch(`${BASE_URL}/seasons`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -27,6 +28,7 @@ export const getLiveUpcomingSeasons = async () => {
   
 
 export const submitEntry = async (formData) => {
+   const token = localStorage.getItem("token")
 
   const response = await fetch(`${BASE_URL}/contestants/apply`, {
     method: "POST",
@@ -48,6 +50,7 @@ export const submitEntry = async (formData) => {
 };
 
 export const getWinners = async () => {
+   const token = localStorage.getItem("token")
   const response = await fetch(`${BASE_URL}/winners`, {
     method: "GET",
      headers: {
@@ -64,7 +67,7 @@ export const getWinners = async () => {
 
 
 export const getSeasonById = async (id) => {
-  
+   const token = localStorage.getItem("token")
   const response = await fetch(`${BASE_URL}/seasons/${id}`, {
     method: "GET",
       headers: {

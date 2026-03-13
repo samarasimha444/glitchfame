@@ -6,6 +6,7 @@ const token = localStorage.getItem("token")
 
 export const loginUser = async (formData) => {
 
+  
   const response = await fetch(`${BASE_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -55,6 +56,7 @@ export const resetPassword = async ({ email, otp, newPassword }) => {
 
 
 export const getVotersById = async ( seasonId, page = 0, size = 4, name = "")=> {
+   const token = localStorage.getItem("token")
 
   const url = name
     ? `${BASE_URL}/contestants/season/${seasonId}/search?name=${name}&page=${page}&size=${size}`
@@ -73,6 +75,7 @@ export const getVotersById = async ( seasonId, page = 0, size = 4, name = "")=> 
 
 
 export const getContestantDetails = async (id) => {
+   const token = localStorage.getItem("token")
   const response = await fetch(`${BASE_URL}/contestants/${id}`, {
     method: "GET",
     headers: {
