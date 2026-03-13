@@ -4,7 +4,7 @@ import LiveCards from "./ui/LiveCards";
 import { useLiveUpcomingSeasons } from "../home/hooks";
 import { isVotingLive } from "../../../lib/helper";
 
-const filters = ["All", "RECENT"];
+
 
 const Arena = () => {
   const [search, setSearch] = useState("");

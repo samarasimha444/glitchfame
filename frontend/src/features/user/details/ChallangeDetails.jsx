@@ -62,7 +62,6 @@ const ChallengeDetail = () => {
 
             </div>
 
-            {/* TIMER */}
             <div className="space-y-2">
 
               <p className="text-sm text-gray-400">
