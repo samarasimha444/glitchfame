@@ -137,15 +137,21 @@ public String apply(CreateContestantDTO request) {
     }
 
     // ================= IMAGE UPLOAD =================
-    String imageUrl;
-    try {
-        imageUrl = cloudinaryService.uploadImage(request.getImage());
-    } catch (Exception e) {
-        throw new ResponseStatusException(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "Image upload failed"
-        );
-    }
+String imageUrl;
+try {
+
+    imageUrl = cloudinaryService.uploadImage(
+            request.getImage(),
+            seasonId
+    );
+
+} catch (Exception e) {
+
+    throw new ResponseStatusException(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            "Image upload failed"
+    );
+}
 
     // ================= CHECK EXISTING PARTICIPATION =================
     Optional<Participation> existing =

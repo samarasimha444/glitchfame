@@ -1,7 +1,7 @@
 package com.example.glitchfame.Admin.Cloudinary;
-import com.example.glitchfame.Configuration.Cloudinary.*;
-import lombok.RequiredArgsConstructor;
 
+import com.example.glitchfame.Configuration.Cloudinary.CloudinaryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,13 +12,16 @@ public class CloudinaryController {
 
     private final CloudinaryService cloudinaryService;
 
+    // delete all assets of a season
+    @DeleteMapping("/season/{seasonId}")
+    public ResponseEntity<String> deleteSeasonAssets(
+            @PathVariable Long seasonId
+    ) {
 
-    // Delete entire folder
-    @DeleteMapping("/delete-folder/{folder}")
-    public ResponseEntity<String> deleteFolder(@PathVariable String folder) {
+        cloudinaryService.deleteSeasonAssets(seasonId);
 
-        cloudinaryService.deleteFolderCompletely(folder);
-        return ResponseEntity.ok("Folder deleted successfully: " + folder);
+        return ResponseEntity.ok(
+                "Season assets deleted successfully for season: " + seasonId
+        );
     }
-
 }

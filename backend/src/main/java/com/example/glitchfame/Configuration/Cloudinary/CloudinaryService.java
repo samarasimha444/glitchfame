@@ -2,9 +2,7 @@ package com.example.glitchfame.Configuration.Cloudinary;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,21 +16,21 @@ public class CloudinaryService {
 
     private final Cloudinary cloudinary;
 
-    private static final long MAX_SIZE = 5 * 1024 * 1024*2; // 10MB
+    private static final long MAX_SIZE = 10 * 1024 * 1024; // 10MB
 
     private static final List<String> ALLOWED_TYPES =
             List.of("image/jpeg", "image/png", "image/jpg");
 
 
-    // Upload image
-    public String uploadImage(MultipartFile file) {
+    // Upload image season-wise
+    public String uploadImage(MultipartFile file, Long seasonId) {
 
         if (file.isEmpty()) {
             throw new RuntimeException("File is empty");
         }
 
         if (file.getSize() > MAX_SIZE) {
-            throw new RuntimeException("File size must be less than 5MB");
+            throw new RuntimeException("File size must be less than 10MB");
         }
 
         if (!ALLOWED_TYPES.contains(file.getContentType())) {
@@ -41,25 +39,19 @@ public class CloudinaryService {
 
         try {
 
+            // season based folder
+            String folder = "glitchfame/seasons/season-" + seasonId + "/contestants";
+
             Map<?, ?> result = cloudinary.uploader().upload(
                     file.getBytes(),
                     ObjectUtils.asMap(
-                            "folder", "glitchfame/contestants/profile",
+                            "folder", folder,
                             "resource_type", "image"
                     )
             );
 
-            // ===== DEBUG CONSOLE OUTPUT =====
-            System.out.println("===== CLOUDINARY RESPONSE =====");
-            System.out.println(result);
-
-            System.out.println("Secure URL: " + result.get("secure_url"));
+            System.out.println("Uploaded to: " + folder);
             System.out.println("Public ID: " + result.get("public_id"));
-            System.out.println("URL: " + result.get("url"));
-            System.out.println("Format: " + result.get("format"));
-            System.out.println("Width: " + result.get("width"));
-            System.out.println("Height: " + result.get("height"));
-            System.out.println("================================");
 
             return result.get("secure_url").toString();
 
@@ -69,31 +61,30 @@ public class CloudinaryService {
     }
 
 
-    // Delete entire folder
-    public void deleteFolderCompletely(String folder) {
+    // Delete all images of a season
+    public void deleteSeasonAssets(Long seasonId) {
+
+        String folder = "glitchfame/seasons/season-" + seasonId;
 
         try {
 
-            // delete all assets inside the folder
             cloudinary.api().deleteResourcesByPrefix(
-                    folder + "/",
+                    folder,
                     ObjectUtils.emptyMap()
             );
 
-            // delete subfolders
             cloudinary.api().deleteFolder(
                     folder + "/contestants",
                     ObjectUtils.emptyMap()
             );
 
-            // delete main folder
             cloudinary.api().deleteFolder(
                     folder,
                     ObjectUtils.emptyMap()
             );
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to delete folder: " + folder, e);
+            throw new RuntimeException("Failed to delete season assets", e);
         }
     }
 }
