@@ -25,7 +25,6 @@ import Arena from "./features/user/arena/Arena";
 import ForgotPassword from "./Auth/ForgotPassword";
 import Testupload from "./Testing/TestUpload";
 import TestingDashboard from "./Testing/TestingDashboard/TestingDashboard";
-import TestSeasonId from "./Testing/TestSeasonId";
 import TestingParticipation from "./Testing/TestingParticipation";
 import Leadboard  from "./Testing/LeadBoard";
 import Winners from "./Testing/Winners";
@@ -52,7 +51,7 @@ export default function App() {
       <Route path="/forgot" element={<ForgotPassword/>}  />
       <Route path="/testupload" element={<Testupload/>}/>
       <Route path="/testing-dashboard" element={<TestingDashboard/>}/>
-      <Route path="/testing-season/:seasonId" element={<TestSeasonId/>}/>
+      
       <Route path="/testing-participation/:seasonId" element={<TestingParticipation />}
        />
 
