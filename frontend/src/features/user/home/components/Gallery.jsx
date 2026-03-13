@@ -3,28 +3,35 @@ import { useWinners } from "../hooks"; // your React Query hook
 import ShimmerCard from "../../../../components/ShimmerCard";
 
 const Gallery = () => {
-  // Fetch winners using React Query
+  
   const { data: winnersData, isLoading, isError } = useWinners();
 
-  // You can separate champion and runner-ups dynamically
-  const champion = winnersData?.[0]; // first winner
-  const runnerUps = winnersData?.slice(1) || []; // rest of winners
+  const champion = winnersData?.[0]; 
+  const runnerUps = winnersData?.slice(1) || []; 
 
-  // Loading state
+  
   if (isLoading) {
     return (
-      <div className="w-full flex justify-center items-center min-h-screen">
+      <div className="w-full flex justify-center items-center min-h-[30vh]">
         <ShimmerCard />
       </div>
     );
   }
 
-  // Error state
+ 
   if (isError) {
     return (
-      <div className="text-red-500 w-full text-center mt-20">
-        Failed to load winners. Please try again later.
-      </div>
+      <div className="flex flex-col items-center mt-22 justify-center mb-22 w-full sm:mt-20 text-center">
+  <div className="sm:bg-gray-800 border border-gray-700 rounded-xl p-8 flex flex-col items-center shadow-lg animate-pulse">
+    <span className="text-4xl mb-4">🏆</span>
+    <p className="text-gray-300 text-lg font-semibold">
+      Looks like there is no winner for now
+    </p>
+    <p className="text-gray-500 mt-2 text-sm">
+      Check back later to see the leaderboard update
+    </p>
+  </div>
+</div>
     );
   }
 
@@ -39,7 +46,7 @@ const Gallery = () => {
             </h1>
           </div>
 
-          
+
           {champion ? (
             <div>
               <p className="text-xs text-yellow-400 tracking-widest mb-3">

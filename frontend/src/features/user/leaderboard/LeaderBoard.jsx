@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { createLeaderboardSocket } from "../../../lib/stompLeaderBoard";
 import { buildLeaderboard } from "../../../lib/helper";
+import LeaderboardLoading from "./ui/LeaderBoardCarousel";
+import Error from "../../../components/error";
 
 const Leaderboard = () => {
 
@@ -36,8 +38,8 @@ const Leaderboard = () => {
 
   }, [users, queryClient]);
 
-  if (isLoading) return <p>Loading leaderboard...</p>;
-  if (error) return <p>Error loading leaderboard</p>;
+ if (isLoading) return <LeaderboardLoading />;
+  if (error)  return <Error/>
 
   const leaderboard = buildLeaderboard(users);
 
@@ -47,13 +49,12 @@ const Leaderboard = () => {
 
   return (
 
-    <div className="w-full min-h-screen bg-black flex justify-center py-10">
-      
-
+    <div className="w-full min-h-screen bg-black sm:bg-[#181B20] flex justify-center py-10">
+    
       <div className="w-full max-w-6xl bg-black text-white rounded-xl shadow-2xl overflow-hidden">
 
         <div className="text-center text-xs py-2 text-gray-500 border-b border-gray-800">
-          WebSocket {connected ? "🟢 Live" : "🔴 Offline"}
+           {connected ? "🟢 Live" : "🔴 Offline"}
         </div>
 
         <div className="flex justify-center md:justify-between items-end px-6 pt-10 pb-10 md:gap-6">
