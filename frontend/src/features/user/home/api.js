@@ -67,12 +67,8 @@ export const getWinners = async () => {
 
 
 export const getSeasonById = async (id) => {
-<<<<<<< HEAD
    const token = localStorage.getItem("token")
   const response = await fetch(`${BASE_URL}/seasons/${id}`, {
-=======
-   const response = await fetch(`${BASE_URL}/seasons/${id}`, {
->>>>>>> 4e0a805 (fix cors)
     method: "GET",
       headers: {
       Authorization: `Bearer ${token}`,

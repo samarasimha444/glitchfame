@@ -71,8 +71,10 @@ export default function App() {
            <Route path="/vote/:id" element={<Vote />} />
          
           <Route path="/season" element={<SeasonDetails />} />
+         
 
-            <Route path="/about us" element={<ChallengeDetail />} />
+
+            <Route path="/aboutus" element={<ChallengeDetail />} />
 
           <Route path="/details/:id" element={<PlayerDetails />} />
 

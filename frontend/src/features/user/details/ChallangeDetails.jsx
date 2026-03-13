@@ -1,6 +1,4 @@
-import React from "react";
-
-const ChallengeDetail = () => {
+export const ChallangeDetails = () => {
   return (
     <div className="w-full min-h-screen bg-black text-white flex justify-center">
 
@@ -12,13 +10,13 @@ const ChallengeDetail = () => {
           {/* HERO IMAGE */}
           <div className="relative md:w-1/2 h-[260px] md:h-[420px]">
             <img
-              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb"
+              src="https://media.istockphoto.com/id/2062707084/photo/gold-star-as-a-reward-top-performance-award-winner-certificate-first-place-in-a-computer-game.jpg?s=2048x2048&w=is&k=20&c=9TRWAK2dRxbevw4luOFKBhb-rMvqpbpcCQuEfUWMtmk="
               className="w-full h-full object-cover"
-              alt="challenge"
+              alt="about-us"
             />
 
-            <span className="absolute top-4 left-4 bg-red-500 text-xs px-3 py-1 rounded-full">
-              LIVE NOW
+            <span className="absolute top-4 left-4 bg-purple-600 text-xs px-3 py-1 rounded-full">
+              FAIR & FUN
             </span>
           </div>
 
@@ -28,54 +26,58 @@ const ChallengeDetail = () => {
             {/* TAGS */}
             <div className="flex gap-2 text-xs text-gray-300">
               <span className="bg-[#1a1a1a] px-3 py-1 rounded-full">
-                Photography
+                Voting
               </span>
               <span className="bg-[#1a1a1a] px-3 py-1 rounded-full">
-                Cyberpunk
+                Prizes
+              </span>
+              <span className="bg-[#1a1a1a] px-3 py-1 rounded-full">
+                Fairness
               </span>
             </div>
 
-            {/* TITLE */}
             <h1 className="text-2xl md:text-4xl font-bold">
-              NEON NIGHTS SEOUL
+              Welcome to GlitchFame
             </h1>
 
-            {/* DESCRIPTION */}
+
             <p className="text-sm md:text-base text-gray-400">
-              Capture the electric pulse of Seoul after midnight.
-              Focus on high contrast, low light aesthetics,
-              and the interaction between human tech and city life.
+              GlitchFame is a modern voting platform where your voice truly matters. 
+              Users can participate, vote, and win prizes in a safe, transparent, 
+              and completely fair environment. No cheating, no manipulations — just 
+              pure competition and rewards for genuine engagement.
             </p>
 
-            {/* PRIZE + ENTRIES */}
+          
             <div className="flex gap-4">
 
               <div className="flex-1 bg-[#0f0f0f] border border-gray-800 p-4 rounded-lg">
-                <p className="text-xs text-gray-400">PRIZE POOL</p>
-                <p className="text-lg md:text-xl font-bold">$2,500</p>
+                <p className="text-xs text-gray-400">ACTIVE USERS</p>
+                <p className="text-lg md:text-xl font-bold">1K+</p>
               </div>
 
               <div className="flex-1 bg-[#0f0f0f] border border-gray-800 p-4 rounded-lg">
-                <p className="text-xs text-gray-400">ENTRIES</p>
-                <p className="text-lg md:text-xl font-bold">1.4K</p>
+                <p className="text-xs text-gray-400">PRIZES AWARDED</p>
+                <p className="text-lg md:text-xl font-bold">$120K+</p>
               </div>
 
             </div>
 
+           
             <div className="space-y-2">
 
               <p className="text-sm text-gray-400">
-                Time Remaining
+                Our Core Principles
               </p>
 
               <div className="flex gap-3">
 
-                {["DAYS", "HRS", "MINS", "SECS"].map((item, i) => (
+                {["Fair Voting", "Transparent Results", "Secure", "Rewarding"].map((item, i) => (
                   <div
                     key={i}
                     className="bg-[#0f0f0f] border border-gray-800 w-[70px] md:w-[80px] py-3 rounded-lg text-center"
                   >
-                    <p className="text-lg font-bold">02</p>
+                    <p className="text-lg font-bold">✔</p>
                     <p className="text-xs text-gray-400">{item}</p>
                   </div>
                 ))}
@@ -84,9 +86,9 @@ const ChallengeDetail = () => {
 
             </div>
 
-            {/* REGISTER BUTTON */}
+            {/* JOIN BUTTON */}
             <button className="w-full md:w-fit bg-purple-600 px-8 py-3 rounded-lg font-semibold">
-              Register Now
+              Join Us Now
             </button>
 
           </div>
@@ -98,53 +100,60 @@ const ChallengeDetail = () => {
           <div className="flex border-b border-gray-800 text-sm max-w-[600px]">
 
             <button className="flex-1 py-3 text-purple-500 border-b-2 border-purple-500">
-              Details
+              About
             </button>
 
             <button className="flex-1 py-3 text-gray-400">
-              Rules
+              How It Works
             </button>
 
             <button className="flex-1 py-3 text-gray-400">
-              Feed
+              FAQ
             </button>
 
           </div>
 
         </div>
 
-        {/* OVERVIEW */}
+        
         <div className="px-5 md:px-10 py-6 max-w-[700px] space-y-4">
 
           <h2 className="text-lg font-semibold">
-            ⚡ Challenge Overview
+            ⚡ About GlitchFame
           </h2>
 
           <p className="text-gray-400 text-sm md:text-base">
-            We are looking for the most evocative night photography from
-            Seoul. Whether it’s neon lights of Gangnam or quiet alleys of
-            Bukchon Hanok Village, capture the essence of the Sleepless City.
+            Our mission is simple: empower users to participate in fair voting competitions and be rewarded for their engagement. 
+            Every vote counts, and every prize is earned legitimately. Whether you're competing or just exploring, you can trust 
+            that our platform is built for integrity and transparency.
           </p>
-
-          {/* RULE CARDS */}
 
           <div className="space-y-3">
 
             <div className="bg-[#0f0f0f] border border-gray-800 p-4 rounded-lg">
               <p className="text-sm font-semibold">
-                Original Work Only
+                Transparent Voting
               </p>
               <p className="text-xs text-gray-400">
-                Submissions must be your own photography.
+                Every vote is recorded fairly, with results visible to all participants.
               </p>
             </div>
 
             <div className="bg-[#0f0f0f] border border-gray-800 p-4 rounded-lg">
               <p className="text-sm font-semibold">
-                Resolution
+                Rewarding Experience
               </p>
               <p className="text-xs text-gray-400">
-                Minimum 3000px on the longest side.
+                Win prizes for your active participation in competitions and challenges.
+              </p>
+            </div>
+
+            <div className="bg-[#0f0f0f] border border-gray-800 p-4 rounded-lg">
+              <p className="text-sm font-semibold">
+                Anti-Cheating Measures
+              </p>
+              <p className="text-xs text-gray-400">
+                Advanced mechanisms ensure no one can manipulate votes or results.
               </p>
             </div>
 
@@ -158,4 +167,4 @@ const ChallengeDetail = () => {
   );
 };
 
-export default ChallengeDetail;
+export default ChallangeDetails;

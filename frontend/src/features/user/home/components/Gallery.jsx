@@ -22,7 +22,8 @@ const Gallery = () => {
   if (isError) {
     return (
       <div className="flex flex-col items-center mt-22 justify-center mb-22 w-full sm:mt-20 text-center">
-  <div className="sm:bg-gray-800 border border-gray-700 rounded-xl p-8 flex flex-col items-center shadow-lg animate-pulse">
+  <div className="sm:bg-gray-800 border px-6
+   border-gray-700 rounded-xl p-8 flex flex-col items-center shadow-lg animate-pulse">
     <span className="text-4xl mb-4">🏆</span>
     <p className="text-gray-300 text-lg font-semibold">
       Looks like there is no winner for now
