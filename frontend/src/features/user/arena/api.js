@@ -1,7 +1,7 @@
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 
-const token = localStorage.getItem("token")
+const token = localStorage.getItem("token");
  
 
 export const loginUser = async (formData) => {
