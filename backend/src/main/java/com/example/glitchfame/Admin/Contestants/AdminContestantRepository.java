@@ -267,4 +267,49 @@ Page<ContestantByName> searchContestants(
         Pageable pageable
 );
 
+
+
+@Query(value = """
+    SELECT
+        p.id AS id,
+        p.name AS name,
+        p.photo_url AS photoUrl,
+        s.name AS seasonName,
+
+        COALESCE(COUNT(DISTINCT v.id),0)
+        + COALESCE(av.admin_vote_count,0) AS totalVotes
+
+    FROM participations p
+    JOIN seasons s ON p.season_id = s.id
+    LEFT JOIN votes v ON v.contestant_id = p.id
+    LEFT JOIN admin_votes av ON av.participation_id = p.id
+
+    WHERE
+        p.status = 'APPROVED'
+        AND NOW() BETWEEN s.registration_start_date AND s.voting_end_date
+        AND (:name IS NULL OR p.name ILIKE '%' || :name || '%')
+
+    GROUP BY
+        p.id,
+        p.name,
+        p.photo_url,
+        s.name,
+        av.admin_vote_count
+
+    ORDER BY totalVotes DESC
+""",
+countQuery = """
+    SELECT COUNT(*)
+    FROM participations p
+    JOIN seasons s ON p.season_id = s.id
+    WHERE
+        p.status = 'APPROVED'
+        AND NOW() BETWEEN s.registration_start_date AND s.voting_end_date
+        AND (:name IS NULL OR p.name ILIKE '%' || :name || '%')
+""",
+nativeQuery = true)
+Page<SearchByNameDTO> searchLiveApprovedContestants(
+        @Param("name") String name,
+        Pageable pageable
+);
 }

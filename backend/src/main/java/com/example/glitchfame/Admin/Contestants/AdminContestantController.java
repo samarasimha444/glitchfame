@@ -69,4 +69,18 @@ public class AdminContestantController {
     public ResponseEntity<String> delete(@PathVariable Long id) {
         return ResponseEntity.ok(service.delete(id));
     }
+
+
+
+    // SEARCH LIVE APPROVED CONTESTANTS BY NAME
+@GetMapping("/live/search")
+public ResponseEntity<Page<SearchByNameDTO>> searchLiveApprovedContestants(
+        @RequestParam(required = false) String name,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "20") int size) {
+
+    return ResponseEntity.ok(
+            service.searchLiveApprovedContestants(name, page, size)
+    );
+}
 }

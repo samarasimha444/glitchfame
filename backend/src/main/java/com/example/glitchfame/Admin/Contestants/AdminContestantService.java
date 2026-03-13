@@ -158,4 +158,23 @@ public String updateStatus(Long id, String action) {
 
         return "Participation deleted successfully";
     }
+
+
+
+
+    //search for live and approved contestants by name
+    
+public Page<SearchByNameDTO> searchLiveApprovedContestants(
+        String name,
+        int page,
+        int size) {
+
+    // limit page size to avoid heavy queries
+    if (size > 50) size = 50;
+
+    return repository.searchLiveApprovedContestants(
+            name,
+            PageRequest.of(page, size)
+    );
+}
 }
