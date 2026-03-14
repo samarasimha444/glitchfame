@@ -39,7 +39,7 @@ export const buildLeaderboard = (users) => {
 export const getVoteButtonProps = (status) => {
   let text = "VOTE";
   let className =
-    "bg-gradient-to-r from-purple-500 to-pink-500 text-black hover:opacity-90";
+    "bg-[#BE5EED] text-black hover:opacity-90";
 
   if (status === "loading") {
     text = "Voting...";

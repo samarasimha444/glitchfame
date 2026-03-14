@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {  Zap } from "lucide-react";
 
-const MobileMenu = ({ isOpen, setIsOpen, menuItems, actionButton,setOpenModal }) => {
+const MobileMenu = ({ isOpen, setIsOpen, menuItems, actionButton,setOpenModal,handleLogout }) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -23,7 +23,7 @@ const MobileMenu = ({ isOpen, setIsOpen, menuItems, actionButton,setOpenModal })
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed top-0 left-0 w-62.5 h-full bg-black z-50 flex flex-col p-8 gap-6 shadow-lg"
+            className="fixed top-0 left-0 w-62.5 h-full bg-[#1E2229] z-50 flex flex-col p-8 gap-6 shadow-lg"
           >
             
             <div className="flex items-center gap-3 mb-6">
@@ -77,8 +77,9 @@ const MobileMenu = ({ isOpen, setIsOpen, menuItems, actionButton,setOpenModal })
               >
                 Reset Password
               </button>
+
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={handleLogout}
                 className="w-full text-center border text-xs border-red-500 text-red-500 px-4 py-2 rounded-md hover:bg-purple-500 hover:text-white transition"
               >
                 Logout

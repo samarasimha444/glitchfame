@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Zap, Award, Info, Logs } from "lucide-react";
 import MobileMenu from "../components/MobileSideBar";
 import { Settings } from "lucide-react";
 import ResetModal from "../components/ResetModel";
 
 const Navbar = () => {
+  const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
     const [openModal, setOpenModal] = useState(false);
@@ -21,10 +22,16 @@ const Navbar = () => {
     path: "/season",
   };
 
+
+ const handleLogout = () => {
+  localStorage.removeItem("token"); 
+  navigate("/auth"); 
+};
+
   return (
-    <nav className="bg-black z-50 md:bg-[#181B20] px-8 py-5 flex items-center justify-between relative">
+    <nav className=" z-50 md:bg-[#181B20] px-8 py-5 flex items-center justify-between relative">
       <div className="flex items-center space-x-2">
-        <div className="mx-auto w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center shadow-[0_0_40px_rgba(168,85,247,0.5)]">
+        <div className="mx-auto w-10 h-10 rounded-xl bg-gradient-to-br bg-pu flex items-center bg-[#BE5EED] justify-center shadow-[0_0_40px_rgba(168,85,247,0.5)]">
           <Zap className="text-white" size={26} />
         </div>
         <span className="font-bold px-2 sm:flex text-[#BE5EED] text-[20px]">
@@ -84,6 +91,7 @@ const Navbar = () => {
               <button
                 className="px-4 py-2 text-white hover:bg-purple-500 transition"
                 onClick={() => {
+                  handleLogout()
                   setAvatarOpen(false);
                   console.log("Logout clicked");
                 }}
@@ -117,6 +125,7 @@ const Navbar = () => {
         setIsOpen={setIsOpen}
         menuItems={menuItems}
         actionButton={actionButton}
+        handleLogout={handleLogout}
       />
     </nav>
   );

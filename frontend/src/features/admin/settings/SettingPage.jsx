@@ -8,8 +8,11 @@ import { useDeleteSeason, useFetchSeasonDetails } from "./hooks";
 import { useFetchSeasons } from "../dashboard/hooks";
 import { dashCards } from "../../../constants/admin";
 import NeonLoader from "../../../components/Loader";
+import FunctionModel from "./components/FunctionModel";
 
 const AdminSettings = () => {
+  
+ const [modalType, setModalType] = useState(null);
   
   const { data: seasons = [], isLoading: isSeasonsLoading } = useFetchSeasons();
   console.log(seasons);
@@ -29,17 +32,20 @@ const AdminSettings = () => {
   console.log("Seasons:", seasons);
   console.log("Selected Season Data:", seasonData);
 
-  const handleDelete = () => {
-    deleteSeason(selectedSeasonId);
-  };
+ const handleDelete = () => {
+  setModalType("DELETE_SEASON");
+};
 
- const handleCloud = ()=>{
-  
+const handleCloud = () => {
+  setModalType("DELETE_ASSETS");
+};
 
-  }
+const handleRemove = () => {
+  setModalType("REMOVE_USERS");
+};
   const loading = isPending || isSeasonsLoading
 
-  const handleRemove = () => {};
+
 
  if (loading) {
   return <NeonLoader />;
@@ -47,6 +53,29 @@ const AdminSettings = () => {
 
   return (
     <div className="mt-6 w-full flex flex-col gap-6">
+   
+     {modalType && (
+  <FunctionModel
+    type={modalType}
+    onCancel={() => setModalType(null)}
+    onConfirm={() => {
+      if (modalType === "DELETE_SEASON") {
+        deleteSeason(selectedSeasonId);
+      }
+
+      if (modalType === "DELETE_ASSETS") {
+        console.log("Delete cloud assets");
+      }
+
+      if (modalType === "REMOVE_USERS") {
+        console.log("Remove users and votes");
+      }
+
+      setModalType(null);
+    }}
+  />
+)}
+
       <section className="w-full">
         <select
           value={selectedSeasonId}

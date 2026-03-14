@@ -28,13 +28,13 @@ const Home = () => {
   const arenaLoading = seasonsLoading || contestantsLoading;
 
   return (
-    <div className="w-full px-1 flex-col max-w-screen m-auto bg-[#000000] md:bg-[#1E2229] flex items-center justify-center bg-fixed bg-cover bg-center">
+    <div className="w-full px-1 flex-col max-w-screen m-auto bg-[#1E2229] flex items-center justify-center bg-fixed bg-cover bg-center">
       
       <FeaturedCarousel season={season} />
 
       <StickyHeader liveSeason={liveSeason} season={season} />
 
-      <section className="w-full  space-y-4 flex flex-col items-center mt-6 bg-black md:bg-[#181B20]">
+      <section className="w-full  space-y-4 flex flex-col items-center mt-6 :bg-[#181B20]">
         
         <ArenaCard
           contestantsData={contestantsData}

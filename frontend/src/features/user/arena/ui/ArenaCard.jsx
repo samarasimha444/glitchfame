@@ -18,13 +18,17 @@ const ContestantCard = React.memo(({ user, toggleVote, votingStatus }) => {
       onClick={() => navigate(`/details/${user.id}`)}
       className="relative w-full sm:max-w-77.5 h-[35dvh] sm:h-97 rounded-xl overflow-hidden border border-gray-800 hover:border-purple-500 transition"
     >
-      <img
-        src={`${user.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=500`}
-        alt={user.name}
-        loading="lazy"
-        decoding="async"
-        className="w-full  h-full object-cover"
-      />
+     <img
+  src={`${user?.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=500`}
+  alt={user?.name}
+  loading="lazy"
+  decoding="async"
+  onError={(e) => {
+    e.target.src =
+      "https://images.pexels.com/photos/29179706/pexels-photo-29179706.jpeg?auto=compress&cs=tinysrgb&w=500";
+  }}
+  className="w-full h-full object-cover"
+/>
 
       <div className="absolute cursor-grab inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
 
