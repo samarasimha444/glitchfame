@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {  Zap } from "lucide-react";
 
-const MobileMenu = ({ isOpen, setIsOpen, menuItems, actionButton }) => {
+const MobileMenu = ({ isOpen, setIsOpen, menuItems, actionButton,setOpenModal }) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -67,6 +67,16 @@ const MobileMenu = ({ isOpen, setIsOpen, menuItems, actionButton }) => {
                   {actionButton.label}
                 </button>
               </Link>
+
+               <button
+              onClick={() => {
+    setIsOpen(false);
+    setOpenModal(true);
+  }}
+                className="w-full text-center border border-red-500 text-red-500 px-4 py-2 rounded-md hover:bg-purple-500 hover:text-white transition"
+              >
+                Reset Password
+              </button>
               <button
                 onClick={() => setIsOpen(false)}
                 className="w-full text-center border border-red-500 text-red-500 px-4 py-2 rounded-md hover:bg-purple-500 hover:text-white transition"

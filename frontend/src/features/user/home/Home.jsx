@@ -34,7 +34,7 @@ const Home = () => {
 
       <StickyHeader liveSeason={liveSeason} season={season} />
 
-      <section className="w-full space-y-4 flex flex-col items-center mt-6 bg-black md:bg-[#181B20]">
+      <section className="w-full  space-y-4 flex flex-col items-center mt-6 bg-black md:bg-[#181B20]">
         
         <ArenaCard
           contestantsData={contestantsData}

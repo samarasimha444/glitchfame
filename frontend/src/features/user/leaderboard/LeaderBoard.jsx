@@ -51,7 +51,7 @@ const Leaderboard = () => {
 
     <div className="w-full min-h-screen bg-black sm:bg-[#181B20] flex justify-center py-10">
     
-      <div className="w-full max-w-6xl bg-black text-white rounded-xl shadow-2xl overflow-hidden">
+      <div className="w-full max-w-6xl bg-black sm:bg-[#181B20]  text-white rounded-xl shadow-2xl overflow-hidden">
 
         <div className="text-center text-xs py-2 text-gray-500 border-b border-gray-800">
            {connected ? "🟢 Live" : "🔴 Offline"}

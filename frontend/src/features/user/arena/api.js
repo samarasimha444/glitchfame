@@ -94,23 +94,23 @@ export const getContestantDetails = async (id) => {
 
 
 export const toggleVote = async (participationId) => {
-   const token = localStorage.getItem("token")
-  console.log()
+  const token = localStorage.getItem("token");
+
   const response = await fetch(`${BASE_URL}/votes/toggle/${participationId}`, {
-    method: "POST", 
+    method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
   });
 
-  console.log(response)
   if (!response.ok) {
-    throw new Error("Failed to toggle vote");
+    throw new Error("Vote failed");
   }
 
-  return response.json();
+  return response.json(); 
 };
+
 
 export const getLeaderboard = async () => {
    const token = localStorage.getItem("token")

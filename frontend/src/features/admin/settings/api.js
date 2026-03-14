@@ -121,6 +121,7 @@ export const updatePrizePool = async ({ id, prizeMoney }) => {
 
 
 export const participationLock = async ({ id}) => {
+   const token = localStorage.getItem("token")
   const res = await fetch(
     `${BASE_URL}/admin/seasons/${id}/participation-lock`,
     {
@@ -139,20 +140,24 @@ export const participationLock = async ({ id}) => {
 };
 
 
-export const updateRegistrationDates = async ({ id, start, end }) => {
+export const updateSeasonDates = async ({ id, type, start, end}) => {
+
+ const token = localStorage.getItem("token")
+
   const response = await fetch(
-    `${BASE_URL}/admin/seasons/${id}/registration-dates?start=${start}&end=${end}`,
+    `${BASE_URL}/admin/seasons/${id}/${type}-dates?start=${start}&end=${end}`,
     {
-      method: "POST",
+      method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }
   );
 
+  console.log(response)
   if (!response.ok) {
-    throw new Error("Failed to update registration dates");
+    throw new Error(`Failed to update ${type} dates`);
   }
 
-  return response.json();
+  return response.text();
 };

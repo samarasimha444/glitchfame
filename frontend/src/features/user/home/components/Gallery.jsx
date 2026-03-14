@@ -39,7 +39,7 @@ const Gallery = () => {
   return (
     <>
      
-      <div className="w-full sm:hidden min-h-screen mt-12 bg-gradient-to-b text-white flex justify-center">
+      <div className="w-full sm:hidden sm:min-h-screen mt-12 bg-gradient-to-b text-white flex justify-center">
         <div className="w-full max-w-[420px] px-4 py-8 space-y-6">
           <div>
             <h1 className="text-3xl font-bold">

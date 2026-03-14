@@ -7,18 +7,18 @@ import { Plus } from "lucide-react";
 import { useDeleteSeason, useFetchSeasonDetails } from "./hooks";
 import { useFetchSeasons } from "../dashboard/hooks";
 import { dashCards } from "../../../constants/admin";
+import NeonLoader from "../../../components/Loader";
 
 const AdminSettings = () => {
-
   
   const { data: seasons = [], isLoading: isSeasonsLoading } = useFetchSeasons();
   console.log(seasons);
 
-  const { mutate: deleteSeason } = useDeleteSeason();
+  const { mutate: deleteSeason,isPending } = useDeleteSeason();
 
   const [selectedSeasonId, setSelectedSeasonId] = useState();
 
-  console.log(selectedSeasonId);
+  
 
   const {
     data: seasonData,
@@ -33,7 +33,13 @@ const AdminSettings = () => {
     deleteSeason(selectedSeasonId);
   };
 
+  const loading = isPending || isSeasonsLoading
+
   const handleRemove = () => {};
+
+ if (loading) {
+  return <NeonLoader />;
+}
 
   return (
     <div className="mt-6 w-full flex flex-col gap-6">
@@ -63,10 +69,11 @@ const AdminSettings = () => {
             className="max-w-4xl hidden sm:flex"
           />
 
+
           {isSeasonLoading ?
               <div className="w-full h-[50vh] bg-[#171A1F] border border-gray-800 rounded-xl animate-pulse"></div>
           : isSeasonError ?
-            <p className="text-red-500 mt-4">Failed to load season data</p>
+            <p className="text-red-500 mt-4">Failed to load season data </p>
           : <SeasonSummary
               title="Season Summary"
               subtitle="Overview of registration and performance metrics"
@@ -82,6 +89,7 @@ const AdminSettings = () => {
             seasonLock={seasonData?.seasonLock}
             prizeMoney={seasonData?.prizeMoney}
           />
+           
 
           <div className="flex flex-col px-6 py-4 rounded-lg max-w-xs gap-4 mt-6 border border-gray-800 bg-[#181B20]">
             <h5 className="w-full text-sm font-semibold text-red-500">

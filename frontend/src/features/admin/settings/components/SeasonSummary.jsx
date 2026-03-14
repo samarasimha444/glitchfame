@@ -1,17 +1,15 @@
-import React, { useState } from "react";
+import React, { lazy, Suspense, useState } from "react";
 import { MoreVertical } from "lucide-react";
 import { useEndSeasonNow, useParticipationLock } from "../hooks";
-import Model from "./Model";
 import NeonLoader from "../../../../components/Loader";
+import { menuItems } from "../../../../constants/admin";
 
-const menuItems = [
-  { id: 1, label: "Participation Lock", action: "lock", color: "text-gray-300" },
-  { id: 2, label: "End Now", action: "end", color: "text-red-400" },
-  { id: 3, label: "Modify Registration", action: "registration", color: "text-gray-300" },
-  // { id: 4, label: "Modify Voting", action: "voting", color: "text-gray-300" },
-];
+const Model = lazy(() => import("./Model"));
+
+
 
 const SeasonSummary = ({ title, subtitle, data }) => {
+
   const [showMenu, setShowMenu] = useState(false);
   const [selected, setSelected] = useState("");
   const [active, setActive] = useState(false);
@@ -19,25 +17,27 @@ const SeasonSummary = ({ title, subtitle, data }) => {
   const seasonId = data?.id;
 
   const { mutate: endSeason, isPending } = useEndSeasonNow();
-  const { mutate: lockParticipation, isPending: locking } = useParticipationLock();
+
+  const { mutate: lockParticipation, isPending: locking } =
+    useParticipationLock();
 
   const loading = isPending || locking;
 
   const formattedData =
-    data
-      ? Object.entries(data).map(([key, value]) => {
-          let formattedValue = value;
+    data ?
+      Object.entries(data).map(([key, value]) => {
+        let formattedValue = value;
 
-          if (key.toLowerCase().includes("date") && typeof value === "string") {
-            formattedValue = new Date(value).toLocaleString();
-          }
+        if (key.toLowerCase().includes("date") && typeof value === "string") {
+          formattedValue = new Date(value).toLocaleString();
+        }
 
-          return {
-            label: key.replace(/([A-Z])/g, " $1"),
-            value: String(formattedValue),
-          };
-        })
-      : [];
+        return {
+          label: key.replace(/([A-Z])/g, " $1"),
+          value: String(formattedValue),
+        };
+      })
+    : [];
 
   const handleClick = (item) => {
     if (item.action === "lock") {
@@ -52,6 +52,10 @@ const SeasonSummary = ({ title, subtitle, data }) => {
     setShowMenu(false);
   };
 
+  const preloadModal = () => {
+    import("./Model");
+  };
+
   if (loading) {
     return (
       <section className="w-full h-full flex items-center justify-center">
@@ -62,17 +66,16 @@ const SeasonSummary = ({ title, subtitle, data }) => {
 
   return (
     <div className="w-full max-w-200 bg-[#0f1115] flex">
-
       {active && (
-        <Model
-          type={selected}
-          seasonId={seasonId}
-          onClose={() => setActive(false)}
-        />
+        <Suspense fallback={<NeonLoader />}>
+          <Model
+            type={selected}
+            seasonId={seasonId}
+            onClose={() => setActive(false)}
+          />
+        </Suspense>
       )}
-
       <div className="w-full max-w-195 border border-gray-900 relative">
-
         <div className="flex items-start justify-between p-6">
           <div>
             <h2 className="text-white text-xl font-semibold">{title}</h2>
@@ -81,6 +84,7 @@ const SeasonSummary = ({ title, subtitle, data }) => {
 
           <div className="relative">
             <button
+              onMouseEnter={preloadModal}
               onClick={() => setShowMenu((prev) => !prev)}
               className="text-gray-400 hover:text-white transition"
             >
@@ -88,7 +92,7 @@ const SeasonSummary = ({ title, subtitle, data }) => {
             </button>
 
             {showMenu && (
-              <div className="absolute right-1 mt-2 w-44 bg-[#171A1F] border border-gray-800 rounded-lg shadow-lg z-50">
+              <div className="absolute right-1 mt-2 w-44 bg-[#171A1F] border  border-gray-800 rounded-lg shadow-lg z-50">
                 {menuItems.map((item) => (
                   <button
                     key={item.id}
@@ -105,18 +109,21 @@ const SeasonSummary = ({ title, subtitle, data }) => {
 
         <div className="p-6">
           <div className="grid grid-cols-2 gap-y-6 gap-x-12 text-sm">
-            {formattedData?.map((item, index) => (
-              <div
-                key={index}
-                className="flex text-xs sm:text-base justify-between"
-              >
-                <span className="text-gray-400">{item.label}</span>
-                <span className="text-white font-medium">{item.value}</span>
-              </div>
-            ))}
+            {formattedData?.map((item, index) => {
+              if (item.label.toLowerCase().includes("photo url")) return null;
+
+              return (
+                <div
+                  key={index}
+                  className="flex text-xs sm:text-[14px] justify-between"
+                >
+                  <span className="text-gray-400">{item.label}</span>
+                  <span className="text-white font-medium">{item.value}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
-
       </div>
     </div>
   );

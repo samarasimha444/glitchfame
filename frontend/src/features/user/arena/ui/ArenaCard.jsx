@@ -7,10 +7,11 @@ import toast from "react-hot-toast";
 import Error from "../../../../components/Error";
 
 
-const ContestantCard = React.memo(({ user, toggleVote, votingStatus, voteCount, navigate }) => {
+const ContestantCard = React.memo(({ user, toggleVote, votingStatus }) => {
+   const navigate = useNavigate();
   const status = votingStatus[user.id];
-  const votes = voteCount[user.id] || 0;
-  const { text, className, disabled } = getVoteButtonProps(status, votes);
+  const { text, className, disabled } = getVoteButtonProps(status);
+
 
   return (
     <article
@@ -22,7 +23,7 @@ const ContestantCard = React.memo(({ user, toggleVote, votingStatus, voteCount, 
         alt={user.name}
         loading="lazy"
         decoding="async"
-        className="w-full h-full object-cover"
+        className="w-full  h-full object-cover"
       />
 
       <div className="absolute cursor-grab inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
@@ -30,7 +31,7 @@ const ContestantCard = React.memo(({ user, toggleVote, votingStatus, voteCount, 
       <div className="absolute bottom-0 left-0 w-full p-4">
         <h3 className="text-white font-semibold text-lg">{user.name}</h3>
 
-        <button
+      <button
           onClick={(e) => {
             e.stopPropagation();
             toggleVote(user.id);
@@ -48,85 +49,81 @@ const ContestantCard = React.memo(({ user, toggleVote, votingStatus, voteCount, 
 
 const ArenaCard = ({ contestantsData = { content: [] }, isLoading ,isError}) => {
   
+  console.log()
+
   console.log(isLoading)
-  const navigate = useNavigate();
+ const navigate = useNavigate();
   const toggleVoteMutation = useToggleVote();
 
   const [votingStatus, setVotingStatus] = useState({});
-  const [voteCount, setVoteCount] = useState({});
 
- 
-  const toggleVote = useCallback(
-    (userId) => {
-      if ((voteCount[userId] || 0) >= 5) return;
+  const toggleVote = useCallback((userId) => {
 
-      setVotingStatus((prev) => ({ ...prev, [userId]: "loading" }));
+    setVotingStatus((prev) => ({
+      ...prev,
+      [userId]: "loading",
+    }));
 
-      toggleVoteMutation.mutate(userId, {
-        onSuccess: () => {
-          setVoteCount((prev) => ({
-            ...prev,
-            [userId]: prev[userId] ? prev[userId] + 1 : 1,
-          }));
-          setVotingStatus((prev) => ({ ...prev, [userId]: "success" }));
-           toast.success("Vote submitted successfully ");
-        },
-        onError: () => {
-          setVotingStatus((prev) => ({ ...prev, [userId]: "error" }));
-           toast.error("Failed to vote. Try again.");
+    toggleVoteMutation.mutate(userId, {
+      onSuccess: (data) => {
 
-        },
-      });
-    },
-    [voteCount, toggleVoteMutation]
-  );
+        setVotingStatus((prev) => ({
+          ...prev,
+          [userId]: data.hasVoted ? "voted" : undefined,
+        }));
 
-  const contestants = useMemo(() => contestantsData.content || [], [contestantsData]);
+      
+      },
+      onError: () => {
 
+        setVotingStatus((prev) => ({
+          ...prev,
+          [userId]: undefined,
+        }));
+        toast.error("Failed to vote. Try again.");
+      },
+    });
 
+  }, [toggleVoteMutation]);
 
- return (
-<section className="flex flex-col px-1 sm:px-6 md:pb-20">
-  <div className="max-w-screen w-full mt-4 mx-auto">
+  const contestants = contestantsData.content || [];
 
-    <section className="flex justify-between">
-      <h2 className="text-white text-xl font-semibold mb-8">
-        Current Participants
-      </h2>
-    </section>
+  return (
+    <section className="flex flex-col w-full px-1 sm:px-6 md:pb-20">
+      <div className="w-full mt-4 mx-auto">
 
-    {(isError || (!isLoading && contestants.length === 0)) ? (
-      <Error />
-    ) : (
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-8">
+        <h2 className="text-white text-xl mt-2 font-semibold mb-8">
+          Current Participants
+        </h2>
 
-        {isLoading &&
-          Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="flex  w-full justify-center">
-              <ShimmerCard />
-            </div>
-          ))}
+        {(isError || (!isLoading && contestants.length === 0)) ? (
+          <Error />
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-8">
 
-       
-        {!isLoading &&
-          contestants.length > 0 &&
-          contestants.map((user) => (
-            <ContestantCard
-              key={user.id}
-              user={user}
-              toggleVote={toggleVote}
-              votingStatus={votingStatus}
-              voteCount={voteCount}
-              navigate={navigate}
-            />
-          ))}
+            {isLoading &&
+              Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="flex w-full justify-center">
+                  <ShimmerCard />
+                </div>
+              ))}
+
+            {!isLoading &&
+              contestants.map((user) => (
+                <ContestantCard
+                  key={user.id}
+                  user={user}
+                  toggleVote={toggleVote}
+                  votingStatus={votingStatus}
+                />
+              ))}
+
+          </div>
+        )}
 
       </div>
-    )}
-
-  </div>
-</section>
-);
+    </section>
+  );
 };
 
 export default ArenaCard;
