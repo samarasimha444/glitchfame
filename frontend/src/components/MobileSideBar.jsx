@@ -61,7 +61,7 @@ const MobileMenu = ({ isOpen, setIsOpen, menuItems, actionButton,setOpenModal })
             <div className="border-t border-gray-800 my-4" />
 
             
-            <div className="flex flex-col gap-3 mt-auto">
+            <div className="flex flex-col gap-3 text-xs mt-auto">
               <Link to={actionButton.path} onClick={() => setIsOpen(false)}>
                 <button className="w-full text-center border border-purple-500 text-purple-500 px-4 py-2 rounded-md hover:bg-purple-500 hover:text-white transition">
                   {actionButton.label}
@@ -70,16 +70,16 @@ const MobileMenu = ({ isOpen, setIsOpen, menuItems, actionButton,setOpenModal })
 
                <button
               onClick={() => {
-    setIsOpen(false);
+       setIsOpen(false);
     setOpenModal(true);
   }}
-                className="w-full text-center border border-red-500 text-red-500 px-4 py-2 rounded-md hover:bg-purple-500 hover:text-white transition"
+                className="w-full text-center border text-xs border-red-500 text-red-500 px-4 py-2 rounded-md hover:bg-purple-500 hover:text-white transition"
               >
                 Reset Password
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="w-full text-center border border-red-500 text-red-500 px-4 py-2 rounded-md hover:bg-purple-500 hover:text-white transition"
+                className="w-full text-center border text-xs border-red-500 text-red-500 px-4 py-2 rounded-md hover:bg-purple-500 hover:text-white transition"
               >
                 Logout
               </button>

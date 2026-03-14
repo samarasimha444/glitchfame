@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { formFields } from "../../../../constants/userdata";
 import { useSubmitEntry } from "../../home/hooks";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Form = ({ seasonId, image }) => {
+  const navigte = useNavigate()
   const [formData, setFormData] = useState({
     name: "",
     dateOfBirth: "", 
@@ -39,7 +41,6 @@ const handleSubmit = (e) => {
 
   submitEntry(data, {
     onSuccess: () => {
-      toast.success("Arena entry submitted successfully 🚀");
 
       setFormData({
         name: "",
@@ -47,7 +48,11 @@ const handleSubmit = (e) => {
         location: "",
         bio: "",
       });
+
+      navigte('/home')
     },
+
+    
     onError: (err) => {
       toast.error(err?.message || "Submission failed");
     },

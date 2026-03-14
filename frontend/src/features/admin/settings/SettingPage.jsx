@@ -33,6 +33,10 @@ const AdminSettings = () => {
     deleteSeason(selectedSeasonId);
   };
 
+ const handleCloud = ()=>{
+  
+
+  }
   const loading = isPending || isSeasonsLoading
 
   const handleRemove = () => {};
@@ -98,15 +102,24 @@ const AdminSettings = () => {
 
             <button
               onClick={handleDelete}
-              className="flex items-center gap-2 px-5 py-2 rounded-lg border border-red-600 text-red-400 hover:bg-red-600 hover:text-white transition text-sm font-medium"
+              className="flex items-center gap-2 px-5 cursor-pointer py-2 rounded-lg border border-red-600 text-red-400 hover:bg-red-600 hover:text-white transition text-sm font-medium"
             >
               <Plus size={16} />
               Delete Current Season
             </button>
 
+             <button
+              onClick={handleCloud}
+              className="flex items-center gap-2 cursor-pointer px-5 py-2 rounded-lg border border-red-600 text-red-400 hover:bg-red-600 hover:text-white transition text-sm font-medium"
+            >
+              <Plus size={16} />
+              Delete Assets (Cloudinary)
+            </button>
+
+
             <button
               onClick={handleRemove}
-              className="flex items-center gap-2 px-5 py-2 rounded-lg border border-purple-600 text-purple-400 hover:bg-purple-600 hover:text-white transition text-sm font-medium"
+              className="flex items-center gap-2 cursor-pointer px-5 py-2 rounded-lg border border-purple-600 text-purple-400 hover:bg-purple-600 hover:text-white transition text-sm font-medium"
             >
               <Plus size={16} />
               Remove All Votes & Users
