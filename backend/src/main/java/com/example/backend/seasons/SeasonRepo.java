@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import com.example.backend.seasons.dto.SeasonDetails;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 public interface SeasonRepo extends JpaRepository<Season, UUID> {
@@ -16,7 +17,10 @@ public interface SeasonRepo extends JpaRepository<Season, UUID> {
     boolean existsByName(String name);
 
 
-
+List<Season> findByVotingStartDateBeforeAndVotingEndDateAfter(
+            Instant now1,
+            Instant now2
+    );
 
     //get seasons ALL/LIVE/UPCOMNG/PAST
     @Query("""

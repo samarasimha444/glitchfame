@@ -1,11 +1,19 @@
 package com.example.backend.leaderboard;
 
+import com.example.backend.leaderboard.dto.LeaderboardDTO;
+import com.example.backend.participation.Participation;
+import com.example.backend.participation.ParticipationRepo;
+import com.example.backend.seasons.Season;
+import com.example.backend.seasons.SeasonRepo;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.UUID;
@@ -17,6 +25,9 @@ public class LeaderboardService {
     private final StringRedisTemplate redis;
     private final SimpMessagingTemplate messagingTemplate;
 
+    private final ParticipationRepo participationRepo;
+    private final SeasonRepo seasonRepo;
+
     private static final String SEASONS_KEY = "leaderboard:seasons";
 
     /* update leaderboard when vote changes */
@@ -25,67 +36,52 @@ public class LeaderboardService {
 
         String leaderboardKey = "leaderboard:season:" + seasonId;
 
-        /* register season for global leaderboard lookup */
+        /* register season */
         redis.opsForSet().add(SEASONS_KEY, seasonId.toString());
 
-        Set<ZSetOperations.TypedTuple<String>> oldTop3 = getTop3(seasonId);
-
+        /* update score in redis */
         redis.opsForZSet().incrementScore(
                 leaderboardKey,
                 participationId.toString(),
                 delta
         );
 
-        Set<ZSetOperations.TypedTuple<String>> newTop3 = getTop3(seasonId);
+        /* fetch updated top 3 */
+        Set<ZSetOperations.TypedTuple<String>> newTop3 = getTop3Raw(seasonId);
 
-        if (!extractIds(oldTop3).equals(extractIds(newTop3))) {
-            broadcastLeaderboard(seasonId, newTop3);
-        }
+        /* convert to DTO */
+        List<LeaderboardDTO> leaderboard = buildLeaderboardDTO(seasonId, newTop3);
+
+        /* broadcast every vote */
+        messagingTemplate.convertAndSend(
+                "/topic/leaderboard/" + seasonId,
+                leaderboard
+        );
     }
 
-    /* get leaderboard for a season */
+    /* get leaderboard for one season */
 
-    public Set<ZSetOperations.TypedTuple<String>> getTop3(UUID seasonId) {
+    public List<LeaderboardDTO> getTop3(UUID seasonId) {
 
-        String leaderboardKey = "leaderboard:season:" + seasonId;
+        Set<ZSetOperations.TypedTuple<String>> redisData = getTop3Raw(seasonId);
 
-        return redis.opsForZSet()
-                .reverseRangeWithScores(
-                        leaderboardKey,
-                        0,
-                        2
-                );
+        return buildLeaderboardDTO(seasonId, redisData);
     }
 
-    /* get full leaderboard (optional if needed later) */
+    /* get leaders for all LIVE seasons */
 
-    public Set<ZSetOperations.TypedTuple<String>> getFullLeaderboard(UUID seasonId) {
+    public Map<UUID, List<LeaderboardDTO>> getLiveSeasonLeaderboards() {
 
-        String leaderboardKey = "leaderboard:season:" + seasonId;
+        Instant now = Instant.now();
 
-        return redis.opsForZSet()
-                .reverseRangeWithScores(
-                        leaderboardKey,
-                        0,
-                        -1
-                );
-    }
+        List<Season> liveSeasons =
+                seasonRepo.findByVotingStartDateBeforeAndVotingEndDateAfter(now, now);
 
-    /* get all season leaderboards */
+        Map<UUID, List<LeaderboardDTO>> result = new HashMap<>();
 
-    public Map<UUID, Set<ZSetOperations.TypedTuple<String>>> getAllLeaderboards() {
+        for (Season season : liveSeasons) {
 
-        Set<String> seasons = redis.opsForSet().members(SEASONS_KEY);
-
-        Map<UUID, Set<ZSetOperations.TypedTuple<String>>> result = new HashMap<>();
-
-        if (seasons == null) {
-            return result;
-        }
-
-        for (String season : seasons) {
-
-            UUID seasonId = UUID.fromString(season);
+            UUID seasonId = season.getSeasonId();
 
             result.put(
                     seasonId,
@@ -96,27 +92,67 @@ public class LeaderboardService {
         return result;
     }
 
-    /* websocket broadcast */
+    /* redis query */
 
-    private void broadcastLeaderboard(UUID seasonId,
-                                      Set<ZSetOperations.TypedTuple<String>> top3) {
+    private Set<ZSetOperations.TypedTuple<String>> getTop3Raw(UUID seasonId) {
 
-        messagingTemplate.convertAndSend(
-                "/topic/leaderboard/" + seasonId,
-                top3
-        );
+        String leaderboardKey = "leaderboard:season:" + seasonId;
+
+        return redis.opsForZSet()
+                .reverseRangeWithScores(leaderboardKey, 0, 2);
     }
 
-  
-  
-    private List<String> extractIds(Set<ZSetOperations.TypedTuple<String>> set) {
+    /* convert redis result to DTO */
 
-        if (set == null) {
+    private List<LeaderboardDTO> buildLeaderboardDTO(
+            UUID seasonId,
+            Set<ZSetOperations.TypedTuple<String>> redisData
+    ) {
+
+        if (redisData == null || redisData.isEmpty()) {
             return Collections.emptyList();
         }
 
-        return set.stream()
-                .map(ZSetOperations.TypedTuple::getValue)
-                .collect(Collectors.toList());
+        Season season = seasonRepo.findById(seasonId)
+                .orElseThrow();
+
+        List<UUID> participationIds = redisData.stream()
+                .map(x -> UUID.fromString(x.getValue()))
+                .toList();
+
+        List<Participation> participants =
+                participationRepo.findAllById(participationIds);
+
+        Map<UUID, Participation> participationMap =
+                participants.stream()
+                        .collect(Collectors.toMap(
+                                Participation::getParticipationId,
+                                p -> p
+                        ));
+
+        List<LeaderboardDTO> result = new ArrayList<>();
+
+        for (ZSetOperations.TypedTuple<String> tuple : redisData) {
+
+            UUID pid = UUID.fromString(tuple.getValue());
+
+            Participation p = participationMap.get(pid);
+
+            if (p == null) continue;
+
+            result.add(
+                    new LeaderboardDTO(
+                            season.getSeasonId(),
+                            season.getName(),
+                            p.getParticipationId(),
+                            p.getName(),
+                            p.getPhotoUrl(),
+                            tuple.getScore().intValue()
+                    )
+            );
+        }
+
+        return result;
     }
+
 }

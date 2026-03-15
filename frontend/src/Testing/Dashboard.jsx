@@ -1,250 +1,239 @@
 import { useEffect, useState, useRef } from "react";
 import { Client } from "@stomp/stompjs";
 
-export default function Dashboard(){
+export default function Dashboard() {
 
-const [profile,setProfile] = useState(null);
-const [contestants,setContestants] = useState([]);
-const [wsStatus,setWsStatus] = useState("Disconnected");
+  const [profile, setProfile] = useState(null);
+  const [contestants, setContestants] = useState([]);
+  const [wsStatus, setWsStatus] = useState("Disconnected");
 
-const stompRef = useRef(null);
+  const stompRef = useRef(null);
 
-/* voting control */
-const inFlight = useRef({});
-const desiredState = useRef({});
+  useEffect(() => {
 
-useEffect(()=>{
+    const token = localStorage.getItem("token");
 
-const token = localStorage.getItem("token");
+    /* -------- PROFILE -------- */
 
-/* load profile */
+    const fetchProfile = async () => {
 
-const fetchProfile = async()=>{
+      const res = await fetch("http://localhost:3000/auth/profile", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-const res = await fetch("http://localhost:3000/auth/profile",{
-headers:{Authorization:`Bearer ${token}`}
-});
+      const data = await res.json();
+      setProfile(data);
 
-setProfile(await res.json());
+    };
 
-};
+    /* -------- CONTESTANTS -------- */
 
-/* load contestants */
+    const fetchContestants = async () => {
 
-const fetchContestants = async()=>{
+      const res = await fetch(
+        "http://localhost:3000/participations/live?page=0&size=50",
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-const res = await fetch(
-"http://localhost:3000/participations/live?page=0&size=50",
-{headers:{Authorization:`Bearer ${token}`}}
-);
+      const data = await res.json();
 
-const data = await res.json();
-setContestants(data.content);
+      setContestants(
+        (data.content || []).map(c => ({
+          ...c,
+          totalVotes: c.totalVotes ?? 0,
+          hasVoted: c.hasVoted ?? false,
+          loading: false
+        }))
+      );
 
-};
+    };
 
-fetchProfile();
-fetchContestants();
+    fetchProfile();
+    fetchContestants();
 
-/* websocket */
+    /* -------- WEBSOCKET -------- */
 
-const stompClient = new Client({
+    const stompClient = new Client({
 
-brokerURL:"ws://localhost:3000/ws",
-connectHeaders:{Authorization:`Bearer ${token}`},
-reconnectDelay:5000,
+      brokerURL: "ws://localhost:3000/ws",
+      connectHeaders: { Authorization: `Bearer ${token}` },
+      reconnectDelay: 5000,
 
-onConnect:()=>{
+      onConnect: () => {
 
-setWsStatus("Connected");
+        setWsStatus("Connected");
 
-stompClient.subscribe("/topic/votes",(msg)=>{
+        stompClient.subscribe("/topic/votes", (msg) => {
 
-const data = JSON.parse(msg.body);
+          const data = JSON.parse(msg.body);
 
-/*
-Expected server payload
+          setContestants(prev =>
+            prev.map(c =>
+              c.participationId === data.participationId
+                ? {
+                    ...c,
+                    totalVotes: data.votes
+                  }
+                : c
+            )
+          );
 
-{
-participationId,
-votes,
-userVoted
-}
-*/
+        });
 
-setContestants(prev =>
-prev.map(c =>
-c.participationId === data.participationId
-? {
-...c,
-totalVotes:data.votes,
-...(data.userVoted !== undefined && {hasVoted:data.userVoted})
-}
-: c
-)
-);
+      },
 
-}
+      onWebSocketClose: () => setWsStatus("Disconnected"),
+      onStompError: () => setWsStatus("Error")
 
-});
+    });
 
-});
+    stompRef.current = stompClient;
+    stompClient.activate();
 
-stompClient.activate();
+    return () => stompRef.current?.deactivate();
 
-return ()=>stompClient.deactivate();
+  }, []);
 
-},[]);
 
 
 
-/* vote toggle */
 
-const toggleVote = (contestant)=>{
+  /* -------- VOTE -------- */
 
-const id = contestant.participationId;
+  const toggleVote = async (contestant) => {
 
-/* determine next desired state */
-
-const currentDesired =
-desiredState.current[id] ?? contestant.hasVoted;
-
-desiredState.current[id] = !currentDesired;
-
-/* optimistic UI */
-
-setContestants(prev =>
-prev.map(c =>
-c.participationId === id
-? {
-...c,
-hasVoted:desiredState.current[id],
-totalVotes: desiredState.current[id]
-? c.totalVotes+1
-: Math.max(0,c.totalVotes-1)
-}
-: c
-)
-);
-
-/* send request if not running */
-
-if(!inFlight.current[id]){
-sendVoteRequest(contestant);
-}
-
-};
-
-
-
-/* vote request */
-
-const sendVoteRequest = async(contestant)=>{
-
-const token = localStorage.getItem("token");
-const id = contestant.participationId;
-
-inFlight.current[id] = true;
-
-try{
-
-const res = await fetch("http://localhost:3000/votes",{
-
-method:"POST",
-headers:{
-"Content-Type":"application/json",
-Authorization:`Bearer ${token}`
-},
-
-body:JSON.stringify({
-participationId:contestant.participationId,
-seasonId:contestant.seasonId
-})
-
-});
-
-if(!res.ok){
-alert(await res.text());
-}
-
-}catch{
-alert("Network error");
-}
-
-inFlight.current[id] = false;
-
-/* check if user tapped again while request running */
-
-setContestants(prev=>{
-
-const current = prev.find(c=>c.participationId===id);
-
-if(current && desiredState.current[id] !== current.hasVoted){
-sendVoteRequest(current);
-}
-
-return prev;
-
-});
+  const token = localStorage.getItem("token");
+  const id = contestant.participationId;
+
+  /* disable button */
+
+  setContestants(prev =>
+    prev.map(c =>
+      c.participationId === id
+        ? { ...c, loading: true }
+        : c
+    )
+  );
+
+  try {
+
+    const res = await fetch("http://localhost:3000/votes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        participationId: contestant.participationId,
+        seasonId: contestant.seasonId
+      })
+    });
+
+    if (!res.ok) {
+
+      const msg = await res.text();
+      throw new Error(msg || "Vote failed");
+
+    }
+
+    /* server confirmed → update button */
+
+    setContestants(prev =>
+      prev.map(c =>
+        c.participationId === id
+          ? {
+              ...c,
+              loading: false,
+              hasVoted: !c.hasVoted
+            }
+          : c
+      )
+    );
+
+  } catch (err) {
+
+    setContestants(prev =>
+      prev.map(c =>
+        c.participationId === id
+          ? { ...c, loading: false }
+          : c
+      )
+    );
+
+    alert(err.message || "Vote failed");
+
+  }
 
 };
 
 
 
-if(!profile) return <div>Loading...</div>;
 
-return(
+  /* -------- UI -------- */
 
-<div style={{padding:20}}>
+  if (!profile) return <div>Loading...</div>;
 
-<h2>Dashboard</h2>
+  return (
 
-<p><b>WebSocket:</b> {wsStatus}</p>
+    <div style={{ padding: 20 }}>
 
-<h3>Profile</h3>
+      <h2>Dashboard</h2>
 
-<p><b>ID:</b> {profile.id}</p>
-<p><b>Email:</b> {profile.email}</p>
+      <p><b>WebSocket:</b> {wsStatus}</p>
 
-<hr/>
+      <h3>Profile</h3>
 
-<h3>Live Contestants</h3>
+      <p><b>ID:</b> {profile.id}</p>
+      <p><b>Email:</b> {profile.email}</p>
 
-{contestants.map(c=>(
+      <hr />
 
-<div key={c.participationId}
-style={{
-border:"1px solid #ccc",
-padding:10,
-marginBottom:10,
-width:300
-}}>
+      <h3>Live Contestants</h3>
 
-<img src={c.participantPhotoUrl} width="150"/>
+      {contestants.map(c => (
 
-<p><b>Name:</b> {c.participantName}</p>
-<p><b>Total Votes:</b> {c.totalVotes}</p>
+        <div
+          key={c.participationId}
+          style={{
+            border: "1px solid #ccc",
+            padding: 10,
+            marginBottom: 10,
+            width: 300
+          }}
+        >
 
-<button
-onClick={()=>toggleVote(c)}
-style={{
-background:c.hasVoted ? "#ff4d4d" : "#4CAF50",
-color:"white",
-border:"none",
-padding:"6px 12px"
-}}
->
+          <img src={c.participantPhotoUrl} width="150" alt="" />
 
-{c.hasVoted ? "Unvote":"Vote"}
+          <p><b>Name:</b> {c.participantName}</p>
 
-</button>
+          <p><b>Total Votes:</b> {c.totalVotes}</p>
 
-</div>
+          <button
+            disabled={c.loading}
+            onClick={() => toggleVote(c)}
+            style={{
+              background: c.hasVoted ? "#ff4d4d" : "#4CAF50",
+              color: "white",
+              border: "none",
+              padding: "6px 12px",
+              cursor: c.loading ? "not-allowed" : "pointer",
+              opacity: c.loading ? 0.6 : 1
+            }}
+          >
 
-))}
+            {c.loading
+              ? "Processing..."
+              : (c.hasVoted ? "Unvote" : "Vote")
+            }
 
-</div>
+          </button>
 
-);
+        </div>
+
+      ))}
+
+    </div>
+
+  );
 
 }

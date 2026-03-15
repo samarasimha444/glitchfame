@@ -1,63 +1,119 @@
 package com.example.backend.votes;
 
-import com.example.backend.seasons.Season;
-import com.example.backend.seasons.SeasonRepo;
 import com.example.backend.votes.dto.VoteUpdateDTO;
 import com.example.backend.leaderboard.LeaderboardService;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import java.util.Arrays;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class VoteService {
 
-    private final VoteRepo voteRepo;
     private final StringRedisTemplate redis;
-    private final SeasonRepo seasonRepo;
     private final SimpMessagingTemplate messagingTemplate;
     private final LeaderboardService leaderboardService;
 
-    @Transactional
+    /* ---------- LUA SCRIPT ---------- */
+
+    private static final DefaultRedisScript<String> SCRIPT;
+
+    static {
+
+        SCRIPT = new DefaultRedisScript<>();
+
+        SCRIPT.setScriptText("""
+            local participationKey = KEYS[1]
+            local userVoteSet = KEYS[2]
+            local userVoteCountKey = KEYS[3]
+            local lockKey = KEYS[4]
+
+            local participationId = ARGV[1]
+
+            if redis.call('EXISTS', lockKey) == 1 then
+                return "LOCKED"
+            end
+
+            -- check if already voted
+            local voted = redis.call('SISMEMBER', userVoteSet, participationId)
+
+            if voted == 1 then
+
+                redis.call('SREM', userVoteSet, participationId)
+
+                local used = tonumber(redis.call('GET', userVoteCountKey) or "0")
+                if used > 0 then
+                    redis.call('DECR', userVoteCountKey)
+                end
+
+                local votes = redis.call('DECR', participationKey)
+
+                return "UNVOTE:" .. votes
+            end
+
+            -- check vote limit
+            local used = tonumber(redis.call('GET', userVoteCountKey) or "0")
+
+            if used >= 5 then
+                return "LIMIT"
+            end
+
+            redis.call('INCR', userVoteCountKey)
+            redis.call('SADD', userVoteSet, participationId)
+
+            local votes = redis.call('INCR', participationKey)
+
+            return "VOTE:" .. votes
+        """);
+
+        SCRIPT.setResultType(String.class);
+    }
+
+    /* ---------- TOGGLE VOTE ---------- */
+
     public boolean toggleVote(UUID participationId, UUID seasonId, UUID authId) {
 
-        Season season = seasonRepo.findById(seasonId)
-                .orElseThrow(() -> new IllegalStateException("Season not found"));
+        String participationKey = "votes:participation:" + participationId;
+        String userVoteSet = "votes:user:" + seasonId + ":" + authId;
+        String userVoteCountKey = "votes:season:usercount:" + seasonId + ":" + authId;
+        String lockKey = "season:locked:" + seasonId;
 
-        if (season.isLocked()) {
+        String result = redis.execute(
+                SCRIPT,
+                Arrays.asList(
+                        participationKey,
+                        userVoteSet,
+                        userVoteCountKey,
+                        lockKey
+                ),
+                participationId.toString()
+        );
+
+        if (result == null) {
+            throw new IllegalStateException("Redis returned null");
+        }
+
+        if (result.equals("LOCKED")) {
             throw new IllegalStateException("Season locked");
         }
 
-        String participationKey = "votes:participation:" + participationId;
-        String seasonUserKey = "votes:season:user:" + seasonId + ":" + authId;
+        if (result.equals("LIMIT")) {
+            throw new IllegalStateException("Maximum 5 votes allowed per season");
+        }
 
-        int deleted = voteRepo.deleteByParticipationIdAndAuthId(participationId, authId);
+        String[] parts = result.split(":");
 
-        /* ---------- UNVOTE ---------- */
+        String action = parts[0];
+        long votes = Long.parseLong(parts[1]);
 
-        if (deleted > 0) {
-
-            List<Object> results = redis.executePipelined((RedisConnection connection) -> {
-
-                connection.stringCommands().decr(
-                        participationKey.getBytes(StandardCharsets.UTF_8));
-
-                connection.stringCommands().decr(
-                        seasonUserKey.getBytes(StandardCharsets.UTF_8));
-
-                return null;
-            });
-
-            long votes = (Long) results.get(0);
+        if (action.equals("UNVOTE")) {
 
             leaderboardService.updateLeaderboard(
                     seasonId,
@@ -70,42 +126,23 @@ public class VoteService {
             return false;
         }
 
-        /* ---------- VOTE ---------- */
+        if (action.equals("VOTE")) {
 
-        long votesUsed = redis.opsForValue().increment(seasonUserKey);
+            leaderboardService.updateLeaderboard(
+                    seasonId,
+                    participationId,
+                    1
+            );
 
-        if (votesUsed > 5) {
-            redis.opsForValue().decrement(seasonUserKey);
-            throw new IllegalStateException("Maximum 5 votes allowed per season");
+            broadcastVote(participationId, votes);
+
+            return true;
         }
 
-        Vote vote = Vote.builder()
-                .participationId(participationId)
-                .authId(authId)
-                .build();
-
-        voteRepo.save(vote);
-
-        List<Object> results = redis.executePipelined((RedisConnection connection) -> {
-
-            connection.stringCommands().incr(
-                    participationKey.getBytes(StandardCharsets.UTF_8));
-
-            return null;
-        });
-
-        long votes = (Long) results.get(0);
-
-        leaderboardService.updateLeaderboard(
-                seasonId,
-                participationId,
-                1
-        );
-
-        broadcastVote(participationId, votes);
-
-        return true;
+        throw new IllegalStateException("Unknown vote result");
     }
+
+    /* ---------- WEBSOCKET BROADCAST ---------- */
 
     private void broadcastVote(UUID participationId, long votes) {
 
