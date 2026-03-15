@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Signup = ({setMode}) => {
+const Signup = ({ setMode }) => {
 
   const navigate = useNavigate();
 
@@ -82,7 +82,7 @@ const Signup = ({setMode}) => {
           body: JSON.stringify({
             email: formData.email,
             username: formData.username,
-            mobileNumber: formData.mobileNumber,
+            mobile: formData.mobileNumber, // FIX
             password: formData.password,
           }),
         }
@@ -100,7 +100,7 @@ const Signup = ({setMode}) => {
 
       }
 
-    } catch (err) {
+    } catch {
 
       setError("Network error. Please try again.");
 
@@ -122,15 +122,24 @@ const Signup = ({setMode}) => {
     try {
 
       const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/auth/verify-signup?email=${formData.email}&otp=${otp}`,
-        { method: "POST" }
+        `${import.meta.env.VITE_BASE_URL}/auth/verify-signup?otp=${otp}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: formData.email,
+            username: formData.username,
+            mobile: formData.mobileNumber, // FIX
+            password: formData.password,
+          }),
+        }
       );
 
       const message = await response.text();
 
       if (response.ok) {
 
-        setMode("login")
+        setMode("login");
 
       } else {
 
@@ -148,7 +157,7 @@ const Signup = ({setMode}) => {
 
     }
 
-  }, [otp, formData.email, navigate]);
+  }, [otp, formData]);
 
   return (
 
