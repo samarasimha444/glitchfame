@@ -122,7 +122,7 @@ const Signup = () => {
     try {
 
       const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/auth/verify-otp?email=${formData.email}&otp=${otp}`,
+        `${import.meta.env.VITE_BASE_URL}/auth/verify-signup?email=${formData.email}&otp=${otp}`,
         { method: "POST" }
       );
 

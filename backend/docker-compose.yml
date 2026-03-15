@@ -1,13 +1,11 @@
 version: "3.9"
 
 services:
-
   backend:
     build: .
-    container_name: glitchfame-backend
-    restart: always
+    container_name: backend
     ports:
-      - "3000:3000"
-
+      - "8080:8080"
     env_file:
       - .env
+    restart: unless-stopped

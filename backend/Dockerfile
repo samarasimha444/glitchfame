@@ -1,30 +1,27 @@
-# ---------- STAGE 1: Build ----------
-FROM maven:3.9.6-eclipse-temurin-21 AS build
-
+# ---------- Build Stage ----------
+FROM maven:3.9.9-eclipse-temurin-21 AS builder
 WORKDIR /app
 
-# Copy only pom first (layer caching optimization)
+# 1. Copy only dependency descriptors (rarely change)
 COPY pom.xml .
 
-# Download dependencies (cached unless pom changes)
-RUN mvn dependency:go-offline
+# 2. Download dependencies and cache them
+RUN mvn -B -q dependency:go-offline
 
-# Now copy source
+# 3. Copy source code (changes frequently)
 COPY src ./src
 
-# Build jar
-RUN mvn clean package -DskipTests
+# 4. Build application
+RUN mvn -B -q package -DskipTests
 
 
-# ---------- STAGE 2: Runtime ----------
-FROM eclipse-temurin:21-jdk
-
+# ---------- Runtime Stage ----------
+FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
-# Copy only built jar from builder stage
-COPY --from=build /app/target/*.jar app.jar
+# Copy built jar from builder stage
+COPY --from=builder /app/target/*.jar app.jar
 
-EXPOSE 3000
+EXPOSE 8080
 
-
-ENTRYPOINT ["java","-jar","app.jar","--spring.profiles.active=prod"]
+ENTRYPOINT ["java","-jar","app.jar"]
