@@ -36,25 +36,9 @@ export const buildLeaderboard = (users) => {
 
 
   
-export const getVoteButtonProps = (status) => {
-  let text = "VOTE";
-  let className =
-    "bg-[#BE5EED] text-black hover:opacity-90";
 
-  if (status === "loading") {
-    text = "Voting...";
-    className = "bg-gray-400 cursor-not-allowed text-black";
-  } else if (status === "voted") {
-    text = "Unvote";
-    className = "bg-pink-400 cursor-pointer text-white";
-  }
 
-  return {
-    text,
-    className,
-    disabled: status === "loading",
-  };
-};
+
 export const isRegistrationOpen = (season) => {
   const now = new Date();
   const registrationStart = new Date(season.registrationStartDate);

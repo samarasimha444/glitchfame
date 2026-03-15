@@ -8,7 +8,7 @@ const MobileMenu = ({ isOpen, setIsOpen, menuItems, actionButton,setOpenModal,ha
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Overlay */}
+         
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.5 }}
@@ -28,7 +28,7 @@ const MobileMenu = ({ isOpen, setIsOpen, menuItems, actionButton,setOpenModal,ha
             
             <div className="flex items-center gap-3 mb-6">
 
-              <div className=" w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center shadow-[0_0_40px_rgba(168,85,247,0.5)]">
+              <div className=" w-10 h-10 rounded-xl bg-[#1E2229] flex items-center justify-center shadow-[0_0_40px_rgba(168,85,247,0.5)]">
                        <Zap className="text-white" size={26} />
                      </div>
            
