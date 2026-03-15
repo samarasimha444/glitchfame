@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {  getContestantDetails, getLeaderboard, getVotersById, loginUser, resetPassword, sendOtp, toggleVote } from "./api";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 
 
@@ -28,10 +29,32 @@ export const useToggleVote = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (participationId) => toggleVote(participationId),
+    mutationFn: toggleVote,
+
+    onSuccess: (data) => {
+      const { participationId, hasVoted } = data;
+
+      queryClient.setQueryData(["contestants"], (oldData) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          content: oldData.content.map((user) =>
+            user.id === participationId
+              ? { ...user, hasVoted }
+              : user
+          ),
+        };
+      });
+
+      toast.success(hasVoted ? "Voted successfully ❤️" : "Vote removed ❌");
+    },
+
+    onError: () => {
+      toast.error("Voting failed");
+    },
   });
 };
-
 
 
 export const useLeaderboard = () => {

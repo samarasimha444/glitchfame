@@ -101,7 +101,7 @@ bg-[radial-gradient(circle_at_top_left,_#3b0764,_#000000_40%,_#022c22)]">
             {mode === "login" ? (
             <Login/>
           ) : (
-            <Signup/>
+            <Signup setMode={setMode}/>
           )}
 
 

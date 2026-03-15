@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { LockOpen, Lock } from "lucide-react";
-import { useFetchSeasons } from "../hooks";
 import { useToggleSeasonLock } from "../../settings/hooks";
 
 const getStatusStyle = (status) => {
@@ -16,16 +15,17 @@ const getStatusStyle = (status) => {
   }
 };
 
-const SeasonsTable = () => {
-  const { data: seasons, isLoading, isError, error } = useFetchSeasons();
-  console.log(seasons);
+const SeasonsTable = ({seasons,isLoading}) => {
+
+  // const { data: seasons, isLoading, isError, error } = useFetchSeasons();
+  // console.log(seasons);
 
   const { mutate: toggleSeasonLock, isPending: seasonPending } =
     useToggleSeasonLock();
 
   if (isLoading) return <p>Loading seasons...</p>;
 
-  if (isError) return <p>Error: {error.message}</p>;
+  // if (isError) return <p>Error: {error.message}</p>;
 
   return (
     <>
@@ -50,8 +50,10 @@ const SeasonsTable = () => {
       </div>
 
 
-      <div className="rounded-xl border border-gray-800 max-h-[70vh] overflow-y-auto">
-        <table className="w-full text-sm text-left text-gray-300">
+      <div className="rounded-xl min-h-[30dvh] border border-gray-800  sm:max-h-[70vh] overflow-y-auto">
+
+
+        <table className="w-full text-sm  text-left text-gray-300">
           <thead className="bg-[#1E2229] text-gray-400 uppercase text-xs sticky top-0">
             <tr>
               <th className="px-4 py-2">Season Name</th>

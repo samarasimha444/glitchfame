@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Signup = () => {
+const Signup = ({setMode}) => {
 
   const navigate = useNavigate();
 
@@ -130,7 +130,7 @@ const Signup = () => {
 
       if (response.ok) {
 
-        navigate("/login");
+        setMode("login")
 
       } else {
 

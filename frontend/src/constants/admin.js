@@ -1,4 +1,4 @@
-import { Activity, Users, DollarSign, Trophy } from "lucide-react"; 
+import { Activity, Users, DollarSign, Trophy, Calendar, Lock } from "lucide-react"; 
 
  export const initialState = {
   name: "",
@@ -54,23 +54,39 @@ export const fields = [
 
 export const dashCards = [
   {
-    title: "Active Seasons",
-    icon: Activity,
-    total: 4,
+    title: "Total Seasons",
+    key: "totalSeasons",
+    icon: Calendar
   },
   {
-    title: "Total Participants",
-    icon: Users,
-    total: 1248,
+    title: "Total Prize Money",
+    key: "totalPrizeMoney",
+    icon: DollarSign
   },
   {
-    title: "Total Prize Value",
-    icon: DollarSign,
-    total: "$100.5K",
+    title: "Voting Locked",
+    key: "votingLocked",
+    icon: Lock
   },
   {
-    title: "Active Sessions",
-    icon: Trophy,
-    total: 2,
+    title: "Participation Locked",
+    key: "participationLocked",
+    icon: Users
+  }
+];
+ export const menuItems = [
+  {
+    id: 1,
+    label: "Participation Lock",
+    action: "lock",
+    color: "text-gray-300",
   },
+  { id: 2, label: "End Now", action: "end", color: "text-red-400" },
+  {
+    id: 3,
+    label: "Modify Registration",
+    action: "registration",
+    color: "text-gray-300",
+  },
+  { id: 4, label: "Modify Voting", action: "voting", color: "text-gray-300" },
 ];

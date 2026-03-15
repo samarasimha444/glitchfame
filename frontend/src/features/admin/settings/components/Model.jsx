@@ -1,29 +1,35 @@
 import React, { useState } from "react";
-import { useUpdateRegistrationDates } from "../hooks";
+import { useUpdateSeasonDates } from "../hooks"; // generic hook
+import toast from "react-hot-toast";
 
 const fieldConfig = {
   registration: [
-    { label: "Registration Start Time", name: "registrationStart" },
-    { label: "Registration End Time", name: "registrationEnd" },
+    { label: "Registration Start Time", name: "start" },
+    { label: "Registration End Time", name: "end" },
   ],
   voting: [
-    { label: "Voting Start Time", name: "votingStart" },
-    { label: "Voting End Time", name: "votingEnd" },
+    { label: "Voting Start Time", name: "start" },
+    { label: "Voting End Time", name: "end" },
   ],
 };
 
-const Model = ({ type, onClose }) => {
-  console.log(type)
+const toUTC = (localDateTime) => {
+  if (!localDateTime) return null;
+  return new Date(localDateTime).toISOString();
+};
+
+const Model = ({ type, seasonId, onClose }) => {
+
+
+  console.log(type ,seasonId)
 
   const fields = fieldConfig[type] || [];
+  const [formData, setFormData] = useState({ start: "", end: "" });
 
-  const [formData, setFormData] = useState({});
-
-  const { mutate: updateRegistration } = useUpdateRegistrationDates();
+  const { mutate: updateDates, isLoading } = useUpdateSeasonDates();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -31,61 +37,74 @@ const Model = ({ type, onClose }) => {
   };
 
   const handleSubmit = () => {
-    updateRegistration({
-      type,
-      ...formData,
-    });
+    const utcData = {
+      start: toUTC(formData.start),
+      end: toUTC(formData.end),
+      id: seasonId,
+      type, 
+    };
 
-    onClose();
+    updateDates(utcData, {
+      onSuccess: () => {
+       toast.success("success")
+        onClose();
+      },
+      onError: (err) => {
+        console.error(err);
+        toast.error("failed")
+      },
+    });
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+   <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
+  <div className="bg-[#1a1f2b] w-full max-w-sm rounded-2xl p-6 border border-gray-700 shadow-xl
+                  transform transition-transform duration-300 ease-in-out scale-95 md:scale-100
+                  md:max-w-md">
+    
+   
+    <h2 className="text-white text-xl font-semibold mb-6 text-center capitalize tracking-wide">
+      {type} Timing
+    </h2>
 
-      <div className="bg-[#1a1f2b] w-[400px] rounded-xl p-6 border border-gray-700">
-
-        <h2 className="text-white text-lg font-semibold mb-5 capitalize">
-          {type} Timing
-        </h2>
-
-        <div className="space-y-4">
-
-          {fields.map((field) => (
-            <div key={field.name}>
-              <label className="text-gray-400 text-sm">
-                {field.label}
-              </label>
-
-              <input
-                type="datetime-local"
-                name={field.name}
-                onChange={handleChange}
-                className="w-full mt-1 p-2 bg-[#111418] border border-gray-600 rounded text-white"
-              />
-            </div>
-          ))}
-
+    <div className="space-y-5">
+      {fields.map((field) => (
+        <div key={field.name} className="flex flex-col">
+          <label className="text-gray-400 text-sm mb-1">{field.label}</label>
+          <input
+            type="datetime-local"
+            name={field.name}
+            value={formData[field.name] || ""}
+            onChange={handleChange}
+            className="w-full p-3 bg-[#111418] border border-gray-600 rounded-xl text-white
+                       focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200
+                       placeholder-gray-500"
+          />
         </div>
-
-        <div className="flex justify-end gap-3 mt-6">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-gray-300 border border-gray-600 rounded"
-          >
-            Cancel
-          </button>
-
-          <button
-            onClick={handleSubmit}
-            className="px-4 py-2 bg-blue-600 text-white rounded"
-          >
-            Save
-          </button>
-        </div>
-
-      </div>
-
+      ))}
     </div>
+
+   
+    <div className="flex justify-end gap-4 mt-6">
+      <button
+        onClick={onClose}
+        className="flex-1 px-4 py-3 text-gray-300 border border-gray-600 rounded-xl
+                   hover:bg-gray-800 transition-colors duration-200"
+      >
+        Cancel
+      </button>
+      <button
+        onClick={handleSubmit}
+        className={`flex-1 px-4 py-3 rounded-xl text-white
+                    ${isLoading ? "bg-gray-500 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}
+                    transition-all duration-200`}
+        disabled={isLoading}
+      >
+        {isLoading ? "Saving..." : "Save"}
+      </button>
+    </div>
+  </div>
+</div>
   );
 };
 

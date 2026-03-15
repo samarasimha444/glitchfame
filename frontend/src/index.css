@@ -1,9 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 
+body {
+  font-family: "Inter", sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Sora", sans-serif;
+}
+
 @layer base {
   body {
-    @apply bg-[#181B20] text-white; 
+    @apply bg-[#1E2229] text-white; 
     font-family: 'Inter', sans-serif; 
     margin: 0;
     padding: 0;
@@ -21,13 +30,16 @@
 }
 
 
+.text-primary {
+  color: #9DE2E2;
+}
 
 
 
-/* index.css */
+
 .neon-blink {
   animation: neonBlink 1.5s infinite;
-  color: #ffffff; /* base text color */
+  color: #ffffff; 
   font-weight: bold;
 }
 

@@ -47,11 +47,12 @@ const Vote = () => {
   }, [debouncedSearch]);
 
   return (
-    <div className="flex flex-col bg-black sm:bg-[#181B20] w-full m-auto max-w-400 px-1 min-h-screen">
+    <div className="flex flex-col  w-full m-auto max-w-400 px-5 min-h-screen">
       <VotingHeader id={seasonId} />
 
-      <div className="md:flex md:px-12 max-w-[290px] flex-col md:flex-row gap-4 mt-4 mb-5 md:mt-10 md:mb-8">
-        <div className="flex items-center bg-[#111418] border border-[#1E232B] rounded-lg px-7 md:min-w-xl w-full py-3 flex-1">
+      <div className="md:flex md:px-12 max-w- flex-col md:flex-row gap-4  mb-5 md:mt-10 md:mb-8">
+
+        <div className="flex items-center bg-[#323843] border border-[#1E232B] rounded-xl px-7 md:min-w-xl w-full py-3.5 flex-1">
           <Search size={16} className="text-gray-400 mr-2" />
           <input
             type="search"
@@ -84,7 +85,7 @@ const Vote = () => {
         />
       </section>
 
-      {totalPages > 1 && (
+      {/* {totalPages > 1 && (
         <div className="flex flex-wrap justify-center items-center gap-2 mt-6 mb-10">
           <button
             onClick={handlePrev}
@@ -115,7 +116,11 @@ const Vote = () => {
             Next &#8594;
           </button>
         </div>
-      )}
+      )} */}
+
+      <p className="mt-5 py-12 flex w-full items-center justify-center">View all Candidates</p>
+
+
     </div>
   );
 };

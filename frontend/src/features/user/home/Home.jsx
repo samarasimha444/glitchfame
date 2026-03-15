@@ -1,40 +1,36 @@
 import React, { Suspense, lazy } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import FeaturedCarousel from "./components/Carousel";
-const Gallery = lazy(() => import("./components/Gallery"));
-import Overview from "./components/OverviewSection";
 import ArenaCard from "../arena/ui/ArenaCard";
 import { useLiveUpcomingSeasons } from "./hooks";
 import { StickyHeader } from "./components/Header";
 import { useContestantsById } from "../arena/hooks";
 import { isRegistrationOpen, isVotingLive } from "../../../lib/helper";
 
+const Gallery = lazy(() => import("./components/Gallery"));
+const Overview= lazy(()=>import("./components/OverviewSection"))
+
 const Home = () => {
   const navigate = useNavigate();
-  const { profile } = useOutletContext() || {};
+  // const { profile } = useOutletContext() || {};
 
-  const { data: seasons = [], isLoading: seasonsLoading } =
-    useLiveUpcomingSeasons();
+  const { data: seasons = [], isLoading: seasonsLoading } = useLiveUpcomingSeasons();
 
   const season = seasons?.find(isRegistrationOpen);
   const liveSeason = seasons?.find(isVotingLive);
 
-  const {
-    data: contestantsData,
-    isLoading: contestantsLoading,
-    isError,
-  } = useContestantsById(liveSeason?.seasonId);
+  const {  data: contestantsData,isLoading: contestantsLoading,isError} = useContestantsById(liveSeason?.seasonId);
 
   const arenaLoading = seasonsLoading || contestantsLoading;
 
   return (
-    <div className="w-full px-1 flex-col max-w-screen m-auto bg-[#000000] md:bg-[#1E2229] flex items-center justify-center bg-fixed bg-cover bg-center">
+    <div className="w-full px-1 flex-col max-w-screen m-auto bg-[#1E2229] flex items-center justify-center bg-fixed bg-cover bg-center">
       
       <FeaturedCarousel season={season} />
 
       <StickyHeader liveSeason={liveSeason} season={season} />
 
-      <section className="w-full space-y-4 flex flex-col items-center mt-6 bg-black md:bg-[#181B20]">
+      <section className="w-full  space-y-4 flex flex-col items-center mt-6 :bg-[#181B20]">
         
         <ArenaCard
           contestantsData={contestantsData}
@@ -63,8 +59,12 @@ const Home = () => {
         </Suspense>
 
       </section>
+      
+      <Suspense fallback={<p>loading</p>}>
+           <Overview />
+      </Suspense>
 
-      <Overview />
+     
     </div>
   );
 };

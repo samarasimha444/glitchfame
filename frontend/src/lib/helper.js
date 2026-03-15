@@ -36,25 +36,8 @@ export const buildLeaderboard = (users) => {
 
 
   
-export const getVoteButtonProps = (status, votes = 0, maxVotes = 5) => {
-  const maxReached = votes >= maxVotes;
-  let text = "VOTE";
-  let className =
-    "bg-gradient-to-r from-purple-500 to-pink-500 text-black hover:opacity-90";
 
-  if (status === "loading") {
-    text = "Voting...";
-    className = "bg-gray-400 cursor-not-allowed text-black";
-  } else if (maxReached) {
-    text = "Max Votes";
-    className = "bg-pink-300 cursor-not-allowed text-white";
-  } else if (status === "success") {
-    text = "Voted";
-    className = "bg-pink-400 cursor-default text-white";
-  }
 
-  return { text, className, disabled: status === "loading" || maxReached };
-};
 
 export const isRegistrationOpen = (season) => {
   const now = new Date();
