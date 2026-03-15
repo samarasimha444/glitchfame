@@ -3,6 +3,7 @@ package com.example.backend.votes;
 import com.example.backend.seasons.Season;
 import com.example.backend.seasons.SeasonRepo;
 import com.example.backend.votes.dto.VoteUpdateDTO;
+import com.example.backend.leaderboard.LeaderboardService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +25,7 @@ public class VoteService {
     private final StringRedisTemplate redis;
     private final SeasonRepo seasonRepo;
     private final SimpMessagingTemplate messagingTemplate;
+    private final LeaderboardService leaderboardService;
 
     @Transactional
     public boolean toggleVote(UUID participationId, UUID seasonId, UUID authId) {
@@ -40,6 +42,8 @@ public class VoteService {
 
         int deleted = voteRepo.deleteByParticipationIdAndAuthId(participationId, authId);
 
+        /* ---------- UNVOTE ---------- */
+
         if (deleted > 0) {
 
             List<Object> results = redis.executePipelined((RedisConnection connection) -> {
@@ -55,10 +59,18 @@ public class VoteService {
 
             long votes = (Long) results.get(0);
 
+            leaderboardService.updateLeaderboard(
+                    seasonId,
+                    participationId,
+                    -1
+            );
+
             broadcastVote(participationId, votes);
 
             return false;
         }
+
+        /* ---------- VOTE ---------- */
 
         long votesUsed = redis.opsForValue().increment(seasonUserKey);
 
@@ -83,6 +95,12 @@ public class VoteService {
         });
 
         long votes = (Long) results.get(0);
+
+        leaderboardService.updateLeaderboard(
+                seasonId,
+                participationId,
+                1
+        );
 
         broadcastVote(participationId, votes);
 
