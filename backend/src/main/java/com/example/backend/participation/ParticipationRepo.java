@@ -107,7 +107,7 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
 
             s.name AS seasonName,
             s.prize AS prizeMoney,
-            s.image_url AS seasonPhotoUrl,
+            s.photo_url AS seasonPhotoUrl,
             s.registration_start_date AS registrationStartDate,
             s.registration_end_date AS registrationEndDate,
             s.voting_start_date AS votingStartDate,

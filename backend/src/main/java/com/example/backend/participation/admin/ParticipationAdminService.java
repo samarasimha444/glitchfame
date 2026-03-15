@@ -39,38 +39,47 @@ public class ParticipationAdminService {
     }
 
 
+// admin updates participant status
+public void updateParticipationStatus(UUID participationId, String status) {
 
-    // admin updates participant status
-    public void updateParticipationStatus(UUID participationId, String status) {
+    Participation participation = participationAdminRepo.findById(participationId)
+            .orElseThrow(() -> new IllegalStateException("Participation not found"));
 
-        Participation participation = participationAdminRepo.findById(participationId)
-                .orElseThrow(() -> new IllegalStateException("Participation not found")); // fetch participant
-
-        // validate allowed status values
-        if (!status.equals("APPROVED") && !status.equals("REJECTED") && !status.equals("PENDING")) {
-            throw new IllegalArgumentException("Invalid status");
-        }
-
-        participation.setStatus(status); // update status
-
-        participationAdminRepo.save(participation); // persist change
-
-        String key = "votes:participation:" + participationId; // redis vote key
-
-
-        // initialize vote counter when approved
-        if ("APPROVED".equals(status)) {
-
-            redis.opsForValue().setIfAbsent(key, "0"); // create vote counter if missing
-        }
-
-
-        // remove vote counter if rejected
-        if ("REJECTED".equals(status)) {
-
-            redis.delete(key); // delete votes from redis
-        }
+    if (!status.equals("APPROVED") && !status.equals("REJECTED") && !status.equals("PENDING")) {
+        throw new IllegalArgumentException("Invalid status");
     }
+
+    participation.setStatus(status);
+    participationAdminRepo.save(participation);
+
+    UUID seasonId = participation.getSeasonId();
+
+    String voteKey = "votes:participation:" + participationId;
+    String leaderboardKey = "leaderboard:season:" + seasonId;
+
+    // APPROVED
+    if ("APPROVED".equals(status)) {
+
+        redis.opsForValue().setIfAbsent(voteKey, "0"); // vote counter
+
+        redis.opsForZSet().add(
+                leaderboardKey,
+                participationId.toString(),
+                0
+        ); // add contestant to leaderboard
+    }
+
+    // REJECTED
+    if ("REJECTED".equals(status)) {
+
+        redis.delete(voteKey); // remove vote counter
+
+        redis.opsForZSet().remove(
+                leaderboardKey,
+                participationId.toString()
+        ); // remove from leaderboard
+    }
+}
 
 
 

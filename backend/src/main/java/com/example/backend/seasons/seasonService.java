@@ -1,9 +1,6 @@
 package com.example.backend.seasons;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -11,9 +8,7 @@ import com.example.backend.seasons.dto.SeasonForm;
 import java.util.List;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import com.example.backend.participation.admin.ParticipationAdminRepo;
-
 import jakarta.transaction.Transactional;
-
 import com.example.backend.config.cloudinary.CloudinaryService;
 import com.example.backend.seasons.dto.SeasonDetails;
 import org.springframework.data.domain.Page;
@@ -29,7 +24,7 @@ public class seasonService {
     private final SeasonRepo seasonRepository; // repository
     private final CloudinaryService cloudinaryService;
     private final ParticipationAdminRepo participationAdminRepo;
-private final StringRedisTemplate redis;
+    private final StringRedisTemplate redis;
 
 
 // create season
@@ -109,15 +104,12 @@ public void adjustDates(UUID seasonId,
     if (!newRegistrationStart.isBefore(newRegistrationEnd)) {
         throw new IllegalArgumentException("registrationEnd must be after registrationStart");
     }
-
     if (newVotingStart.isBefore(newRegistrationStart)) {
         throw new IllegalArgumentException("votingStart must be after or equal to registrationStart");
     }
-
     if (newVotingEnd.isBefore(newRegistrationEnd)) {
         throw new IllegalArgumentException("votingEnd must be after or equal to registrationEnd");
     }
-
     if (newVotingEnd.isBefore(newVotingStart)) {
         throw new IllegalArgumentException("votingEnd must be after or equal to votingStart");
     }
@@ -127,21 +119,20 @@ public void adjustDates(UUID seasonId,
     if (registrationStart != null) {
         season.setRegistrationStartDate(newRegistrationStart);
     }
-
     if (registrationEnd != null) {
         season.setRegistrationEndDate(newRegistrationEnd);
     }
-
     if (votingStart != null) {
         season.setVotingStartDate(newVotingStart);
     }
-
     if (votingEnd != null) {
         season.setVotingEndDate(newVotingEnd);
     }
-
-    seasonRepository.save(season);
+seasonRepository.save(season);
 }
+
+
+
 
 
  // update prize
@@ -178,14 +169,12 @@ public boolean toggleSeasonLock(UUID seasonId) {
 
 // get seasons list
 public Page<SeasonDetails> getSeasons(UUID authId, String type, int page, int size) {
-
-    Pageable pageable = PageRequest.of(
+Pageable pageable = PageRequest.of(
             page,
             size,
             Sort.by("registrationStartDate").descending() // newest first
     );
-
-    return seasonRepository.findSeasons(
+return seasonRepository.findSeasons(
             authId,
             type.toUpperCase(),
             Instant.now(),
@@ -197,14 +186,11 @@ public Page<SeasonDetails> getSeasons(UUID authId, String type, int page, int si
 
 // get single season details
 public SeasonDetails getSeasonById(UUID seasonId, UUID authId) {
-
-    SeasonDetails season = seasonRepository.findSeasonBySeasonId(seasonId, authId);
-
-    if (season == null) {
+SeasonDetails season = seasonRepository.findSeasonBySeasonId(seasonId, authId);
+if (season == null) {
         throw new IllegalArgumentException("Season not found");
     }
-
-    return season;
+return season;
 }
 
 
@@ -217,12 +203,10 @@ public SeasonDetails getSeasonById(UUID seasonId, UUID authId) {
 
 //end season
 public void endSeason(UUID seasonId, Instant now) {
-
-    Season season = seasonRepository.findById(seasonId)
+Season season = seasonRepository.findById(seasonId)
             .orElseThrow(() -> new IllegalArgumentException("Season not found"));
 
     season.setVotingEndDate(now); // force season to close
-
     seasonRepository.save(season);
 }
 
@@ -231,35 +215,20 @@ public void endSeason(UUID seasonId, Instant now) {
 //delete seasons
 @Transactional
 public void resetSeason(UUID seasonId) {
-
-    // fetch participation ids
+ // fetch participation ids
     List<UUID> participationIds =
             participationAdminRepo.findParticipationIdsBySeasonId(seasonId);
-
-    // build redis vote keys
+// build redis vote keys
     List<String> redisKeys = participationIds.stream()
             .map(id -> "votes:participation:" + id)
             .toList();
-
-    // delete redis votes
+// delete redis votes
     if (!redisKeys.isEmpty()) {
         redis.delete(redisKeys);
     }
-
-    // delete participations from database
-    participationAdminRepo.deleteAllBySeasonId(seasonId);
+// delete participations from database
+     participationAdminRepo.deleteAllBySeasonId(seasonId);
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

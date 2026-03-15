@@ -27,6 +27,8 @@ import Vote from "./features/user/Voting/Vote";
 import ParticipationForm from "./Testing/PartcipationForm";
 import AdminSeasonForm from "./Testing/AdminForm";
 import Dashboard from "./Testing/Dashboard";
+import Login from "./Testing/Login";
+import TestingSignup from "./Testing/TestingSignup";
 
 export default function App() {
   return (
@@ -47,6 +49,8 @@ export default function App() {
        <Route path="/participationForm" element={<ParticipationForm/>}/>
        <Route path="/adminform" element={<AdminSeasonForm/>}/>
        <Route path="/dashboard" element={<Dashboard/>}/>
+       <Route path="/login" element={<Login/>}/>
+       <Route path="/signup" element={<TestingSignup/>}/>
       
 
      
