@@ -1,11 +1,9 @@
 package com.example.backend.leaderboard;
-
 import com.example.backend.leaderboard.dto.LeaderboardDTO;
 import com.example.backend.participation.Participation;
 import com.example.backend.participation.ParticipationRepo;
 import com.example.backend.seasons.Season;
 import com.example.backend.seasons.SeasonRepo;
-
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;

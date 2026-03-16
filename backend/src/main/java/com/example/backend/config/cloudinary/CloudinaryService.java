@@ -19,7 +19,7 @@ public class CloudinaryService {
         try {
 
             // delete resources inside folder
-            Map result = cloudinary.api().deleteResourcesByPrefix(
+            cloudinary.api().deleteResourcesByPrefix(
                     folderPath,
                     ObjectUtils.emptyMap()
             );
@@ -31,7 +31,28 @@ public class CloudinaryService {
             );
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to delete Cloudinary folder: " + folderPath);
+            throw new RuntimeException("Failed to delete Cloudinary folder: " + folderPath, e);
+        }
+    }
+
+    // move image to another folder (rename public_id)
+    public String moveImage(String oldPublicId, String newPublicId) {
+
+        try {
+
+            Map result = cloudinary.uploader().rename(
+                    oldPublicId,
+                    newPublicId,
+                    ObjectUtils.asMap(
+                            "overwrite", true,
+                            "invalidate", true
+                    )
+            );
+
+            return (String) result.get("secure_url");
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to move Cloudinary image", e);
         }
     }
 }

@@ -46,19 +46,31 @@ export default function Leaderboard() {
 
         Object.keys(data).forEach(seasonId => {
 
-          stompClient.subscribe(
-            `/topic/leaderboard/${seasonId}`,
-            (msg) => {
+          stompClient.subscribe(`/topic/votes/${seasonId}`, (msg) => {
 
-              const updated = JSON.parse(msg.body);
+            const vote = JSON.parse(msg.body);
 
-              setLeaderboards(prev => ({
+            setLeaderboards(prev => {
+
+              const season = prev[seasonId];
+              if (!season) return prev;
+
+              const updated = season.map(p =>
+                p.participantId === vote.participationId
+                  ? { ...p, votes: vote.votes }
+                  : p
+              );
+
+              updated.sort((a, b) => b.votes - a.votes);
+
+              return {
                 ...prev,
-                [seasonId]: updated
-              }));
+                [seasonId]: updated.slice(0, 3)
+              };
 
-            }
-          );
+            });
+
+          });
 
         });
 

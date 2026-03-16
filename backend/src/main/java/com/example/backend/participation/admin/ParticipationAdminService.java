@@ -39,46 +39,18 @@ public class ParticipationAdminService {
     }
 
 
+
+
+
 // admin updates participant status
 public void updateParticipationStatus(UUID participationId, String status) {
-
-    Participation participation = participationAdminRepo.findById(participationId)
+Participation participation = participationAdminRepo.findById(participationId)
             .orElseThrow(() -> new IllegalStateException("Participation not found"));
-
-    if (!status.equals("APPROVED") && !status.equals("REJECTED") && !status.equals("PENDING")) {
+if (!status.equals("APPROVED") && !status.equals("REJECTED") && !status.equals("PENDING")) {
         throw new IllegalArgumentException("Invalid status");
     }
-
-    participation.setStatus(status);
-    participationAdminRepo.save(participation);
-
-    UUID seasonId = participation.getSeasonId();
-
-    String voteKey = "votes:participation:" + participationId;
-    String leaderboardKey = "leaderboard:season:" + seasonId;
-
-    // APPROVED
-    if ("APPROVED".equals(status)) {
-
-        redis.opsForValue().setIfAbsent(voteKey, "0"); // vote counter
-
-        redis.opsForZSet().add(
-                leaderboardKey,
-                participationId.toString(),
-                0
-        ); // add contestant to leaderboard
-    }
-
-    // REJECTED
-    if ("REJECTED".equals(status)) {
-
-        redis.delete(voteKey); // remove vote counter
-
-        redis.opsForZSet().remove(
-                leaderboardKey,
-                participationId.toString()
-        ); // remove from leaderboard
-    }
+participation.setStatus(status);
+participationAdminRepo.save(participation);
 }
 
 

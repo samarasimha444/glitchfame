@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.example.backend.participation.admin.dto.ParticipantsByStatus;
 import com.example.backend.participation.dto.ParticipantById;
 import com.example.backend.participation.dto.Participants;
 
@@ -28,13 +27,7 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
             p.photo_url AS participantPhotoUrl,
             p.season_id AS seasonId,
             0 AS totalVotes,
-
-            EXISTS (
-                SELECT 1
-                FROM votes v
-                WHERE v.participation_id = p.participation_id
-                AND v.auth_id = :authId
-            ) AS hasVoted
+            false AS hasVoted
 
         FROM participation p
         JOIN season s ON s.season_id = p.season_id
@@ -66,13 +59,7 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
             p.photo_url AS participantPhotoUrl,
             p.season_id AS seasonId,
             0 AS totalVotes,
-
-            EXISTS (
-                SELECT 1
-                FROM votes v
-                WHERE v.participation_id = p.participation_id
-                AND v.auth_id = :authId
-            ) AS hasVoted
+            false AS hasVoted
 
         FROM participation p
 
@@ -114,13 +101,7 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
             s.voting_end_date AS votingEndDate,
 
             0 AS voteCount,
-
-            EXISTS (
-                SELECT 1
-                FROM votes v
-                WHERE v.participation_id = p.participation_id
-                AND v.auth_id = :authId
-            ) AS hasVoted
+            false AS hasVoted
 
         FROM participation p
         JOIN season s ON s.season_id = p.season_id
@@ -142,13 +123,7 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
             p.photo_url AS participantPhotoUrl,
             p.season_id AS seasonId,
             0 AS totalVotes,
-
-            EXISTS (
-                SELECT 1
-                FROM votes v
-                WHERE v.participation_id = p.participation_id
-                AND v.auth_id = :authId
-            ) AS hasVoted
+            false AS hasVoted
 
         FROM participation p
         JOIN season s ON s.season_id = p.season_id
@@ -157,8 +132,6 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
         AND p.name ILIKE '%' || :name || '%'
         AND s.registration_start_date <= CURRENT_TIMESTAMP
         AND s.voting_end_date >= CURRENT_TIMESTAMP
-
-        
         """,
         countQuery = """
         SELECT COUNT(*)
@@ -185,21 +158,13 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
             p.photo_url AS participantPhotoUrl,
             p.season_id AS seasonId,
             0 AS totalVotes,
-
-            EXISTS (
-                SELECT 1
-                FROM votes v
-                WHERE v.participation_id = p.participation_id
-                AND v.auth_id = :authId
-            ) AS hasVoted
+            false AS hasVoted
 
         FROM participation p
 
         WHERE p.season_id = :seasonId
         AND p.status = 'APPROVED'
         AND p.name ILIKE '%' || :name || '%'
-
-        
         """,
         countQuery = """
         SELECT COUNT(*)
@@ -215,8 +180,5 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
             @Param("authId") UUID authId,
             Pageable pageable
     );
-
-
-
 
 }

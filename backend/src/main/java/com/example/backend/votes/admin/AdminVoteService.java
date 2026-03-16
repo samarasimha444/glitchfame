@@ -1,6 +1,5 @@
 package com.example.backend.votes.admin;
 
-import com.example.backend.leaderboard.LeaderboardService;
 import com.example.backend.participation.Participation;
 import com.example.backend.participation.ParticipationRepo;
 import com.example.backend.votes.dto.VoteUpdateDTO;
@@ -18,7 +17,6 @@ import java.util.UUID;
 public class AdminVoteService {
 
     private final StringRedisTemplate redis;
-    private final LeaderboardService leaderboardService;
     private final ParticipationRepo participationRepo;
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -30,8 +28,10 @@ public class AdminVoteService {
         UUID seasonId = participation.getSeasonId();
 
         String participationKey = "votes:participation:" + participationId;
+        String leaderboardKey = "leaderboard:season:" + seasonId;
 
-        /* if removing votes check that result is not negative */
+        /* prevent negative votes */
+
         if (voteDelta < 0) {
 
             String current = redis.opsForValue().get(participationKey);
@@ -42,23 +42,35 @@ public class AdminVoteService {
             }
         }
 
+        /* update vote count */
+
         Long newVotes = redis.opsForValue().increment(participationKey, voteDelta);
 
-        leaderboardService.updateLeaderboard(
-                seasonId,
-                participationId,
-                (int) voteDelta
+        /* update leaderboard */
+
+        redis.opsForZSet().incrementScore(
+                leaderboardKey,
+                participationId.toString(),
+                voteDelta
         );
 
-        broadcastVote(participationId, newVotes);
+        /* broadcast vote update */
+
+        broadcastVote(seasonId, participationId, newVotes);
 
         return newVotes;
     }
 
-    private void broadcastVote(UUID participationId, long votes) {
+    private void broadcastVote(UUID seasonId, UUID participationId, long votes) {
 
-        VoteUpdateDTO payload = new VoteUpdateDTO(participationId, votes);
+        VoteUpdateDTO payload = new VoteUpdateDTO(
+                participationId,
+                votes
+        );
 
-        messagingTemplate.convertAndSend("/topic/votes", payload);
+        messagingTemplate.convertAndSend(
+                "/topic/votes/" + seasonId,
+                payload
+        );
     }
 }

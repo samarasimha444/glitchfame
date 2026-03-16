@@ -98,4 +98,10 @@ List<Season> findByVotingStartDateBeforeAndVotingEndDateAfter(
             @Param("seasonId") UUID seasonId,
             @Param("authId") UUID authId
     );
+
+
+
+
+    List<Season> findByVotingEndDateBefore(Instant now);
+   
 }

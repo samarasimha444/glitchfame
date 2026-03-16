@@ -25,39 +25,42 @@ public class ParticipationService {
     private final StringRedisTemplate redis;
 
 
-    // batch fetch votes from redis
-    private Map<UUID, Long> getVotesBatch(List<UUID> participationIds) {
+    /* ---------- FETCH VOTES FROM REDIS ---------- */
 
-        List<String> keys = participationIds.stream()
-                .map(id -> "votes:participation:" + id)
-                .toList();
+    private Map<UUID, Long> getVotesBatch(List<UUID> participationIds, UUID seasonId) {
 
-        List<String> values = redis.opsForValue().multiGet(keys);
+        String leaderboardKey = "leaderboard:season:" + seasonId;
 
         Map<UUID, Long> votes = new HashMap<>();
 
-        for (int i = 0; i < participationIds.size(); i++) {
+        for (UUID id : participationIds) {
 
-            String value = values != null ? values.get(i) : null;
-
-            votes.put(
-                    participationIds.get(i),
-                    value != null ? Long.parseLong(value) : 0
+            Double score = redis.opsForZSet().score(
+                    leaderboardKey,
+                    id.toString()
             );
+
+            votes.put(id, score == null ? 0L : score.longValue());
         }
 
         return votes;
     }
 
 
-    // map projection + redis votes
+    /* ---------- MAP PARTICIPANTS + REDIS VOTES ---------- */
+
     private Page<Participants> mapParticipants(Page<Participants> result) {
 
         List<UUID> ids = result.stream()
                 .map(Participants::getParticipationId)
                 .toList();
 
-        Map<UUID, Long> voteMap = getVotesBatch(ids);
+        UUID seasonId = result.getContent().isEmpty()
+                ? null
+                : result.getContent().get(0).getSeasonId();
+
+        Map<UUID, Long> voteMap =
+                seasonId == null ? new HashMap<>() : getVotesBatch(ids, seasonId);
 
         return result.map(p -> new ParticipantsImpl(
                 p.getParticipationId(),
@@ -70,7 +73,8 @@ public class ParticipationService {
     }
 
 
-    // create participation or reapply if rejected
+    /* ---------- CREATE PARTICIPATION ---------- */
+
     public void createParticipation(UUID authId, ParticipationForm form) {
 
         Auth auth = authRepository.findById(authId)
@@ -136,7 +140,8 @@ public class ParticipationService {
     }
 
 
-    // get contestants from live seasons
+    /* ---------- LIVE CONTESTANTS ---------- */
+
     public Page<Participants> getLiveContestants(UUID authId, int page, int size) {
 
         Pageable pageable = PageRequest.of(page, size);
@@ -148,7 +153,8 @@ public class ParticipationService {
     }
 
 
-    // get approved contestants of a season
+    /* ---------- APPROVED PARTICIPANTS BY SEASON ---------- */
+
     public Page<Participants> getApprovedParticipants(
             UUID seasonId,
             UUID authId,
@@ -169,7 +175,8 @@ public class ParticipationService {
     }
 
 
-    // search live contestants
+    /* ---------- SEARCH LIVE ---------- */
+
     public Page<Participants> searchLiveContestants(
             String name,
             UUID authId,
@@ -190,7 +197,8 @@ public class ParticipationService {
     }
 
 
-    // search contestants inside season
+    /* ---------- SEARCH BY SEASON ---------- */
+
     public Page<Participants> searchParticipantsBySeason(
             UUID seasonId,
             String name,
@@ -213,7 +221,8 @@ public class ParticipationService {
     }
 
 
-    // get participant details
+    /* ---------- PARTICIPANT DETAILS ---------- */
+
     public ParticipantById getParticipationById(UUID participationId, UUID authId) {
 
         return participationRepository.findParticipantById(
@@ -223,7 +232,8 @@ public class ParticipationService {
     }
 
 
-    // delete participation if owner
+    /* ---------- DELETE PARTICIPATION ---------- */
+
     public void deleteParticipation(UUID participationId, UUID authId) {
 
         Participation participation = participationRepository.findById(participationId)

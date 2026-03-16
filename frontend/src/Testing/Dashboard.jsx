@@ -37,19 +37,40 @@ export default function Dashboard() {
 
       const data = await res.json();
 
-      setContestants(
-        (data.content || []).map(c => ({
-          ...c,
-          totalVotes: c.totalVotes ?? 0,
-          hasVoted: c.hasVoted ?? false,
-          loading: false
-        }))
-      );
+      const mapped = (data.content || []).map(c => ({
+        ...c,
+        totalVotes: c.totalVotes ?? 0,
+        hasVoted: c.hasVoted ?? false,
+        loading: false
+      }));
+
+      setContestants(mapped);
+
+      /* subscribe to each season */
+
+      const seasons = [...new Set(mapped.map(c => c.seasonId))];
+
+      seasons.forEach(seasonId => {
+
+        stompRef.current.subscribe(`/topic/votes/${seasonId}`, (msg) => {
+
+          const vote = JSON.parse(msg.body);
+
+          setContestants(prev =>
+            prev.map(c =>
+              c.participationId === vote.participationId
+                ? { ...c, totalVotes: vote.votes }
+                : c
+            )
+          );
+
+        });
+
+      });
 
     };
 
     fetchProfile();
-    fetchContestants();
 
     /* -------- WEBSOCKET -------- */
 
@@ -62,23 +83,7 @@ export default function Dashboard() {
       onConnect: () => {
 
         setWsStatus("Connected");
-
-        stompClient.subscribe("/topic/votes", (msg) => {
-
-          const data = JSON.parse(msg.body);
-
-          setContestants(prev =>
-            prev.map(c =>
-              c.participationId === data.participationId
-                ? {
-                    ...c,
-                    totalVotes: data.votes
-                  }
-                : c
-            )
-          );
-
-        });
+        fetchContestants();
 
       },
 
@@ -102,69 +107,70 @@ export default function Dashboard() {
 
   const toggleVote = async (contestant) => {
 
-  const token = localStorage.getItem("token");
-  const id = contestant.participationId;
+    const token = localStorage.getItem("token");
+    const id = contestant.participationId;
 
-  /* disable button */
+    /* disable button */
 
-  setContestants(prev =>
-    prev.map(c =>
-      c.participationId === id
-        ? { ...c, loading: true }
-        : c
-    )
-  );
+    setContestants(prev =>
+      prev.map(c =>
+        c.participationId === id
+          ? { ...c, loading: true }
+          : c
+      )
+    );
 
-  try {
+    try {
 
-    const res = await fetch("http://localhost:3000/votes", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        participationId: contestant.participationId,
-        seasonId: contestant.seasonId
-      })
-    });
+      const res = await fetch("http://localhost:3000/votes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          participationId: contestant.participationId,
+          seasonId: contestant.seasonId
+        })
+      });
 
-    if (!res.ok) {
+      if (!res.ok) {
+        const msg = await res.text();
+        throw new Error(msg || "Vote failed");
+      }
 
-      const msg = await res.text();
-      throw new Error(msg || "Vote failed");
+      /* use backend response instead of guessing */
+
+      const voted = await res.json();
+
+      setContestants(prev =>
+        prev.map(c =>
+          c.participationId === id
+            ? {
+                ...c,
+                loading: false,
+                hasVoted: voted
+              }
+            : c
+        )
+      );
+
+    } catch (err) {
+
+      setContestants(prev =>
+        prev.map(c =>
+          c.participationId === id
+            ? { ...c, loading: false }
+            : c
+        )
+      );
+
+      alert(err.message || "Vote failed");
 
     }
 
-    /* server confirmed → update button */
+  };
 
-    setContestants(prev =>
-      prev.map(c =>
-        c.participationId === id
-          ? {
-              ...c,
-              loading: false,
-              hasVoted: !c.hasVoted
-            }
-          : c
-      )
-    );
-
-  } catch (err) {
-
-    setContestants(prev =>
-      prev.map(c =>
-        c.participationId === id
-          ? { ...c, loading: false }
-          : c
-      )
-    );
-
-    alert(err.message || "Vote failed");
-
-  }
-
-};
 
 
 

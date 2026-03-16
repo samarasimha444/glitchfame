@@ -1,5 +1,3 @@
-/*
-
 package com.example.backend;
 
 import jakarta.annotation.PostConstruct;
@@ -23,5 +21,3 @@ public class RedisCleaner {
         System.out.println("Redis cleared");
     }
 }
-
- */

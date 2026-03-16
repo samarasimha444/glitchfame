@@ -1,10 +1,7 @@
 package com.example.backend.votes;
 
 import com.example.backend.votes.dto.VoteUpdateDTO;
-import com.example.backend.leaderboard.LeaderboardService;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -19,7 +16,6 @@ public class VoteService {
 
     private final StringRedisTemplate redis;
     private final SimpMessagingTemplate messagingTemplate;
-    private final LeaderboardService leaderboardService;
 
     /* ---------- LUA SCRIPT ---------- */
 
@@ -30,13 +26,13 @@ public class VoteService {
         SCRIPT = new DefaultRedisScript<>();
 
         SCRIPT.setScriptText("""
-            local participationKey = KEYS[1]
-            local userVoteSet = KEYS[2]
-            local userVoteCountKey = KEYS[3]
-            local lockKey = KEYS[4]
+            local userVoteSet = KEYS[1]
+            local leaderboardKey = KEYS[2]
+            local lockKey = KEYS[3]
 
             local participationId = ARGV[1]
 
+            -- block voting if season locked
             if redis.call('EXISTS', lockKey) == 1 then
                 return "LOCKED"
             end
@@ -48,27 +44,25 @@ public class VoteService {
 
                 redis.call('SREM', userVoteSet, participationId)
 
-                local used = tonumber(redis.call('GET', userVoteCountKey) or "0")
-                if used > 0 then
-                    redis.call('DECR', userVoteCountKey)
-                end
+                redis.call('ZINCRBY', leaderboardKey, -1, participationId)
 
-                local votes = redis.call('DECR', participationKey)
+                local votes = redis.call('ZSCORE', leaderboardKey, participationId)
 
                 return "UNVOTE:" .. votes
             end
 
-            -- check vote limit
-            local used = tonumber(redis.call('GET', userVoteCountKey) or "0")
+            -- enforce max 5 votes per season
+            local used = redis.call('SCARD', userVoteSet)
 
             if used >= 5 then
                 return "LIMIT"
             end
 
-            redis.call('INCR', userVoteCountKey)
             redis.call('SADD', userVoteSet, participationId)
 
-            local votes = redis.call('INCR', participationKey)
+            redis.call('ZINCRBY', leaderboardKey, 1, participationId)
+
+            local votes = redis.call('ZSCORE', leaderboardKey, participationId)
 
             return "VOTE:" .. votes
         """);
@@ -80,17 +74,15 @@ public class VoteService {
 
     public boolean toggleVote(UUID participationId, UUID seasonId, UUID authId) {
 
-        String participationKey = "votes:participation:" + participationId;
         String userVoteSet = "votes:user:" + seasonId + ":" + authId;
-        String userVoteCountKey = "votes:season:usercount:" + seasonId + ":" + authId;
+        String leaderboardKey = "leaderboard:season:" + seasonId;
         String lockKey = "season:locked:" + seasonId;
 
         String result = redis.execute(
                 SCRIPT,
                 Arrays.asList(
-                        participationKey,
                         userVoteSet,
-                        userVoteCountKey,
+                        leaderboardKey,
                         lockKey
                 ),
                 participationId.toString()
@@ -113,41 +105,23 @@ public class VoteService {
         String action = parts[0];
         long votes = Long.parseLong(parts[1]);
 
-        if (action.equals("UNVOTE")) {
+        broadcastVote(seasonId, participationId, votes);
 
-            leaderboardService.updateLeaderboard(
-                    seasonId,
-                    participationId,
-                    -1
-            );
-
-            broadcastVote(participationId, votes);
-
-            return false;
-        }
-
-        if (action.equals("VOTE")) {
-
-            leaderboardService.updateLeaderboard(
-                    seasonId,
-                    participationId,
-                    1
-            );
-
-            broadcastVote(participationId, votes);
-
-            return true;
-        }
-
-        throw new IllegalStateException("Unknown vote result");
+        return action.equals("VOTE");
     }
 
     /* ---------- WEBSOCKET BROADCAST ---------- */
 
-    private void broadcastVote(UUID participationId, long votes) {
+    private void broadcastVote(UUID seasonId, UUID participationId, long votes) {
 
-        VoteUpdateDTO payload = new VoteUpdateDTO(participationId, votes);
+        VoteUpdateDTO payload = new VoteUpdateDTO(
+                participationId,
+                votes
+        );
 
-        messagingTemplate.convertAndSend("/topic/votes", payload);
+        messagingTemplate.convertAndSend(
+                "/topic/votes/" + seasonId,
+                payload
+        );
     }
 }
