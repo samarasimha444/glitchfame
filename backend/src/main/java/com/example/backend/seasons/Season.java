@@ -46,5 +46,5 @@ public class Season {
 
 
    @Column(name = "season_lock", nullable = false)
-private boolean locked = false;
+ private boolean locked = false;
 }

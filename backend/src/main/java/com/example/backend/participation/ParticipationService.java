@@ -3,6 +3,8 @@ package com.example.backend.participation;
 import com.example.backend.auth.*;
 import com.example.backend.participation.dto.*;
 import com.example.backend.seasons.*;
+import com.example.backend.seasons.dto.RandomLiveSeasonDTO;
+import com.example.backend.seasons.dto.SeasonDetails;
 
 import lombok.RequiredArgsConstructor;
 
@@ -173,6 +175,63 @@ public class ParticipationService {
 
         return mapParticipants(result);
     }
+
+
+
+    //random live season
+
+    public RandomLiveSeasonDTO getRandomLiveSeason(UUID authId) {
+
+    Season season = seasonRepository.findRandomLiveSeasonEntity();
+
+    if (season == null) {
+        return null;
+    }
+
+    List<Participation> contestants =
+            participationRepository.findApprovedContestants(season.getSeasonId());
+
+    List<UUID> ids = contestants.stream()
+            .map(Participation::getParticipationId)
+            .toList();
+
+    Map<UUID, Long> voteMap =
+            getVotesBatch(ids, season.getSeasonId());
+
+    List<ContestantDTO> contestantDTOs = contestants.stream()
+            .map(p -> ContestantDTO.builder()
+                    .participationId(p.getParticipationId())
+                    .name(p.getName())
+                    .photoUrl(p.getPhotoUrl())
+                    .votes(voteMap.getOrDefault(p.getParticipationId(), 0L))
+                    .hasVoted(false) // optional if you calculate later
+                    .build())
+            .toList();
+
+    return RandomLiveSeasonDTO.builder()
+            .seasonId(season.getSeasonId())
+            .seasonName(season.getName())
+            .seasonPhotoUrl(season.getPhotoUrl())
+            .votingStartDate(season.getVotingStartDate())
+            .votingEndDate(season.getVotingEndDate())
+            .contestants(contestantDTOs)
+            .build();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     /* ---------- SEARCH LIVE ---------- */

@@ -10,6 +10,7 @@ import com.example.backend.participation.dto.Participants;
 
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,35 +22,37 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
 
     // LIVE contestants approved (all live seasons)
     @Query(value = """
-        SELECT
-            p.participation_id AS participationId,
-            p.name AS participantName,
-            p.photo_url AS participantPhotoUrl,
-            p.season_id AS seasonId,
-            0 AS totalVotes,
-            false AS hasVoted
+    SELECT
+        p.participation_id AS participationId,
+        p.name AS participantName,
+        p.photo_url AS participantPhotoUrl,
+        p.season_id AS seasonId,
+        0 AS totalVotes,
+        false AS hasVoted
 
-        FROM participation p
-        JOIN season s ON s.season_id = p.season_id
+    FROM participation p
+    JOIN season s ON s.season_id = p.season_id
 
-        WHERE p.status = 'APPROVED'
-        AND s.registration_start_date <= CURRENT_TIMESTAMP
-        AND s.voting_end_date >= CURRENT_TIMESTAMP
-        """,
-        countQuery = """
-        SELECT COUNT(*)
-        FROM participation p
-        JOIN season s ON s.season_id = p.season_id
-        WHERE p.status = 'APPROVED'
-        AND s.registration_start_date <= CURRENT_TIMESTAMP
-        AND s.voting_end_date >= CURRENT_TIMESTAMP
-        """,
-        nativeQuery = true)
-    Page<Participants> findLiveContestants(
-            @Param("authId") UUID authId,
-            Pageable pageable
-    );
+    WHERE p.status = 'APPROVED'
+    AND s.voting_start_date <= CURRENT_TIMESTAMP
+    AND s.voting_end_date >= CURRENT_TIMESTAMP
+    """,
+    countQuery = """
+    SELECT COUNT(*)
+    FROM participation p
+    JOIN season s ON s.season_id = p.season_id
+    WHERE p.status = 'APPROVED'
+    AND s.voting_start_date <= CURRENT_TIMESTAMP
+    AND s.voting_end_date >= CURRENT_TIMESTAMP
+    """,
+    nativeQuery = true)
+Page<Participants> findLiveContestants(
+        @Param("authId") UUID authId,
+        Pageable pageable
+);
 
+
+    
 
     // approved contestants of a specific season
     @Query(value = """
@@ -78,6 +81,9 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
             @Param("authId") UUID authId,
             Pageable pageable
     );
+
+
+
 
 
     // participant details by id
@@ -115,39 +121,40 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
     );
 
 
-    // search LIVE approved contestants
-    @Query(value = """
-        SELECT
-            p.participation_id AS participationId,
-            p.name AS participantName,
-            p.photo_url AS participantPhotoUrl,
-            p.season_id AS seasonId,
-            0 AS totalVotes,
-            false AS hasVoted
 
-        FROM participation p
-        JOIN season s ON s.season_id = p.season_id
+    //search for participation by name (all live seasons)
+   @Query(value = """
+    SELECT
+        p.participation_id AS participationId,
+        p.name AS participantName,
+        p.photo_url AS participantPhotoUrl,
+        p.season_id AS seasonId,
+        0 AS totalVotes,
+        false AS hasVoted
 
-        WHERE p.status = 'APPROVED'
-        AND p.name ILIKE '%' || :name || '%'
-        AND s.registration_start_date <= CURRENT_TIMESTAMP
-        AND s.voting_end_date >= CURRENT_TIMESTAMP
-        """,
-        countQuery = """
-        SELECT COUNT(*)
-        FROM participation p
-        JOIN season s ON s.season_id = p.season_id
-        WHERE p.status = 'APPROVED'
-        AND p.name ILIKE '%' || :name || '%'
-        AND s.registration_start_date <= CURRENT_TIMESTAMP
-        AND s.voting_end_date >= CURRENT_TIMESTAMP
-        """,
-        nativeQuery = true)
-    Page<Participants> searchLiveApproved(
-            @Param("name") String name,
-            @Param("authId") UUID authId,
-            Pageable pageable
-    );
+    FROM participation p
+    JOIN season s ON s.season_id = p.season_id
+
+    WHERE p.status = 'APPROVED'
+    AND p.name ILIKE '%' || :name || '%'
+    AND s.voting_start_date <= CURRENT_TIMESTAMP
+    AND s.voting_end_date >= CURRENT_TIMESTAMP
+    """,
+    countQuery = """
+    SELECT COUNT(*)
+    FROM participation p
+    JOIN season s ON s.season_id = p.season_id
+    WHERE p.status = 'APPROVED'
+    AND p.name ILIKE '%' || :name || '%'
+    AND s.voting_start_date <= CURRENT_TIMESTAMP
+    AND s.voting_end_date >= CURRENT_TIMESTAMP
+    """,
+    nativeQuery = true)
+Page<Participants> searchLiveApproved(
+        @Param("name") String name,
+        @Param("authId") UUID authId,
+        Pageable pageable
+);
 
 
     // search approved participants in a specific season
@@ -181,4 +188,18 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
             Pageable pageable
     );
 
+
+
+
+
+
+
+
+@Query(value = """
+SELECT p.*
+FROM participation p
+WHERE p.season_id = :seasonId
+AND p.status = 'APPROVED'
+""", nativeQuery = true)
+List<Participation> findApprovedContestants(UUID seasonId);
 }

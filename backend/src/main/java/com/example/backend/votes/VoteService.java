@@ -1,14 +1,15 @@
 package com.example.backend.votes;
-
 import com.example.backend.votes.dto.VoteUpdateDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-
 import java.util.Arrays;
 import java.util.UUID;
+
+
+
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +17,7 @@ public class VoteService {
 
     private final StringRedisTemplate redis;
     private final SimpMessagingTemplate messagingTemplate;
+    private final VoteAsyncService voteAsyncService;
 
     /* ---------- LUA SCRIPT ---------- */
 
@@ -32,18 +34,15 @@ public class VoteService {
 
             local participationId = ARGV[1]
 
-            -- block voting if season locked
             if redis.call('EXISTS', lockKey) == 1 then
                 return "LOCKED"
             end
 
-            -- check if already voted
             local voted = redis.call('SISMEMBER', userVoteSet, participationId)
 
             if voted == 1 then
 
                 redis.call('SREM', userVoteSet, participationId)
-
                 redis.call('ZINCRBY', leaderboardKey, -1, participationId)
 
                 local votes = redis.call('ZSCORE', leaderboardKey, participationId)
@@ -51,7 +50,6 @@ public class VoteService {
                 return "UNVOTE:" .. votes
             end
 
-            -- enforce max 5 votes per season
             local used = redis.call('SCARD', userVoteSet)
 
             if used >= 5 then
@@ -59,7 +57,6 @@ public class VoteService {
             end
 
             redis.call('SADD', userVoteSet, participationId)
-
             redis.call('ZINCRBY', leaderboardKey, 1, participationId)
 
             local votes = redis.call('ZSCORE', leaderboardKey, participationId)
@@ -105,9 +102,14 @@ public class VoteService {
         String action = parts[0];
         long votes = Long.parseLong(parts[1]);
 
+        boolean voted = action.equals("VOTE");
+
         broadcastVote(seasonId, participationId, votes);
 
-        return action.equals("VOTE");
+        // async DB persistence
+        voteAsyncService.persistVote(voted, participationId, authId);
+
+        return voted;
     }
 
     /* ---------- WEBSOCKET BROADCAST ---------- */

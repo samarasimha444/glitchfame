@@ -103,5 +103,22 @@ List<Season> findByVotingStartDateBeforeAndVotingEndDateAfter(
 
 
     List<Season> findByVotingEndDateBefore(Instant now);
+
+
+
+
+
+
+
+
+
+@Query(value = """
+SELECT *
+FROM season
+WHERE NOW() BETWEEN voting_start_date AND voting_end_date
+ORDER BY RANDOM()
+LIMIT 1
+""", nativeQuery = true)
+Season findRandomLiveSeasonEntity();
    
 }
