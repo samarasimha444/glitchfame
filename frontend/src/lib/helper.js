@@ -3,24 +3,7 @@
 
 
 
-export const buildLeaderboard = (users) => {
 
-  if (!users) return [];
-
-  return users
-    .map((user) => ({
-      id: user.participation_id,
-      name: user.participant_name,
-      score: user.vote_count,
-      img: user.photo_url
-    }))
-    .sort((a, b) => b.score - a.score)
-    .map((p, index) => ({
-      ...p,
-      rank: index + 1
-    }));
-
-};
 
  export const getTimeLeft = (endDate) => {
     const now = new Date();

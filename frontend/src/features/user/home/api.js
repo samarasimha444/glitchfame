@@ -86,3 +86,19 @@ export const getSeasonById = async (id) => {
 export const fetchSeasonParticipation= async()=>{
 
 }
+
+export const fetchLeaderboards = async () => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${BASE_URL}leaderboard/live`,{
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch leaderboards");
+  }
+
+  return res.json();
+};

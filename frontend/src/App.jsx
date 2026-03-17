@@ -16,7 +16,6 @@ import SeasonPage from "./features/admin/seasons/SeasonPage";
 import AdminDashboard from "./features/admin/dashboard/AdminDashboard";
 import Home from "./features/user/home/Home";
 import ArenaForm from "./features/user/entryForm/Arena";
-import LeaderBoard from "./features/user/leaderboard/LeaderBoard";
 import SeasonDetails from "./features/user/season/SeasonDetails";
 import PlayerDetails from "./features/user/details/PlayerDetails";
 import Arena from "./features/user/arena/Arena";
@@ -30,6 +29,7 @@ import Dashboard from "./Testing/Dashboard";
 import Login from "./Testing/Login";
 import TestingSignup from "./Testing/TestingSignup";
 import TLeaderBoard from "./Testing/TLeaderboard";
+import LeaderboardPage from "./features/user/leaderboard/LeaderBoard";
 
 export default function App() {
   return (
@@ -68,7 +68,9 @@ export default function App() {
            <Route path="/vote/:id" element={<Vote />} />
          
           <Route path="/season" element={<SeasonDetails />} />
+           <Route path="/leaderboard" element={<LeaderboardPage />} />
          
+                     
 
 
             <Route path="/aboutus" element={<ChallengeDetail />} />
