@@ -26,9 +26,8 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
         p.participation_id AS participationId,
         p.name AS participantName,
         p.photo_url AS participantPhotoUrl,
-        p.season_id AS seasonId,
-        0 AS totalVotes,
-        false AS hasVoted
+        p.season_id AS seasonId
+      
 
     FROM participation p
     JOIN season s ON s.season_id = p.season_id
@@ -60,9 +59,8 @@ Page<Participants> findLiveContestants(
             p.participation_id AS participationId,
             p.name AS participantName,
             p.photo_url AS participantPhotoUrl,
-            p.season_id AS seasonId,
-            0 AS totalVotes,
-            false AS hasVoted
+            p.season_id AS seasonId
+            
 
         FROM participation p
 
@@ -104,10 +102,8 @@ Page<Participants> findLiveContestants(
             s.registration_start_date AS registrationStartDate,
             s.registration_end_date AS registrationEndDate,
             s.voting_start_date AS votingStartDate,
-            s.voting_end_date AS votingEndDate,
+            s.voting_end_date AS votingEndDate
 
-            0 AS voteCount,
-            false AS hasVoted
 
         FROM participation p
         JOIN season s ON s.season_id = p.season_id
@@ -122,15 +118,16 @@ Page<Participants> findLiveContestants(
 
 
 
+
+
     //search for participation by name (all live seasons)
    @Query(value = """
     SELECT
         p.participation_id AS participationId,
         p.name AS participantName,
         p.photo_url AS participantPhotoUrl,
-        p.season_id AS seasonId,
-        0 AS totalVotes,
-        false AS hasVoted
+        p.season_id AS seasonId
+       
 
     FROM participation p
     JOIN season s ON s.season_id = p.season_id
@@ -163,9 +160,8 @@ Page<Participants> searchLiveApproved(
             p.participation_id AS participationId,
             p.name AS participantName,
             p.photo_url AS participantPhotoUrl,
-            p.season_id AS seasonId,
-            0 AS totalVotes,
-            false AS hasVoted
+            p.season_id AS seasonId
+            
 
         FROM participation p
 

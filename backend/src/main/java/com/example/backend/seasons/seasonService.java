@@ -6,20 +6,27 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 import com.example.backend.seasons.dto.SeasonForm;
 import com.example.backend.seasons.dto.SeasonFullResponse;
+import com.example.backend.votes.VoteQueryService;
+import com.example.backend.votes.dto.VoteMeta;
 import com.example.backend.winner.Winner;
 import com.example.backend.winner.WinnerService;
 
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import com.example.backend.participation.ParticipationRepo;
 
 import com.example.backend.participation.admin.ParticipationAdminRepo;
 import com.example.backend.participation.dto.Participants;
+import com.example.backend.participation.dto.ParticipantsImpl;
 
 import jakarta.transaction.Transactional;
 import com.example.backend.config.cloudinary.CloudinaryService;
 import com.example.backend.seasons.dto.SeasonDetails;
+
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
@@ -36,6 +43,7 @@ public class seasonService {
     private final StringRedisTemplate redis;
     private final WinnerService winnerService;
     private final ParticipationRepo participationRepo;
+    private final VoteQueryService voteQueryService;
 
 
 
@@ -191,14 +199,12 @@ return seasonRepository.findSeasons(
 
 
 
-//get season by id
 public SeasonFullResponse getSeasonFull(
         UUID seasonId,
         UUID authId,
         Pageable pageable
 ) {
 
-    // fetch season
     SeasonDetails season =
             seasonRepository.findSeasonBySeasonId(seasonId, authId);
 
@@ -216,25 +222,42 @@ public SeasonFullResponse getSeasonFull(
 
     Page<Participants> participantsPage = Page.empty();
 
-    // fetch participants only if voting is active
     if (isVotingActive) {
-        participantsPage =
+
+        Page<Participants> dbPage =
                 participationRepo.findApprovedParticipants(seasonId, authId, pageable);
+
+        List<UUID> ids = dbPage.stream()
+                .map(Participants::getParticipationId)
+                .toList();
+
+        Map<UUID, VoteMeta> voteMetaMap =
+                voteQueryService.getVoteMetaBatch(ids, seasonId, authId);
+
+        participantsPage = dbPage.map(p -> {
+
+            VoteMeta meta = voteMetaMap.getOrDefault(
+                    p.getParticipationId(),
+                    new VoteMeta(0L, false)
+            );
+
+            return new ParticipantsImpl(
+                    p.getParticipationId(),
+                    p.getParticipantName(),
+                    p.getParticipantPhotoUrl(),
+                    p.getSeasonId(),
+                    meta.getVotes(),
+                    meta.isHasVoted()
+            );
+        });
     }
 
-    // build response
     SeasonFullResponse response = new SeasonFullResponse();
     response.setSeason(season);
     response.setParticipants(participantsPage);
-    // (optional) add this field in DTO if you implemented it
-    // response.setVotingActive(isVotingActive);
 
     return response;
 }
-
-
-
-
 
 
 
@@ -286,35 +309,38 @@ public void endSeason(UUID seasonId, Instant now) {
 
 
 
+
+//reset season
 @Transactional
 public void resetSeason(UUID seasonId) {
 
-    List<UUID> participationIds =
-            participationAdminRepo.findParticipationIdsBySeasonId(seasonId);
+    /* ---------- 1. DELETE LEADERBOARD ---------- */
 
-    // delete vote counters in redis
-    List<String> voteKeys = participationIds.stream()
-            .map(id -> "votes:participation:" + id)
-            .toList();
+    redis.delete("leaderboard:season:" + seasonId);
 
-    if (!voteKeys.isEmpty()) {
-        redis.delete(voteKeys);
+    /* ---------- 2. DELETE ALL USER VOTES ---------- */
+
+    Set<String> userVoteKeys =
+            redis.keys("votes:user:" + seasonId + ":*");
+
+    if (userVoteKeys != null && !userVoteKeys.isEmpty()) {
+        redis.delete(userVoteKeys);
     }
 
-    // delete leaderboard
-    redis.delete("leaderboard:season:" + seasonId);
-    redis.opsForSet().remove("leaderboard:seasons", seasonId.toString());
+    /* ---------- 3. DELETE CONTESTANT IMAGES ---------- */
 
-    // delete contestant images
     cloudinaryService.deleteFolder("home/seasons/" + seasonId + "/contestants");
 
-    // delete participants from DB
+    /* ---------- 4. DELETE PARTICIPANTS FROM DB ---------- */
+
     participationAdminRepo.deleteAllBySeasonId(seasonId);
 }
 
 
 
 
+
+//delete season
 @Transactional
 public void deleteSeason(UUID seasonId) {
 
@@ -331,6 +357,9 @@ public void deleteSeason(UUID seasonId) {
     if (!redisKeys.isEmpty()) {
         redis.delete(redisKeys);
     }
+
+
+
 
     // delete leaderboard
     redis.delete("leaderboard:season:" + seasonId);

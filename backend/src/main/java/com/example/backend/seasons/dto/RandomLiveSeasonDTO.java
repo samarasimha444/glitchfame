@@ -20,6 +20,5 @@ public class RandomLiveSeasonDTO {
     private String seasonPhotoUrl;
     private Instant votingStartDate;
     private Instant votingEndDate;
-
-    private List<ContestantDTO> contestants;
+ private List<ContestantDTO> contestants;
 }
