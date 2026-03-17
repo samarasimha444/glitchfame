@@ -75,6 +75,7 @@ public class ParticipationController {
 
 
 
+
     // search contestants across all live seasons
     @GetMapping("/contestants/search")
     public Page<Participants> searchLiveContestants(
@@ -85,7 +86,6 @@ public class ParticipationController {
     ) {
 
         UUID authId = (UUID) authentication.getPrincipal();
-
         return participationService.searchLiveContestants(
                 name,
                 authId,
@@ -107,7 +107,6 @@ public class ParticipationController {
     ) {
 
         UUID authId = (UUID) authentication.getPrincipal();
-
         return participationService.searchParticipantsBySeason(
                 seasonId,
                 name,
@@ -150,8 +149,7 @@ public ResponseEntity<RandomLiveSeasonDTO> getRandomLiveSeason(
     if (response == null) {
         return ResponseEntity.noContent().build();
     }
-
-    return ResponseEntity.ok(response);
+return ResponseEntity.ok(response);
 }
 
 
@@ -165,7 +163,6 @@ public ResponseEntity<RandomLiveSeasonDTO> getRandomLiveSeason(
     ) {
 
         UUID authId = (UUID) authentication.getPrincipal();
-
         participationService.deleteParticipation(
                 participationId,
                 authId

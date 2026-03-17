@@ -71,6 +71,8 @@ CREATE TABLE participation (
 );
 
 
+
+
 -- indexes
 CREATE INDEX idx_participation_auth ON participation(auth_id);
 CREATE INDEX idx_participation_season ON participation(season_id);
