@@ -5,12 +5,18 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import com.example.backend.seasons.dto.SeasonForm;
+import com.example.backend.seasons.dto.SeasonFullResponse;
 import com.example.backend.winner.Winner;
 import com.example.backend.winner.WinnerService;
 
 import java.util.List;
 import org.springframework.data.redis.core.StringRedisTemplate;
+
+import com.example.backend.participation.ParticipationRepo;
+
 import com.example.backend.participation.admin.ParticipationAdminRepo;
+import com.example.backend.participation.dto.Participants;
+
 import jakarta.transaction.Transactional;
 import com.example.backend.config.cloudinary.CloudinaryService;
 import com.example.backend.seasons.dto.SeasonDetails;
@@ -28,7 +34,9 @@ public class seasonService {
     private final CloudinaryService cloudinaryService;
     private final ParticipationAdminRepo participationAdminRepo;
     private final StringRedisTemplate redis;
-    private WinnerService winnerService;
+    private final WinnerService winnerService;
+    private final ParticipationRepo participationRepo;
+
 
 
 // create season
@@ -166,7 +174,7 @@ return season.isLocked(); // return new state
 
 
 
-// get seasons list
+// get seasons list LIVE/ALL/LIVE_UPCOMING
 public Page<SeasonDetails> getSeasons(UUID authId, String type, int page, int size) {
 Pageable pageable = PageRequest.of(
             page,
@@ -183,14 +191,68 @@ return seasonRepository.findSeasons(
 
 
 
-// get single season details
-public SeasonDetails getSeasonById(UUID seasonId, UUID authId) {
-SeasonDetails season = seasonRepository.findSeasonBySeasonId(seasonId, authId);
-if (season == null) {
-        throw new IllegalArgumentException("Season not found");
+//get season by id
+public SeasonFullResponse getSeasonFull(
+        UUID seasonId,
+        UUID authId,
+        Pageable pageable
+) {
+
+    // fetch season
+    SeasonDetails season =
+            seasonRepository.findSeasonBySeasonId(seasonId, authId);
+
+    if (season == null) {
+        throw new RuntimeException("Season not found");
     }
-return season;
+
+    Instant now = Instant.now();
+
+    boolean isVotingActive =
+            season.getVotingStartDate() != null &&
+            season.getVotingEndDate() != null &&
+            !now.isBefore(season.getVotingStartDate()) &&
+            !now.isAfter(season.getVotingEndDate());
+
+    Page<Participants> participantsPage = Page.empty();
+
+    // fetch participants only if voting is active
+    if (isVotingActive) {
+        participantsPage =
+                participationRepo.findApprovedParticipants(seasonId, authId, pageable);
+    }
+
+    // build response
+    SeasonFullResponse response = new SeasonFullResponse();
+    response.setSeason(season);
+    response.setParticipants(participantsPage);
+    // (optional) add this field in DTO if you implemented it
+    // response.setVotingActive(isVotingActive);
+
+    return response;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @Transactional

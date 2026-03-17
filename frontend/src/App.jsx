@@ -30,6 +30,7 @@ import Dashboard from "./Testing/Dashboard";
 import Login from "./Testing/Login";
 import TestingSignup from "./Testing/TestingSignup";
 import TLeaderBoard from "./Testing/TLeaderboard";
+import Season from "./Testing/Season";
 
 export default function App() {
   return (
@@ -53,6 +54,7 @@ export default function App() {
        <Route path="/login" element={<Login/>}/>
        <Route path="/signup" element={<TestingSignup/>}/>
        <Route path="/leadboard" element={<TLeaderBoard/>}/>
+       <Route path="/season/:seasonId" element={<Season/>}/>
       
 
      

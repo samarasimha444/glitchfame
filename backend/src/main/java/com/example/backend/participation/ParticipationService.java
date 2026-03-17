@@ -134,7 +134,7 @@ public class ParticipationService {
                 .description(form.getDescription())
                 .photoUrl(form.getPhotoUrl())
                 .status("PENDING")
-                .totalVotes(0)
+               
                 .modifiedAt(now)
                 .build();
 
@@ -155,26 +155,6 @@ public class ParticipationService {
     }
 
 
-    /* ---------- APPROVED PARTICIPANTS BY SEASON ---------- */
-
-    public Page<Participants> getApprovedParticipants(
-            UUID seasonId,
-            UUID authId,
-            int page,
-            int size
-    ) {
-
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<Participants> result =
-                participationRepository.findApprovedParticipants(
-                        seasonId,
-                        authId,
-                        pageable
-                );
-
-        return mapParticipants(result);
-    }
 
 
 
@@ -278,6 +258,7 @@ public class ParticipationService {
 
         return mapParticipants(result);
     }
+
 
 
     /* ---------- PARTICIPANT DETAILS ---------- */

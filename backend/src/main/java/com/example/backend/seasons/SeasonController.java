@@ -2,7 +2,10 @@ package com.example.backend.seasons;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -11,6 +14,8 @@ import java.util.UUID;
 
 import com.example.backend.seasons.dto.SeasonDetails;
 import com.example.backend.seasons.dto.SeasonForm;
+import com.example.backend.seasons.dto.SeasonFullResponse;
+
 import org.springframework.security.core.Authentication;
 
 
@@ -106,20 +111,23 @@ public Page<SeasonDetails> getSeasons(
 }
 
 
-
-
-
-// get single season details
 @GetMapping("/{seasonId}")
-public SeasonDetails getSeasonById(
+public ResponseEntity<SeasonFullResponse> getSeasonFull(
         @PathVariable UUID seasonId,
-        Authentication authentication
+        Authentication authentication,
+        @PageableDefault(size = 10) Pageable pageable
 ) {
 
-    UUID authId = UUID.fromString(authentication.getName()); // authId from JWT
+    UUID authId = UUID.fromString(authentication.getName()); // get user id
 
-    return seasonService.getSeasonById(seasonId, authId);
+    return ResponseEntity.ok(
+            seasonService.getSeasonFull(seasonId, authId, pageable)
+    );
 }
+
+
+
+
 
 
 
