@@ -132,3 +132,22 @@ export const getLeaderboard = async () => {
 };
 
 
+
+
+export const fetchRandomParticipation = async () => {
+     const token = localStorage.getItem("token")
+
+    const response = await fetch(`${BASE_URL}/participations/live/random`, {
+    method: "GET", 
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+  
+  if (!response.ok) {
+    throw new Error("Failed to fetch random participation");
+  }
+  
+  return response.json();
+};

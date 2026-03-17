@@ -83,3 +83,6 @@ export const getSeasonById = async (id) => {
 };
 
 
+export const fetchSeasonParticipation= async()=>{
+
+}

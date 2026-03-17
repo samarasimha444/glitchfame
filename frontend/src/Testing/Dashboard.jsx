@@ -13,7 +13,7 @@ export default function Dashboard() {
 
     const token = localStorage.getItem("token");
 
-    /* -------- PROFILE -------- */
+   
 
     const fetchProfile = async () => {
 
@@ -26,8 +26,8 @@ export default function Dashboard() {
 
     };
 
-    /* -------- CONTESTANTS -------- */
-
+    
+    
     const fetchContestants = async () => {
 
       const res = await fetch(

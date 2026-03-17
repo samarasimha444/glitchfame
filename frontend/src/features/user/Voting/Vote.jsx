@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import VotingHeader from "./VotingHeader";
 import ArenaCard from "../arena/ui/ArenaCard";
 import { useParams } from "react-router-dom";
-import { useContestantsById } from "../arena/hooks";
 import { Search } from "lucide-react";
+import { useParticipation, useSeasonVotes} from "./hooks";
 
 
 const useDebounce = (value, delay = 500) => {
@@ -18,20 +18,26 @@ const useDebounce = (value, delay = 500) => {
 };
 
 const Vote = () => {
+
   const { id: seasonId } = useParams();
   const [page, setPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const size = 8;
-  const debouncedSearch = useDebounce(searchQuery, 500);
+   const size = 8;
+   const debouncedSearch = useDebounce(searchQuery, 500);
 
-  const {
-    data: contestantsData,
-    isLoading,
-    isError,
-  } = useContestantsById(seasonId, page, size, debouncedSearch);
+
+  //  const { data: contestantsData = [],isLoading } = useContestants();
+  const { data: contestantsData = {}, isLoading } = useParticipation();
+   console.log(contestantsData)
+
+  
+ const id = contestantsData.seasonId
+
+ useSeasonVotes(!isLoading ? id : null);
 
   const totalPages = useMemo(() => contestantsData?.totalPages || 0, [contestantsData]);
+
 
   const handleNext = useCallback(() => {
     if (page + 1 < totalPages) setPage((prev) => prev + 1);
@@ -80,6 +86,7 @@ const Vote = () => {
         )}
 
         <ArenaCard
+        seasonId={id}
           contestantsData={contestantsData}
           isLoading={isLoading}
         />
