@@ -10,24 +10,24 @@ const MobileBottomNav=()=> {
   return (
     <nav className="fixed bottom-0 left-0 w-full py-3 bg-[#1E2229] border-t border-gray-800 flex justify-around items-center py-2 md:hidden z-50">
 
-      <NavLink to="/" className="flex flex-col items-center text-gray-400 text-xs">
-        <Home size={20} />
+      <NavLink to="/home" className="flex flex-col items-center text-gray-400 text-xs">
+        <Home size={18} />
         Home
       </NavLink>
 
-      <NavLink to="/rank" className="flex flex-col items-center text-gray-400 text-xs">
-        <Trophy size={20} />
+      <NavLink to="/leaderboard" className="flex flex-col items-center text-gray-400 text-xs">
+        <Trophy size={18} />
         Rank
       </NavLink>
 
-      <NavLink to="/vote" className="flex flex-col items-center text-gray-400 text-xs">
-        <Flame size={20} />
+      <NavLink to="/vote/123" className="flex flex-col items-center text-gray-400 text-xs">
+        <Flame size={18} />
         Vote
       </NavLink>
 
-      <NavLink to="/profile" className="flex flex-col items-center text-gray-400 text-xs">
-        <User size={20} />
-        Profile
+      <NavLink to="/aboutus" className="flex flex-col items-center text-gray-400 text-xs">
+        <User size={18} />
+        About
       </NavLink>
 
     </nav>

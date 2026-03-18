@@ -4,7 +4,7 @@ export default function LeaderboardPage() {
   const { data, isLoading } = useLeaderboards();
   console.log(data)
 
-  useLeaderboardVotes(data);
+ 
 
   if (isLoading || !data) return <p>Loading...</p>;
 

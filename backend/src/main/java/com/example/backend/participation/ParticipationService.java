@@ -4,14 +4,14 @@ import com.example.backend.auth.*;
 import com.example.backend.participation.dto.*;
 import com.example.backend.seasons.*;
 import com.example.backend.seasons.dto.RandomLiveSeasonDTO;
-import com.example.backend.seasons.dto.SeasonDetails;
+import com.example.backend.votes.dto.*;
+import com.example.backend.votes.VoteQueryService;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -24,34 +24,11 @@ public class ParticipationService {
     private final ParticipationRepo participationRepository;
     private final SeasonRepo seasonRepository;
     private final AuthRepo authRepository;
-    private final StringRedisTemplate redis;
+    private final VoteQueryService voteQueryService;
 
+    /* ---------- MAP PARTICIPANTS + REDIS ---------- */
 
-    /* ---------- FETCH VOTES FROM REDIS ---------- */
-
-    private Map<UUID, Long> getVotesBatch(List<UUID> participationIds, UUID seasonId) {
-
-        String leaderboardKey = "leaderboard:season:" + seasonId;
-
-        Map<UUID, Long> votes = new HashMap<>();
-
-        for (UUID id : participationIds) {
-
-            Double score = redis.opsForZSet().score(
-                    leaderboardKey,
-                    id.toString()
-            );
-
-            votes.put(id, score == null ? 0L : score.longValue());
-        }
-
-        return votes;
-    }
-
-
-    /* ---------- MAP PARTICIPANTS + REDIS VOTES ---------- */
-
-    private Page<Participants> mapParticipants(Page<Participants> result) {
+    private Page<Participants> mapParticipants(Page<Participants> result, UUID authId) {
 
         List<UUID> ids = result.stream()
                 .map(Participants::getParticipationId)
@@ -61,19 +38,28 @@ public class ParticipationService {
                 ? null
                 : result.getContent().get(0).getSeasonId();
 
-        Map<UUID, Long> voteMap =
-                seasonId == null ? new HashMap<>() : getVotesBatch(ids, seasonId);
+        Map<UUID, VoteMeta> voteMetaMap =
+                seasonId == null
+                        ? new HashMap<>()
+                        : voteQueryService.getVoteMetaBatch(ids, seasonId, authId);
 
-        return result.map(p -> new ParticipantsImpl(
-                p.getParticipationId(),
-                p.getParticipantName(),
-                p.getParticipantPhotoUrl(),
-                p.getSeasonId(),
-                voteMap.getOrDefault(p.getParticipationId(), 0L),
-                p.getHasVoted()
-        ));
+        return result.map(p -> {
+
+            VoteMeta meta = voteMetaMap.getOrDefault(
+                    p.getParticipationId(),
+                    new VoteMeta(0L, false)
+            );
+
+            return new ParticipantsImpl(
+                    p.getParticipationId(),
+                    p.getParticipantName(),
+                    p.getParticipantPhotoUrl(),
+                    p.getSeasonId(),
+                    meta.getVotes(),
+                    meta.isHasVoted()
+            );
+        });
     }
-
 
     /* ---------- CREATE PARTICIPATION ---------- */
 
@@ -134,102 +120,66 @@ public class ParticipationService {
                 .description(form.getDescription())
                 .photoUrl(form.getPhotoUrl())
                 .status("PENDING")
-                .totalVotes(0)
                 .modifiedAt(now)
                 .build();
 
         participationRepository.save(participation);
     }
 
-
     /* ---------- LIVE CONTESTANTS ---------- */
 
     public Page<Participants> getLiveContestants(UUID authId, int page, int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<Participants> result =
+Pageable pageable = PageRequest.of(page, size);
+Page<Participants> result =
                 participationRepository.findLiveContestants(authId, pageable);
-
-        return mapParticipants(result);
-    }
-
-
-    /* ---------- APPROVED PARTICIPANTS BY SEASON ---------- */
-
-    public Page<Participants> getApprovedParticipants(
-            UUID seasonId,
-            UUID authId,
-            int page,
-            int size
-    ) {
-
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<Participants> result =
-                participationRepository.findApprovedParticipants(
-                        seasonId,
-                        authId,
-                        pageable
-                );
-
-        return mapParticipants(result);
+return mapParticipants(result, authId);
     }
 
 
 
-    //random live season
+    /* ---------- RANDOM LIVE SEASON ---------- */
 
     public RandomLiveSeasonDTO getRandomLiveSeason(UUID authId) {
+ Season season = seasonRepository.findRandomLiveSeasonEntity();
+ if (season == null) {
+            return null;}
 
-    Season season = seasonRepository.findRandomLiveSeasonEntity();
+        List<Participation> contestants =
+                participationRepository.findApprovedContestants(season.getSeasonId());
+ List<UUID> ids = contestants.stream()
+                .map(Participation::getParticipationId)
+                .toList();
 
-    if (season == null) {
-        return null;
+        Map<UUID, VoteMeta> voteMetaMap =
+                voteQueryService.getVoteMetaBatch(ids, season.getSeasonId(), authId);
+
+        List<ContestantDTO> contestantDTOs = contestants.stream()
+                .map(p -> {
+
+                    VoteMeta meta = voteMetaMap.getOrDefault(
+                            p.getParticipationId(),
+                            new VoteMeta(0L, false)
+                    );
+
+                    return ContestantDTO.builder()
+                            .participationId(p.getParticipationId())
+                            .name(p.getName())
+                            .photoUrl(p.getPhotoUrl())
+                            .votes(meta.getVotes())
+                            .hasVoted(meta.isHasVoted())
+                            .build();
+                })
+                .toList();
+
+        return RandomLiveSeasonDTO.builder()
+                .seasonId(season.getSeasonId())
+                .seasonName(season.getName())
+                .seasonPhotoUrl(season.getPhotoUrl())
+                .votingStartDate(season.getVotingStartDate())
+                .votingEndDate(season.getVotingEndDate())
+                .contestants(contestantDTOs)
+                .build();
     }
-
-    List<Participation> contestants =
-            participationRepository.findApprovedContestants(season.getSeasonId());
-
-    List<UUID> ids = contestants.stream()
-            .map(Participation::getParticipationId)
-            .toList();
-
-    Map<UUID, Long> voteMap =
-            getVotesBatch(ids, season.getSeasonId());
-
-    List<ContestantDTO> contestantDTOs = contestants.stream()
-            .map(p -> ContestantDTO.builder()
-                    .participationId(p.getParticipationId())
-                    .name(p.getName())
-                    .photoUrl(p.getPhotoUrl())
-                    .votes(voteMap.getOrDefault(p.getParticipationId(), 0L))
-                    .hasVoted(false) // optional if you calculate later
-                    .build())
-            .toList();
-
-    return RandomLiveSeasonDTO.builder()
-            .seasonId(season.getSeasonId())
-            .seasonName(season.getName())
-            .seasonPhotoUrl(season.getPhotoUrl())
-            .votingStartDate(season.getVotingStartDate())
-            .votingEndDate(season.getVotingEndDate())
-            .contestants(contestantDTOs)
-            .build();
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -252,8 +202,10 @@ public class ParticipationService {
                         pageable
                 );
 
-        return mapParticipants(result);
+        return mapParticipants(result, authId);
     }
+
+
 
 
     /* ---------- SEARCH BY SEASON ---------- */
@@ -276,20 +228,54 @@ public class ParticipationService {
                         pageable
                 );
 
-        return mapParticipants(result);
+        return mapParticipants(result, authId);
     }
-
 
     /* ---------- PARTICIPANT DETAILS ---------- */
 
     public ParticipantById getParticipationById(UUID participationId, UUID authId) {
-
-        return participationRepository.findParticipantById(
+ ParticipantById p = participationRepository.findParticipantById(
                 participationId,
                 authId
         );
+
+        if (p == null) return null;
+UUID seasonId = p.getSeasonId();
+Map<UUID, VoteMeta> metaMap =
+                voteQueryService.getVoteMetaBatch(
+                        List.of(participationId),
+                        seasonId,
+                        authId
+                );
+
+        VoteMeta meta = metaMap.getOrDefault(
+                participationId,
+                new VoteMeta(0L, false)
+        );
+
+        return new ParticipantByIdImpl(
+                p.getParticipationId(),
+                p.getParticipantName(),
+                p.getParticipantPhotoUrl(),
+                p.getDateOfBirth(),
+                p.getLocation(),
+                p.getDescription(),
+                p.getStatus(),
+                p.getSeasonId(),
+                p.getSeasonName(),
+                p.getPrizeMoney(),
+                meta.getVotes(),
+                meta.isHasVoted(),
+                p.getSeasonPhotoUrl(),
+                p.getRegistrationStartDate(),
+                p.getRegistrationEndDate(),
+                p.getVotingStartDate(),
+                p.getVotingEndDate()
+        );
     }
 
+
+    
 
     /* ---------- DELETE PARTICIPATION ---------- */
 
@@ -304,5 +290,4 @@ public class ParticipationService {
 
         participationRepository.delete(participation);
     }
-
 }

@@ -34,7 +34,18 @@ h1, h2, h3, h4, h5, h6 {
   color: #9DE2E2;
 }
 
+.bg-primary {
+  color:#9DE2E2
+}
 
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
 
 .neon-blink {

@@ -34,24 +34,6 @@ public class ParticipationController {
 
 
 
-    // get all approved participations of a season
-    @GetMapping("/seasons/{seasonId}/participants")
-    public Page<Participants> getParticipants(
-            @PathVariable UUID seasonId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
-            Authentication authentication
-    ) {
-
-        UUID authId = (UUID) authentication.getPrincipal();
-
-        return participationService.getApprovedParticipants(
-                seasonId,
-                authId,
-                page,
-                size
-        );
-    }
 
 
 
@@ -75,6 +57,7 @@ public class ParticipationController {
 
 
 
+
     // search contestants across all live seasons
     @GetMapping("/contestants/search")
     public Page<Participants> searchLiveContestants(
@@ -85,7 +68,6 @@ public class ParticipationController {
     ) {
 
         UUID authId = (UUID) authentication.getPrincipal();
-
         return participationService.searchLiveContestants(
                 name,
                 authId,
@@ -107,7 +89,6 @@ public class ParticipationController {
     ) {
 
         UUID authId = (UUID) authentication.getPrincipal();
-
         return participationService.searchParticipantsBySeason(
                 seasonId,
                 name,
@@ -125,14 +106,10 @@ public class ParticipationController {
             @PathVariable UUID participationId,
             Authentication authentication
     ) {
-
-        UUID authId = (UUID) authentication.getPrincipal();
-
-        return participationService.getParticipationById(
+UUID authId = (UUID) authentication.getPrincipal();
+ return participationService.getParticipationById(
                 participationId,
-                authId
-        );
-    }
+                authId);}
 
 
 
@@ -143,21 +120,20 @@ public ResponseEntity<RandomLiveSeasonDTO> getRandomLiveSeason(
 ) {
 
     UUID authId = UUID.fromString(auth.getName()); // extract user id from token
-
-    RandomLiveSeasonDTO response =
-            participationService.getRandomLiveSeason(authId);
-
-    if (response == null) {
+ RandomLiveSeasonDTO response =
+participationService.getRandomLiveSeason(authId);
+if (response == null) {
         return ResponseEntity.noContent().build();
-    }
-
-    return ResponseEntity.ok(response);
+}
+return ResponseEntity.ok(response);
 }
 
 
 
 
-    // delete participation
+    
+
+// delete participation
     @DeleteMapping("/{participationId}")
     public void deleteParticipation(
             Authentication authentication,
@@ -165,7 +141,6 @@ public ResponseEntity<RandomLiveSeasonDTO> getRandomLiveSeason(
     ) {
 
         UUID authId = (UUID) authentication.getPrincipal();
-
         participationService.deleteParticipation(
                 participationId,
                 authId

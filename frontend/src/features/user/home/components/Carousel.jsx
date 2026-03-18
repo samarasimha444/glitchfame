@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 
 export default function FeaturedCarousel({ season }) {
+  console.log(season)
   
 
   const fallback =
@@ -33,7 +34,7 @@ export default function FeaturedCarousel({ season }) {
         </p>
       </section>
 
-      <section className="border border-gray-600 rounded-xl md:rounded-none w-full max-w-90 md:max-w-screen md:w-280 h-62.5 md:h-160 relative overflow-hidden aspect-16\/9">
+      <section className="border border-gray-600 rounded-xl md:rounded-none w-full max-w-90 md:max-w-screen md:w-280 h-64 md:h-160 relative overflow-hidden aspect-16\/9">
         <img
           src={`${season?.seasonPhotoUrl || fallback}?auto=compress&cs=tinysrgb&w=1600`}
           alt="event"
@@ -43,10 +44,10 @@ export default function FeaturedCarousel({ season }) {
           onError={(e) => (e.target.src = fallback)}
         />
 
-        <div className="absolute hidden md:flex inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+        <div className="absolute  hidden md:flex inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
 
         <section className="absolute hidden md:flex  inset-0 flex-col items-center justify-center text-center text-white px-6">
-          <span className="border border-purple-400 max-w-xs text-purple-300 text-xs px-4 py-1 rounded-full backdrop-blur bg-black/30">
+          <span className="border border-purple-400 max-w-xs text-primary text-xs px-4 py-1 rounded-full backdrop-blur bg-black/30">
             NEXT CHALLENGE ANNOUNCEMENT
           </span>
 
@@ -65,7 +66,7 @@ export default function FeaturedCarousel({ season }) {
 
           <Link
             to={`/enter/${season?.seasonId}`}
-            className="mt-6 bg-[#BE5EED] hover:opacity-90 transition text-black font-semibold px-6 py-3 rounded-full"
+            className="mt-6 bg-[#9DE2E2] hover:opacity-90 transition text-black font-semibold px-6 py-3 rounded-full"
           >
             Register Now →
           </Link>
@@ -82,7 +83,7 @@ export default function FeaturedCarousel({ season }) {
         </section>
 
         <section className="absolute sm:hidden bottom-0 left-0 w-full p-4 text-white bg-gradient-to-t from-black/90 via-black/60 to-transparent">
-          <span className="border border-[#BE5EED] font-semibold text-[#BE5EED] text-[9px] px-2 py-0.5 w-fit">
+          <span className="border  font-semibold bg-primary text-[9px] px-2 py-0.5 w-fit">
             #FEATUREDCHALLENGE
           </span>
 
@@ -106,7 +107,7 @@ export default function FeaturedCarousel({ season }) {
 
             <Link
               to={`/enter/${season?.seasonId}`}
-              className="bg-[#BE5EED] cursor-pointer rounded-full px-5 py-2 text-xs font-semibold"
+              className=" border bg-[#9DE2E2] text-black cursor-pointer rounded-full px-5 py-2 text-xs font-semibold"
             >
               Register Now →
             </Link>

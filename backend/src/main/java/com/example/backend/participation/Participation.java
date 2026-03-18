@@ -52,7 +52,6 @@ public class Participation {
     @Column(name = "modified_at")
     private Instant modifiedAt;
 
-   @Column(name = "total_votes", insertable = false, updatable = false)
-  private Integer totalVotes;
+
 
 }

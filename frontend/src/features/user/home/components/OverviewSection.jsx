@@ -33,22 +33,19 @@ const features = [
 
 const Overview = () => {
   return (
+    <div className="w-full mt-4 md:bg-[#1E2229] py-3 mb-4 md:py-24 flex    justify-center">
 
-    
-    <div className="w-full mt-4 md:bg-[#1E2229] py-3 mb-4 md:py-24 flex justify-center">
+      <div className="w-full max-w-7xl px-2 md:px-16 flex flex-col md:flex-row justify-between gap-6 sm:gap-12 md:gap-20">
 
-      <div className="w-full max-w-7xl px-6 md:px-16 flex flex-col md:flex-row justify-between gap-12 md:gap-20">
-
-      
-        <div className="w-full md:w-1/2 text-white space-y-6">
+        <div className="w-full hidden sm:flex md:w-1/2 text-white space-y-6">
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight">
-            NOT JUST 
-            ANOTHER 
-            PICTURE.
+            NOT JUST ANOTHER PICTURE.
           </h2>
 
           <p className="text-gray-400 max-w-xl text-base md:text-lg">
-           GlitchFame is where creators compete and the community decides. Discover talent, cast your vote, and help crown the next digital icon.
+            GlitchFame is where creators compete and the community decides.
+            Discover talent, cast your vote, and help crown the next digital
+            icon.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -62,30 +59,50 @@ const Overview = () => {
           </div>
         </div>
 
-       
-        <div className="w-full md:w-1/2 grid grid-cols-2 sm:grid-cols-2 gap-6">
-  {features.map((item, index) => {
-    const Icon = item.icon;
+        <div className="w-full  md:w-1/2 grid grid-cols-2 sm:grid-cols-4 gap-6">
+          {features.map((item, index) => {
+            const Icon = item.icon;
 
-    return (
-      <div
-        key={item.id}
-        className={`border border-gray-700 p-6 md:p-8 space-y-4 hover:border-[#BE5EED] transition
+            return (
+              <div
+                key={item.id}
+                className={`border flex flex-col bg-[#2F3849] items-center justify-center text-center border-gray-700 py-6 sm:p-5 md:p-6 space-y-2 sm:space-y-3 
+                  hover:border-[#BE5EED] transition rounded-lg sm:rounded-xl
         ${index >= 2 ? "hidden md:block" : ""}
         `}
-      >
-        <Icon className="text-[#BE5EED]" size={26} sm:size={32} />
-        <h3 className="text-white font-bold text-lg">
-          {item.title}
-        </h3>
-        <p className="text-gray-400  text-xs sm:text-sm">
-          {item.description}
-        </p>
-      </div>
-    );
-  })}
-</div>
+              >
+                <Icon className="text-primary" size={20} />
 
+                <h3 className="text-white font-semibold text-sm sm:text-base">
+                  {item.title}
+                </h3>
+
+                <p className="text-gray-400 text-[13px] sm:text-xs leading-snug">
+                  {item.description}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+
+        <section className="col-span-2 ">
+          <div className="flex items-center justify-between bg-[#2A3442] border border-[#3A4656] rounded-2xl px-4 py-4 hover:border-[#BE5EED] transition">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-[#3A4656] flex items-center justify-center">
+                <Trophy className="text-cyan-300" size={18} />
+              </div>
+
+              <div className="flex flex-col">
+                <span className="text-[10px] text-gray-400 uppercase tracking-wide">
+                  Live Reward Pool
+                </span>
+                <span className="text-white text-lg font-bold">₹250,000</span>
+              </div>
+            </div>
+
+            <span className="text-gray-400 text-xl">›</span>
+          </div>
+        </section>
       </div>
     </div>
   );

@@ -1,122 +1,109 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useLiveUpcomingSeasons } from "../hooks";
 import { Timer } from "lucide-react";
-import { isSeasonLive } from "../../../../lib/helper";
 import { getTimeLeft } from "../../../../lib/helper";
 import ShimmerCard from "../../../../components/ShimmerCard";
 
 
-const liveSeasons =[
+
+
+
+const seasons = [
   {
-    "seasonId": 1,
-    "seasonName": "Summer Battle 2026",
-    "seasonPhotoUrl": "https://images.pexels.com/photos/7005759/pexels-photo-7005759.jpeg",
-    "prizeMoney": "$10,000",
-    "votingEndDate": "2026-03-15T18:00:00Z",
-    "timeLeft": "6d 12h"
+    seasonId: "1",
+    seasonName: "Marco 'Pixel' Rossi",
+    seasonPhotoUrl: "https://images.unsplash.com/photo-1607746882042-944635dfe10e",
+    category: "Digital Art",
+    views: "12.4K",
+    votingEndDate: "2026-03-25T23:59:59",
   },
   {
-    "seasonId": 2,
-    "seasonName": "Winter Clash 2026",
-    "seasonPhotoUrl": "https://images.pexels.com/photos/13923711/pexels-photo-13923711.jpeg",
-    "prizeMoney": "$7,500",
-    "votingEndDate": "2026-03-20T20:00:00Z",
-    "timeLeft": "11d 14h"
-  },
-  {
-    "seasonId": 3,
-    "seasonName": "Spring Showdown 2026",
-    "seasonPhotoUrl": "https://images.pexels.com/photos/6632526/pexels-photo-6632526.jpeg",
-    "prizeMoney": "$12,000",
-    "votingEndDate": "2026-03-25T22:00:00Z",
-    "timeLeft": "16d 16h"
-  },
-  {
-    "seasonId": 4,
-    "seasonName": "Autumn Arena 2026",
-    "seasonPhotoUrl": "https://images.pexels.com/photos/6806082/pexels-photo-6806082.jpeg",
-    "prizeMoney": "$5,000",
-    "votingEndDate": "2026-03-18T15:00:00Z",
-    "timeLeft": "9d 9h"
+    seasonId: "2",
+    seasonName: "Sarah J. Bloom",
+    seasonPhotoUrl: "https://images.unsplash.com/photo-1543852786-1cf6624b9987",
+    category: "Vocalist",
+    views: "9.8K",
+    votingEndDate: "2026-03-22T18:00:00",
   }
-]
-
-
-const Cards = () => {
-
+];
+const Cards = ({ isLoading }) => {
   const navigate = useNavigate();
 
-
-
-  const { data: seasons = [], isLoading } = useLiveUpcomingSeasons();
-
-
-
-  // const liveSeasons = seasons.filter(isSeasonLive);
-  const liveSeasons = seasons
-  console.log(liveSeasons);
-
-  return (
-     <>
-    <div className="w-full max-w-screen  mx-auto px-4 sm:px-6 md:px-10 lg:px-20">
-
- 
-    
+   return (
+    <div className="w-full max-w-screen mx-auto  sm:px-6 md:px-10 lg:px-20">
 
       {isLoading ? (
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6">
+        <section className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
           <ShimmerCard />
           <ShimmerCard />
         </section>
-      ) : liveSeasons.length === 0 ? (
+      ) : seasons.length === 0 ? (
+
         <div className="w-full text-center py-20 text-gray-400 text-xl">
           No live seasons found.
         </div>
+
       ) : (
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-2 sm:px-0">
-  {liveSeasons.map((item) => (
-    <Link
-      to={`/arena/${item.seasonId}`}
-      onClick={() => navigate("/arena")}
-      key={item.seasonId}
-      className="bg-[#181B20] rounded-lg w-full sm:max-w-[320px] md:max-w-[374px] md:h-[403px] overflow-hidden border border-[#282e36] hover:border-purple-500 transition duration-300 mx-auto"
-    >
-      <img
-        src={`${item.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=600`}
-        alt={item.seasonName}
-        loading="lazy"
-        decoding="async"
-        className="w-full h-[25vh] sm:h-72 object-cover"
-      />
 
-      <div className="flex flex-col justify-between space-y-3 px-3 py-3 sm:py-5">
-        <div className="flex justify-between items-center">
-          <h4 className="text-white text-[18px] font-semibold md:text-[19px] sm:text-base">
-            {item.seasonName}
-          </h4>
-          <span className="text-[#BE5EED] hidden sm:flex text-sm font-medium">
-            ${item.prizeMoney}
-          </span>
-        </div>
+        <section className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
 
-        <div className="flex gap-4 sm:bg-[#1D2127] text-center sm:py-2 h-full text-gray-400 text-xs sm:text-sm rounded-md">
-          <p className="flex pl-3 space-x-2 items-center text-xs sm:text-sm">
-            <Timer size={15} /> <span>{getTimeLeft(item.votingEndDate)}</span>
-          </p>
-          <span className="text-orange-300 text-xs sm:text-sm">{item.timeLeft}</span>
-        </div>
-      </div>
+          {seasons.map((item) => (
+            <Link
+              to={`/arena/${item.seasonId}`}
+              key={item.seasonId}
+              className="w-full h-[278px] bg-[#181B20] rounded-2xl overflow-hidden border border-[#364354] hover:border-purple-500 transition duration-300 flex flex-col"
+            >
 
-      <button className="w-full md:hidden bg-black py-3 mb-1 border-gray-600 border">
-        View Details
-      </button>
-    </Link>
-  ))}
-</section>
+              
+              <div className="relative">
+
+                <img
+                 src={`${item.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=600`}
+                  alt={item.seasonName}
+                   loading="lazy"
+  decoding="async"
+                  className=" h-[163px] w-full object-cover"
+                />
+
+                <span className="absolute top-2 left-2 bg-red-500 text-white text-[8px] px-2 py-1 rounded-full font-medium">
+                  ● LIVE
+                </span>
+              </div>
+
+             
+              <div className="flex flex-col justify-between flex-1 p-4">
+
+                <div>
+                  <p className="text-[11px] text-primary uppercase tracking-wide">
+                    {item.category}
+                  </p>
+
+                <h3 className="text-white text-[14px] font-semibold mt-1 leading-snug line-clamp-2 min-h-[42px]">
+                    {item.seasonName}
+                  </h3>
+                </div>
+
+               
+
+              
+                <div className="flex justify-between items-center text-xs  text-gray-400">
+                  <p className="flex items-center gap-1">
+                    <Timer size={14} />
+                    <span>{getTimeLeft(item.votingEndDate)}</span>
+                  </p>
+
+                  <span className="text-primary font-medium cursor-pointer">
+                    Vote
+                  </span>
+                </div>
+
+              </div>
+            </Link>
+          ))}
+
+        </section>
       )}
     </div>
-      </>
   );
 };
 

@@ -1,44 +1,104 @@
-import { memo } from "react";
-import CountdownTimer from "./CountdownTimer";
+import { memo, useEffect, useState } from "react";
 
+export const StickyHeader = memo(({ liveSeason, season }) => {
+  const [timeLeft, setTimeLeft] = useState(null);
 
+  const calculateTimeLeft = () => {
+    let targetDate;
 
+    if (season?.votingEndDate) {
+      targetDate = new Date(season.votingEndDate);
+    } else {
+      // fake 2-hour timer
+      targetDate = new Date(new Date().getTime() + 2 * 60 * 60 * 1000);
+    }
 
-export const StickyHeader = memo(({ liveSeason, season }) => (
-  <div className="sticky top-0 z-30 w-full bg-opacity-50 backdrop-blur-sm md:static">
-    <div className="max-w-6xl px-2 w-full md:mb-6 mt-6 mx-auto text-center sm:px-4">
-      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold">
-        <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-          GLITCHFAME
-        </span>
-      </h1>
-      <p className="text-gray-400 uppercase mt-2 sm:mt-3 text-sm sm:text-base md:text-lg">
-        {liveSeason?.seasonName}
-      </p>
+    const diff = targetDate - new Date();
 
-      <div className="flex w-full justify-center gap-3 sm:gap-6 mt-6 sm:mt-10 flex-wrap">
-        <div className="flex-1 sm:flex-none bg-[#11161f] px-3 sm:px-8 md:px-12 py-4 sm:py-5 md:py-7 rounded-xl border border-gray-700 text-center">
-          <p className="text-[10px] sm:text-xs md:text-sm text-gray-400 mb-1 sm:mb-2">
-            VOTING ENDS IN
-          </p>
-          <h2 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
-            {season?.votingEndDate ? (
-              <CountdownTimer endDate={liveSeason?.votingEndDate} />
-            ) : (
-              <span className="inline-block w-25 sm:w-[250px] mt-1 h-8 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 animate-pulse"></span>
-            )}
-          </h2>
-        </div>
+    // ✅ when ended → return zeros instead of null
+    if (diff <= 0) {
+      return {
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+      };
+    }
 
-        <div className="flex-1 w-full max-w-xs sm:flex-none bg-[#0f1e22] px-3 sm:px-8 md:px-12 py-4 sm:py-5 md:py-7 rounded-xl border border-cyan-500/30 text-center">
-          <p className="text-[10px] sm:text-xs md:text-sm text-gray-400 mb-1 sm:mb-2">
-            TOTAL PRIZE POOL
-          </p>
-          <h2 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-cyan-400">
-            ₹{liveSeason?.prizeMoney || 0}
-          </h2>
+    return {
+      days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((diff / 1000 / 60) % 60),
+      seconds: Math.floor((diff / 1000) % 60),
+    };
+  };
+
+  useEffect(() => {
+    setTimeLeft(calculateTimeLeft());
+
+    const interval = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [season?.votingEndDate]);
+
+  return (
+    <div className="sticky top-0 z-30 w-full backdrop-blur-sm">
+      <div className="w-full md:max-w-6xl md:mx-auto">
+        <div className="w-full mt-4 md:mt-6 px-0 md:px-4">
+          <div
+            className="w-full p-4 sm:p-6 
+        rounded-none md:rounded-2xl 
+        border-y md:border border-cyan-500/20 
+        shadow-none md:shadow-[0_0_30px_rgba(0,255,255,0.05)]"
+          >
+            {/* HEADER */}
+            <div className="flex items-center justify-between mb-4 px-2 md:px-0">
+              <div>
+                <p className="text-xs text-gray-400">TIME REMAINING</p>
+                <p className="text-sm text-gray-500">
+                  PHASE 1 REGISTRATION
+                </p>
+              </div>
+
+              <span className="text-xs px-3 py-1 rounded-full border border-cyan-400/30 text-cyan-400">
+                Ends Soon
+              </span>
+            </div>
+
+            {/* TIMER */}
+            <div className="flex justify-between sm:justify-center gap-2 sm:gap-5 px-2 md:px-0">
+              {[
+                { label: "DAYS", value: timeLeft?.days ?? 0 },
+                { label: "HOURS", value: timeLeft?.hours ?? 0 },
+                { label: "MINS", value: timeLeft?.minutes ?? 0 },
+                { label: "SECS", value: timeLeft?.seconds ?? 0 },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="flex flex-col items-center flex-1"
+                >
+                  <div
+                    className="w-full max-w-[70px] sm:max-w-none h-14 sm:h-20 
+                  flex items-center justify-center rounded-xl 
+                  bg-[#0f1e22] border border-cyan-500/20 
+                  shadow-[0_0_15px_rgba(0,255,255,0.12)]"
+                  >
+                    <span className="text-lg sm:text-3xl font-bold text-cyan-400">
+                      {String(item.value).padStart(2, "0")}
+                    </span>
+                  </div>
+
+                  <span className="text-[9px] sm:text-xs text-gray-400 mt-2 tracking-widest">
+                    {item.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-));
+  );
+});
