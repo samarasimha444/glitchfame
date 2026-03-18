@@ -89,10 +89,8 @@ public class VoteService {
             throw new IllegalStateException("Redis returned null");
         }
 
-        if (result.equals("LOCKED")) {
-            throw new IllegalStateException("Season locked");
-        }
-
+        
+        
         if (result.equals("LIMIT")) {
             throw new IllegalStateException("Maximum 5 votes allowed per season");
         }
@@ -103,13 +101,11 @@ public class VoteService {
         long votes = Long.parseLong(parts[1]);
 
         boolean voted = action.equals("VOTE");
-
         broadcastVote(seasonId, participationId, votes);
 
         // async DB persistence
         voteAsyncService.persistVote(voted, participationId, authId);
-
-        return voted;
+    return voted;
     }
 
     /* ---------- WEBSOCKET BROADCAST ---------- */

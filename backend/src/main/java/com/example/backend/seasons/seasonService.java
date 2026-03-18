@@ -11,27 +11,27 @@ import com.example.backend.votes.dto.VoteMeta;
 import com.example.backend.winner.Winner;
 import com.example.backend.winner.WinnerService;
 import lombok.extern.slf4j.Slf4j;
-
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.data.redis.core.StringRedisTemplate;
-
 import com.example.backend.participation.ParticipationRepo;
-
 import com.example.backend.participation.admin.ParticipationAdminRepo;
 import com.example.backend.participation.dto.Participants;
 import com.example.backend.participation.dto.ParticipantsImpl;
-
 import jakarta.transaction.Transactional;
 import com.example.backend.config.cloudinary.CloudinaryService;
 import com.example.backend.seasons.dto.SeasonDetails;
-
 import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+
+
+
+
+
+
 
 
 @Slf4j
@@ -57,6 +57,8 @@ public Season createSeason(SeasonForm form) {
     Instant votingStart = form.getVotingStartDate().toInstant();
     Instant votingEnd = form.getVotingEndDate().toInstant();
 
+    
+    
     if (seasonRepository.existsByName(form.getName())) {
         throw new IllegalArgumentException("Season name already exists");
     }
@@ -78,19 +80,17 @@ public Season createSeason(SeasonForm form) {
     }
 
     Season season = new Season();
-
     season.setName(form.getName());
     season.setDescription(form.getDescription());
     season.setPrize(form.getPrize());
     season.setPhotoUrl(form.getPhotoUrl());
-
     season.setRegistrationStartDate(registrationStart);
     season.setRegistrationEndDate(registrationEnd);
     season.setVotingStartDate(votingStart);
     season.setVotingEndDate(votingEnd);
-
-    return seasonRepository.save(season);
+return seasonRepository.save(season);
 }
+
 
 
 //update votes
@@ -99,23 +99,19 @@ public void adjustDates(UUID seasonId,
                         OffsetDateTime registrationEnd,
                         OffsetDateTime votingStart,
                         OffsetDateTime votingEnd) {
-
-    Season season = seasonRepository.findById(seasonId)
+Season season = seasonRepository.findById(seasonId)
             .orElseThrow(() -> new IllegalArgumentException("Season not found"));
 
     // convert incoming values to Instant
     Instant newRegistrationStart = registrationStart != null
             ? registrationStart.toInstant()
             : season.getRegistrationStartDate();
-
     Instant newRegistrationEnd = registrationEnd != null
             ? registrationEnd.toInstant()
             : season.getRegistrationEndDate();
-
     Instant newVotingStart = votingStart != null
             ? votingStart.toInstant()
             : season.getVotingStartDate();
-
     Instant newVotingEnd = votingEnd != null
             ? votingEnd.toInstant()
             : season.getVotingEndDate();
@@ -157,10 +153,11 @@ public void adjustDates(UUID seasonId,
 
 
 
+
+
  // update prize
     public void updatePrize(UUID seasonId, String prize) {
-
-        Season season = seasonRepository.findById(seasonId)
+    Season season = seasonRepository.findById(seasonId)
                 .orElseThrow(() -> new IllegalArgumentException("Season not found"));
 if (prize == null || prize.isBlank()) {
             throw new IllegalArgumentException("Prize cannot be empty");
@@ -168,7 +165,6 @@ if (prize == null || prize.isBlank()) {
 season.setPrize(prize);
 seasonRepository.save(season);
     }
-
 
 
 
@@ -209,33 +205,27 @@ public SeasonFullResponse getSeasonFull(
 
     SeasonDetails season =
             seasonRepository.findSeasonBySeasonId(seasonId, authId);
-
     if (season == null) {
         throw new RuntimeException("Season not found");
     }
 
     Instant now = Instant.now();
-
     boolean isVotingActive =
             season.getVotingStartDate() != null &&
             season.getVotingEndDate() != null &&
             !now.isBefore(season.getVotingStartDate()) &&
             !now.isAfter(season.getVotingEndDate());
-
     Page<Participants> participantsPage = Page.empty();
 
     if (isVotingActive) {
-
-        Page<Participants> dbPage =
+    Page<Participants> dbPage =
                 participationRepo.findApprovedParticipants(seasonId, authId, pageable);
 
         List<UUID> ids = dbPage.stream()
                 .map(Participants::getParticipationId)
                 .toList();
-
         Map<UUID, VoteMeta> voteMetaMap =
                 voteQueryService.getVoteMetaBatch(ids, seasonId, authId);
-
         participantsPage = dbPage.map(p -> {
 
             VoteMeta meta = voteMetaMap.getOrDefault(
@@ -263,35 +253,26 @@ public SeasonFullResponse getSeasonFull(
 
 
 
-
-
-
-
-
-
 @Transactional
 public void endSeason(UUID seasonId, Instant now) {
 
     Season season = seasonRepository.findById(seasonId)
             .orElseThrow(() -> new IllegalArgumentException("Season not found"));
 
-    if (season.isSeasonEnded()) return; // prevent duplicate execution
+    if (season.isSeasonEnded()) return; // prevent duplicate
 
     season.setSeasonEnded(true);
     season.setVotingEndDate(now);
 
-    // 1. calculate winner
+    // 1. calculate winner (uses Redis leaderboard)
     Winner winner = winnerService.calculateWinner(seasonId, season);
 
-    // 2. cleanup first (IMPORTANT)
-    resetSeason(seasonId);
-
-    // 3. move winner image safely
+    // 2. move winner image BEFORE cleanup (critical)
     if (winner != null && winner.getParticipantPhoto() != null) {
         try {
-           String oldPublicId = cloudinaryService.extractPublicId(
-        winner.getParticipantPhoto()
-);
+            String oldPublicId = cloudinaryService.extractPublicId(
+                    winner.getParticipantPhoto()
+            );
 
             String newUrl = cloudinaryService.moveImage(
                     oldPublicId,
@@ -305,8 +286,36 @@ public void endSeason(UUID seasonId, Instant now) {
         }
     }
 
+    // 3. cleanup Redis + DB + contestants
+    resetSeason(seasonId);
+
+    // 4. save season state
     seasonRepository.save(season);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -321,30 +330,31 @@ public void resetSeason(UUID seasonId) {
     // 1. delete leaderboard
     redis.delete("leaderboard:season:" + seasonId);
 
-    // 2. delete all user votes
-    Set<String> userVoteKeys = redis.keys("votes:user:" + seasonId + ":*");
+    // 2. delete lock
+    redis.delete("season:locked:" + seasonId);
 
-    if (userVoteKeys != null && !userVoteKeys.isEmpty()) {
-        redis.delete(userVoteKeys);
+    // 3. delete user vote keys (fallback using KEYS)
+    Set<String> keys = redis.keys("votes:user:" + seasonId + ":*");
+
+    if (keys != null && !keys.isEmpty()) {
+        redis.delete(keys);
     }
 
-    // 3. delete ONLY contestant images (not winners)
+    // 4. delete contestant images
     cloudinaryService.deleteFolder("seasons/" + seasonId + "/contestants");
-   
 
-    // 4. delete participants from DB
+    // 5. delete DB records
     participationAdminRepo.deleteAllBySeasonId(seasonId);
 }
 
 
-
-//delete season
 @Transactional
 public void deleteSeason(UUID seasonId) {
 
     Season season = seasonRepository.findById(seasonId)
             .orElseThrow(() -> new RuntimeException("Season not found"));
 
+    // 1. participation vote keys
     List<UUID> participationIds =
             participationAdminRepo.findParticipationIdsBySeasonId(seasonId);
 
@@ -356,24 +366,29 @@ public void deleteSeason(UUID seasonId) {
         redis.delete(redisKeys);
     }
 
-
-
-
-    // delete leaderboard
+    // 2. delete leaderboard + lock
     redis.delete("leaderboard:season:" + seasonId);
+    redis.delete("season:locked:" + seasonId);
+
+    // 3. remove from global leaderboard set
     redis.opsForSet().remove("leaderboard:seasons", seasonId.toString());
 
+    // 4. delete user vote keys (FIXED)
+    Set<String> keys = redis.keys("votes:user:" + seasonId + ":*");
+
+    if (keys != null && !keys.isEmpty()) {
+        redis.delete(keys);
+    }
+
+    // 5. delete Cloudinary folders
     String folder = season.getName()
             .trim()
             .replaceAll("\\s+", "-")
             .toLowerCase();
 
-    String nameFolderPath = "seasons/" + folder;
-    String idFolderPath = "seasons/" + seasonId;
+    cloudinaryService.deleteFolder("seasons/" + folder);
+    cloudinaryService.deleteFolder("seasons/" + seasonId);
 
-    cloudinaryService.deleteFolder(nameFolderPath); // banner
-    cloudinaryService.deleteFolder(idFolderPath);   // contestants
-
-    seasonRepository.delete(season); // cascade removes participants
-}
-}
+    // 6. delete DB
+    seasonRepository.delete(season);
+}}

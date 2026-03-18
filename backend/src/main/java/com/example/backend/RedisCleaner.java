@@ -1,5 +1,4 @@
-package com.example.backend;
-
+/*package com.example.backend;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -10,8 +9,7 @@ import org.springframework.stereotype.Component;
 public class RedisCleaner {
 
     private final StringRedisTemplate redisTemplate;
-
-    @PostConstruct
+     @PostConstruct
     public void clearRedis() { // runs once at startup
         redisTemplate.getConnectionFactory()
                 .getConnection()
@@ -21,3 +19,4 @@ public class RedisCleaner {
         System.out.println("Redis cleared");
     }
 }
+ */

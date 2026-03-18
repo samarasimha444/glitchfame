@@ -154,6 +154,7 @@ Page<Participants> searchLiveApproved(
 );
 
 
+
     // search approved participants in a specific season
     @Query(value = """
         SELECT
@@ -163,9 +164,8 @@ Page<Participants> searchLiveApproved(
             p.season_id AS seasonId
             
 
-        FROM participation p
-
-        WHERE p.season_id = :seasonId
+            FROM participation p
+         WHERE p.season_id = :seasonId
         AND p.status = 'APPROVED'
         AND p.name ILIKE '%' || :name || '%'
         """,

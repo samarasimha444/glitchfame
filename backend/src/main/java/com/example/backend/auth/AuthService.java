@@ -10,6 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import java.time.Duration;
+
 import java.util.UUID;
 
 @Service
@@ -19,7 +23,11 @@ public class AuthService {
     private final AuthRepo authRepo;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final OtpService otpService; // using your small 'o'
+    private final OtpService otpService;
+
+    @Autowired
+private StringRedisTemplate redisTemplate;
+   
 
     // send register otp
     public String signup(Signup request) {
@@ -56,21 +64,30 @@ public class AuthService {
         return "User registered successfully";
     }
 
-    // login
-    public String login(Login request) {
+ // login
+public String login(Login request) {
 
-        Auth user = authRepo.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    Auth user = authRepo.findByEmail(request.getEmail())
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
-            throw new RuntimeException("Invalid password");
+    if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
+        throw new RuntimeException("Invalid password");
 
-        return jwtUtil.generateToken(
-                user.getAuthId(),
-                user.getRole()
-        );
-    }
+    // generate JWT
+    String token = jwtUtil.generateToken(
+            user.getAuthId(),
+            user.getRole()
+    );
 
+    // store token in Redis (ONE session per user)
+    redisTemplate.opsForValue().set(
+            "user:" + user.getAuthId(),   // key
+            token,                        // value
+            Duration.ofHours(24)           // match JWT expiry
+    );
+
+    return token;
+}
 
 
     //forgot password
@@ -109,8 +126,7 @@ authRepo.save(user);
 
 //change-password
 public String changePassword(String authId, String currentPassword, String newPassword) {
-
-    Auth user = authRepo.findById(UUID.fromString(authId))
+ Auth user = authRepo.findById(UUID.fromString(authId))
             .orElseThrow(() -> new RuntimeException("User not found"));
 // check current password
     if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
@@ -122,7 +138,6 @@ public String changePassword(String authId, String currentPassword, String newPa
     }
  // encode and update
     user.setPassword(passwordEncoder.encode(newPassword));
-
     authRepo.save(user);
 return "Password changed successfully";
 
@@ -133,8 +148,7 @@ return "Password changed successfully";
 
    //get user profile
   public Profile getProfile(UUID authId) {
-
-        Auth user = authRepo.findById(authId)
+    Auth user = authRepo.findById(authId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return new Profile(
