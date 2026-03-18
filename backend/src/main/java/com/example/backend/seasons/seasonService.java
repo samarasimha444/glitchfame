@@ -10,6 +10,7 @@ import com.example.backend.votes.VoteQueryService;
 import com.example.backend.votes.dto.VoteMeta;
 import com.example.backend.winner.Winner;
 import com.example.backend.winner.WinnerService;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class seasonService {
@@ -267,76 +269,72 @@ public SeasonFullResponse getSeasonFull(
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 @Transactional
 public void endSeason(UUID seasonId, Instant now) {
 
     Season season = seasonRepository.findById(seasonId)
             .orElseThrow(() -> new IllegalArgumentException("Season not found"));
 
-    // close voting
-    season.setVotingEndDate(now);
-    seasonRepository.save(season);
+    if (season.isSeasonEnded()) return; // prevent duplicate execution
 
-    // calculate winner
+    season.setSeasonEnded(true);
+    season.setVotingEndDate(now);
+
+    // 1. calculate winner
     Winner winner = winnerService.calculateWinner(seasonId, season);
 
-    if (winner != null) {
+    // 2. cleanup first (IMPORTANT)
+    resetSeason(seasonId);
 
-        // move winner image in cloudinary
-        String newUrl = cloudinaryService.moveImage(
-                winner.getParticipantPhoto(),
-                "home/winners/" + seasonId + "/winner"
-        );
+    // 3. move winner image safely
+    if (winner != null && winner.getParticipantPhoto() != null) {
+        try {
+           String oldPublicId = cloudinaryService.extractPublicId(
+        winner.getParticipantPhoto()
+);
 
-        // update winner photo url after move
-        winner.setParticipantPhoto(newUrl);
+            String newUrl = cloudinaryService.moveImage(
+                    oldPublicId,
+                    "home/winners/" + seasonId + "/winner"
+            );
+
+            winner.setParticipantPhoto(newUrl);
+
+        } catch (Exception e) {
+            log.error("Cloudinary move failed for season {}", seasonId, e);
+        }
     }
 
-    // cleanup season data
-    resetSeason(seasonId);
+    seasonRepository.save(season);
 }
 
 
 
 
-//reset season
+
+
+
+
 @Transactional
 public void resetSeason(UUID seasonId) {
 
-    /* ---------- 1. DELETE LEADERBOARD ---------- */
-
+    // 1. delete leaderboard
     redis.delete("leaderboard:season:" + seasonId);
 
-    /* ---------- 2. DELETE ALL USER VOTES ---------- */
-
-    Set<String> userVoteKeys =
-            redis.keys("votes:user:" + seasonId + ":*");
+    // 2. delete all user votes
+    Set<String> userVoteKeys = redis.keys("votes:user:" + seasonId + ":*");
 
     if (userVoteKeys != null && !userVoteKeys.isEmpty()) {
         redis.delete(userVoteKeys);
     }
 
-    /* ---------- 3. DELETE CONTESTANT IMAGES ---------- */
+    // 3. delete ONLY contestant images (not winners)
+    cloudinaryService.deleteFolder("seasons/" + seasonId + "/contestants");
+   
 
-    cloudinaryService.deleteFolder("home/seasons/" + seasonId + "/contestants");
-
-    /* ---------- 4. DELETE PARTICIPANTS FROM DB ---------- */
-
+    // 4. delete participants from DB
     participationAdminRepo.deleteAllBySeasonId(seasonId);
 }
-
-
 
 
 

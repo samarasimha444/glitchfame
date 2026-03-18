@@ -55,4 +55,21 @@ public class CloudinaryService {
             throw new RuntimeException("Failed to move Cloudinary image", e);
         }
     }
+
+
+
+
+    public String extractPublicId(String url) {
+
+    if (url == null || !url.contains("/upload/")) {
+        throw new IllegalArgumentException("Invalid Cloudinary URL: " + url);
+    }
+
+    String[] parts = url.split("/upload/");
+    String path = parts[1];
+
+    path = path.substring(path.indexOf("/") + 1);
+
+    return path.substring(0, path.lastIndexOf("."));
+}
 }

@@ -120,5 +120,9 @@ ORDER BY RANDOM()
 LIMIT 1
 """, nativeQuery = true)
 Season findRandomLiveSeasonEntity();
+
+
+//for schedulars
+List<Season> findByVotingEndDateBeforeAndSeasonEndedFalse(Instant now);
    
 }
