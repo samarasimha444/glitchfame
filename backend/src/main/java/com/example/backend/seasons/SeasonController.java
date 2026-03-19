@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import com.example.backend.participation.ParticipationService;
 import com.example.backend.seasons.dto.SeasonDetails;
 import com.example.backend.seasons.dto.SeasonForm;
 import com.example.backend.seasons.dto.SeasonFullResponse;
@@ -25,6 +26,7 @@ import org.springframework.security.core.Authentication;
 public class SeasonController {
 
     private final seasonService seasonService; // service
+    private  final ParticipationService participationService;
 
 
     // create season
@@ -124,6 +126,19 @@ public ResponseEntity<SeasonFullResponse> getSeasonFull(
             seasonService.getSeasonFull(seasonId, authId, pageable)
     );
 }
+
+@GetMapping("/live/random")
+    public SeasonFullResponse getRandomLiveSeason(
+            Authentication authentication,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+
+        UUID authId = UUID.fromString(authentication.getName()); // assuming name = authId
+
+        return participationService
+                .getRandomLiveSeasonWithParticipants(authId, page, size);
+    }
 
 
 

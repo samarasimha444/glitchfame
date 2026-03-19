@@ -59,8 +59,7 @@ const Cards = ({ liveSeason,isLoading }) => {
               <div className="relative">
 
                 <img
-                //  src={`${item.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=600`}
-                src="https://tse4.mm.bing.net/th/id/OIP.ABwhsmy35NMrI23BXK115QHaE8?pid=Api&P=0&h=180"
+                 src={`${item.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=600`}
                   alt={item.seasonName}
                    loading="lazy"
                   decoding="async"

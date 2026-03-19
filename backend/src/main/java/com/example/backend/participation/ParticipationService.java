@@ -3,7 +3,8 @@ package com.example.backend.participation;
 import com.example.backend.auth.*;
 import com.example.backend.participation.dto.*;
 import com.example.backend.seasons.*;
-import com.example.backend.seasons.dto.RandomLiveSeasonDTO;
+import com.example.backend.seasons.dto.SeasonDetails;
+import com.example.backend.seasons.dto.SeasonFullResponse;
 import com.example.backend.votes.dto.*;
 import com.example.backend.votes.VoteQueryService;
 
@@ -126,44 +127,6 @@ public class ParticipationService {
 
 
 
-   
-    //random live season and its conetstants
-    public RandomLiveSeasonDTO getRandomLiveSeason(UUID authId) {
-        Season season = seasonRepository.findRandomLiveSeasonEntity();
-        if (season == null) {
-            return null;}
-        List<Participation> contestants =
-                participationRepository.findApprovedContestants(season.getSeasonId());
-        List<UUID> ids = contestants.stream()
-                .map(Participation::getParticipationId)
-                .toList();
-        Map<UUID, VoteMeta> voteMetaMap =
-                voteQueryService.getVoteMetaBatch(ids, season.getSeasonId(), authId);
-        List<ContestantDTO> contestantDTOs = contestants.stream()
-                .map(p -> {
-                VoteMeta meta = voteMetaMap.getOrDefault(
-                            p.getParticipationId(),
-                            new VoteMeta(0L, false)
-                    );
-                return ContestantDTO.builder()
-                            .participationId(p.getParticipationId())
-                            .name(p.getName())
-                            .photoUrl(p.getPhotoUrl())
-                            .votes(meta.getVotes())
-                            .hasVoted(meta.isHasVoted())
-                            .build();
-                        })
-                .toList();
-        return RandomLiveSeasonDTO.builder()
-                .seasonId(season.getSeasonId())
-                .seasonName(season.getName())
-                .seasonPhotoUrl(season.getPhotoUrl())
-                .votingStartDate(season.getVotingStartDate())
-                .votingEndDate(season.getVotingEndDate())
-                .contestants(contestantDTOs)
-                .build();
-    }
-
 
 
 
@@ -206,9 +169,79 @@ public class ParticipationService {
                         name,
                         authId,
                         pageable);
-
-        return mapParticipants(result, authId)
+return mapParticipants(result, authId)
 ;}
+
+
+
+
+
+public SeasonFullResponse getRandomLiveSeasonWithParticipants(
+        UUID authId,
+        int page,
+        int size
+) {
+
+    Instant now = Instant.now();
+
+    Page<SeasonDetails> pageResult =
+            seasonRepository.findRandomLiveSeason(
+                    authId,
+                    now,
+                    PageRequest.of(0, 1)
+            );
+
+    long total = pageResult.getTotalElements();
+
+    if (total == 0) {
+        throw new IllegalStateException("No live season found");
+    }
+
+    int randomIndex = new Random().nextInt((int) total);
+
+    SeasonDetails season =
+            seasonRepository.findRandomLiveSeason(
+                    authId,
+                    now,
+                    PageRequest.of(randomIndex, 1)
+            ).getContent().get(0);
+
+    Pageable pageable = PageRequest.of(page, size);
+
+    Page<Participants> result =
+            participationRepository.searchApprovedBySeason(
+                    season.getSeasonId(),
+                    null,
+                    authId,
+                    pageable
+            );
+
+    Page<Participants> enriched = mapParticipants(result, authId);
+
+    SeasonFullResponse response = new SeasonFullResponse();
+    response.setSeason(season);
+    response.setParticipants(enriched);
+
+    return response;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

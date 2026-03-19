@@ -32,7 +32,7 @@ const Home = () => {
       <section className="w-full sm:mt-12  space-y-6 md:space-y-12 flex flex-col items-center mt-5  ">
         <section className=" flex  w-full px-3 sm:px-20   justify-between items-center text-center">
           <h5 className="flex items-center justify-center gap-2">
-            <Flame size={40} className="text-red-400" />
+            <Flame sm:size={40} className="text-red-400" />
             <span className="text-white mt-1 text-[18px] md:text-5xl  font-semibold">
               Live
             </span>
