@@ -26,7 +26,8 @@ const seasons = [
     votingEndDate: "2026-03-22T18:00:00",
   }
 ];
-const Cards = ({ isLoading }) => {
+const Cards = ({ liveSeason,isLoading }) => {
+  console.log(liveSeason)
   const navigate = useNavigate();
 
    return (
@@ -47,22 +48,23 @@ const Cards = ({ isLoading }) => {
 
         <section className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
 
-          {seasons.map((item) => (
+          {liveSeason?.map((item) => (
             <Link
-              to={`/arena/${item.seasonId}`}
+              to={`/vote/${item.seasonId}`}
               key={item.seasonId}
-              className="w-full h-[278px] bg-[#181B20] rounded-2xl overflow-hidden border border-[#364354] hover:border-purple-500 transition duration-300 flex flex-col"
+              className="w-full h-[278px] md:max-w-[340px] md:h-[400px] bg-[#181B20] rounded-2xl overflow-hidden border border-[#364354] hover:border-purple-500 transition duration-300 flex flex-col"
             >
 
               
               <div className="relative">
 
                 <img
-                 src={`${item.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=600`}
+                //  src={`${item.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=600`}
+                src="https://tse4.mm.bing.net/th/id/OIP.ABwhsmy35NMrI23BXK115QHaE8?pid=Api&P=0&h=180"
                   alt={item.seasonName}
                    loading="lazy"
-  decoding="async"
-                  className=" h-[163px] w-full object-cover"
+                  decoding="async"
+                  className=" h-[163px] md:h-[300px] w-full object-cover"
                 />
 
                 <span className="absolute top-2 left-2 bg-red-500 text-white text-[8px] px-2 py-1 rounded-full font-medium">

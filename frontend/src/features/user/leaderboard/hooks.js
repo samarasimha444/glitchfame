@@ -1,69 +1,76 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchLeaderboards } from "../home/api";
-import { connectSocket, subscribeTopic } from "../../../../services/websocketservices";
+import { connectSocket, disconnectSocket, subscribeTopic } from "../../../../services/websocketservices";
 import { useEffect } from "react";
 
-export const useLeaderboards = () => {
+export const useLeaderboard = () => {
   return useQuery({
-    queryKey: ["leaderboards"],
-    queryFn: fetchLeaderboards,
+    queryKey: ["leaderboard"],
+    queryFn: async () => {
+      const token = localStorage.getItem("token");
 
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 10,
-    refetchOnWindowFocus: false,
+      const res = await fetch("http://localhost:3000/leaderboard/live", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch leaderboard");
+      }
+
+      const data = await res.json();
+
+      const merged = Object.values(data).flat();
+
+      merged.sort((a, b) => b.votes - a.votes);
+
+      return {
+        merged, 
+        raw: data, 
+      };
+    },
   });
 };
 
 
-export const useLeaderboardVotes = (leaderboards) => {
+export const useLeaderboardSocket = (data) => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (!leaderboards) return;
+    if (!data) return;
 
     const token = localStorage.getItem("token");
-    const socket = connectSocket(token);
 
-    let subscriptions = [];
+    // connect socket
+    connectSocket(token);
 
-    const subscribe = () => {
-      Object.keys(leaderboards).forEach((seasonId) => {
-        const sub = subscribeTopic(`/topic/votes/${seasonId}`, (vote) => {
-          console.log("LIVE LEADERBOARD VOTE:", vote);
+    // store subscriptions
+    const subscriptions = Object.keys(data.raw).map((seasonId) =>
+      subscribeTopic(`/topic/votes/${seasonId}`, (vote) => {
+        queryClient.setQueryData(["leaderboard"], (oldData) => {
+          if (!oldData) return oldData;
 
-          queryClient.setQueryData(["leaderboards"], (oldData) => {
-            if (!oldData) return oldData;
+          const updated = oldData.merged.map((p) =>
+            p.participantId === vote.participationId
+              ? { ...p, votes: vote.votes }
+              : p
+          );
 
-            const season = oldData[seasonId];
-            if (!season) return oldData;
+          // keep sorted
+          updated.sort((a, b) => b.votes - a.votes);
 
-            const updated = season.map((p) =>
-              p.participantId === vote.participationId
-                ? { ...p, votes: vote.votes }
-                : p
-            );
-
-            updated.sort((a, b) => b.votes - a.votes);
-
-            return {
-              ...oldData,
-              [seasonId]: updated.slice(0, 3),
-            };
-          });
+          return {
+            ...oldData,
+            merged: updated,
+          };
         });
+      })
+    );
 
-        subscriptions.push(sub);
-      });
-    };
-
-    if (socket.connected) {
-      subscribe();
-    } else {
-      socket.onConnect = subscribe;
-    }
-
+    // cleanup
     return () => {
-      subscriptions.forEach((s) => s?.unsubscribe());
+      subscriptions.forEach((sub) => sub?.unsubscribe?.());
+      disconnectSocket();
     };
-  }, [leaderboards, queryClient]);
+  }, [data, queryClient]);
 };

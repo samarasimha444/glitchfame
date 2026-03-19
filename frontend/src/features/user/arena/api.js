@@ -136,6 +136,7 @@ export const getLeaderboard = async () => {
 
 export const fetchRandomParticipation = async () => {
      const token = localStorage.getItem("token")
+     console.log("calling")
 
     const response = await fetch(`${BASE_URL}/participations/live/random`, {
     method: "GET", 
@@ -145,9 +146,53 @@ export const fetchRandomParticipation = async () => {
     },
   });
   
+  console.log(response)
   if (!response.ok) {
     throw new Error("Failed to fetch random participation");
   }
   
   return response.json();
+};
+
+
+export const fetchSearchContestants = async (seasonId, name = "", page = 0, size = 20) => {
+  const token = localStorage.getItem("token");
+  if (!seasonId) throw new Error("Season ID is required for search");
+
+  const params = new URLSearchParams({ name, page, size });
+
+  console.log("Fetching search contestants for season:", seasonId, "query:", name);
+
+  const response = await fetch(
+    `${BASE_URL}/participations/seasons/${seasonId}/participants/search?${params.toString()}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  console.log("Response:", response);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch contestants");
+  }
+
+  return response.json();
+};
+
+
+
+export const fetchLeaderboards = async (token) => {
+  const res = await fetch(`${BASE_URL}/leaderboard/live`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) throw new Error("Failed to fetch leaderboard");
+
+  return res.json();
 };

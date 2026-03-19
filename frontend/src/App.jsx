@@ -40,7 +40,7 @@ export default function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<TestingSignup />} />
-      <Route path="/leadboard" element={<TLeaderBoard />} />
+      <Route path="/leadboardnew" element={<TLeaderBoard />} />
      
 
       {/* USER Protected Routes */}
@@ -51,6 +51,7 @@ export default function App() {
 
         <Route path="/arena" element={<Arena />} />
         <Route path="/vote/:id" element={<Vote />} />
+        <Route path="/vote" element={<Vote />} />
 
         <Route path="/season" element={<SeasonDetails />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />

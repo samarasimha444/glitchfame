@@ -1,33 +1,39 @@
 import { Client } from "@stomp/stompjs";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { useRef } from "react";
-import { connectSocket, disconnectSocket, subscribeTopic } from "../../../../services/websocketservices";
-import { fetchRandomParticipation } from "../arena/api";
+import {
+  connectSocket,
+  disconnectSocket,
+  subscribeTopic,
+} from "../../../../services/websocketservices";
+import { fetchRandomParticipation, fetchSearchContestants } from "../arena/api";
 import { fetchSeasonParticipation } from "../home/api";
 
 
 
 
 
-
-export const useParticipation = (seasonId) => {
+export const useParticipation = (seasonId, search = "") => {
+  console.log(seasonId);
   return useQuery({
-    queryKey: ["participation"], 
+    queryKey: ["participation", seasonId],
 
-    queryFn: () =>
-      seasonId
-        ? fetchSeasonParticipation(seasonId)
-        : fetchRandomParticipation(),
+    queryFn: async () => {
+      const data =
+        seasonId ?
+          await fetchSeasonParticipation(seasonId, search)
+        : await fetchRandomParticipation();
+
+      return data;
+    },
+
+    keepPreviousData: true,
 
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 10,
     refetchOnWindowFocus: false,
   });
 };
-
-
-
 
 export const useSeasonVotes = (seasonId) => {
   const queryClient = useQueryClient();
@@ -43,20 +49,69 @@ export const useSeasonVotes = (seasonId) => {
     const subscription = subscribeTopic(topic, (vote) => {
       console.log("LIVE VOTE:", vote);
 
-      queryClient.setQueryData(["participation"], (oldData) => {
-        if (!oldData?.contestants) return oldData;
+      queryClient.setQueryData(["participation", seasonId], (oldData) => {
+        if (!oldData?.participants?.content) return oldData;
 
         return {
           ...oldData,
-          contestants: oldData.contestants.map((c) =>
-            c.participationId === vote.participationId
-              ? { ...c, votes: vote.votes }
-              : c
-          ),
+          participants: {
+            ...oldData.participants,
+            content: oldData.participants.content.map((c) =>
+              c.participationId === vote.participationId ?
+                {
+                  ...c,
+                  totalVotes: vote.totalVotes ?? vote.votes ?? c.totalVotes,
+                }
+              : c,
+            ),
+          },
         };
+      });
+
+      const searchQueries = queryClient
+        .getQueryCache()
+        .findAll(
+          (query) =>
+            query.queryKey[0] === "searchContestants" &&
+            query.queryKey[1] === seasonId,
+        );
+
+      searchQueries.forEach(({ queryKey }) => {
+        queryClient.setQueryData(queryKey, (oldData) => {
+          if (!oldData?.content) return oldData;
+
+          return {
+            ...oldData,
+            content: oldData.content.map((c) =>
+              c.participationId === vote.participationId ?
+                {
+                  ...c,
+                  totalVotes: vote.totalVotes ?? vote.votes ?? c.totalVotes,
+                }
+              : c,
+            ),
+          };
+        });
       });
     });
 
-    return () => subscription?.unsubscribe();
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, [seasonId, queryClient]);
+};
+
+export const useSearchContestants = (
+  seasonId,
+  name = "",
+  page = 0,
+  size = 20,
+) => {
+  return useQuery({
+    queryKey: ["searchContestants", seasonId, name, page, size],
+    queryFn: () => fetchSearchContestants(seasonId, name, page, size),
+    enabled: !!seasonId && !!name,
+    keepPreviousData: true,
+    staleTime: 1000 * 60 * 5,
+  });
 };

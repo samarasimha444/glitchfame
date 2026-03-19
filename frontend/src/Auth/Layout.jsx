@@ -20,7 +20,7 @@ const MobileBottomNav=()=> {
         Rank
       </NavLink>
 
-      <NavLink to="/vote/123" className="flex flex-col items-center text-gray-400 text-xs">
+      <NavLink to="/vote" className="flex flex-col items-center text-gray-400 text-xs">
         <Flame size={18} />
         Vote
       </NavLink>

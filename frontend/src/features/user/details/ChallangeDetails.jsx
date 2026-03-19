@@ -15,15 +15,15 @@ export const ChallangeDetails = () => {
               alt="about-us"
             />
 
-            <span className="absolute top-4 left-4 bg-purple-600 text-xs px-3 py-1 rounded-full">
+            <span className="absolute top-4 left-4 bg-primary text-black text-xs px-3 py-1 rounded-full">
               FAIR & FUN
             </span>
           </div>
 
-          {/* RIGHT SIDE CONTENT */}
+          
           <div className="md:w-1/2 px-5 md:px-10 py-6 space-y-5">
 
-            {/* TAGS */}
+          
             <div className="flex gap-2 text-xs text-gray-300">
               <span className="bg-[#1a1a1a] px-3 py-1 rounded-full">
                 Voting
@@ -86,8 +86,8 @@ export const ChallangeDetails = () => {
 
             </div>
 
-            {/* JOIN BUTTON */}
-            <button className="w-full md:w-fit bg-purple-600 px-8 py-3 rounded-lg font-semibold">
+          
+            <button className="w-full md:w-fit bg-primary text-black px-8 py-3 rounded-lg font-semibold">
               Join Us Now
             </button>
 
@@ -99,17 +99,13 @@ export const ChallangeDetails = () => {
 
           <div className="flex border-b border-gray-800 text-sm max-w-[600px]">
 
-            <button className="flex-1 py-3 text-purple-500 border-b-2 border-purple-500">
+            <button className="flex-1 py-3 text-primary border-b-2 border-gray-600">
               About
             </button>
 
-            <button className="flex-1 py-3 text-gray-400">
-              How It Works
-            </button>
+           
 
-            <button className="flex-1 py-3 text-gray-400">
-              FAQ
-            </button>
+            
 
           </div>
 

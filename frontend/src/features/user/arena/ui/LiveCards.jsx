@@ -22,7 +22,7 @@ const LiveCards = ({seasons}) => {
       "
         >
           <div>
-            <span className="text-[10px] font-medium text-purple-400 uppercase tracking-wider">
+            <span className="text-[10px] font-medium text-primary uppercase tracking-wider">
               fame
             </span>
 

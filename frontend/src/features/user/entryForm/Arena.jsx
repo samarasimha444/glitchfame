@@ -26,15 +26,15 @@ const ArenaForm = () => {
   <div className="min-h-screen w-full bg-gradient-to-br from-[#0f0f18] via-[#141a24] to-[#0c1b22] flex flex-col items-center py-12 md:py-16 px-4 sm:px-6">
 
   <div className="text-center mb-12 md:mb-16 max-w-xl">
-    <span className="text-[10px] sm:text-xs text-[#BE5EED] border border-[#BE5EED] px-3 py-1 rounded-full">
+    <span className="text-[10px] sm:text-xs text-primary border border-white px-3 py-1 rounded-full">
       NEW SEASON ENTRY
     </span>
 
     <h1 className="text-2xl sm:text-3xl md:text-6xl font-extrabold text-white mt-5 md:mt-6">
-      JOIN THE <span className="text-[#BE5EED]">ARENA</span>
+      JOIN THE <span className="text-primary">ARENA</span>
     </h1>
 
-    <p className="text-gray-400 mt-4 md:mt-5 text-xs sm:text-sm md:text-base leading-relaxed">
+    <p className="text-gray-400 hidden mt-4 md:mt-5 text-xs sm:text-sm md:text-base leading-relaxed">
       Upload your best look and claim your spot in the GlitchFame spotlight.
       Real-time voting starts as soon as you're approved.
     </p>
@@ -45,15 +45,15 @@ const ArenaForm = () => {
 
    
   <div className="relative w-full md:mt-12 border border-dashed border-gray-600 rounded-xl overflow-hidden
-flex items-center justify-center text-center
-h-[360px] ">
+flex items-center justify-center text-center 
+sm:h-[360px] ">
       
   {preview ? (
     <>
   <img
   src={preview}
   alt="preview"
-  className="max-w-full max-h-full object-cover"
+  className="max-w-full h-full object-cover"
 />
 
           <button
@@ -67,7 +67,7 @@ h-[360px] ">
         <div className="p-6 md:p-8 space-y-5 md:space-y-6 flex flex-col items-center">
 
           <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full bg-[#BE5EED]/20">
-            <Upload className="text-[#BE5EED]" />
+            <Upload className="text-primary" />
           </div>
 
           <div>

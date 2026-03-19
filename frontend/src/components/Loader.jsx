@@ -1,18 +1,14 @@
+import React from "react";
+
+
+
 export default function NeonLoader() {
   return (
-    <div className="flex items-center justify-center w-full min-h-[50vh] sm:min-h-[60vh]">
-      <div className="relative flex flex-col items-center">
-
-        <div className="absolute w-14 h-14 rounded-full border-2 border-blue-500/40 animate-ping"></div>
-
-        <div className="w-12 h-12 rounded-full border-2 border-blue-500 border-t-transparent shadow-[0_0_12px_#3b82f6] animate-spin"></div>
-
-        <div className="mt-3 text-center">
-          <p className="text-blue-400 text-xs font-semibold tracking-widest">
-            LOADING
-          </p>
-        </div>
-
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+      <div className="flex flex-col items-center gap-4">
+       
+        <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-transparent border-t-[#9DE2E2] rounded-full animate-spin "></div>
+        <p className="text-white text-sm sm:text-base font-medium">Loading...</p>
       </div>
     </div>
   );

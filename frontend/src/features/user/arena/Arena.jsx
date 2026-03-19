@@ -15,7 +15,7 @@ const Arena = () => {
 
   
 
-  const liveSeasons = live.filter(isVotingLive);
+  const liveSeasons = live?.content?.filter(isVotingLive);
 
  
   useEffect(() => {
@@ -34,7 +34,7 @@ const Arena = () => {
     return () => clearTimeout(handler);
   }, [search]);
 
-  const filteredSeasons = liveSeasons.filter((season) =>
+  const filteredSeasons = liveSeasons?.filter((season) =>
     season.seasonName.toLowerCase().includes(debouncedSearch.toLowerCase())
   );
 

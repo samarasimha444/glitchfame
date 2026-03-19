@@ -1,3 +1,4 @@
+import { Await } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -25,29 +26,7 @@ export const getLiveUpcomingSeasons = async () => {
 };
   
 
-  
 
-export const submitEntry = async (formData) => {
-   const token = localStorage.getItem("token")
-
-  const response = await fetch(`${BASE_URL}/contestants/apply`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: formData,
-  });
-
-  console.log(response)
-  const data = await response.text();
-
-  if (!response.ok) {
-    console.error("Server error:", data);
-    throw new Error(data.message || "Failed to add entry");
-  }
-
-  return data;
-};
 
 export const getWinners = async () => {
    const token = localStorage.getItem("token")
@@ -83,9 +62,26 @@ export const getSeasonById = async (id) => {
 };
 
 
-export const fetchSeasonParticipation= async()=>{
+export const fetchSeasonParticipation = async (seasonId) => {
+  console.log("Season ID:", seasonId);
 
-}
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${BASE_URL}/seasons/${seasonId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch season details");
+  }
+
+  const response = await res.json() 
+  console.log("API RESPONSE:", response);
+
+  return response; 
+};
 
 export const fetchLeaderboards = async () => {
   const token = localStorage.getItem("token");
@@ -96,9 +92,12 @@ export const fetchLeaderboards = async () => {
     },
   });
 
+  console.log(res)
+
   if (!res.ok) {
     throw new Error("Failed to fetch leaderboards");
   }
 
   return res.json();
 };
+

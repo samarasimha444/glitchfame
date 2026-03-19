@@ -5,7 +5,6 @@ let isConnected = false;
 let subscriptions = {};
 
 export const connectSocket = (token) => {
-
   if (client?.active) return client;
 
   client = new Client({
@@ -17,13 +16,11 @@ export const connectSocket = (token) => {
     },
 
     onConnect: () => {
-      console.log(" WebSocket Connected");
-
+      console.log("✅ WebSocket Connected");
       isConnected = true;
 
-      // restore subscriptions after reconnect
-      Object.values(subscriptions).forEach((sub) => {
-        sub.subscribe();
+      Object.entries(subscriptions).forEach(([topic, subObj]) => {
+        subObj._subscribe(); 
       });
     },
 
@@ -38,60 +35,61 @@ export const connectSocket = (token) => {
   });
 
   client.activate();
-
   return client;
 };
 
-
-
 export const subscribeTopic = (topic, callback) => {
-
   if (!client) return;
 
   
   if (subscriptions[topic]) return subscriptions[topic];
 
-  const subscribeFn = () => {
-
-    if (!isConnected) return;
-
-    const sub = client.subscribe(topic, (msg) => {
-      const data = JSON.parse(msg.body);
-      callback(data);
-    });
-
-    subscriptions[topic].sub = sub;
-  };
-
-  subscriptions[topic] = {
+  const subObj = {
     sub: null,
 
-    subscribe: subscribeFn,
+    _subscribe: () => {
+      if (!client || !isConnected) return;
+
+     
+      if (subObj.sub) return;
+
+      subObj.sub = client.subscribe(topic, (msg) => {
+        const data = JSON.parse(msg.body);
+        callback(data);
+      });
+
+      console.log("📡 Subscribed:", topic);
+    },
 
     unsubscribe: () => {
-      subscriptions[topic]?.sub?.unsubscribe();
+      subObj.sub?.unsubscribe();
+      subObj.sub = null;
       delete subscriptions[topic];
+
+      console.log("🧹 Unsubscribed:", topic);
     },
   };
 
+  subscriptions[topic] = subObj;
 
-  if (isConnected) subscribeFn();
+  subObj._subscribe();
 
-  return subscriptions[topic];
+  return subObj;
 };
 
 
 
 export const disconnectSocket = () => {
-
   Object.values(subscriptions).forEach((s) => s?.unsubscribe());
 
   subscriptions = {};
 
-  client?.deactivate();
-
-  client = null;
+  if (client) {
+    client.deactivate();
+    client = null;
+  }
 
   isConnected = false;
 
+  console.log("🔌 Socket fully disconnected");
 };

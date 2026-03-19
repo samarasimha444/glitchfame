@@ -2,14 +2,12 @@
 import CountdownTimer from "../home/components/CountdownTimer";
 import { useSeasonById } from "../home/hooks";
 
-const VotingHeader = ({id}) => {
+const VotingHeader = ({season}) => {
 
   
-const { data, isLoading, isError } = useSeasonById(id);
 
-
-   console.log(data)
-  const endDate = data?.votingEndDate
+   
+  const endDate = season?.votingEndDate
 
 
   return (
@@ -30,14 +28,14 @@ const { data, isLoading, isError } = useSeasonById(id);
             </div>
 
             <h1 className="text-2xl uppercase md:text-5xl font-black">
-              {data?.name} <span className="text-primary">2026</span>
+              {season?.seasonName} <span className="text-primary">2026</span>
             </h1>
 
             <p className="text-gray-400 w-full max-w-xl sm:flex sm:mt-4 leading-relaxed">
-              {data?.seasonDesc} 
+              {season?.seasonDesc} 
               <span className="text-yellow-400 hidden sm:flex font-semibold px-3">
                 {" "}
-                Rs{data?.prizeMoney} Grand Prize.
+                Rs{season?.prizeMoney} Grand Prize.
               </span>
             </p>
           </div>
@@ -45,6 +43,7 @@ const { data, isLoading, isError } = useSeasonById(id);
        
   
               <CountdownTimer
+               prizeMoney={season?.prizeMoney}
                 endDate={endDate}
                 className="font-mono text-lg sm:text-xl font-bold text-white tracking-widest"
               />

@@ -18,7 +18,7 @@ const Navbar = () => {
   ];
 
   const actionButton = {
-    label: "Participate",
+    label: "Enter",
     path: "/season",
   };
 

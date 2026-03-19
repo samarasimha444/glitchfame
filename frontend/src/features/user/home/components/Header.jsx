@@ -15,7 +15,7 @@ export const StickyHeader = memo(({ liveSeason, season }) => {
 
     const diff = targetDate - new Date();
 
-    // ✅ when ended → return zeros instead of null
+    
     if (diff <= 0) {
       return {
         days: 0,
@@ -44,8 +44,8 @@ export const StickyHeader = memo(({ liveSeason, season }) => {
   }, [season?.votingEndDate]);
 
   return (
-    <div className="sticky top-0 z-30 w-full backdrop-blur-sm">
-      <div className="w-full md:max-w-6xl md:mx-auto">
+    <div className="sticky sm:static top-0 z-30 w-full backdrop-blur-sm">
+      <div className="w-full md:max-w-xl md:mx-auto">
         <div className="w-full mt-4 md:mt-6 px-0 md:px-4">
           <div
             className="w-full p-4 sm:p-6 
@@ -99,6 +99,8 @@ export const StickyHeader = memo(({ liveSeason, season }) => {
           </div>
         </div>
       </div>
+
+      
     </div>
   );
 });

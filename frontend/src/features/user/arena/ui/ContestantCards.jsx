@@ -7,13 +7,14 @@ import { useNavigate } from "react-router-dom";
 
 export const ContestantCard = React.memo(({ user, toggleVote, votingStatus }) => {
 
+
   const navigate = useNavigate();
   const status = votingStatus[user.id];
 
 
  
 
-  console.log(user)
+ 
 
   return (
 
@@ -42,7 +43,7 @@ export const ContestantCard = React.memo(({ user, toggleVote, votingStatus }) =>
         </h3>
 
         <p className="text-[#9DE2E2] text-xs sm:text-sm">
-          {user.votes} votes
+          {user.totalVotes} votes
         </p>
       </div>
 

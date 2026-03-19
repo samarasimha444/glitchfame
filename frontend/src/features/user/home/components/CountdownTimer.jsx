@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function CountdownTimer({ endDate }) {
+export default function CountdownTimer({ prizeMoney,endDate }) {
 
   const calculateTimeLeft = () => {
     const difference = new Date(endDate) - new Date();
@@ -58,7 +58,7 @@ export default function CountdownTimer({ endDate }) {
              POOL
           </span>
           <span className="text-white font-bold text-lg">
-            $250K
+            {prizeMoney}
           </span>
         </div>
 

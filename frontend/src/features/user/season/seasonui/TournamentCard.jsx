@@ -6,12 +6,13 @@ import { isRegistrationOpen } from "../../../../lib/helper";
 import { MousePointerClick } from "lucide-react";
 
 const TournamentCard = () => {
+
   const { data: seasons = [], isLoading } = useLiveUpcomingSeasons();
   console.log(seasons);
   const navigate = useNavigate();
 
   
-   const activeRegistrations = seasons.filter(isRegistrationOpen)
+   const activeRegistrations = seasons.content.filter(isRegistrationOpen)
 
    
 
@@ -49,7 +50,7 @@ const TournamentCard = () => {
   </div>
 
   <div className="absolute top-2 left-2 flex gap-2 flex-wrap">
-    <span className="bg-purple-600 text-white text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium">
+    <span className="bg-primary text-black text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium">
       FEATURED
     </span>
 
@@ -69,7 +70,7 @@ const TournamentCard = () => {
         <p className="text-gray-400 text-[10px] sm:text-xs uppercase tracking-wide">
           Prize Pool
         </p>
-        <p className="text-[#39FFB6] font-bold text-base sm:text-lg">
+        <p className="text-pink font-bold text-base sm:text-lg">
           ₹{item.prizeMoney}
         </p>
       </div>
@@ -100,7 +101,7 @@ const TournamentCard = () => {
     <button
       onClick={() => navigate(`/enter/${item.seasonId}`)}
       className="mt-3 w-full cursor-pointer sm:w-auto sm:max-w-[180px] py-2 sm:py-3 px-3 sm:px-5 rounded-xl 
-                 bg-gradient-to-r from-purple-500 to-purple-600 
+                 bg-primary
                  font-semibold tracking-wide flex items-center justify-center gap-2
                  text-black text-[13px] sm:text-sm hover:opacity-90 transition"
     >

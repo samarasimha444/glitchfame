@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getLiveUpcomingSeasons, getSeasonById, getWinners, submitEntry } from "./api";
+import { getLiveUpcomingSeasons, getSeasonById, getWinners} from "./api";
 import toast from "react-hot-toast";
 
 
@@ -12,22 +12,7 @@ export const useLiveUpcomingSeasons = (status) => {
     queryFn: () => getLiveUpcomingSeasons(status),
     staleTime: 1000 * 60 * 5,
   });
-};
-export const useSubmitEntry = () => {
-  return useMutation({
-    mutationFn: submitEntry,
 
-    onSuccess: (data) => {
-      toast.success("entry submitted")
-    },
-
-    onError: (error) => {
-      console.error("Entry submission failed:", error.message);
-      if(error.message=="Your application is already pending"){
-        toast.error("Already Participated in This tournament")
-      }
-    },
-  });
 };
 
 
