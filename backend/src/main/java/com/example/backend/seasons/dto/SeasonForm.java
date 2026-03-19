@@ -1,5 +1,4 @@
 package com.example.backend.seasons.dto;
-
 import lombok.Getter;
 import lombok.Setter;
 

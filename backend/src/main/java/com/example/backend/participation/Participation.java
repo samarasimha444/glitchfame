@@ -52,6 +52,4 @@ public class Participation {
     @Column(name = "modified_at")
     private Instant modifiedAt;
 
-
-
 }

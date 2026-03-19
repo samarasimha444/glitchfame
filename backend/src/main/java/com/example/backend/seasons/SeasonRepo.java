@@ -105,21 +105,38 @@ List<Season> findByVotingStartDateBeforeAndVotingEndDateAfter(
     List<Season> findByVotingEndDateBefore(Instant now);
 
 
+//random live season
+@Query("""
+    SELECT
+        s.seasonId as seasonId,
+        s.name as seasonName,
+        s.description as seasonDesc,
+        s.photoUrl as seasonPhotoUrl,
+        s.prize as prizeMoney,
+        s.registrationStartDate as registrationStartDate,
+        s.registrationEndDate as registrationEndDate,
+        s.votingStartDate as votingStartDate,
+        s.votingEndDate as votingEndDate,
+        s.locked as seasonLock,
+        CASE
+            WHEN p.participationId IS NULL THEN 'PARTICIPATE_NOW'
+            ELSE p.status
+        END as participationStatus
+    FROM Season s
+    LEFT JOIN Participation p
+        ON p.seasonId = s.seasonId
+        AND p.authId = :authId
+    WHERE s.votingStartDate <= :now
+      AND s.votingEndDate >= :now
+""")
+Page<SeasonDetails>findRandomLiveSeason(
+        @Param("authId") UUID authId,
+        @Param("now") Instant now,
+        Pageable pageable
+);
 
 
 
-
-
-
-
-@Query(value = """
-SELECT *
-FROM season
-WHERE NOW() BETWEEN voting_start_date AND voting_end_date
-ORDER BY RANDOM()
-LIMIT 1
-""", nativeQuery = true)
-Season findRandomLiveSeasonEntity();
 
 
 //for schedulars

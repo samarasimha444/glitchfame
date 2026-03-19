@@ -1,4 +1,3 @@
-/*
 package com.example.backend.winner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -6,7 +5,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/winners")
+@RequestMapping("/winners")
 @RequiredArgsConstructor
 public class WinnerController {
 
@@ -20,4 +19,4 @@ public class WinnerController {
 
     
 
-} */
+} 

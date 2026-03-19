@@ -88,10 +88,7 @@ public class VoteService {
         if (result == null) {
             throw new IllegalStateException("Redis returned null");
         }
-
-        
-        
-        if (result.equals("LIMIT")) {
+    if (result.equals("LIMIT")) {
             throw new IllegalStateException("Maximum 5 votes allowed per season");
         }
 
@@ -111,15 +108,11 @@ public class VoteService {
     /* ---------- WEBSOCKET BROADCAST ---------- */
 
     private void broadcastVote(UUID seasonId, UUID participationId, long votes) {
-
-        VoteUpdateDTO payload = new VoteUpdateDTO(
+    VoteUpdateDTO payload = new VoteUpdateDTO(
                 participationId,
-                votes
-        );
-
-        messagingTemplate.convertAndSend(
+                votes);
+                messagingTemplate.convertAndSend(
                 "/topic/votes/" + seasonId,
-                payload
-        );
+                payload);
     }
 }
