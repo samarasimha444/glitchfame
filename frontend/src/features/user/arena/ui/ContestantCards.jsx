@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 export const ContestantCard = React.memo(({ user, toggleVote, votingStatus }) => {
 
+  console.log(user)
 
   const navigate = useNavigate();
   const status = votingStatus[user.id];
@@ -19,9 +20,11 @@ export const ContestantCard = React.memo(({ user, toggleVote, votingStatus }) =>
   return (
 
     <article
-      onClick={() => navigate(`/details/${user.id}`)}
+      onClick={() => navigate(`/details/${user.
+participationId
+}`)}
 
-      className="relative flex flex-col w-full max-w-40.75 h-51  mt-4 sm:max-w-77.5 sm:h-97 rounded-xl rounded-b-none overflow-hidden border border-gray-800 hover:border-purple-500 transition"
+      className="relative flex flex-col w-full max-w-40.75 h-51  mt-4 sm:max-w-77.5 sm:h-97 rounded-xl rounded-b-none overflow-hidden border border-gray-800 hover:border-white transition"
     >
        
       <img

@@ -1,86 +1,100 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import {  Zap } from "lucide-react";
+import { Zap, Search } from "lucide-react";
 
-const MobileMenu = ({ isOpen, setIsOpen, menuItems, actionButton,setOpenModal,handleLogout }) => {
+const MobileMenu = ({
+  isOpen,
+  setIsOpen,
+  menuItems,
+  actionButton,
+  setOpenModal,
+  handleLogout,
+}) => {
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-         
+          {/* BACKDROP */}
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.5 }}
+            animate={{ opacity: 0.6 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsOpen(false)}
             className="fixed inset-0 bg-black z-40"
           />
 
-        
+          {/* DROPDOWN CARD */}
           <motion.div
-            initial={{ x: "-100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed top-0 left-0 w-62.5 h-full bg-[#1E2229] z-50 flex flex-col p-8 gap-6 shadow-lg"
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-[#1E2229] rounded-2xl z-50 p-5 shadow-xl"
           >
-            
-            <div className="flex items-center gap-3 mb-6">
+            {/* HEADER */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-[#9DE2E2] flex items-center justify-center">
+                  <Zap size={18} className="text-black" />
+                </div>
+                <span className="text-white font-semibold">GLITCH</span>
+              </div>
 
-              <div className=" w-10 h-10 rounded-xl bg-[#1E2229] flex items-center justify-center shadow-[0_0_40px_rgba(168,85,247,0.5)]">
-                       <Zap className="text-white" size={26} />
-                     </div>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
            
-            </div>
-
-            <div className="flex flex-col gap-4">
-              {menuItems.map((item, idx) =>
-                item.path ? (
-                  <Link
-                    key={idx}
-                    to={item.path}
-                    onClick={() => setIsOpen(false)}
-                    className="text-white font-medium text-base hover:text-purple-400 transition-colors flex items-center gap-2"
-                  >
-                    {item.icon && <item.icon size={20} className="text-purple-500" />}
-                    {item.label}
-                  </Link>
-                ) : (
-                  <span
-                    key={idx}
-                    className="text-white font-medium text-base hover:text-purple-400 cursor-pointer transition-colors flex items-center gap-2"
-                  >
-                    {item.icon && <item.icon size={20} className="text-purple-500" />}
-                    {item.label}
-                  </span>
-                )
-              )}
-            </div>
-
-            <div className="border-t border-gray-800 my-4" />
+           
+            
 
             
-            <div className="flex flex-col gap-3 text-xs mt-auto">
-              <Link to={actionButton.path} onClick={() => setIsOpen(false)}>
-                <button className="w-full text-center border border-purple-500 text-purple-500 px-4 py-2 rounded-md hover:bg-purple-500 hover:text-white transition">
-                  {actionButton.label}
-                </button>
-              </Link>
+            <div className="flex flex-col gap-3">
+              {menuItems.map((item, idx) => (
+                <Link
+                  key={idx}
+                  to={item.path}
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center justify-between text-white text-sm hover:text-primary transition"
+                >
+                  <div className="flex items-center gap-3">
+                    <item.icon size={18} className="text-gray-400" />
+                    {item.label}
+                  </div>
+                  <span className="text-gray-500">{">"}</span>
+                </Link>
+              ))}
+            </div>
 
-               <button
-              onClick={() => {
-       setIsOpen(false);
-    setOpenModal(true);
-  }}
-                className="w-full text-center border text-xs border-red-500 text-red-500 px-4 py-2 rounded-md hover:bg-purple-500 hover:text-white transition"
+          
+            <div className="border-t border-gray-700 my-4" />
+
+            
+            <Link to={actionButton.path} onClick={() => setIsOpen(false)}>
+              <button className="w-full bg-[#9DE2E2] text-black font-semibold py-2 rounded-lg hover:opacity-90 transition">
+               {actionButton.label}
+              </button>
+            </Link>
+
+            <div className="mt-3 flex flex-col gap-2">
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  setOpenModal(true);
+                }}
+                className="text-sm text-gray-400 hover:text-white"
               >
                 Reset Password
               </button>
 
               <button
                 onClick={handleLogout}
-                className="w-full text-center border text-xs border-red-500 text-red-500 px-4 py-2 rounded-md hover:bg-purple-500 hover:text-white transition"
+                className="text-sm text-red-400 hover:text-red-300"
               >
                 Logout
               </button>

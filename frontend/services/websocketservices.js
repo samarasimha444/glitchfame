@@ -1,4 +1,5 @@
 import { Client } from "@stomp/stompjs";
+const BASE_URL = import.meta.env.VITE_WS_URL;
 
 let client = null;
 let isConnected = false;
@@ -8,7 +9,7 @@ export const connectSocket = (token) => {
   if (client?.active) return client;
 
   client = new Client({
-    brokerURL: "ws://localhost:3000/ws",
+    brokerURL: BASE_URL,
     reconnectDelay: 5000,
 
     connectHeaders: {
@@ -16,7 +17,7 @@ export const connectSocket = (token) => {
     },
 
     onConnect: () => {
-      console.log("✅ WebSocket Connected");
+      console.log(" WebSocket Connected");
       isConnected = true;
 
       Object.entries(subscriptions).forEach(([topic, subObj]) => {
@@ -25,7 +26,7 @@ export const connectSocket = (token) => {
     },
 
     onWebSocketClose: () => {
-      console.log(" WebSocket Disconnected");
+      
       isConnected = false;
     },
 
@@ -58,7 +59,7 @@ export const subscribeTopic = (topic, callback) => {
         callback(data);
       });
 
-      console.log("📡 Subscribed:", topic);
+     
     },
 
     unsubscribe: () => {
@@ -66,7 +67,7 @@ export const subscribeTopic = (topic, callback) => {
       subObj.sub = null;
       delete subscriptions[topic];
 
-      console.log("🧹 Unsubscribed:", topic);
+     
     },
   };
 
@@ -91,5 +92,5 @@ export const disconnectSocket = () => {
 
   isConnected = false;
 
-  console.log("🔌 Socket fully disconnected");
+  
 };

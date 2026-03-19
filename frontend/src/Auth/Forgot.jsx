@@ -122,13 +122,13 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
               placeholder="Enter your email"
               value={email}
               onChange={(e)=>setEmail(e.target.value)}
-              className="bg-[#11161f] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-purple-500 outline-none"
+              className="bg-[#11161f] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-ehite outline-none"
             />
 
             <button
               onClick={handleSendOtp}
               disabled={sendingOtp}
-              className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-purple-700 text-black font-semibold px-4 py-2 rounded-lg hover:opacity-90"
+              className="flex items-center justify-center gap-2 bg-primary text-black font-semibold px-4 py-2 rounded-lg hover:opacity-90"
             >
               {sendingOtp ? (
                 <Loader2 size={18} className="animate-spin" />
@@ -155,7 +155,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
                   maxLength="1"
                   value={digit}
                   onChange={(e)=>handleOtpChange(e.target.value, index)}
-                  className="w-10 h-12 text-center text-lg bg-[#11161f] border border-gray-700 rounded-lg focus:border-purple-500 outline-none"
+                  className="w-10 h-12 text-center text-lg bg-[#11161f] border border-gray-700 rounded-lg focus:border-white outline-none"
                 />
               ))}
 
@@ -166,13 +166,13 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
               placeholder="Enter new password"
               value={newPassword}
               onChange={(e)=>setNewPassword(e.target.value)}
-              className="bg-[#11161f] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-purple-500 outline-none"
+              className="bg-[#11161f] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-white outline-none"
             />
 
             <button
               onClick={handleResetPassword}
               disabled={resetting}
-              className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-purple-700 text-black font-semibold px-4 py-2 rounded-lg hover:opacity-90"
+              className="flex items-center justify-center gap-2 bg-primary text-black font-semibold px-4 py-2 rounded-lg hover:opacity-90"
             >
               {resetting ? (
                 <Loader2 size={18} className="animate-spin" />

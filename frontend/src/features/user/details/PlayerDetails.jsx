@@ -38,7 +38,7 @@ const PlayerDetails = () => {
   return (
 
 
-    <div className="flex  flex-col md:flex-row w-full  justify-evenly min-h-screen bg-black text-white">
+    <div className="flex  flex-col md:flex-row w-full  justify-evenly min-h-screen  text-white">
 
       <section className="h-[40dvh] w-full md:w-[45%] md:rounded-2xl md:h-[95dvh]  relative overflow-hidden">
 
@@ -63,24 +63,23 @@ const PlayerDetails = () => {
            
           </p>
         </div>
-
-      </section>
+9      </section>
 
   
-      <section className="max-w-xl  p-4 md:p-12 md:space-y-8 ">
+      <section className="max-w-xl  w-full p-4 md:p-12 md:space-y-8 ">
 
      
-        <div className="md:bg-[#0f1720] max-w-[530px] p-8 rounded-2xl md:border border-cyan-500/20">
+        <div className="bg-[#0f1720] w-full max-w-[530px] p-8 rounded-2xl md:border border-cyan-500/20">
           <p className="text-xs text-gray-400 mb-2">
             CURRENT VOTES
           </p>
 
-          <h2 className="text-3xl md:text-5xl font-extrabold text-cyan-400">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-white">
            {data?.voteCount}
           </h2>
 
           <button onClick={()=>handleVote(data?.participationId)}
-           className="mt-6 w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-lg text-black font-semibold hover:opacity-90 transition">
+           className="mt-6 w-full flex items-center justify-center gap-2 b bg-primary py-3 rounded-lg text-black font-semibold hover:opacity-90 transition">
             <Zap size={18} />
             Vote {data?.participantName}
           </button>
@@ -101,7 +100,7 @@ const PlayerDetails = () => {
 
           </p>
 
-          <p className="text-purple-400 text-sm mt-4">
+          <p className="text-primary text-sm mt-4">
             #GlitchFame #{data?.seasonName}
           </p>
         </div>

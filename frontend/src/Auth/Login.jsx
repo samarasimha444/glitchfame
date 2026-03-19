@@ -4,7 +4,6 @@ import toast from "react-hot-toast";
 import ForgotPasswordModal from "./Forgot";
 
 const Login = () => {
-
   const [open, setOpen] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -26,7 +25,7 @@ const Login = () => {
 
     loginMutation.mutate(formData, {
       onError: (err) => {
-        toast.error(err.message || "Login failed");
+        toast.error("Login failed");
       },
       onSuccess: () => {
         toast.success("Logged in successfully!");
@@ -36,9 +35,7 @@ const Login = () => {
 
   return (
     <div className="space-y-6 w-full max-w-100">
-
       <form onSubmit={handleSubmit} className="space-y-6">
-
         <div>
           <label className="text-xs text-gray-400 uppercase tracking-wider">
             Email Address
@@ -52,7 +49,7 @@ const Login = () => {
             required
             className="mt-1 w-full bg-[#111418] border border-[#1E232B]
             rounded-lg px-4 py-3 text-white placeholder-gray-500
-            focus:outline-none focus:border-purple-500"
+            focus:outline-none focus:border-white"
           />
         </div>
 
@@ -69,35 +66,31 @@ const Login = () => {
             required
             className="mt-1 w-full bg-[#111418] border border-[#1E232B]
             rounded-lg px-4 py-3 text-white placeholder-gray-500
-            focus:outline-none focus:border-purple-500"
+            focus:outline-none focus:border-white"
           />
         </div>
 
-       <button
-  type="submit"
-  className="w-full py-3 mt-4 rounded-xl bg-[#BE5EED] text-white font-medium flex items-center justify-center gap-2 hover:opacity-90 transition"
-  disabled={loginMutation.isPending}
->
-  {loginMutation.isPending && (
-    <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-  )}
-  {loginMutation.isPending ? "Logging in..." : "Login"}
-</button>
+        <button
+          type="submit"
+          className="w-full py-3 mt-4 rounded-xl bg-primary text-black  font-medium flex items-center justify-center gap-2 hover:opacity-90 transition"
+          disabled={loginMutation.isPending}
+        >
+          {loginMutation.isPending && (
+            <span className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></span>
+          )}
+          {loginMutation.isPending ? "Logging in..." : "Login"}
+        </button>
       </form>
 
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="text-sm text-purple-400 hover:text-purple-300"
+        className="text-sm text-primary hover:text-purple-300"
       >
         Forgot Password?
       </button>
 
-      <ForgotPasswordModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
-      />
-
+      <ForgotPasswordModal isOpen={open} onClose={() => setOpen(false)} />
     </div>
   );
 };

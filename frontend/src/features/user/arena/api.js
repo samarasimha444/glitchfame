@@ -77,7 +77,7 @@ export const getVotersById = async ( seasonId, page = 0, size = 4, name = "")=> 
 
 export const getContestantDetails = async (id) => {
    const token = localStorage.getItem("token")
-  const response = await fetch(`${BASE_URL}/contestants/${id}`, {
+  const response = await fetch(`${BASE_URL}/participations/${id}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,

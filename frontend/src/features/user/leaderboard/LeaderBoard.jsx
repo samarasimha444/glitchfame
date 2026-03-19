@@ -1,6 +1,7 @@
 import React from "react";
 import { ChevronLeft, MoreVertical, Flame, ArrowUp } from "lucide-react";
 import { useLeaderboard, useLeaderboardSocket } from "./hooks";
+import LeaderboardLoading from "./ui/LeaderBoardCarousel";
 
 
 const Leaderboard = () => {
@@ -12,8 +13,8 @@ const Leaderboard = () => {
 
   if (isLoading) {
     return (
-      <div className="text-white flex justify-center items-center h-screen">
-        Loading leaderboard...
+      <div className="text-white max-w-screen flex justify-center items-center h-screen">
+       <LeaderboardLoading/>
       </div>
     );
   }
@@ -97,11 +98,11 @@ const Leaderboard = () => {
                 </div>
 
                 <div className="text-right">
-                  <p className="text-xs font-bold text-[#00F5D4]">
+                  <p className="text-xs sm:text-base font-bold text-[#00F5D4]">
                     {item.votes}
                   </p>
 
-                  <div className="flex items-center justify-end gap-1 text-[9px] text-primary">
+                  <div className="flex items-center justify-end gap-1 text-[9px] sm:text-[13px] text-primary">
                     <ArrowUp size={8} />
                     LIVE
                   </div>
@@ -111,11 +112,11 @@ const Leaderboard = () => {
           })}
         </div>
 
-        {/* Footer */}
+        
         <div className="text-center py-6">
-          <button className="text-[10px] font-bold text-primary border-b  pb-0.5 hover:text-white">
+          {/* <button className="text-[10px] font-bold text-primary border-b  pb-0.5 hover:text-white">
             View Full Ranking
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

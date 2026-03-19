@@ -24,11 +24,11 @@ bg-[radial-gradient(circle_at_top_left,_#3b0764,_#000000_40%,_#022c22)]">
 
     
     <div className="mx-auto w-24 h-24 rounded-xl 
-    bg-gradient-to-br from-purple-500 to-purple-700
+    bg-gradient-to-br bg-primary
     flex items-center justify-center
     shadow-[0_0_40px_rgba(168,85,247,0.5)]">
 
-      <Zap className="text-white" size={50} />
+      <Zap className="text-black" size={50} />
 
     </div>
 
@@ -77,7 +77,7 @@ bg-[radial-gradient(circle_at_top_left,_#3b0764,_#000000_40%,_#022c22)]">
               onClick={() => setMode("login")}
               className={`flex-1 py-2 rounded-md text-sm ${
                 mode === "login"
-                  ? "bg-[#BE5EED] text-white"
+                  ? "bg-primary text-black"
                   : "text-gray-400"
               }`}
             >
@@ -88,7 +88,7 @@ bg-[radial-gradient(circle_at_top_left,_#3b0764,_#000000_40%,_#022c22)]">
               onClick={() => setMode("register")}
               className={`flex-1 py-2 rounded-md text-sm ${
                 mode === "register"
-                  ? "bg-[#BE5EED] text-white"
+                  ? "bg-primary text-black"
                   : "text-gray-400"
               }`}
             >

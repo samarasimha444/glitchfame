@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Zap, Award, Info, Logs } from "lucide-react";
+import { Zap, Award, Info, Logs, icons,UserPlus } from "lucide-react";
 import MobileMenu from "../components/MobileSideBar";
 import { Settings } from "lucide-react";
 import ResetModal from "../components/ResetModel";
@@ -18,8 +18,9 @@ const Navbar = () => {
   ];
 
   const actionButton = {
-    label: "Enter",
+    label: "Participate",
     path: "/season",
+    
   };
 
 
@@ -52,10 +53,10 @@ const Navbar = () => {
               <li key={idx}>
                 <Link
                   to={item.path}
-                  className="flex items-center gap-1 hover:text-purple-400 cursor-pointer"
+                  className="flex items-center gap-1 hover:text-white-400 cursor-pointer"
                 >
                   {item.icon && (
-                    <item.icon size={16} className="text-white" />
+                    <item.icon size={16} className="text-primary" />
                   )}
                   {item.label}
                 </Link>
@@ -75,15 +76,17 @@ const Navbar = () => {
 
       <div className="hidden sm:flex items-center  space-x-4 relative">
         <Link to={actionButton.path}>
-          <button className="border bg-white text-black text-[14px]  px-4 py-2 rounded-md hover:bg-prmie-500 hover:text-white transition">
-            {actionButton.label}
+
+         <button className="flex items-center gap-2 text-white text-[14px]  py-2 hover:bg-prmie-500 hover:text-white transition">
+          <span className="text-primary"> <UserPlus size={16} /> </span>
+          {actionButton.label}
           </button>
         </Link>
 
         <div className="relative">
           <button
             onClick={() => setAvatarOpen(!avatarOpen)}
-            className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-black hover:bg-purple-700 transition"
+            className="w-10 h-10 rounded-full text-primary flex items-center justify-center  hover:bg-gray-600 transition"
           >
             <Settings size={18} />
           </button>

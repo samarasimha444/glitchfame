@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const Signup = ({ setMode }) => {
@@ -51,6 +52,27 @@ const Signup = ({ setMode }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+
+
+
+  const handleApiError = (message) => {
+  if (!message) {
+    toast.error("Something went wrong ❌");
+    return;
+  }
+
+  const msg = message.toLowerCase();
+
+  if (msg.includes("email")) {
+    toast.error("Email already registered ");
+  } else if (msg.includes("phone")) {
+    toast.error("Phone number already registered ");
+  } else {
+   
+    toast.error(message);
+  }
+};
+
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
 
@@ -82,7 +104,7 @@ const Signup = ({ setMode }) => {
           body: JSON.stringify({
             email: formData.email,
             username: formData.username,
-            mobile: formData.mobileNumber, // FIX
+            mobile: formData.mobileNumber, 
             password: formData.password,
           }),
         }
@@ -95,14 +117,14 @@ const Signup = ({ setMode }) => {
         setOtpStage(true);
 
       } else {
-
-        setError(message || "Signup failed");
+          console.log(message)
+        handleApiError(message)
 
       }
 
     } catch {
 
-      setError("Network error. Please try again.");
+      toast.error("Network error. Please try again.");
 
     } finally {
 
@@ -129,7 +151,7 @@ const Signup = ({ setMode }) => {
           body: JSON.stringify({
             email: formData.email,
             username: formData.username,
-            mobile: formData.mobileNumber, // FIX
+            mobile: formData.mobileNumber, 
             password: formData.password,
           }),
         }
@@ -143,13 +165,13 @@ const Signup = ({ setMode }) => {
 
       } else {
 
-        setError(message || "OTP verification failed");
+        toast.error ("OTP verification failed");
 
       }
 
     } catch {
 
-      setError("Network error. Please try again.");
+      toast.error("Network error. Please try again.");
 
     } finally {
 
@@ -190,7 +212,7 @@ const Signup = ({ setMode }) => {
                 required
                 className="mt-1 w-full bg-[#111418] border border-[#1E232B]
                 rounded-lg px-4 py-1 text-white placeholder-gray-500
-                focus:outline-none focus:border-purple-500"
+                focus:outline-none focus:border-white"
               />
 
             </div>
@@ -201,8 +223,8 @@ const Signup = ({ setMode }) => {
             type="submit"
             disabled={loading}
             className="w-full py-2 rounded-xl
-            bg-gradient-to-r from-purple-500 to-pink-500
-            text-white font-medium
+            bg-primary
+            text-black font-medium
             hover:opacity-90 transition"
           >
             {loading ? "Sending OTP..." : "Sign Up"}
@@ -230,15 +252,15 @@ const Signup = ({ setMode }) => {
             required
             className="w-full bg-[#111418] border border-[#1E232B]
             rounded-lg px-4 py-3 text-white placeholder-gray-500
-            focus:outline-none focus:border-purple-500"
+            focus:outline-none focus:border-white"
           />
 
           <button
             type="submit"
             disabled={loading}
             className="w-full py-3 rounded-xl
-            bg-gradient-to-r from-purple-500 to-pink-500
-            text-white font-medium"
+            bg-gradient-to-r bg-primary
+            text-black font-medium"
           >
             {loading ? "Verifying..." : "Verify OTP"}
           </button>

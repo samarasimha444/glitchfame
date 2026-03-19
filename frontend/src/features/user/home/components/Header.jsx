@@ -53,7 +53,7 @@ export const StickyHeader = memo(({ liveSeason, season }) => {
         border-y md:border border-cyan-500/20 
         shadow-none md:shadow-[0_0_30px_rgba(0,255,255,0.05)]"
           >
-            {/* HEADER */}
+           
             <div className="flex items-center justify-between mb-4 px-2 md:px-0">
               <div>
                 <p className="text-xs text-gray-400">TIME REMAINING</p>
@@ -67,7 +67,7 @@ export const StickyHeader = memo(({ liveSeason, season }) => {
               </span>
             </div>
 
-            {/* TIMER */}
+            
             <div className="flex justify-between sm:justify-center gap-2 sm:gap-5 px-2 md:px-0">
               {[
                 { label: "DAYS", value: timeLeft?.days ?? 0 },
@@ -99,8 +99,6 @@ export const StickyHeader = memo(({ liveSeason, season }) => {
           </div>
         </div>
       </div>
-
-      
     </div>
   );
 });

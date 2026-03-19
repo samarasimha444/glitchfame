@@ -3,9 +3,12 @@ import toast from "react-hot-toast";
 import Error from "../../../../components/Error";
 import { Heart } from "lucide-react";
 import { ContestantCard } from "./ContestantCards";
+import { useState } from "react";
 
 const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
-  
+  console.log(data)
+
+  const [clickedVotes, setClickedVotes] = useState([]);
 
   const handleVote = async (participationId) => {
     const token = localStorage.getItem("token");
@@ -22,9 +25,14 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
       });
 
       if (!res.ok) throw new Error("Vote failed");
+       setClickedVotes((prev) =>
+      prev.includes(participationId)
+        ? prev.filter((id) => id !== participationId) 
+        : [...prev, participationId] 
+    );
 
       const data = await res.json();
-      toast.success("Vote recorded!");
+      
     } catch (err) {
       console.error(err);
       toast.error(err.message || "Something went wrong");
@@ -57,22 +65,33 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
                 </div>
               ))}
 
-            {!isLoading &&
-              data?.map((user) => (
-                <div
-                  key={user.participationId}
-                  className="flex flex-col items-center"
-                >
-                  <ContestantCard user={user} />
+     {!isLoading &&
+  data?.map((user) => {
+        const isClicked = clickedVotes.includes(user.participationId);
+    const isVoted = isClicked ? !user.hasVoted : user.hasVoted;
 
-                  <button
-                    onClick={() => handleVote(user.participationId)}
-                    className="mt-2 w-35 sm:w-full sm:text-base bg-[#9DE2E2] text-[12px] text-black font-semibold py-2 rounded-md hover:opacity-90 transition"
-                  >
-                    Vote Now
-                  </button>
-                </div>
-              ))}
+
+    return (
+      <div
+        key={user.participationId}
+        className="flex flex-col items-center"
+      >
+        <ContestantCard user={user} />
+
+        <button
+          onClick={() => handleVote(user.participationId)}
+          
+          className={`mt-2 w-35 sm:w-full sm:text-base text-[12px] font-semibold py-2 rounded-md transition-all duration-150 shadow-md active:shadow-sm active:scale-95 active:translate-y-[1px] ${
+            isVoted
+              ? "bg-primary text-black shadow "
+              : "bg-[#9DE2E2] text-black hover:opacity-90"
+          }`}
+        >
+          {isVoted ? "Voted" : "Vote Now"}
+        </button>
+      </div>
+    );
+  })}
           </div>
         }
       </div>
@@ -81,3 +100,4 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
 };
 
 export default ArenaCard;
+
