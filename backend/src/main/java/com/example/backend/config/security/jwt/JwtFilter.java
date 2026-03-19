@@ -1,16 +1,17 @@
 package com.example.backend.config.security.jwt;
 
-import jakarta.servlet.FilterChain; // servlet filter chain
-import jakarta.servlet.ServletException; // servlet exception
-import jakarta.servlet.http.HttpServletRequest; // incoming request
-import jakarta.servlet.http.HttpServletResponse; // outgoing response
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken; // auth token
-import org.springframework.security.core.authority.SimpleGrantedAuthority; // role authority
-import org.springframework.security.core.context.SecurityContextHolder; // security context
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource; // request details
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -22,7 +23,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil; // jwt utility
+    private final JwtUtil jwtUtil;
+    private final StringRedisTemplate redisTemplate;
 
     @Override
     protected void doFilterInternal(
@@ -31,36 +33,69 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String header = request.getHeader("Authorization"); // read auth header
+        String header = request.getHeader("Authorization");
 
+        // no token → continue (public endpoints may exist)
         if (header == null || !header.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response); // continue if no token
+            filterChain.doFilter(request, response);
             return;
         }
 
-        String token = header.substring(7); // remove "Bearer "
+        String token = header.substring(7);
 
+        // 🔴 1. invalid or expired token
         if (!jwtUtil.validateToken(token)) {
-            filterChain.doFilter(request, response); // continue if invalid
+            sendUnauthorized(response, "Token expired. Please login again.");
             return;
         }
 
-        UUID authId = jwtUtil.extractAuthId(token); // extract uuid
-        String role = jwtUtil.extractRole(token); // extract role
+        UUID authId = jwtUtil.extractAuthId(token);
+        String role = jwtUtil.extractRole(token);
 
+        // 🔴 2. check Redis (single device login)
+        String storedToken = redisTemplate.opsForValue()
+                .get("user:" + authId);
+
+        // 🔴 3. no session found
+        if (storedToken == null) {
+            sendUnauthorized(response, "Session expired. Please login again.");
+            return;
+        }
+
+        // 🔴 4. another device login detected
+        if (!storedToken.equals(token)) {
+            sendUnauthorized(response, "Logged in from another device. Please login again.");
+            return;
+        }
+
+        // ✅ set authentication
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(
-                        authId, // principal
-                        null, // credentials
-                        List.of(new SimpleGrantedAuthority(role)) // authorities
+                        authId,
+                        null,
+                        List.of(new SimpleGrantedAuthority(role))
                 );
 
         authentication.setDetails(
                 new WebAuthenticationDetailsSource().buildDetails(request)
         );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication); // set auth
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        filterChain.doFilter(request, response); // continue request
+        filterChain.doFilter(request, response);
+    }
+
+    // 🔥 centralized 401 response
+    private void sendUnauthorized(HttpServletResponse response, String message) throws IOException {
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+
+        response.getWriter().write("""
+            {
+                "status": 401,
+                "message": "%s"
+            }
+        """.formatted(message));
     }
 }

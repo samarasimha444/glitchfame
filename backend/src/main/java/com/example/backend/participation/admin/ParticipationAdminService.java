@@ -63,8 +63,7 @@ participationAdminRepo.save(participation);
     ) {
 
         Pageable pageable = PageRequest.of(page, size); // pagination object
-
-        return participationAdminRepo.searchLiveApprovedParticipants(
+return participationAdminRepo.searchLiveApprovedParticipants(
                 name,
                 pageable
         ); // search participants

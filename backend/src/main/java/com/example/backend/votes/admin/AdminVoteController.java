@@ -8,10 +8,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/votes")
 @RequiredArgsConstructor
 public class AdminVoteController {
-
-    private final AdminVoteService adminVoteService;
-
-    @PostMapping
+private final AdminVoteService adminVoteService;
+@PostMapping
     public long adjustVotes(@RequestBody AdminVoteDTO request) {
 
         return adminVoteService.adjustVotes(

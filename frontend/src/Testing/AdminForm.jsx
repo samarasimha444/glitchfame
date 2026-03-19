@@ -99,7 +99,7 @@ export default function AdminSeasonForm() {
 
     try {
 
-      const res = await fetch("http://localhost:3000/admin/seasons", {
+      const res = await fetch("http://localhost:3000/seasons", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
