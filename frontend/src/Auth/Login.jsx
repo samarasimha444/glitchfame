@@ -25,7 +25,7 @@ const Login = () => {
 
     loginMutation.mutate(formData, {
       onError: (err) => {
-        toast.error("Login failed");
+        toast.error("user not found");
       },
       onSuccess: () => {
         toast.success("Logged in successfully!");

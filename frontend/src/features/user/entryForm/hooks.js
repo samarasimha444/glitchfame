@@ -65,9 +65,6 @@ export const useSubmitEntry = () => {
         toast.error(data?.message || "Submission failed");
         throw new Error(data?.message || "Submission failed");
       }
-
-      
-      toast.success("Submitted successfully!");
       return data;
     },
   });

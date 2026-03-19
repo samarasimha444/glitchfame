@@ -41,10 +41,9 @@ export const useLeaderboardSocket = (data) => {
 
     const token = localStorage.getItem("token");
 
-    // connect socket
+  
     connectSocket(token);
 
-    // store subscriptions
     const subscriptions = Object.keys(data.raw).map((seasonId) =>
       subscribeTopic(`/topic/votes/${seasonId}`, (vote) => {
         queryClient.setQueryData(["leaderboard"], (oldData) => {
@@ -56,7 +55,7 @@ export const useLeaderboardSocket = (data) => {
               : p
           );
 
-          // keep sorted
+          
           updated.sort((a, b) => b.votes - a.votes);
 
           return {
