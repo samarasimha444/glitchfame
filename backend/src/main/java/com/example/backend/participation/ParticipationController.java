@@ -3,11 +3,11 @@ package com.example.backend.participation;
 import com.example.backend.participation.dto.Participants;
 import com.example.backend.participation.dto.ParticipantById;
 import com.example.backend.participation.dto.ParticipationForm;
-import com.example.backend.seasons.dto.RandomLiveSeasonDTO;
+
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,8 +45,7 @@ public class ParticipationController {
             Authentication authentication
     ) {
         System.out.println(authentication);
-
-        UUID authId = (UUID) authentication.getPrincipal();
+         UUID authId = (UUID) authentication.getPrincipal();
 
         return participationService.getLiveContestants(
                 authId,
@@ -113,20 +112,9 @@ UUID authId = (UUID) authentication.getPrincipal();
 
 
 
-// get random live season
-@GetMapping("/live/random")
-public ResponseEntity<RandomLiveSeasonDTO> getRandomLiveSeason(
-        Authentication auth
-) {
+//get random season and its participants
 
-    UUID authId = UUID.fromString(auth.getName()); // extract user id from token
- RandomLiveSeasonDTO response =
-participationService.getRandomLiveSeason(authId);
-if (response == null) {
-        return ResponseEntity.noContent().build();
-}
-return ResponseEntity.ok(response);
-}
+
 
 
 

@@ -156,7 +156,7 @@ Page<Participants> searchLiveApproved(
 
 
     // search approved participants in a specific season
-    @Query(value = """
+     @Query(value = """
         SELECT
             p.participation_id AS participationId,
             p.name AS participantName,
