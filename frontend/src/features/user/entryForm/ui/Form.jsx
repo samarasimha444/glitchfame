@@ -5,6 +5,8 @@ import NeonLoader from "../../../../components/Loader";
 import { useNavigate } from "react-router-dom";
 import { useSubmitEntry, useUploadImage } from "../hooks";
 
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
 
 const Form = ({ seasonId, image }) => {
   const navigate = useNavigate();
@@ -16,7 +18,7 @@ const Form = ({ seasonId, image }) => {
     bio: "",
   });
 
- 
+  const [showCalendar, setShowCalendar] = useState(false);
 
   const { mutateAsync: uploadImage, isPending: uploading } = useUploadImage();
   const { mutate: submitEntry, isPending } = useSubmitEntry();
@@ -75,10 +77,10 @@ const Form = ({ seasonId, image }) => {
 
   return (
     <>
-      
-
       <form onSubmit={handleSubmit} className="space-y-6 relative">
-        <h3 className="text-white font-semibold text-lg">PROFILE INTELLIGENCE</h3>
+        <h3 className="text-white font-semibold text-lg">
+          PROFILE INTELLIGENCE
+        </h3>
 
         {isLoading && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
@@ -99,13 +101,43 @@ const Form = ({ seasonId, image }) => {
             />
           ))}
 
-          <input
-            type="date"
-            name="dateOfBirth"
-            value={formData.dateOfBirth}
-            onChange={handleChange}
-            className="bg-[#1a202c] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-[#BE5EED] outline-none"
-          />
+          <div className="relative">
+            <input
+              type="text"
+              readOnly
+              value={
+                formData.dateOfBirth ?
+                  new Date(formData.dateOfBirth).toLocaleDateString()
+                : ""
+              }
+              placeholder="Date of Birth"
+              onClick={() => setShowCalendar((prev) => !prev)}
+              className="bg-[#1a202c] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-[#BE5EED] outline-none cursor-pointer w-full"
+            />
+
+            {showCalendar && (
+              <div
+                className="absolute z-50 mt-2 bg-[#111418] border border-gray-700 rounded-xl p-3 shadow-lg"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <DayPicker
+                  mode="single"
+                  selected={
+                    formData.dateOfBirth ?
+                      new Date(formData.dateOfBirth)
+                    : undefined
+                  }
+                  onSelect={(date) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      dateOfBirth: date?.toISOString(),
+                    }));
+                    setShowCalendar(false);
+                  }}
+                />
+              </div>
+            )}
+          </div>
         </div>
 
         <textarea
@@ -134,7 +166,11 @@ const Form = ({ seasonId, image }) => {
               isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
-            {!isLoading ? "Submit Arena Entry" : uploading ? "Uploading..." : "Submitting..."}
+            {!isLoading ?
+              "Submit Arena Entry"
+            : uploading ?
+              "Uploading..."
+            : "Submitting..."}
           </button>
         </div>
       </form>

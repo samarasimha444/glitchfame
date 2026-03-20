@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+
 import { Zap } from "lucide-react";
 import { useContestantDetails} from "../arena/hooks";
 import { useNavigate, useParams } from "react-router-dom";
-import toast from "react-hot-toast";
+import NeonLoader from "../../../components/Loader";
 
 
 
@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 const PlayerDetails = () => {
   const navigate = useNavigate()
 
-  const [loading,setIsLoading]=useState(false)
+  
 
    const { id } = useParams(); 
    console.log(id)
@@ -21,14 +21,14 @@ const PlayerDetails = () => {
   const { data, isLoading, error } = useContestantDetails(id);
 
 
-  console.log(data)
-  
 
+  
 
   return (
 
 
     <div className="flex  flex-col md:flex-row w-full  justify-evenly min-h-screen  text-white">
+      {isLoading && <NeonLoader />}
 
       <section className="h-[40dvh] w-full md:w-[45%] md:rounded-2xl md:h-[95dvh]  relative overflow-hidden">
 
@@ -53,13 +53,13 @@ const PlayerDetails = () => {
            
           </p>
         </div>
-9      </section>
+      </section>
 
   
       <section className="max-w-xl  w-full p-4 md:p-12 md:space-y-8 ">
 
      
-        <div className="bg-[#0f1720] w-full max-w-[530px] p-8 rounded-2xl md:border border-cyan-500/20">
+        <div className="bg-[#0f1720] w-full max-w-132.5 p-8 rounded-2xl md:border border-cyan-500/20">
           <p className="text-xs text-gray-400 mb-2">
             CURRENT VOTES
           </p>
@@ -113,9 +113,6 @@ const PlayerDetails = () => {
           
           </p>
         </div>
-
-    
-       
 
       </section>
     </div>

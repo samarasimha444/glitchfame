@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getLiveUpcomingSeasons, getSeasonById, getWinners} from "./api";
 import toast from "react-hot-toast";
+import { changePasswordApi } from "../api";
 
 
 
@@ -29,5 +30,14 @@ export const useSeasonById = (id) => {
     queryKey: ["seasonId", id],
     queryFn: () => getSeasonById(id),
     enabled: !!id, 
+  });
+};
+
+
+
+export const useChangePassword = () => {
+  return useMutation({
+    mutationFn: changePasswordApi,
+
   });
 };

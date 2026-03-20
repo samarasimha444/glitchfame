@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { useLogin } from "../features/user/arena/hooks";
 import toast from "react-hot-toast";
-import ForgotPasswordModal from "./Forgot";
+const ForgotPasswordModal = lazy(() => import("./Forgot"));
 
 const Login = () => {
   const [open, setOpen] = useState(false);
@@ -90,7 +90,14 @@ const Login = () => {
         Forgot Password?
       </button>
 
-      <ForgotPasswordModal isOpen={open} onClose={() => setOpen(false)} />
+    <Suspense fallback={<div className="text-white">Loading...</div>}>
+     {open && (
+    <ForgotPasswordModal
+      isOpen={open}
+      onClose={() => setOpen(false)}
+    />
+  )}
+</Suspense>
     </div>
   );
 };

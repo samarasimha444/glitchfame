@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { lazy, Suspense, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Zap, Award, Info, Logs, icons,UserPlus } from "lucide-react";
 import MobileMenu from "../components/MobileSideBar";
 import { Settings } from "lucide-react";
-import ResetModal from "../components/ResetModel";
+import NeonLoader from "../components/Loader";
+const ResetModal = lazy(() => import("../components/ResetModel"));
 
 const Navbar = () => {
   const navigate = useNavigate()
@@ -41,11 +42,15 @@ const Navbar = () => {
           GlitchFame
         </span>
 
-        {openModal &&  <ResetModal
-        isOpen={openModal}
-        onClose={() => setOpenModal(false)}
+    {openModal && (
+  <Suspense fallback={<NeonLoader />}>
+    <ResetModal
+      isOpen={openModal}
+      onClose={() => setOpenModal(false)}
+    />
+  </Suspense>
+)}
       
-      />}
 
         <ul className="hidden md:flex space-x-6 ml-4 text-[14px] font-medium">
           {menuItems.map((item, idx) =>
