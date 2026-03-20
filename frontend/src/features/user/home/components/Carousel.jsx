@@ -9,13 +9,14 @@ export default function FeaturedCarousel({ season }) {
     "https://images.pexels.com/photos/1707213/pexels-photo-1707213.jpeg";
 
   return (
+
     <div className="w-full relative mt-6 md:mt-0 flex justify-center items-center max-w-400 mx-auto  h-full md:h-[95dvh]">
 
-      {/* Hero */}
+     
       <section className=" w-full hidden md:flex  flex-col  max-w-4xl text-center mb-8 md:mb-6 px-4">
         <h2 className="text-white text-xl md:text-5xl font-bold  max-w-xl tracking-wider uppercase">
           ENTER THE{" "}
-          <span className="bg-gradient-to-r from-purple-300 to-purple-400 bg-clip-text text-transparent">
+          <span className="bg-primary bg-clip-text text-transparent">
             GLITCH ARENA
           </span>
         </h2>
@@ -34,6 +35,8 @@ export default function FeaturedCarousel({ season }) {
         </p>
       </section>
 
+      
+
       <section className="border border-gray-600 rounded-xl md:rounded-none w-full max-w-90 md:max-w-screen md:w-280 h-64 md:h-160 relative overflow-hidden aspect-16\/9">
         <img
           src={`${season?.seasonPhotoUrl || fallback}?auto=compress&cs=tinysrgb&w=1600`}
@@ -47,13 +50,13 @@ export default function FeaturedCarousel({ season }) {
         <div className="absolute  hidden md:flex inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
 
         <section className="absolute hidden md:flex  inset-0 flex-col items-center justify-center text-center text-white px-6">
-          <span className="border border-purple-400 max-w-xs text-primary text-xs px-4 py-1 rounded-full backdrop-blur bg-black/30">
+          <span className="border border-white max-w-xs text-primary text-xs px-4 py-1 rounded-full backdrop-blur bg-black/30">
             NEXT CHALLENGE ANNOUNCEMENT
           </span>
 
           <h1 className="uppercase mt-6 font-extrabold leading-tight max-w-xl text-6xl lg:text-7xl">
             THE{" "}
-            <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-400 to-white bg-clip-text text-transparent">
               {season?.seasonName}
             </span>
           </h1>
@@ -83,7 +86,7 @@ export default function FeaturedCarousel({ season }) {
         </section>
 
         <section className="absolute sm:hidden bottom-0 left-0 w-full p-4 text-white bg-gradient-to-t from-black/90 via-black/60 to-transparent">
-          <span className="border  font-semibold bg-primary text-[9px] px-2 py-0.5 w-fit">
+          <span className="border text-black font-semibold bg-primary text-[9px] px-2 py-0.5 w-fit">
             #FEATUREDCHALLENGE
           </span>
 

@@ -1,15 +1,11 @@
 
-import CountdownTimer from "../home/components/CountdownTimer";
-import { useSeasonById } from "../home/hooks";
+import React from "react";
+import CountdownTimer from "../../home/components/CountdownTimer";
+
 
 const VotingHeader = ({season}) => {
-
   
-
-   
   const endDate = season?.votingEndDate
-
-
   return (
     <section className="w-full  text-white py-6 md:py-4  md:px-16">
 
@@ -59,4 +55,4 @@ const VotingHeader = ({season}) => {
   );
 };
 
-export default VotingHeader;
+export default React.memo(VotingHeader);

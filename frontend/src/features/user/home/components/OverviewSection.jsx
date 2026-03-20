@@ -1,4 +1,5 @@
 import { Trophy, Users, Camera, Zap } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const features = [
   {
@@ -32,6 +33,7 @@ const features = [
 ];
 
 const Overview = () => {
+  const navigate = useNavigate()
 
   return (
     <div className="w-full mt-4 md:bg-[#1E2229] py-3 mb-4 md:py-24 flex    justify-center">
@@ -50,11 +52,11 @@ const Overview = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
-            <button className="bg-primary text-xs sm:text-base  text-black px-6 py-3 md:font-semibold hover:opacity-90 transition w-full sm:w-auto">
+            <button onClick={()=>navigate('/season')} className="bg-primary text-xs sm:text-base  text-black px-6 py-3 md:font-semibold hover:opacity-90 transition w-full sm:w-auto">
               START SUBMISSION
             </button>
 
-            <button className="border text-xs sm:text-base border-gray-600 px-6 py-3 font-semibold hover:border-[#BE5EED] hover:text-[#BE5EED] transition w-full sm:w-auto">
+            <button onClick={()=>navigate('/aboutus')} className="border text-xs sm:text-base border-gray-600 px-6 py-3 font-semibold hover:border-white hover:text-primary transition w-full sm:w-auto">
               HOW IT WORKS
             </button>
           </div>
@@ -67,7 +69,7 @@ const Overview = () => {
             return (
               <div
                 key={item.id}
-                className={`border flex flex-col bg-[#2F3849] items-center justify-center text-center border-gray-700 py-6 sm:p-5 md:p-6 space-y-2 sm:space-y-3 
+                className={`border flex flex-col bg-[#2F3849] items-center justify-center  text-center border-gray-700 py-6 sm:p-5 md:p-6 space-y-2 sm:space-y-3 
                   hover:border-[#BE5EED] transition rounded-lg sm:rounded-xl
         ${index >= 2 ? "hidden md:block" : ""}
         `}

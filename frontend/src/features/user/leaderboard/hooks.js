@@ -2,13 +2,17 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { connectSocket, disconnectSocket, subscribeTopic } from "../../../../services/websocketservices";
 import { useEffect } from "react";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+
+
 export const useLeaderboard = () => {
   return useQuery({
     queryKey: ["leaderboard"],
     queryFn: async () => {
       const token = localStorage.getItem("token");
 
-      const res = await fetch("http://localhost:3000/leaderboard/live", {
+      const res = await fetch(`${BASE_URL}/leaderboard/live`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

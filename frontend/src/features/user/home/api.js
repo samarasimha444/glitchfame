@@ -1,4 +1,4 @@
-import { Await } from "react-router-dom";
+
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -7,6 +7,8 @@ console.log(BASE_URL)
 
 const token = localStorage.getItem("token")
 console.log(token)
+
+
 
 
 export const getLiveUpcomingSeasons = async () => {
@@ -25,8 +27,6 @@ export const getLiveUpcomingSeasons = async () => {
   return res.json();
 };
   
-
-
 
 export const getWinners = async () => {
    const token = localStorage.getItem("token")

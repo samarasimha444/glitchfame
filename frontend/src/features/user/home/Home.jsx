@@ -16,20 +16,18 @@ const Home = () => {
   const { data: seasons = [], isLoading: seasonsLoading } =
     useLiveUpcomingSeasons();
 
-  console.log(seasons);
+
   const season = seasons?.content?.find(isRegistrationOpen);
   const liveSeason = seasons?.content?.filter(isVotingLive)?.slice(0, 2);
 
-  console.log(season);
-  console.log(liveSeason);
-
+ 
   return (
     <div className="w-full  px-2  flex-col max-w-screen m-auto bg-[#1E2229] flex items-center justify-center bg-fixed bg-cover bg-center">
       <FeaturedCarousel season={season} />
 
       <StickyHeader liveSeason={liveSeason} season={season} />
 
-      <section className="w-full sm:mt-12  space-y-6 md:space-y-12 flex flex-col items-center mt-5  ">
+      <section className="w-full sm:mt-12  space-y-6 md:space-y-12 flex flex-col items-center mt-5 ">
         <section className=" flex  w-full px-3 sm:px-20   justify-between items-center text-center">
           <h5 className="flex items-center justify-center gap-2">
             <Flame sm:size={40} className="text-red-400" />
@@ -39,7 +37,11 @@ const Home = () => {
           </h5>
         </section>
 
-        <Cards liveSeason={liveSeason} isLoading={seasonsLoading} />
+
+         
+               <Cards liveSeason={liveSeason} isLoading={seasonsLoading} />
+
+       
 
         <button
           onClick={() => navigate(`/vote/${liveSeason?.seasonId}`)}

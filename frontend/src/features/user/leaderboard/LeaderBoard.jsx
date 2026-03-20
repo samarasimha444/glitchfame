@@ -1,20 +1,19 @@
 import React from "react";
-import { ChevronLeft, MoreVertical, Flame, ArrowUp } from "lucide-react";
+import { Zap, Flame, Activity, Star } from "lucide-react";
 import { useLeaderboard, useLeaderboardSocket } from "./hooks";
+import Countup from "./ui/Countup";
 import LeaderboardLoading from "./ui/LeaderBoardCarousel";
 
-
 const Leaderboard = () => {
-  
   const { data, isLoading, error } = useLeaderboard();
-
+  const PRIMARY_COLOR = "#9DE2E2";
 
   useLeaderboardSocket(data);
 
   if (isLoading) {
     return (
       <div className="text-white max-w-screen flex justify-center items-center h-screen">
-       <LeaderboardLoading/>
+        <LeaderboardLoading />
       </div>
     );
   }
@@ -27,96 +26,132 @@ const Leaderboard = () => {
     );
   }
 
+  const topThree = data?.merged.slice(0, 3) || [];
+  const rest = data?.merged.slice(3) || [];
+
   return (
-    <div className="min-h-screen  text-white flex justify-center py-4 px-2 font-sans">
-      <div className="w-full max-w-md sm:max-w-6xl   rounded-[40px] overflow-hidden ">
-
+    <div className="min-h-screen text-white flex justify-center py-8 px-4 font-sans relative overflow-hidden">
      
-        <div className="flex justify-between items-center px-6 pt-8 pb-4">
-        
-          <div className="text-center">
-            <h1 className="text-xs sm:text-xl tracking-[0.2em] font-bold uppercase italic">
-              GlitchFame Leaders
-            </h1>
-           
-          </div>
-          
-        </div>
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#9DE2E2] opacity-[0.03] blur-[120px]" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#9DE2E2] opacity-[0.03] blur-[120px]" />
 
-        <div className="mx-4 bg-[#1C2128] rounded-2xl p-4 border border-[#2D333B]">
-          <div className="flex justify-between items-center mb-3">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-red-800 rounded-full text-red-700 animate-pulse"></div>
-              <span className="text-[10px] md:text-2xl font-bold text-primary">
-                LIVE RANKING
-              </span>
+      <div className="w-full max-w-md lg:max-w-6xl z-10">
+       
+        <div className="flex flex-col lg:flex-row justify-between items-end px-6 mb-8 gap-4">
+          <div className="text-left w-full">
+            <div className="flex items-center gap-3 mb-1">
+              <Zap size={24} fill={PRIMARY_COLOR} stroke={PRIMARY_COLOR} className="animate-pulse" />
+              <h1 className="text-2xl sm:text-4xl tracking-tighter font-black uppercase italic leading-none">
+                GlitchFame <span style={{ color: PRIMARY_COLOR }}>Leaders</span>
+              </h1>
             </div>
-            <span className="text-[10px] text-gray-400">REAL TIME</span>
-          </div>
-
-          <div className="flex justify-between items-center">
-            <p className="text-sm font-bold">Top Performers</p>
-            <Flame size={20} className="text-[#00F5D4]" />
+            <p className="text-gray-500 text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase">
+              The Digital Elite • Updated Real-Time
+            </p>
           </div>
         </div>
 
-      
-        <div className="px-4 py-2 space-y-1">
-          {data?.merged.map((item, index) => {
-            return (
-              <div
-                key={item.participantId}
-                className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition"
-              >
-                <div className="flex items-center gap-4">
-                  <span
-                    className={`text-xs font-bold w-4 ${
-                      index < 3 ? "text-primary" : "text-gray-500"
-                    }`}
-                  >
-                    {index + 1}
+        <div className="mx-4 mb-10 bg-white/3 backdrop-blur-md rounded-3xl p-5 border border-white/5 shadow-2xl">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className="w-3 h-3 bg-red-500 rounded-full animate-ping absolute inset-0"></div>
+                <div className="w-3 h-3 bg-red-600 rounded-full relative"></div>
+              </div>
+              <div>
+                <span className="text-xs md:text-lg font-black tracking-widest uppercase">
+                  Live Global Feed
+                </span>
+                <div className="flex gap-3 text-[9px] text-gray-500 font-bold uppercase mt-0.5">
+                  <span className="flex items-center gap-1">
+                    <Activity size={10} /> 1.2k Viewing
                   </span>
+                  <span className="hidden sm:inline">• Server: Asia-01</span>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center bg-black/40 rounded-full px-4 py-2 border border-white/5">
+              <Flame size={18} style={{ color: PRIMARY_COLOR }} className="mr-2" />
+              <span className="text-xs font-bold">TRENDING</span>
+            </div>
+          </div>
+        </div>
 
-                  <div className="relative">
+        {/* Top 3 Podium */}
+        {topThree.length > 0 && (
+          <div className="hidden lg:grid grid-cols-3 gap-8 px-4 mb-12">
+            {topThree.map((item, index) => (
+              <div key={item.participantId} className="relative group transition-all duration-500 hover:-translate-y-2">
+                {index === 0 && <div className="absolute inset-0 bg-[#9DE2E2] opacity-[0.05] blur-3xl rounded-full" />}
+                <div className="bg-[#161B22] border border-white/10 rounded-[2.5rem] p-8 flex flex-col items-center relative overflow-hidden shadow-2xl">
+                  <div className="absolute top-4 right-6 text-white/5 font-black text-6xl select-none italic">
+                    0{index + 1}
+                  </div>
+                  <div className="relative mb-6">
+                    <div
+                      className="absolute inset-0 rounded-full animate-spin-slow opacity-50"
+                      style={{ border: `2px dashed ${index === 0 ? "#FBBF24" : PRIMARY_COLOR}` }}
+                    />
                     <img
                       src={item.participantPhoto}
-                      className="w-10 h-10 sm:w-16 object-cover sm:h-16 rounded-full border border-gray-700"
+                      className="w-28 h-28 rounded-full border-4 border-transparent p-1 object-cover relative z-10"
                     />
-                    {index === 0 && (
-                      <div className="absolute -top-1 -right-1 bg-yellow-500 w-3 h-3 rounded-full border-2 border-[#161B22]"></div>
-                    )}
                   </div>
-
-                  <div>
-                    <p className="text-xs font-bold">
-                      {item.participantName}
-                    </p>
-                    <p className="text-[10px] text-[#00F5D4]/70">
-                      {item.seasonName}
-                    </p>
+                  <h3 className="text-xl font-black uppercase tracking-tight mb-1">{item.participantName}</h3>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="h-[1px] w-4 bg-gray-700"></span>
+                    <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{item.seasonName}</span>
+                    <span className="h-[1px] w-4 bg-gray-700"></span>
                   </div>
-                </div>
-
-                <div className="text-right">
-                  <p className="text-xs sm:text-base font-bold text-[#00F5D4]">
-                    {item.votes}
-                  </p>
-
-                  <div className="flex items-center justify-end gap-1 text-[9px] sm:text-[13px] text-primary">
-                    <ArrowUp size={8} />
-                    LIVE
+                  <div className="text-3xl font-black italic tracking-tighter" style={{ color: PRIMARY_COLOR }}>
+                    <Countup end={item.votes} duration={1000} />
                   </div>
                 </div>
               </div>
-            );
-          })}
+            ))}
+          </div>
+        )}
+
+        {/* Full Leaderboard List */}
+        <div className="px-4 py-2 grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-3">
+          {rest.map((item, index) => (
+            <div key={item.participantId} className="group flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/[0.03] hover:bg-white/[0.05] hover:border-[#9DE2E2]/30 transition-all duration-300">
+              <div className="flex items-center gap-4">
+                <span className="text-xs font-black w-5 text-gray-600 group-hover:text-[#9DE2E2] transition-colors">
+                  {(index + 4).toString().padStart(2, "0")}
+                </span>
+                <div className="relative">
+                  <img
+                    src={item.participantPhoto}
+                    className="w-12 h-12 sm:w-14 sm:h-14 object-cover rounded-xl border border-white/10 group-hover:border-[#9DE2E2]/50 transition-all"
+                  />
+                  {index < 3 && (
+                    <div className="absolute -top-2 -right-2 shadow-lg">
+                      <Star size={14} fill={index === 0 ? "#FBBF24" : PRIMARY_COLOR} stroke="none" />
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm sm:text-lg font-bold uppercase tracking-tighter leading-tight">{item.participantName}</p>
+                  <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">{item.seasonName}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-lg sm:text-2xl font-black italic tracking-tighter group-hover:scale-110 transition-transform origin-right" style={{ color: "white" }}>
+                  <Countup end={item.votes} duration={1000} />
+                </p>
+                <div className="flex items-center justify-end gap-1.5 mt-0.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_5px_red]"></div>
+                  <span className="text-[10px] font-black text-red-500 uppercase italic">Live</span>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
-        
-        <div className="text-center py-6">
-          {/* <button className="text-[10px] font-bold text-primary border-b  pb-0.5 hover:text-white">
-            View Full Ranking
-          </button> */}
+        <div className="text-center py-16">
+          <div className="inline-block h-[1px] w-20 bg-gradient-to-r from-transparent via-gray-700 to-transparent mb-4"></div>
+          <p className="text-[10px] text-gray-600 uppercase tracking-[0.4em] font-bold">End of Rankings</p>
         </div>
       </div>
     </div>

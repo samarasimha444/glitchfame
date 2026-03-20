@@ -31,7 +31,7 @@ const Cards = ({ liveSeason,isLoading }) => {
   const navigate = useNavigate();
 
    return (
-    <div className="w-full max-w-screen mx-auto  sm:px-6 md:px-10 lg:px-20">
+    <div className="w-full  max-w-screen mx-auto  sm:px-6 md:px-10 lg:px-20">
 
       {isLoading ? (
         <section className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
