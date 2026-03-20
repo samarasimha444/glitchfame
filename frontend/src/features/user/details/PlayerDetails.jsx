@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Zap } from "lucide-react";
-import { useContestantDetails, useToggleVote } from "../arena/hooks";
-import { useParams } from "react-router-dom";
+import { useContestantDetails} from "../arena/hooks";
+import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 
 
 
 const PlayerDetails = () => {
+  const navigate = useNavigate()
 
   const [loading,setIsLoading]=useState(false)
 
@@ -18,21 +19,10 @@ const PlayerDetails = () => {
 
 
   const { data, isLoading, error } = useContestantDetails(id);
-  const { mutate: voteToggle, isPending } = useToggleVote();
+
 
   console.log(data)
-  const handleVote = (contestantId) => {
-    if (!contestantId) return;
-
-    voteToggle(contestantId, {
-      onSuccess: () => {
-        toast.success("Vote submitted successfully!");
-      },
-      onError: () => {
-        toast.error("Failed to vote");
-      },
-    });
-  };
+  
 
 
   return (
@@ -78,10 +68,10 @@ const PlayerDetails = () => {
            {data?.voteCount}
           </h2>
 
-          <button onClick={()=>handleVote(data?.participationId)}
+          <button  onClick={()=>navigate('/leaderboard')}
            className="mt-6 w-full flex items-center justify-center gap-2 b bg-primary py-3 rounded-lg text-black font-semibold hover:opacity-90 transition">
             <Zap size={18} />
-            Vote {data?.participantName}
+            Find Rank {data?.participantName}
           </button>
 
           <p className="text-xs text-gray-500 mt-3 text-center">
@@ -91,7 +81,7 @@ const PlayerDetails = () => {
 
         
         <div>
-          <h3 className="text-lg font-semibold mb-3">
+          <h3 className="text-lg mt-1 font-semibold mb-3">
              About me
           </h3>
 
@@ -103,6 +93,7 @@ const PlayerDetails = () => {
           <p className="text-primary text-sm mt-4">
             #GlitchFame #{data?.seasonName}
           </p>
+        <p className="text-gray-300 mt-2">Not in the top rankings yet — currently among the lower-ranked participants.</p>
         </div>
 
        

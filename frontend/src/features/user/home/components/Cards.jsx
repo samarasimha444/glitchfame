@@ -52,7 +52,7 @@ const Cards = ({ liveSeason,isLoading }) => {
             <Link
               to={`/vote/${item.seasonId}`}
               key={item.seasonId}
-              className="w-full h-[278px] md:max-w-[340px] md:h-[400px] bg-[#181B20] rounded-2xl overflow-hidden border border-[#364354] hover:border-purple-500 transition duration-300 flex flex-col"
+              className="w-full h-[278px] md:max-w-[340px] md:h-[400px] bg-[#181B20] rounded-2xl overflow-hidden border border-[#364354] hover:border-white transition duration-300 flex flex-col"
             >
 
               

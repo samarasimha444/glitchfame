@@ -1,6 +1,6 @@
 import { Client } from "@stomp/stompjs";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useState } from "react";
 import {
   connectSocket,
   disconnectSocket,
@@ -8,6 +8,7 @@ import {
 } from "../../../../services/websocketservices";
 import { fetchRandomParticipation, fetchSearchContestants } from "../arena/api";
 import { fetchSeasonParticipation } from "../home/api";
+import toast from "react-hot-toast";
 
 
 
@@ -115,3 +116,10 @@ export const useSearchContestants = (
     staleTime: 1000 * 60 * 5,
   });
 };
+
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+
+
+

@@ -44,7 +44,7 @@ export const StickyHeader = memo(({ liveSeason, season }) => {
   }, [season?.votingEndDate]);
 
   return (
-    <div className="sticky sm:static top-0 z-30 w-full backdrop-blur-sm">
+    <div className="sticky sm:hidden sm:static top-0 z-30 w-full backdrop-blur-sm">
       <div className="w-full md:max-w-xl md:mx-auto">
         <div className="w-full mt-4 md:mt-6 px-0 md:px-4">
           <div

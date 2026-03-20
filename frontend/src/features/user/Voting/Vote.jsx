@@ -30,6 +30,8 @@ const Vote = () => {
     isLoading: isLoadingParticipation,
     isFetching: isFetchingParticipation,
   } = useParticipation(seasonId);
+  
+  console.log(participationData)
 
   
   const {

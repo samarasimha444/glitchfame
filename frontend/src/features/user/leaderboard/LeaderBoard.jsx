@@ -77,7 +77,7 @@ const Leaderboard = () => {
           </div>
         </div>
 
-        {/* Top 3 Podium */}
+        
         {topThree.length > 0 && (
           <div className="hidden lg:grid grid-cols-3 gap-8 px-4 mb-12">
             {topThree.map((item, index) => (

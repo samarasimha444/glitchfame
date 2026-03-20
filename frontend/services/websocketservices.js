@@ -11,13 +11,13 @@ export const connectSocket = (token) => {
   console.log("🌐 WS URL:", WEB_URL);
 
   if (client?.active) {
-    console.log("⚠️ Client already active");
+    
     return client;
   }
 
   client = new Client({
     webSocketFactory: () => {
-      console.log("🔌 Creating WebSocket...");
+      
       return new WebSocket(WEB_URL);
     },
 
@@ -28,7 +28,7 @@ export const connectSocket = (token) => {
     },
 
     onConnect: () => {
-      console.log("✅ WebSocket Connected");
+      
       isConnected = true;
 
       console.log("📡 Re-subscribing to topics:", Object.keys(subscriptions));
@@ -36,7 +36,7 @@ export const connectSocket = (token) => {
       Object.entries(subscriptions).forEach(([topic, subObj]) => {
         console.log("🔁 Re-subscribing:", topic);
 
-        // reset to force re-subscribe
+        
         subObj.sub = null;
         subObj._subscribe();
       });
