@@ -5,7 +5,7 @@ import CountdownTimer from "../../home/components/CountdownTimer";
 
 const VotingHeader = ({season}) => {
   
-  const endDate = season?.votingEndDate
+  const endDate = season?.votingEndDate ? new Date(season.votingEndDate) : new Date();
   return (
     <section className="w-full  text-white py-6 md:py-4  md:px-16">
 

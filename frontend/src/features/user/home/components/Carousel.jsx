@@ -5,8 +5,7 @@ export default function FeaturedCarousel({ season }) {
   console.log(season)
   
 
-  const fallback =
-    "https://images.pexels.com/photos/1707213/pexels-photo-1707213.jpeg";
+  
 
   return (
 
@@ -39,12 +38,12 @@ export default function FeaturedCarousel({ season }) {
 
       <section className="border border-gray-600 rounded-xl md:rounded-none w-full max-w-90 md:max-w-screen md:w-280 h-64 md:h-160 relative overflow-hidden aspect-16\/9">
         <img
-          src={`${season?.seasonPhotoUrl || fallback}?auto=compress&cs=tinysrgb&w=1600`}
+          src={`${season?.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=1600`}
           alt="event"
           loading="eager"
           decoding="async"
           className="w-full h-full object-cover"
-          onError={(e) => (e.target.src = fallback)}
+          
         />
 
         <div className="absolute  hidden md:flex inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>

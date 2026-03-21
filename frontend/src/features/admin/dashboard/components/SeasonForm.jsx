@@ -1,160 +1,118 @@
-import {  useState } from "react";
-import { initialState } from "../../../../constants/admin";
-import { fields } from "../../../../constants/admin";
-import { useCreateSeason } from "../hooks";
-import { prepareFormData, validateSeasonDates } from "../../../../lib/helper";
-import NeonLoader from "../../../../components/Loader";
+import { useState, useCallback } from "react";
+import { useCreateSeason, useUploadImage } from "../hooks";
 import toast from "react-hot-toast";
+import { buildSeasonPayload, getSeasonFolder } from "../../../../lib/helper";
+import { seasonInitialState, seasonfields } from "../../../../constants/admin";
 
+const SeasonForm = () => {
+  const { mutateAsync: createSeason, isPending } = useCreateSeason();
+  const { mutateAsync: uploadImage, isPending: uploading } = useUploadImage();
 
-const SeasonForm = ({ initialData = {}, loading }) => {
+  const [form, setForm] = useState(seasonInitialState);
+  const [file, setFile] = useState(null);
 
-  
-  const { mutate: createSeason, isPending } = useCreateSeason();
-  const [form, setForm] = useState({ ...initialState, ...initialData });
+  const inputClass =
+    "w-full bg-[#111317] text-sm text-white px-3 py-2 rounded-lg border border-white/10 focus:ring-2 focus:ring-blue-600 outline-none transition";
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
+  const handleChange = useCallback((e) => {
+    setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+  }, []);
 
-    if (files) {
-      setForm((prev) => ({ ...prev, [name]: files[0] }));
-    } else {
-      setForm((prev) => ({ ...prev, [name]: value }));
+  const handleFileChange = useCallback((e) => {
+    const selected = e.target.files?.[0];
+    if (selected) setFile(selected);
+  }, []);
+
+  const handleSubmit = useCallback(async (e) => {
+    e.preventDefault();
+
+    console.log("SUBMIT CLICKED"); // 👈 DEBUG
+
+    if (isPending || uploading) return;
+
+    if (!form.name.trim()) return toast.error("Enter season name");
+    if (!file) return toast.error("Select image");
+
+    try {
+      const folder = getSeasonFolder(form.name);
+
+      console.log("Uploading image...");
+      const imageUrl = await uploadImage({ file, folder });
+
+      console.log("Image URL:", imageUrl);
+
+      console.log("Creating season...");
+      await createSeason(buildSeasonPayload(form, imageUrl));
+
+      toast.success("Season created successfully!");
+
+      setForm(seasonInitialState);
+      setFile(null);
+    } catch (err) {
+      console.error("ERROR 👉", err);
+      toast.error(err?.message || "Something went wrong");
     }
-  };
-
-
-
-const handleSubmit = (e) => {
-  e.preventDefault();
-
-  const { formData, dateTimes } = prepareFormData(form);
-
-  const errors = validateSeasonDates({
-    registrationStart: new Date(dateTimes.registrationStart),
-    registrationEnd: new Date(dateTimes.registrationEnd),
-    votingStart: new Date(dateTimes.votingStart),
-    votingEnd: new Date(dateTimes.votingEnd),
-  });
-
-  if (errors.length > 0) {
-    toast.error(errors.join("\n"));
-  }
-
-  createSeason(formData, {
-    onSuccess: (data) => toast.success(data?.message || "Season created successfully!"),
-    onError: (error) => toast.error(error?.message || "Failed to create season"),
-  });
-};
-
-
-
-  const renderInput = (field) => {
-    const commonClasses =
-      "w-full bg-[#111317] text-sm text-white px-3 py-2 rounded-lg border border-white/10 focus:ring-2 focus:ring-blue-600 outline-none transition";
-
-    switch (field.type) {
-      case "select":
-        return (
-          <select
-            name={field.name}
-            value={form[field.name]}
-            onChange={handleChange}
-            className={commonClasses}
-          >
-            {field.options.map((option) => (
-              <option key={option}>{option}</option>
-            ))}
-          </select>
-        );
-
-      case "textarea":
-        return (
-          <textarea
-            name={field.name}
-            rows="4"
-            value={form[field.name]}
-            onChange={handleChange}
-            className={`${commonClasses} resize-none`}
-          />
-        );
-
-      case "datetime":
-        return (
-          <div className="flex gap-3">
-            <input
-              type="date"
-              name={`${field.name}Date`}
-              value={form[`${field.name}Date`] || ""}
-              onChange={handleChange}
-              className={`${commonClasses} w-2/3`}
-            />
-            <input
-              type="time"
-              name={`${field.name}Time`}
-              value={form[`${field.name}Time`] || ""}
-              onChange={handleChange}
-              className={`${commonClasses} w-1/3`}
-            />
-          </div>
-        );
-
-      case "file":
-        return (
-          <input
-            type="file"
-            name={field.name}
-            onChange={handleChange}
-            className={commonClasses}
-          />
-        );
-
-      default:
-        return (
-          <input
-            type={field.type}
-            name={field.name}
-            value={form[field.name] || ""}
-            onChange={handleChange}
-            required={field.required}
-            className={commonClasses}
-          />
-        );
-    }
-  };
-
-
-   if (isPending) {
-    return (
-        <NeonLoader />
-     
-    );
-  }
+  }, [form, file, isPending, uploading, uploadImage, createSeason]);
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-[#171A1F] border border-white/5 rounded-xl p-6 w-full"
+      className="bg-[#171A1F] border border-white/5 rounded-xl p-6 w-full max-w-2xl mx-auto"
     >
       <h2 className="text-base font-semibold text-white mb-6">
         Season Configuration
       </h2>
 
-      <div className="grid grid-cols-2 gap-3 sm:gap-6">
-        {fields.map((field) => (
-          <div key={field.name} className={field.full ? "col-span-2" : ""}>
+      <div className="grid grid-cols-2 gap-4">
+        {seasonfields.map((f) => (
+          <div key={f.name} className={f.full ? "col-span-2" : ""}>
             <label className="block text-[10px] uppercase tracking-wider text-white/50 mb-2">
-              {field.label}
+              {f.label}
             </label>
 
-            {renderInput(field)}
+            {f.type === "textarea" ? (
+              <textarea
+                name={f.name}
+                value={form[f.name]}
+                onChange={handleChange}
+                className={`${inputClass} resize-none`}
+              />
+            ) : (
+              <input
+                type={f.type}
+                name={f.name}
+                value={form[f.name]}
+                onChange={handleChange}
+                className={inputClass}
+              />
+            )}
           </div>
         ))}
+
+        <div className="col-span-2">
+          <label className="block text-[10px] uppercase tracking-wider text-white/50 mb-2">
+            Banner Image
+          </label>
+
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className={inputClass}
+          />
+
+          {uploading && (
+            <p className="text-sm text-white mt-2">Uploading...</p>
+          )}
+        </div>
       </div>
 
-      <div className="flex justify-end gap-3 pt-6 mt-6 border-t border-white/5">
+      <div className="flex justify-end gap-3 mt-6 border-t border-white/5 pt-6">
         <button
           type="button"
+          onClick={() => {
+            setForm(seasonInitialState);
+            setFile(null);
+          }}
           className="px-4 py-2 text-sm rounded-lg bg-[#2C2C2E] text-white/70 hover:bg-[#3A3A3C] transition"
         >
           Cancel
@@ -162,10 +120,10 @@ const handleSubmit = (e) => {
 
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isPending || uploading}
           className="px-4 py-2 text-sm rounded-lg bg-blue-600 hover:bg-blue-700 transition text-white font-medium disabled:opacity-50"
         >
-          {isPending ? "Saving..." : "Save Season"}
+          {(isPending || uploading) ? "Saving..." : "Save Season"}
         </button>
       </div>
     </form>

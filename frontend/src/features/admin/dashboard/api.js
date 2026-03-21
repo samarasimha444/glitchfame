@@ -1,33 +1,28 @@
+import { apiClient } from "../../../lib/apiClient";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const token =localStorage.getItem("token")
 
 export const createSeason = async (formData) => {
-   const token = localStorage.getItem("token")
-  const res = await fetch(
-    `${BASE_URL}/admin/seasons/create`,
-    {
+  try {
+    const data = await apiClient(`${BASE_URL}/seasons`, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
       body: formData,
-    }
-  );
+    });
 
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(errorText || "Failed to create season");
+    console.log("Response:", data); 
+    return data;
+  } catch (err) {
+    console.error("Error creating season:", err.message);
+    throw err;
   }
-
-  return res.text();
 };
 
 export const fetchSeasons = async () => {
    const token = localStorage.getItem("token")
  
-  const response = await fetch(`${BASE_URL}/admin/seasons`, {
+  const response = await fetch(`${BASE_URL}/seasons`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -42,3 +37,4 @@ export const fetchSeasons = async () => {
 
   return response.json();
 };
+

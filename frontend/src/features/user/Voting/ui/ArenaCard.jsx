@@ -37,7 +37,7 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
         await res.json();
       } catch (err) {
         console.error(err);
-        toast.error(err.message || "Something went wrong");
+       toast("Whoa! Only 5 votes per person ");
 
         setClickedVotes((prev) => {
           const newSet = new Set(prev);

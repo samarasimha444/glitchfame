@@ -77,7 +77,7 @@ const Vote = () => {
       </div>
 
      
-      <section className="md:px-12">
+      <section className="md:px-12 min-h-[50dvh]">
         {isEmpty ? (
           <div className="text-gray-400 text-center mt-6">No contestants found.</div>
         ) : (

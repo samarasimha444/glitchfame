@@ -1,53 +1,15 @@
 import { Navigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 
-const fetchProfile = async () => {
-const token = localStorage.getItem("token");
-  const res = await fetch(
-    `${import.meta.env.VITE_BASE_URL}/profile/me`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  
-  if (!res.ok) {
-    throw new Error("Unauthorized");
-  }
-  
-  console.log(res.json())
-  return res.json();
-};
-
-const RoleRedirect = () => {
+const HomeRedirect = () => {
   const token = localStorage.getItem("token");
 
+  // First time user OR no token → go to vote page
   if (!token) {
-    return <Navigate to="/auth" replace />;
+    return <Navigate to="/vote" replace />;
   }
 
-  const { data: profile, isLoading, isError } = useQuery({
-    queryKey: ["profile"],
-    queryFn: fetchProfile,
-    enabled: !!token,   
-    retry: false,
-  });
-
-  if (isLoading) return <h3>Loading...</h3>;
-
-  if (isError) return <Navigate to="/auth" replace />;
-
-  if (profile?.role === "ADMIN") {
-    return <Navigate to="/admin" replace />;
-  }
-
-  if (profile?.role === "USER") {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  return <Navigate to="/auth" replace />;
+  // If token exists → go to role redirect
+  return <Navigate to="/vote" replace />;
 };
 
-export default RoleRedirect;
+export default HomeRedirect;

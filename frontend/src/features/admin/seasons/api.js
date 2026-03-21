@@ -9,7 +9,7 @@ export const getContestants = async ({pageParam = 0,status = "PENDING",size = 5,
 }) => {
    const token = localStorage.getItem("token")
   const response = await fetch(
-    `${BASE_URL}/admin/contestants/live?status=${status}&page=${pageParam}&size=${size}`,
+    `${BASE_URL}/admin/participations/live?status=${status}&page=${pageParam}&size=${size}`,
     {
       method: "GET",
       headers: {
@@ -101,7 +101,7 @@ export const updateContestantStatus = async (id, action) => {
 export const getLiveContestants = async (page = 0, size = 6) => {
    const token = localStorage.getItem("token")
   const response = await fetch(
-    `${BASE_URL}/admin/contestants/live?status=APPROVED&page=${page}&size=${size}`,
+    `${BASE_URL}/admin/participations/live?status=APPROVED&page=${page}&size=${size}`,
     {
       method: "GET",
       headers: {

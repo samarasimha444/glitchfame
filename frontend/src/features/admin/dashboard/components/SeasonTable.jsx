@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { LockOpen, Lock } from "lucide-react";
 import { useToggleSeasonLock } from "../../settings/hooks";
 
@@ -16,6 +15,7 @@ const getStatusStyle = (status) => {
 };
 
 const SeasonsTable = ({seasons,isLoading}) => {
+  console.log(seasons)
 
   // const { data: seasons, isLoading, isError, error } = useFetchSeasons();
   // console.log(seasons);

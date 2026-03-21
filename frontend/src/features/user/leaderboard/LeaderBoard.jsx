@@ -26,17 +26,19 @@ const Leaderboard = () => {
     );
   }
 
-  const topThree = data?.merged.slice(0, 3) || [];
-  const rest = data?.merged.slice(3) || [];
+  // Sort data descending by votes
+  const mergedData = data?.merged
+    ? [...data.merged].sort((a, b) => b.votes - a.votes)
+    : [];
 
   return (
     <div className="min-h-screen text-white flex justify-center py-8 px-4 font-sans relative overflow-hidden">
-     
+      {/* Background blobs */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#9DE2E2] opacity-[0.03] blur-[120px]" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#9DE2E2] opacity-[0.03] blur-[120px]" />
 
       <div className="w-full max-w-md lg:max-w-6xl z-10">
-       
+        {/* Header */}
         <div className="flex flex-col lg:flex-row justify-between items-end px-6 mb-8 gap-4">
           <div className="text-left w-full">
             <div className="flex items-center gap-3 mb-1">
@@ -51,6 +53,7 @@ const Leaderboard = () => {
           </div>
         </div>
 
+        {/* Live Global Feed */}
         <div className="mx-4 mb-10 bg-white/3 backdrop-blur-md rounded-3xl p-5 border border-white/5 shadow-2xl">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
@@ -77,48 +80,13 @@ const Leaderboard = () => {
           </div>
         </div>
 
-        
-        {topThree.length > 0 && (
-          <div className="hidden lg:grid grid-cols-3 gap-8 px-4 mb-12">
-            {topThree.map((item, index) => (
-              <div key={item.participantId} className="relative group transition-all duration-500 hover:-translate-y-2">
-                {index === 0 && <div className="absolute inset-0 bg-[#9DE2E2] opacity-[0.05] blur-3xl rounded-full" />}
-                <div className="bg-[#161B22] border border-white/10 rounded-[2.5rem] p-8 flex flex-col items-center relative overflow-hidden shadow-2xl">
-                  <div className="absolute top-4 right-6 text-white/5 font-black text-6xl select-none italic">
-                    0{index + 1}
-                  </div>
-                  <div className="relative mb-6">
-                    <div
-                      className="absolute inset-0 rounded-full animate-spin-slow opacity-50"
-                      style={{ border: `2px dashed ${index === 0 ? "#FBBF24" : PRIMARY_COLOR}` }}
-                    />
-                    <img
-                      src={item.participantPhoto}
-                      className="w-28 h-28 rounded-full border-4 border-transparent p-1 object-cover relative z-10"
-                    />
-                  </div>
-                  <h3 className="text-xl font-black uppercase tracking-tight mb-1">{item.participantName}</h3>
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="h-[1px] w-4 bg-gray-700"></span>
-                    <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{item.seasonName}</span>
-                    <span className="h-[1px] w-4 bg-gray-700"></span>
-                  </div>
-                  <div className="text-3xl font-black italic tracking-tighter" style={{ color: PRIMARY_COLOR }}>
-                    <Countup end={item.votes} duration={1000} />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
         {/* Full Leaderboard List */}
         <div className="px-4 py-2 grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-3">
-          {rest.map((item, index) => (
+          {mergedData.map((item, index) => (
             <div key={item.participantId} className="group flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/[0.03] hover:bg-white/[0.05] hover:border-[#9DE2E2]/30 transition-all duration-300">
               <div className="flex items-center gap-4">
                 <span className="text-xs font-black w-5 text-gray-600 group-hover:text-[#9DE2E2] transition-colors">
-                  {(index + 4).toString().padStart(2, "0")}
+                  {(index + 1).toString().padStart(2, "0")}
                 </span>
                 <div className="relative">
                   <img
@@ -149,6 +117,7 @@ const Leaderboard = () => {
           ))}
         </div>
 
+        
         <div className="text-center py-16">
           <div className="inline-block h-[1px] w-20 bg-gradient-to-r from-transparent via-gray-700 to-transparent mb-4"></div>
           <p className="text-[10px] text-gray-600 uppercase tracking-[0.4em] font-bold">End of Rankings</p>

@@ -15,41 +15,20 @@ import { Activity, Users, DollarSign, Trophy, Calendar, Lock } from "lucide-reac
 
   votingEndDateDate: "",
   votingEndDateTime: "",
-
+  
   image: "",
 };
 
 
-export const fields = [
-  {
-    label: "Season Name *",
-    name: "name",
-    type: "text",
-    required: true,
-    full: true,
-  },
-  { label: "Prize Money", name: "prizeMoney", type: "number" },
-
-  {
-    label: "Registration Start",
-    name: "registrationStartDate",
-    type: "datetime",
-  },
-  { label: "Registration End", name: "registrationEndDate", type: "datetime" },
-
-  { label: "Voting Start", name: "votingStartDate", type: "datetime" },
-  { label: "Voting End", name: "votingEndDate", type: "datetime" },
-
-    {
-    label: "image",
-    name: "image",
-    type: "file",
-    accept: "image/*",
-  },
-
-
-  { label: "Description", name: "seasonDesc", type: "textarea", full: true },
-];
+ export const seasonfields = [
+    { name: "name", label: "Name", type: "text" },
+    { name: "prize", label: "Prize", type: "text" },
+    { name: "description", label: "Description", type: "textarea", full: true },
+    { name: "registrationStartDate", label: "Registration Start", type: "datetime-local" },
+    { name: "registrationEndDate", label: "Registration End", type: "datetime-local" },
+    { name: "votingStartDate", label: "Voting Start", type: "datetime-local" },
+    { name: "votingEndDate", label: "Voting End", type: "datetime-local" }
+  ];
 
 
 export const dashCards = [
@@ -90,3 +69,14 @@ export const dashCards = [
   },
   { id: 4, label: "Modify Voting", action: "voting", color: "text-gray-300" },
 ];
+
+
+export const seasonInitialState = {
+  name: "",
+  description: "",
+  prize: "",
+  registrationStartDate: "",
+  registrationEndDate: "",
+  votingStartDate: "",
+  votingEndDate: ""
+};

@@ -8,7 +8,7 @@
  export const getTimeLeft = (endDate) => {
     const now = new Date();
     const end = new Date(endDate);
-    const diff = end - now > 0 ? end - now : 0; // no negative values
+    const diff = end - now > 0 ? end - now : 0; 
 
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
@@ -19,7 +19,6 @@
 
 
   
-
 
 
 export const isRegistrationOpen = (season) => {
@@ -39,41 +38,6 @@ export const isRegistrationOpen = (season) => {
 };
 
 
-export const combineDateTimeToUTC = (date, time) => {
-  if (!date || !time) return "";
-  const [year, month, day] = date.split("-");
-  const [hours, minutes] = time.split(":");
-  const d = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0, 0));
-  return d.toISOString(); // "YYYY-MM-DDTHH:mm:ss.sssZ"
-};
-
-
-export const prepareFormData = (form) => {
-  const formData = new FormData();
-  const dateTimes = {};
-  const processedKeys = new Set();
-
-  Object.keys(form).forEach((key) => {
-    if (processedKeys.has(key)) return;
-
-    if (key.endsWith("Date")) {
-      const baseKey = key.replace("Date", "");
-      const date = form[`${baseKey}Date`];
-      const time = form[`${baseKey}Time`];
-      const combined = combineDateTimeToUTC(date, time);
-
-      formData.append(baseKey, combined);
-      dateTimes[baseKey] = combined;
-
-      processedKeys.add(`${baseKey}Date`);
-      processedKeys.add(`${baseKey}Time`);
-    } else if (!key.endsWith("Time")) {
-      formData.append(key, form[key]);
-    }
-  });
-
-  return { formData, dateTimes };
-};
 
 
 export const validateSeasonDates = ({ registrationStart, registrationEnd, votingStart, votingEnd }) => {
@@ -93,3 +57,27 @@ export const validateSeasonDates = ({ registrationStart, registrationEnd, voting
 
   return errors; 
 };
+
+
+export const formatToISO = (value) => {
+  if (!value) return null;
+  return new Date(value).toISOString();
+};
+
+
+
+
+
+
+export const buildSeasonPayload = (form, imageUrl) => ({
+  ...form,
+  photoUrl: imageUrl,
+  registrationStartDate: formatToISO(form.registrationStartDate),
+  registrationEndDate: formatToISO(form.registrationEndDate),
+  votingStartDate: formatToISO(form.votingStartDate),
+  votingEndDate: formatToISO(form.votingEndDate),
+});
+
+
+export const getSeasonFolder = (name) =>
+  `seasons/${name.trim().replace(/\s+/g, "-").toLowerCase()}/banner`;

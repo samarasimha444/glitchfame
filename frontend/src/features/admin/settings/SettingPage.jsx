@@ -110,7 +110,7 @@ const handleRemove = () => {
           : <SeasonSummary
               title="Season Summary"
               subtitle="Overview of registration and performance metrics"
-              data={seasonData || []}
+              data={seasonData?.season || []}
             />
           }
         </div>
@@ -118,9 +118,9 @@ const handleRemove = () => {
         <div className="max-w-xl mt-4 sm:mt-28 space-y-3">
           <Controls
             id={selectedSeasonId}
-            voteLock={seasonData?.voteLock}
-            seasonLock={seasonData?.seasonLock}
-            prizeMoney={seasonData?.prizeMoney}
+            voteLock={seasonData?.season?.voteLock}
+            seasonLock={seasonData?.seasons?.seasonLock}
+            prizeMoney={seasonData?.season?.prizeMoney}
           />
            
 

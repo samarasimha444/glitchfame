@@ -9,7 +9,6 @@ const Controls = ({ id, voteLock, seasonLock, prizeMoney }) => {
 
 
 
-
   const [votingOpen, setVotingOpen] = useState(!voteLock);
   const [seasonOpen, setSeasonOpen] = useState(!seasonLock);
   const [prizePool, setPrizePool] = useState(prizeMoney);

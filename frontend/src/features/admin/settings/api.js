@@ -1,3 +1,5 @@
+import { apiClient } from "../../../lib/apiClient";
+
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 
@@ -23,22 +25,57 @@ export const fetchSeasonById = async (seasonId) => {
 
 
 export const toggleSeasonLock = async (id) => {
-   const token = localStorage.getItem("token")
-  const res = await fetch(`${BASE_URL}/admin/seasons/${id}/season-lock`, {
-    method: "PATCH",
-   headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  console.log("toggleSeasonLock called with id:", id);
 
-  if (!res.ok) {
-    throw new Error(await res.text());
+  try {
+    // Get token from localStorage
+    const token = localStorage.getItem("token");
+    console.log("Token from localStorage:", token);
+
+    // Check if token exists
+    if (!token) {
+      console.error("No token found in localStorage");
+      throw new Error("Authentication token missing");
+    }
+
+    // Build full URL
+    const url = `${BASE_URL}/seasons/${id}/season-lock`;
+    console.log("Full URL:", url);
+
+    // Make the PATCH request
+    const res = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Raw fetch response:", res);
+
+    // Check if response is ok (status 2xx)
+    if (!res.ok) {
+      console.error("Response not OK:", res.status, res.statusText);
+      const errorText = await res.text();
+      console.error("Error response body:", errorText);
+      throw new Error(errorText || "Failed to toggle season lock");
+    }
+
+    // Read response as text
+    const data = await res.text();
+    console.log("Response body:", data);
+
+    return data;
+  } catch (err) {
+    console.error("Error toggling season lock:", err);
+    throw err;
   }
-   console.log(res)
-  return res.text();
 };
 
+
+
+
 export const toggleVoteLock = async (id) => {
+  console.log(id)
    const token = localStorage.getItem("token")
   const res = await fetch(`${BASE_URL}/admin/seasons/${id}/vote-lock`, {
     method: "PATCH",
@@ -46,6 +83,8 @@ export const toggleVoteLock = async (id) => {
       Authorization: `Bearer ${token}`,
     },
   });
+
+  console.log(res)
 
   if (!res.ok) {
     throw new Error(await res.text());
@@ -123,7 +162,7 @@ export const updatePrizePool = async ({ id, prizeMoney }) => {
 export const participationLock = async ({ id}) => {
    const token = localStorage.getItem("token")
   const res = await fetch(
-    `${BASE_URL}/admin/seasons/${id}/participation-lock`,
+    `${BASE_URL}/admin/participations/${id}/participation-lock`,
     {
       method: "PATCH",
       headers: {
