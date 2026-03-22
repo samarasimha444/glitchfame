@@ -1,6 +1,7 @@
 package com.example.backend.participation.admin;
+
 import com.example.backend.participation.Participation;
-import com.example.backend.participation.admin.dto.*;
+import com.example.backend.participation.admin.dto.ParticipantsByStatus;
 
 import jakarta.transaction.Transactional;
 
@@ -23,7 +24,8 @@ public interface ParticipationAdminRepo extends JpaRepository<Participation, UUI
             p.name AS participantName,
             p.photo_url AS participantPhotoUrl,
             s.name AS seasonName,
-            p.total_votes AS totalVotes
+            p.season_id AS seasonId,     -- 🔥 REQUIRED
+            p.status AS status          -- 🔥 REQUIRED
 
         FROM participation p
         JOIN season s ON s.season_id = p.season_id
@@ -32,7 +34,7 @@ public interface ParticipationAdminRepo extends JpaRepository<Participation, UUI
         AND s.registration_start_date <= CURRENT_TIMESTAMP
         AND s.voting_end_date >= CURRENT_TIMESTAMP
 
-        ORDER BY p.total_votes DESC
+        ORDER BY p.participation_id DESC
         """,
         countQuery = """
         SELECT COUNT(*)
@@ -49,52 +51,50 @@ public interface ParticipationAdminRepo extends JpaRepository<Participation, UUI
     );
 
 
+    // search LIVE approved participants by name
+    @Query(value = """
+        SELECT
+            p.participation_id AS participationId,
+            p.name AS participantName,
+            p.photo_url AS participantPhotoUrl,
+            s.name AS seasonName,
+            p.season_id AS seasonId,     -- 🔥 REQUIRED
+            p.status AS status          -- 🔥 REQUIRED
+
+        FROM participation p
+        JOIN season s ON s.season_id = p.season_id
+
+        WHERE p.status = 'APPROVED'
+        AND p.name ILIKE '%' || :name || '%'
+        AND s.registration_start_date <= CURRENT_TIMESTAMP
+        AND s.voting_end_date >= CURRENT_TIMESTAMP
+
+        ORDER BY p.participation_id DESC
+        """,
+        countQuery = """
+        SELECT COUNT(*)
+        FROM participation p
+        JOIN season s ON s.season_id = p.season_id
+        WHERE p.status = 'APPROVED'
+        AND p.name ILIKE '%' || :name || '%'
+        AND s.registration_start_date <= CURRENT_TIMESTAMP
+        AND s.voting_end_date >= CURRENT_TIMESTAMP
+        """,
+        nativeQuery = true)
+    Page<ParticipantsByStatus> searchLiveApprovedParticipants(
+            @Param("name") String name,
+            Pageable pageable
+    );
 
 
-// search LIVE approved participants by name
-@Query(value = """
-    SELECT
-        p.participation_id AS participationId,
-        p.name AS participantName,
-        p.photo_url AS participantPhotoUrl,
-        s.name AS seasonName,
-        p.total_votes AS totalVotes
-
-    FROM participation p
-    JOIN season s ON s.season_id = p.season_id
-    WHERE p.status = 'APPROVED'
-    AND p.name ILIKE '%' || :name || '%'
-    AND s.registration_start_date <= CURRENT_TIMESTAMP
-    AND s.voting_end_date >= CURRENT_TIMESTAMP
-
-    ORDER BY p.total_votes DESC
-    """,
-    countQuery = """
-    SELECT COUNT(*)
-    FROM participation p
-    JOIN season s ON s.season_id = p.season_id
-    WHERE p.status = 'APPROVED'
-    AND p.name ILIKE '%' || :name || '%'
-    AND s.registration_start_date <= CURRENT_TIMESTAMP
-    AND s.voting_end_date >= CURRENT_TIMESTAMP
-    """,
-    nativeQuery = true)
-Page<ParticipantsByStatus> searchLiveApprovedParticipants(
-        @Param("name") String name,
-        Pageable pageable
-);
+    // reset season participations (keeps season, deletes all participants)
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Participation p WHERE p.seasonId = :seasonId")
+    void deleteAllBySeasonId(@Param("seasonId") UUID seasonId);
 
 
-
-
-
-// reset season participations (keeps season, deletes all participants)
-@Modifying
-@Transactional
-@Query("DELETE FROM Participation p WHERE p.seasonId = :seasonId")
-void deleteAllBySeasonId(@Param("seasonId") UUID seasonId);
-
-//to delete all the redis keys after deleting the season
-@Query("SELECT p.participationId FROM Participation p WHERE p.seasonId = :seasonId")
-List<UUID> findParticipationIdsBySeasonId(UUID seasonId);
+    // to delete all the redis keys after deleting the season
+    @Query("SELECT p.participationId FROM Participation p WHERE p.seasonId = :seasonId")
+    List<UUID> findParticipationIdsBySeasonId(UUID seasonId);
 }

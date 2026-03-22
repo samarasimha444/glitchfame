@@ -21,8 +21,8 @@ public class ParticipationAdminController {
     @GetMapping("/live")
     public Page<ParticipantsByStatus> getLiveParticipantsByStatus(
             @RequestParam String status,
-            @RequestParam int page,
-            @RequestParam int size
+          @RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "10") int size
     ) {
         return participationAdminService.getLiveParticipantsByStatus(
                 status,
@@ -32,12 +32,14 @@ public class ParticipationAdminController {
     }
 
 
+
+
     // search LIVE approved participants by name
     @GetMapping("/live/search")
     public Page<ParticipantsByStatus> searchLiveApprovedParticipants(
             @RequestParam String name,
-            @RequestParam int page,
-            @RequestParam int size
+              @RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "10") int size
     ) {
         return participationAdminService.searchLiveApprovedParticipants(
                 name,
