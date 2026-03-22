@@ -1,5 +1,4 @@
 package com.example.backend.participation.admin;
-
 import com.example.backend.participation.admin.dto.*;
 
 import lombok.RequiredArgsConstructor;

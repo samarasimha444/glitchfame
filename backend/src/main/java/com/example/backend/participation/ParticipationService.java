@@ -176,48 +176,52 @@ public void createParticipation(UUID authId, ParticipationForm form) {
     }
 
 
-    // ✅ RANDOM season + participants
-    public SeasonFullResponse getRandomLiveSeasonWithParticipants(
-            UUID authId,
-            int page,
-            int size
-    ) {
 
-        Instant now = Instant.now();
+//random live season
+public SeasonFullResponse getRandomLiveSeasonWithParticipants(
+        UUID authId,
+        int page,
+        int size
+) {
 
-        Page<SeasonDetails> pageResult =
-                seasonRepository.findRandomLiveSeason(authId, now, PageRequest.of(0, 1));
+    Instant now = Instant.now();
 
-        if (pageResult.getTotalElements() == 0) {
-            throw new IllegalStateException("No live season found");
-        }
+    // 🔥 Get TOP season (highest approved participants)
+    SeasonDetails season =
+            seasonRepository.findRandomLiveSeason(
+                    authId,
+                    now,
+                    PageRequest.of(0, 1)
+            )
+            .getContent()
+            .stream()
+            .findFirst()
+            .orElseThrow(() -> new IllegalStateException("No live season found"));
 
-        int randomIndex = new Random().nextInt((int) pageResult.getTotalElements());
+    // 🔥 Participants pagination (this is the only pagination user cares about)
+    Pageable pageable = PageRequest.of(page, size);
 
-        SeasonDetails season =
-                seasonRepository.findRandomLiveSeason(
-                        authId,
-                        now,
-                        PageRequest.of(randomIndex, 1)
-                ).getContent().get(0);
+    Page<Participants> participants =
+            participationRepository.findApprovedParticipants(
+                    season.getSeasonId(),
+                    pageable
+            );
 
-        Pageable pageable = PageRequest.of(page, size);
+    Page<Participants> enriched =
+            mapParticipants(participants, authId);
 
-        Page<Participants> result =
-                participationRepository.searchApprovedBySeason(
-                        season.getSeasonId(),
-                        null,
-                        pageable
-                );
+    // 🔥 Build response
+    SeasonFullResponse response = new SeasonFullResponse();
+    response.setSeason(season);
+    response.setParticipants(enriched);
 
-        Page<Participants> enriched = mapParticipants(result, authId);
+    return response;
+}
 
-        SeasonFullResponse response = new SeasonFullResponse();
-        response.setSeason(season);
-        response.setParticipants(enriched);
 
-        return response;
-    }
+
+
+
 
 
     // ✅ GET by ID
