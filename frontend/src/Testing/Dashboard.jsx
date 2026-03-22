@@ -17,7 +17,7 @@ export default function Dashboard() {
 
     const fetchProfile = async () => {
 
-      const res = await fetch("http://localhost:3000/auth/profile", {
+      const res = await fetch("https://glitchfame.onrender.com/auth/profile", {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -31,7 +31,7 @@ export default function Dashboard() {
     const fetchContestants = async () => {
 
       const res = await fetch(
-        "http://localhost:3000/participations/live?page=0&size=50",
+        "https://glitchfame.onrender.com/participations/live?page=0&size=50",
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -76,7 +76,7 @@ export default function Dashboard() {
 
     const stompClient = new Client({
 
-      brokerURL: "ws://localhost:3000/ws",
+      brokerURL: "wss://glitchfame.onrender.com/ws",
       connectHeaders: { Authorization: `Bearer ${token}` },
       reconnectDelay: 5000,
 
@@ -122,7 +122,7 @@ export default function Dashboard() {
 
     try {
 
-      const res = await fetch("http://localhost:3000/votes", {
+      const res = await fetch("https://glitchfame.onrender.com/votes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -226,30 +226,6 @@ public SeasonFullResponse getRandomLiveSeasonWithParticipants(
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   
    //participant by id
     public ParticipantById getParticipationById(UUID participationId, UUID authId) {
  ParticipantById p = participationRepository.findParticipantById(

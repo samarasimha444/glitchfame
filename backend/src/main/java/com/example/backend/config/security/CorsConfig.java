@@ -23,7 +23,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(Arrays.asList(allowedOrigins.split(","))); // read from properties
-        config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS")); // fixed
+        config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS","PATCH")); // fixed
         config.setAllowedHeaders(List.of("*")); // allow all headers
         config.setAllowCredentials(true); // allow cookies / auth headers
         config.setMaxAge(3600L); // cache preflight for 1 hour
