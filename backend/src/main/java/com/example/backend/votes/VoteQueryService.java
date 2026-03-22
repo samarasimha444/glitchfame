@@ -21,21 +21,28 @@ public class VoteQueryService {
             UUID authId
     ) {
 
+        // 🔥 guard clause
         if (participationIds == null || participationIds.isEmpty()) {
             return Collections.emptyMap();
         }
 
         String leaderboardKey = "leaderboard:season:" + seasonId;
-        String userVoteKey = "votes:user:" + seasonId + ":" + authId;
 
-        /* ---------- 1. Fetch user votes (single call) ---------- */
+        /* ---------- 1. Fetch user votes (ONLY if authId exists) ---------- */
 
-        Set<String> userVotesRaw = redis.opsForSet().members(userVoteKey);
-        Set<String> userVotes = userVotesRaw != null
-                ? userVotesRaw
-                : Collections.emptySet();
+        Set<String> userVotes = Collections.emptySet();
 
-        /* ---------- 2. Pipeline ZSET score calls ---------- */
+        if (authId != null) {
+            String userVoteKey = "votes:user:" + seasonId + ":" + authId;
+
+            Set<String> userVotesRaw = redis.opsForSet().members(userVoteKey);
+
+            userVotes = userVotesRaw != null
+                    ? userVotesRaw
+                    : Collections.emptySet();
+        }
+
+        /* ---------- 2. Fetch vote counts from Redis (ALWAYS) ---------- */
 
         List<Object> scores = redis.executePipelined(
                 (RedisCallback<Object>) connection -> {
@@ -43,7 +50,7 @@ public class VoteQueryService {
                     byte[] keyBytes = leaderboardKey.getBytes();
 
                     for (UUID id : participationIds) {
-                        connection.zScore(
+                        connection.zSetCommands().zScore(
                                 keyBytes,
                                 id.toString().getBytes()
                         );
@@ -64,7 +71,8 @@ public class VoteQueryService {
             Double score = (Double) scores.get(i);
 
             long votes = score == null ? 0L : score.longValue();
-            boolean hasVoted = userVotes.contains(id.toString());
+
+            boolean hasVoted = authId != null && userVotes.contains(id.toString());
 
             result.put(id, new VoteMeta(votes, hasVoted));
         }

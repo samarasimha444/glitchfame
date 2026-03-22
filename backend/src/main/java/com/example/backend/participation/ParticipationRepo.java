@@ -25,8 +25,7 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
         p.participation_id AS participationId,
         p.name AS participantName,
         p.photo_url AS participantPhotoUrl,
-        p.season_id AS seasonId,
-        0 AS totalVotes  -- placeholder (real votes from Redis)
+        p.season_id AS seasonId
     FROM participation p
     JOIN season s ON s.season_id = p.season_id
     WHERE p.status = 'APPROVED'
@@ -51,8 +50,8 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
             p.participation_id AS participationId,
             p.name AS participantName,
             p.photo_url AS participantPhotoUrl,
-            p.season_id AS seasonId,
-            0 AS totalVotes
+            p.season_id AS seasonId
+          
         FROM participation p
         WHERE p.season_id = :seasonId
         AND p.status = 'APPROVED'
@@ -76,8 +75,7 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
         p.participation_id AS participationId,
         p.name AS participantName,
         p.photo_url AS participantPhotoUrl,
-        p.season_id AS seasonId,
-        0 AS totalVotes
+        p.season_id AS seasonId
     FROM participation p
     JOIN season s ON s.season_id = p.season_id
     WHERE p.status = 'APPROVED'
@@ -107,8 +105,7 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
             p.participation_id AS participationId,
             p.name AS participantName,
             p.photo_url AS participantPhotoUrl,
-            p.season_id AS seasonId,
-            0 AS totalVotes
+            p.season_id AS seasonId
         FROM participation p
         WHERE p.season_id = :seasonId
         AND p.status = 'APPROVED'
@@ -147,9 +144,7 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
             s.registration_start_date AS registrationStartDate,
             s.registration_end_date AS registrationEndDate,
             s.voting_start_date AS votingStartDate,
-            s.voting_end_date AS votingEndDate,
-
-            0 AS voteCount  -- handled by Redis
+            s.voting_end_date AS votingEndDate
 
         FROM participation p
         JOIN season s ON s.season_id = p.season_id
