@@ -3,8 +3,10 @@ import React, { lazy, Suspense, useState } from "react";
 import SeasonForm from "./SeasonForm";
 const Modal = lazy(() => import("./Model"));
 
-const AdminCard = ({ title, paragraph, className, type, cardsInfo, data ,stats}) => {
+const AdminCard = ({ title, paragraph, className, type, cardsInfo,stats}) => {
   const [open, setOpen] = useState(false);
+
+  console.log(stats)
 
   return (
  <div className={`flex flex-col  w-full py-4 ${className}`}>
@@ -17,7 +19,8 @@ const AdminCard = ({ title, paragraph, className, type, cardsInfo, data ,stats})
             onClose={() => setOpen(false)}
             title="Create Season"
           >
-            <SeasonForm />
+          <SeasonForm close={() => setOpen(false)} />
+
           </Modal>
        
       </Suspense>
@@ -49,7 +52,7 @@ const AdminCard = ({ title, paragraph, className, type, cardsInfo, data ,stats})
     return (
       <div
         key={idx}
-        className="relative bg-[#111418] border border-[#1E232B] rounded-2xl p-4 sm:p-6 flex-1 sm:min-w-[200px]"
+        className="relative bg-[#111418] border border-[#1E232B] rounded-2xl p-4 sm:p-6 flex-1 sm:min-w-50"
       >
         <div className="space-y-2">
           <h3 className="text-gray-400 text-[12px] sm:text-sm font-medium">

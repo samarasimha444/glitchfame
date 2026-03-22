@@ -4,17 +4,22 @@ import Error from "../../../../components/Error";
 import { Heart } from "lucide-react";
 import { ContestantCard } from "./ContestantCards";
 import { useState, useCallback } from "react";
+import LoginModal from "../../../../components/LoginModal";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
 
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [clickedVotes, setClickedVotes] = useState(() => new Set());
 
   const handleVote = useCallback(
     async (participationId) => {
       const token = localStorage.getItem("token");
-      if (!token) return toast.error("Login required!");
+       if (!token) {
+      setShowLoginModal(true);  
+      return;
+    }
 
       setClickedVotes((prev) => {
         const newSet = new Set(prev);
@@ -59,6 +64,8 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
 
   return (
     <section className="flex flex-col w-full sm:px-6 md:pb-20">
+      {showLoginModal&& <LoginModal  onCancel={() => setShowLoginModal(false)}/>}
+
       <div className="w-full mx-auto">
         <div className="flex items-center justify-between sm:mt-6">
           <div className="flex items-center justify-center gap-2 text-primary">

@@ -2,16 +2,22 @@ import { apiClient } from "../../../lib/apiClient";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const token =localStorage.getItem("token")
 
 export const createSeason = async (formData) => {
+  const token = localStorage.getItem("token");
+  console.log(formData);
+
   try {
     const data = await apiClient(`${BASE_URL}/seasons`, {
       method: "POST",
-      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, 
+      },
+      body: JSON.stringify(formData),
     });
 
-    console.log("Response:", data); 
+    console.log("Response:", data);
     return data;
   } catch (err) {
     console.error("Error creating season:", err.message);

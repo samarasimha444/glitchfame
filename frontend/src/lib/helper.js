@@ -58,7 +58,6 @@ export const validateSeasonDates = ({ registrationStart, registrationEnd, voting
   return errors; 
 };
 
-
 export const formatToISO = (value) => {
   if (!value) return null;
   return new Date(value).toISOString();

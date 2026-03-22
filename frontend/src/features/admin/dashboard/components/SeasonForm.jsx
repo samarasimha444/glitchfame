@@ -1,15 +1,17 @@
 import { useState, useCallback } from "react";
 import { useCreateSeason, useUploadImage } from "../hooks";
-import toast from "react-hot-toast";
 import { buildSeasonPayload, getSeasonFolder } from "../../../../lib/helper";
 import { seasonInitialState, seasonfields } from "../../../../constants/admin";
+import { validateSeasonDates } from "../../../../lib/helper";
 
-const SeasonForm = () => {
+const SeasonForm = ({close}) => {
   const { mutateAsync: createSeason, isPending } = useCreateSeason();
   const { mutateAsync: uploadImage, isPending: uploading } = useUploadImage();
 
   const [form, setForm] = useState(seasonInitialState);
   const [file, setFile] = useState(null);
+
+  console.log(form)
 
   const inputClass =
     "w-full bg-[#111317] text-sm text-white px-3 py-2 rounded-lg border border-white/10 focus:ring-2 focus:ring-blue-600 outline-none transition";
@@ -25,13 +27,25 @@ const SeasonForm = () => {
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-
-    console.log("SUBMIT CLICKED"); // 👈 DEBUG
-
+    const toast = (await import("react-hot-toast")).default;
     if (isPending || uploading) return;
 
     if (!form.name.trim()) return toast.error("Enter season name");
     if (!file) return toast.error("Select image");
+
+     const dateErrors = validateSeasonDates({
+      registrationStart: form.registrationStartDate,
+      registrationEnd: form.registrationEndDate,
+      votingStart: form.votingStartDate,
+      votingEnd: form.votingEndDate
+    });
+
+    if (dateErrors.length > 0) {
+      dateErrors.forEach(err => toast.error(err));
+      return; 
+    }
+
+
 
     try {
       const folder = getSeasonFolder(form.name);
@@ -45,14 +59,25 @@ const SeasonForm = () => {
       await createSeason(buildSeasonPayload(form, imageUrl));
 
       toast.success("Season created successfully!");
-
       setForm(seasonInitialState);
       setFile(null);
+      close
     } catch (err) {
-      console.error("ERROR 👉", err);
+      console.error("ERROR ", err);
       toast.error(err?.message || "Something went wrong");
     }
   }, [form, file, isPending, uploading, uploadImage, createSeason]);
+
+
+
+
+
+
+
+
+
+
+
 
   return (
     <form

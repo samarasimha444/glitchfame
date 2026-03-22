@@ -31,7 +31,7 @@ const Vote = () => {
     isFetching: isFetchingParticipation,
   } = useParticipation(seasonId);
   
-  console.log(participationData)
+
 
   
   const {

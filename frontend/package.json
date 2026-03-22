@@ -24,9 +24,11 @@
     "react-hot-toast": "^2.6.0",
     "react-loading-skeleton": "^3.5.0",
     "react-router-dom": "^7.13.0",
+    "rollup-plugin-visualizer": "^7.0.1",
     "sockjs-client": "^1.6.1",
     "swiper": "^12.1.2",
-    "tailwindcss": "^4.2.1"
+    "tailwindcss": "^4.2.1",
+    "vite-bundle-analyzer": "^1.3.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -35,6 +37,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
     "babel-plugin-react-compiler": "^1.0.0",
+    "esbuild": "^0.27.4",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",

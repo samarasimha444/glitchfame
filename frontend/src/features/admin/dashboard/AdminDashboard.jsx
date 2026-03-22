@@ -17,7 +17,13 @@ const stats = useMemo(() => {
   return seasons.reduce(
     (acc, season) => {
       acc.totalSeasons += 1;
-      acc.totalPrizeMoney += season.prizeMoney || 0;
+
+      
+      const prize = season.prizeMoney
+        ? Number(season.prizeMoney.replace(/[^0-9]/g, ""))
+        : 0;
+
+      acc.totalPrizeMoney += prize;
 
       if (season.voteLock) acc.votingLocked += 1;
       if (season.participationLock) acc.participationLocked += 1;
@@ -32,9 +38,9 @@ const stats = useMemo(() => {
     }
   );
 }, [seasons]);
-
   const token = localStorage.getItem("token");
   console.log("TOKEN:", token);
+  console.log(stats)
 
   return (
     <div className='flex flex-col w-full h-screen '>
@@ -42,6 +48,10 @@ const stats = useMemo(() => {
 
      <section className='flex flex-col   space-y-6 w-full h-full sm:px-6'>
       <AdminCard title="Manage Seasons" paragraph="Note here basics details of all the Season" type="home" cardsInfo={dashCards} stats={stats} />
+
+
+
+
       <SeasonsTable isLoading={isLoading} seasons={data}/>
 
      </section>

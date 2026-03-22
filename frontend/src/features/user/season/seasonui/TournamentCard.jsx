@@ -7,7 +7,7 @@ import { MousePointerClick } from "lucide-react";
 
 const TournamentCard = () => {
   const { data: seasons = [], isLoading } = useLiveUpcomingSeasons();
- 
+ console.log(seasons)
   const navigate = useNavigate();
 
   const activeRegistrations = seasons?.content?.filter(isRegistrationOpen);
@@ -24,7 +24,7 @@ const TournamentCard = () => {
               <ShimmerCard />
             </div>
           ))
-        : activeRegistrations.map((item, index) => (
+        : activeRegistrations?.map((item, index) => (
             <article
               key={index}
               className="w-full sm:w-full lg:max-w-100 bg-[#111418] border border-[#1E232B] 

@@ -2,16 +2,30 @@ import { Upload, X } from "lucide-react";
 import Form from "./ui/Form";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import LoginRequiredModal from "../../../components/LoginModal";
 
 const ArenaForm = () => {
   const { id } = useParams();
 
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [show,setShow]=useState(false)
 
   const handleImageChange = (e) => {
+
+  const token = localStorage.getItem("token");
+  if (!token) {
+    setShow(true);
+    return;
+  }
+
     const file = e.target.files[0];
     if (!file) return;
+
+     if (!file.type.startsWith("image/")) {
+    alert("Only image files are allowed");
+    return;
+    }
 
     setImage(file);
     setPreview(URL.createObjectURL(file));
@@ -24,6 +38,8 @@ const ArenaForm = () => {
 
   return (
   <div className="min-h-screen w-full bg-gradient-to-br from-[#0f0f18] via-[#141a24] to-[#0c1b22] flex flex-col items-center py-12 md:py-16 px-4 sm:px-6">
+
+    {show && <LoginRequiredModal onCancel={()=>setShow(false)}/>}
 
   <div className="text-center mb-5 sm:mb-12 md:mb-16 max-w-xl">
     <span className="text-[10px] sm:text-xs text-primary border border-white px-3 py-1 rounded-full">
