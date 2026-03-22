@@ -1,25 +1,24 @@
 package com.example.backend.config.security;
+
 import com.example.backend.config.security.jwt.JwtFilter;
 import com.example.backend.config.redis.RateLimitingFilter;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-
-
-
-
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtFilter jwtFilter; // jwt filter
-    private final RateLimitingFilter rateLimitingFilter; // rate limiter
+    private final JwtFilter jwtFilter;
+    private final RateLimitingFilter rateLimitingFilter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -27,12 +26,16 @@ public class SecurityConfig {
         http
             .cors(cors -> {})
             .csrf(csrf -> csrf.disable())
+
             .authorizeHttpRequests(auth -> auth
 
-                // allow all auth endpoints
+                // ✅ allow ALL GET requests (public + optional JWT)
+                .requestMatchers(HttpMethod.GET, "/**").permitAll()
+
+                // auth endpoints
                 .requestMatchers("/auth/**").permitAll()
 
-                // allow swagger + health/test endpoints
+                // swagger + misc
                 .requestMatchers(
                         "/swagger-ui/**",
                         "/swagger-ui.html",
@@ -43,14 +46,14 @@ public class SecurityConfig {
                         "/ws/**"
                 ).permitAll()
 
-                // everything else requires JWT
+                // 🔒 everything else requires JWT
                 .anyRequest().authenticated()
             )
 
-            // Rate limit filter FIRST
+            // 🚀 Rate limiting first
             .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
 
-            // JWT filter
+            // 🔐 JWT filter
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 
             .httpBasic(httpBasic -> httpBasic.disable())

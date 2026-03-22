@@ -1,15 +1,11 @@
 package com.example.backend.participation;
 
-import com.example.backend.participation.dto.Participants;
-import com.example.backend.participation.dto.ParticipantById;
-import com.example.backend.participation.dto.ParticipationForm;
-
-
+import com.example.backend.participation.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import com.example.backend.seasons.dto.SeasonFullResponse;
 
 import java.util.UUID;
 
@@ -20,45 +16,54 @@ public class ParticipationController {
 
     private final ParticipationService participationService;
 
-    // create or reapply participation
+
+    // extract user id from JWT (safe fallback to null)
+    private UUID extractAuthId(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+
+        try {
+            return (UUID) authentication.getPrincipal();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+    // create participation (auth required)
     @PostMapping
     public void createParticipation(
             Authentication authentication,
             @RequestBody ParticipationForm form
     ) {
 
-        UUID authId = (UUID) authentication.getPrincipal();
+        UUID authId = extractAuthId(authentication);
+
+        if (authId == null) {
+            throw new IllegalStateException("Authentication required");
+        }
 
         participationService.createParticipation(authId, form);
     }
 
 
-
-
-
-
-    // get all live approved contestants
+    // get live contestants (auth optional)
     @GetMapping("/live")
     public Page<Participants> getLiveContestants(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             Authentication authentication
     ) {
-        System.out.println(authentication);
-         UUID authId = (UUID) authentication.getPrincipal();
 
-        return participationService.getLiveContestants(
-                authId,
-                page,
-                size
-        );
+        UUID authId = extractAuthId(authentication);
+
+        return participationService.getLiveContestants(authId, page, size);
     }
 
 
-
-
-    // search contestants across all live seasons
-    @GetMapping("/contestants/search")
+    // search live contestants
+    @GetMapping("/search")
     public Page<Participants> searchLiveContestants(
             @RequestParam String name,
             @RequestParam(defaultValue = "0") int page,
@@ -66,7 +71,8 @@ public class ParticipationController {
             Authentication authentication
     ) {
 
-        UUID authId = (UUID) authentication.getPrincipal();
+        UUID authId = extractAuthId(authentication);
+
         return participationService.searchLiveContestants(
                 name,
                 authId,
@@ -76,9 +82,8 @@ public class ParticipationController {
     }
 
 
-
-    // search contestants inside a specific season
-    @GetMapping("/seasons/{seasonId}/participants/search")
+    // search contestants by season
+    @GetMapping("/season/{seasonId}/search")
     public Page<Participants> searchParticipantsBySeason(
             @PathVariable UUID seasonId,
             @RequestParam String name,
@@ -87,7 +92,8 @@ public class ParticipationController {
             Authentication authentication
     ) {
 
-        UUID authId = (UUID) authentication.getPrincipal();
+        UUID authId = extractAuthId(authentication);
+
         return participationService.searchParticipantsBySeason(
                 seasonId,
                 name,
@@ -98,40 +104,47 @@ public class ParticipationController {
     }
 
 
-
-    // get participant details by id
+    // get participant details
     @GetMapping("/{participationId}")
     public ParticipantById getParticipantById(
             @PathVariable UUID participationId,
             Authentication authentication
     ) {
-UUID authId = (UUID) authentication.getPrincipal();
- return participationService.getParticipationById(
-                participationId,
-                authId);}
+
+        UUID authId = extractAuthId(authentication);
+        return participationService.getParticipationById(participationId, authId);
+    }
 
 
+    // get random live season + participants
+    @GetMapping("/random-season")
+    public SeasonFullResponse getRandomLiveSeason(
+            Authentication authentication,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
 
-//get random season and its participants
+        UUID authId = extractAuthId(authentication);
+    return participationService.getRandomLiveSeasonWithParticipants(
+                authId,
+                page,
+                size
+        );
+    }
 
 
-
-
-
-
-    
-
-// delete participation
+    // delete participation (auth required)
     @DeleteMapping("/{participationId}")
     public void deleteParticipation(
             Authentication authentication,
             @PathVariable UUID participationId
     ) {
 
-        UUID authId = (UUID) authentication.getPrincipal();
-        participationService.deleteParticipation(
-                participationId,
-                authId
-        );
+        UUID authId = extractAuthId(authentication);
+       if (authId == null) {
+            throw new IllegalStateException("Authentication required");
+        }
+
+        participationService.deleteParticipation(participationId, authId);
     }
 }

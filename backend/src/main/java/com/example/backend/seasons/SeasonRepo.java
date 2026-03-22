@@ -16,33 +16,33 @@ public interface SeasonRepo extends JpaRepository<Season, UUID> {
 
     boolean existsByName(String name);
 
-
-List<Season> findByVotingStartDateBeforeAndVotingEndDateAfter(
+    List<Season> findByVotingStartDateBeforeAndVotingEndDateAfter(
             Instant now1,
             Instant now2
     );
 
-    //get seasons ALL/LIVE/UPCOMNG/PAST
+    // 🔥 GET SEASONS (JWT OPTIONAL)
     @Query("""
         SELECT
             s.seasonId as seasonId,
             s.name as seasonName,
             s.description as seasonDesc,
             s.photoUrl as seasonPhotoUrl,
-             s.prize as prizeMoney,
+            s.prize as prizeMoney,
             s.registrationStartDate as registrationStartDate,
             s.registrationEndDate as registrationEndDate,
             s.votingStartDate as votingStartDate,
             s.votingEndDate as votingEndDate,
             s.locked as seasonLock,
             CASE
+                WHEN :authId IS NULL THEN 'PARTICIPATE_NOW'
                 WHEN p.participationId IS NULL THEN 'PARTICIPATE_NOW'
                 ELSE p.status
             END as participationStatus
         FROM Season s
         LEFT JOIN Participation p
             ON p.seasonId = s.seasonId
-            AND p.authId = :authId
+            AND (:authId IS NOT NULL AND p.authId = :authId)
         WHERE
             (:type = 'ALL'
             OR (:type = 'LIVE'
@@ -66,12 +66,7 @@ List<Season> findByVotingStartDateBeforeAndVotingEndDateAfter(
             Pageable pageable
     );
 
-
-
-
-
-
-    //find season by season id
+    // 🔥 GET SEASON BY ID (JWT OPTIONAL)
     @Query("""
         SELECT
             s.seasonId as seasonId,
@@ -85,13 +80,14 @@ List<Season> findByVotingStartDateBeforeAndVotingEndDateAfter(
             s.votingEndDate as votingEndDate,
             s.locked as seasonLock,
             CASE
+                WHEN :authId IS NULL THEN 'PARTICIPATE_NOW'
                 WHEN p.participationId IS NULL THEN 'PARTICIPATE_NOW'
                 ELSE p.status
             END as participationStatus
         FROM Season s
         LEFT JOIN Participation p
             ON p.seasonId = s.seasonId
-            AND p.authId = :authId
+            AND (:authId IS NOT NULL AND p.authId = :authId)
         WHERE s.seasonId = :seasonId
         """)
     SeasonDetails findSeasonBySeasonId(
@@ -99,47 +95,39 @@ List<Season> findByVotingStartDateBeforeAndVotingEndDateAfter(
             @Param("authId") UUID authId
     );
 
-
-
-
     List<Season> findByVotingEndDateBefore(Instant now);
 
+    // 🔥 RANDOM LIVE SEASON (JWT OPTIONAL)
+    @Query("""
+        SELECT
+            s.seasonId as seasonId,
+            s.name as seasonName,
+            s.description as seasonDesc,
+            s.photoUrl as seasonPhotoUrl,
+            s.prize as prizeMoney,
+            s.registrationStartDate as registrationStartDate,
+            s.registrationEndDate as registrationEndDate,
+            s.votingStartDate as votingStartDate,
+            s.votingEndDate as votingEndDate,
+            s.locked as seasonLock,
+            CASE
+                WHEN :authId IS NULL THEN 'PARTICIPATE_NOW'
+                WHEN p.participationId IS NULL THEN 'PARTICIPATE_NOW'
+                ELSE p.status
+            END as participationStatus
+        FROM Season s
+        LEFT JOIN Participation p
+            ON p.seasonId = s.seasonId
+            AND (:authId IS NOT NULL AND p.authId = :authId)
+        WHERE s.votingStartDate <= :now
+          AND s.votingEndDate >= :now
+        """)
+    Page<SeasonDetails> findRandomLiveSeason(
+            @Param("authId") UUID authId,
+            @Param("now") Instant now,
+            Pageable pageable
+    );
 
-//random live season
-@Query("""
-    SELECT
-        s.seasonId as seasonId,
-        s.name as seasonName,
-        s.description as seasonDesc,
-        s.photoUrl as seasonPhotoUrl,
-        s.prize as prizeMoney,
-        s.registrationStartDate as registrationStartDate,
-        s.registrationEndDate as registrationEndDate,
-        s.votingStartDate as votingStartDate,
-        s.votingEndDate as votingEndDate,
-        s.locked as seasonLock,
-        CASE
-            WHEN p.participationId IS NULL THEN 'PARTICIPATE_NOW'
-            ELSE p.status
-        END as participationStatus
-    FROM Season s
-    LEFT JOIN Participation p
-        ON p.seasonId = s.seasonId
-        AND p.authId = :authId
-    WHERE s.votingStartDate <= :now
-      AND s.votingEndDate >= :now
-""")
-Page<SeasonDetails>findRandomLiveSeason(
-        @Param("authId") UUID authId,
-        @Param("now") Instant now,
-        Pageable pageable
-);
-
-
-
-
-
-//for schedulars
-List<Season> findByVotingEndDateBeforeAndSeasonEndedFalse(Instant now);
-   
+    // for schedulers
+    List<Season> findByVotingEndDateBeforeAndSeasonEndedFalse(Instant now);
 }

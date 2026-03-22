@@ -10,9 +10,7 @@ import com.example.backend.votes.VoteQueryService;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -27,25 +25,34 @@ public class ParticipationService {
     private final AuthRepo authRepository;
     private final VoteQueryService voteQueryService;
 
-    /* ---------- MAP PARTICIPANTS + REDIS ---------- */
 
+    // ✅ FIXED: no reassignment → effectively final
     private Page<Participants> mapParticipants(Page<Participants> result, UUID authId) {
-     List<UUID> ids = result.stream()
+
+        List<UUID> ids = result.stream()
                 .map(Participants::getParticipationId)
                 .toList();
+
         UUID seasonId = result.getContent().isEmpty()
                 ? null
                 : result.getContent().get(0).getSeasonId();
+
         Map<UUID, VoteMeta> voteMetaMap =
-                seasonId == null
-                        ? new HashMap<>()
-                        : voteQueryService.getVoteMetaBatch(ids, seasonId, authId);
+                (authId != null && seasonId != null && !ids.isEmpty())
+                        ? voteQueryService.getVoteMetaBatch(ids, seasonId, authId)
+                        : Collections.emptyMap();
+
         return result.map(p -> {
-        VoteMeta meta = voteMetaMap.getOrDefault(
+
+            VoteMeta meta = voteMetaMap.getOrDefault(
                     p.getParticipationId(),
-                    new VoteMeta(0L, false)
+                    new VoteMeta(
+                            p.getTotalVotes() == null ? 0 : p.getTotalVotes(),
+                            false
+                    )
             );
-        return new ParticipantsImpl(
+
+            return new ParticipantsImpl(
                     p.getParticipationId(),
                     p.getParticipantName(),
                     p.getParticipantPhotoUrl(),
@@ -56,82 +63,85 @@ public class ParticipationService {
         });
     }
 
-   
 
+    // create or reapply participation
+public void createParticipation(UUID authId, ParticipationForm form) {
 
+    Auth auth = authRepository.findById(authId)
+            .orElseThrow(() -> new IllegalStateException("User not found"));
 
-
-    //create participations
-    public void createParticipation(UUID authId, ParticipationForm form) {
-        Auth auth = authRepository.findById(authId)
-                .orElseThrow(() -> new IllegalStateException("User not found"));
-        if (!Boolean.TRUE.equals(auth.getCanParticipate())) {
-            throw new IllegalStateException("Participation not allowed");
-        }
-        Season season = seasonRepository.findById(form.getSeasonId())
-                .orElseThrow(() -> new IllegalStateException("Season not found"));
-        if (season.isLocked()) {
-            throw new IllegalStateException("Season is locked. Participation disabled.");
-        }
-        Instant now = Instant.now();
-        if (now.isBefore(season.getRegistrationStartDate())) {
-            throw new IllegalStateException("Registration has not started yet");
-        }
-        if (now.isAfter(season.getRegistrationEndDate())) {
-            throw new IllegalStateException("Registration has ended");
-        }
-        Participation existing = participationRepository
-                .findByAuthIdAndSeasonId(authId, form.getSeasonId())
-                .orElse(null);
-        if (existing != null) {
-        if (!"REJECTED".equals(existing.getStatus())) {
-                throw new IllegalStateException("Already applied for this season");
-            }
-        existing.setName(form.getName());
-            existing.setDateOfBirth(form.getDateOfBirth());
-            existing.setLocation(form.getLocation());
-            existing.setDescription(form.getDescription());
-            existing.setPhotoUrl(form.getPhotoUrl());
-            existing.setStatus("PENDING");
-            existing.setModifiedAt(now);
-        participationRepository.save(existing);
-            return;
-        }
-
-        Participation participation = Participation.builder()
-                .authId(authId)
-                .seasonId(form.getSeasonId())
-                .name(form.getName())
-                .dateOfBirth(form.getDateOfBirth())
-                .location(form.getLocation())
-                .description(form.getDescription())
-                .photoUrl(form.getPhotoUrl())
-                .status("PENDING")
-                .modifiedAt(now)
-                .build();
-
-        participationRepository.save(participation);
+    if (!Boolean.TRUE.equals(auth.getCanParticipate())) {
+        throw new IllegalStateException("Participation not allowed");
     }
 
+    Season season = seasonRepository.findById(form.getSeasonId())
+            .orElseThrow(() -> new IllegalStateException("Season not found"));
+
+    if (season.isLocked()) {
+        throw new IllegalStateException("Season is locked");
+    }
+
+    Instant now = Instant.now();
+
+    if (now.isBefore(season.getRegistrationStartDate())) {
+        throw new IllegalStateException("Registration not started");
+    }
+
+    if (now.isAfter(season.getRegistrationEndDate())) {
+        throw new IllegalStateException("Registration ended");
+    }
+
+    Participation existing =
+            participationRepository.findByAuthIdAndSeasonId(authId, form.getSeasonId())
+                    .orElse(null);
+
+    if (existing != null) {
+
+        if (!"REJECTED".equals(existing.getStatus())) {
+            throw new IllegalStateException("Already applied");
+        }
+
+        existing.setName(form.getName());
+        existing.setDateOfBirth(form.getDateOfBirth());
+        existing.setLocation(form.getLocation());
+        existing.setDescription(form.getDescription());
+        existing.setPhotoUrl(form.getPhotoUrl());
+        existing.setStatus("PENDING");
+        existing.setModifiedAt(now);
+
+        participationRepository.save(existing);
+        return;
+    }
+
+    Participation participation = Participation.builder()
+            .authId(authId)
+            .seasonId(form.getSeasonId())
+            .name(form.getName())
+            .dateOfBirth(form.getDateOfBirth())
+            .location(form.getLocation())
+            .description(form.getDescription())
+            .photoUrl(form.getPhotoUrl())
+            .status("PENDING")
+            .modifiedAt(now)
+            .build();
+
+    participationRepository.save(participation);
+}
 
 
-
-   
-        //live contestants
+    // ✅ LIVE contestants
     public Page<Participants> getLiveContestants(UUID authId, int page, int size) {
+
         Pageable pageable = PageRequest.of(page, size);
+
         Page<Participants> result =
-                participationRepository.findLiveContestants(authId, pageable);
+                participationRepository.findLiveContestants(pageable);
+
         return mapParticipants(result, authId);
     }
 
 
-
-
-
-
-   
-    //seach live contestants
+    // ✅ SEARCH live
     public Page<Participants> searchLiveContestants(
             String name,
             UUID authId,
@@ -140,20 +150,15 @@ public class ParticipationService {
     ) {
 
         Pageable pageable = PageRequest.of(page, size);
+
         Page<Participants> result =
-                participationRepository.searchLiveApproved(
-                        name,
-                        authId,
-                        pageable
-                );
+                participationRepository.searchLiveApproved(name, pageable);
+
         return mapParticipants(result, authId);
     }
 
 
-
-
-   
-   //search by season
+    // ✅ SEARCH by season
     public Page<Participants> searchParticipantsBySeason(
             UUID seasonId,
             String name,
@@ -163,86 +168,81 @@ public class ParticipationService {
     ) {
 
         Pageable pageable = PageRequest.of(page, size);
-         Page<Participants> result =
-                participationRepository.searchApprovedBySeason(
-                        seasonId,
-                        name,
-                        authId,
-                        pageable);
-return mapParticipants(result, authId)
-;}
 
+        Page<Participants> result =
+                participationRepository.searchApprovedBySeason(seasonId, name, pageable);
 
-
-
-
-public SeasonFullResponse getRandomLiveSeasonWithParticipants(
-        UUID authId,
-        int page,
-        int size
-) {
-
-    Instant now = Instant.now();
-
-    Page<SeasonDetails> pageResult =
-            seasonRepository.findRandomLiveSeason(
-                    authId,
-                    now,
-                    PageRequest.of(0, 1)
-            );
-
-    long total = pageResult.getTotalElements();
-
-    if (total == 0) {
-        throw new IllegalStateException("No live season found");
+        return mapParticipants(result, authId);
     }
 
-    int randomIndex = new Random().nextInt((int) total);
 
-    SeasonDetails season =
-            seasonRepository.findRandomLiveSeason(
-                    authId,
-                    now,
-                    PageRequest.of(randomIndex, 1)
-            ).getContent().get(0);
+    // ✅ RANDOM season + participants
+    public SeasonFullResponse getRandomLiveSeasonWithParticipants(
+            UUID authId,
+            int page,
+            int size
+    ) {
 
-    Pageable pageable = PageRequest.of(page, size);
+        Instant now = Instant.now();
 
-    Page<Participants> result =
-            participationRepository.searchApprovedBySeason(
-                    season.getSeasonId(),
-                    null,
-                    authId,
-                    pageable
-            );
+        Page<SeasonDetails> pageResult =
+                seasonRepository.findRandomLiveSeason(authId, now, PageRequest.of(0, 1));
 
-    Page<Participants> enriched = mapParticipants(result, authId);
+        if (pageResult.getTotalElements() == 0) {
+            throw new IllegalStateException("No live season found");
+        }
 
-    SeasonFullResponse response = new SeasonFullResponse();
-    response.setSeason(season);
-    response.setParticipants(enriched);
+        int randomIndex = new Random().nextInt((int) pageResult.getTotalElements());
 
-    return response;
-}
+        SeasonDetails season =
+                seasonRepository.findRandomLiveSeason(
+                        authId,
+                        now,
+                        PageRequest.of(randomIndex, 1)
+                ).getContent().get(0);
 
+        Pageable pageable = PageRequest.of(page, size);
 
-   //participant by id
-    public ParticipantById getParticipationById(UUID participationId, UUID authId) {
- ParticipantById p = participationRepository.findParticipantById(
-                participationId,
-                authId
-        );
-if (p == null) return null;
-UUID seasonId = p.getSeasonId();
-Map<UUID, VoteMeta> metaMap =
-                voteQueryService.getVoteMetaBatch(
-                        List.of(participationId),
-                        seasonId,
-                        authId
+        Page<Participants> result =
+                participationRepository.searchApprovedBySeason(
+                        season.getSeasonId(),
+                        null,
+                        pageable
                 );
-VoteMeta meta = metaMap.getOrDefault(
-                participationId,
-                new VoteMeta(0L, false));
+
+        Page<Participants> enriched = mapParticipants(result, authId);
+
+        SeasonFullResponse response = new SeasonFullResponse();
+        response.setSeason(season);
+        response.setParticipants(enriched);
+
+        return response;
+    }
+
+
+    // ✅ GET by ID
+    public ParticipantById getParticipationById(UUID participationId, UUID authId) {
+
+        ParticipantById p =
+                participationRepository.findParticipantById(participationId);
+
+        if (p == null) return null;
+
+        VoteMeta meta = new VoteMeta(
+                p.getVoteCount() == null ? 0 : p.getVoteCount(),
+                false
+        );
+
+        if (authId != null) {
+            Map<UUID, VoteMeta> metaMap =
+                    voteQueryService.getVoteMetaBatch(
+                            List.of(participationId),
+                            p.getSeasonId(),
+                            authId
+                    );
+
+            meta = metaMap.getOrDefault(participationId, meta);
+        }
 
         return new ParticipantByIdImpl(
                 p.getParticipationId(),
@@ -266,22 +266,17 @@ VoteMeta meta = metaMap.getOrDefault(
     }
 
 
-    
-
-
-
-
-
-
-
-   
-    //delete partcipation
+    // ✅ DELETE
     public void deleteParticipation(UUID participationId, UUID authId) {
-        Participation participation = participationRepository.findById(participationId)
-                .orElseThrow(() -> new IllegalStateException("Participation not found"));
-if (!participation.getAuthId().equals(authId)) {
+
+        Participation participation =
+                participationRepository.findById(participationId)
+                        .orElseThrow(() -> new IllegalStateException("Participation not found"));
+
+        if (!participation.getAuthId().equals(authId)) {
             throw new IllegalStateException("Unauthorized");
         }
-participationRepository.delete(participation);
+
+        participationRepository.delete(participation);
     }
 }

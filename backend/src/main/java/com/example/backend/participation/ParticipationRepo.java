@@ -16,22 +16,19 @@ import java.util.UUID;
 
 public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
 
-    // check if user already applied to a season
     Optional<Participation> findByAuthIdAndSeasonId(UUID authId, UUID seasonId);
 
 
-    // LIVE contestants approved (all live seasons)
+    // ✅ LIVE contestants (NO VOTES)
     @Query(value = """
     SELECT
         p.participation_id AS participationId,
         p.name AS participantName,
         p.photo_url AS participantPhotoUrl,
-        p.season_id AS seasonId
-      
-
+        p.season_id AS seasonId,
+        0 AS totalVotes  -- placeholder (real votes from Redis)
     FROM participation p
     JOIN season s ON s.season_id = p.season_id
-
     WHERE p.status = 'APPROVED'
     AND s.voting_start_date <= CURRENT_TIMESTAMP
     AND s.voting_end_date >= CURRENT_TIMESTAMP
@@ -45,25 +42,18 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
     AND s.voting_end_date >= CURRENT_TIMESTAMP
     """,
     nativeQuery = true)
-Page<Participants> findLiveContestants(
-        @Param("authId") UUID authId,
-        Pageable pageable
-);
+    Page<Participants> findLiveContestants(Pageable pageable);
 
 
-    
-
-    // approved contestants of a specific season
+    // ✅ BY SEASON (NO VOTES)
     @Query(value = """
         SELECT
             p.participation_id AS participationId,
             p.name AS participantName,
             p.photo_url AS participantPhotoUrl,
-            p.season_id AS seasonId
-            
-
+            p.season_id AS seasonId,
+            0 AS totalVotes
         FROM participation p
-
         WHERE p.season_id = :seasonId
         AND p.status = 'APPROVED'
         """,
@@ -76,15 +66,70 @@ Page<Participants> findLiveContestants(
         nativeQuery = true)
     Page<Participants> findApprovedParticipants(
             @Param("seasonId") UUID seasonId,
-            @Param("authId") UUID authId,
             Pageable pageable
     );
 
 
+    // ✅ SEARCH LIVE (NO VOTES)
+    @Query(value = """
+    SELECT
+        p.participation_id AS participationId,
+        p.name AS participantName,
+        p.photo_url AS participantPhotoUrl,
+        p.season_id AS seasonId,
+        0 AS totalVotes
+    FROM participation p
+    JOIN season s ON s.season_id = p.season_id
+    WHERE p.status = 'APPROVED'
+    AND p.name ILIKE '%' || :name || '%'
+    AND s.voting_start_date <= CURRENT_TIMESTAMP
+    AND s.voting_end_date >= CURRENT_TIMESTAMP
+    """,
+    countQuery = """
+    SELECT COUNT(*)
+    FROM participation p
+    JOIN season s ON s.season_id = p.season_id
+    WHERE p.status = 'APPROVED'
+    AND p.name ILIKE '%' || :name || '%'
+    AND s.voting_start_date <= CURRENT_TIMESTAMP
+    AND s.voting_end_date >= CURRENT_TIMESTAMP
+    """,
+    nativeQuery = true)
+    Page<Participants> searchLiveApproved(
+            @Param("name") String name,
+            Pageable pageable
+    );
 
 
+    // ✅ SEARCH BY SEASON (NO VOTES)
+    @Query(value = """
+        SELECT
+            p.participation_id AS participationId,
+            p.name AS participantName,
+            p.photo_url AS participantPhotoUrl,
+            p.season_id AS seasonId,
+            0 AS totalVotes
+        FROM participation p
+        WHERE p.season_id = :seasonId
+        AND p.status = 'APPROVED'
+        AND p.name ILIKE '%' || :name || '%'
+        """,
+        countQuery = """
+        SELECT COUNT(*)
+        FROM participation p
+        WHERE p.season_id = :seasonId
+        AND p.status = 'APPROVED'
+        AND p.name ILIKE '%' || :name || '%'
+        """,
+        nativeQuery = true)
+    Page<Participants> searchApprovedBySeason(
+            @Param("seasonId") UUID seasonId,
+            @Param("name") String name,
+            Pageable pageable
+    );
 
-    // participant details by id
+
+    // ✅ BY ID (REMOVE DB COUNT HERE TOO if you want full Redis)
     @Query(value = """
         SELECT
             p.participation_id AS participationId,
@@ -102,100 +147,25 @@ Page<Participants> findLiveContestants(
             s.registration_start_date AS registrationStartDate,
             s.registration_end_date AS registrationEndDate,
             s.voting_start_date AS votingStartDate,
-            s.voting_end_date AS votingEndDate
+            s.voting_end_date AS votingEndDate,
 
+            0 AS voteCount  -- handled by Redis
 
         FROM participation p
         JOIN season s ON s.season_id = p.season_id
-
         WHERE p.participation_id = :participationId
         """,
         nativeQuery = true)
     ParticipantById findParticipantById(
-            @Param("participationId") UUID participationId,
-            @Param("authId") UUID authId
+            @Param("participationId") UUID participationId
     );
 
 
-
-
-
-    //search for participation by name (all live seasons)
-   @Query(value = """
-    SELECT
-        p.participation_id AS participationId,
-        p.name AS participantName,
-        p.photo_url AS participantPhotoUrl,
-        p.season_id AS seasonId
-       
-
+    @Query(value = """
+    SELECT p.*
     FROM participation p
-    JOIN season s ON s.season_id = p.season_id
-
-    WHERE p.status = 'APPROVED'
-    AND p.name ILIKE '%' || :name || '%'
-    AND s.voting_start_date <= CURRENT_TIMESTAMP
-    AND s.voting_end_date >= CURRENT_TIMESTAMP
-    """,
-    countQuery = """
-    SELECT COUNT(*)
-    FROM participation p
-    JOIN season s ON s.season_id = p.season_id
-    WHERE p.status = 'APPROVED'
-    AND p.name ILIKE '%' || :name || '%'
-    AND s.voting_start_date <= CURRENT_TIMESTAMP
-    AND s.voting_end_date >= CURRENT_TIMESTAMP
-    """,
-    nativeQuery = true)
-Page<Participants> searchLiveApproved(
-        @Param("name") String name,
-        @Param("authId") UUID authId,
-        Pageable pageable
-);
-
-
-
-    // search approved participants in a specific season
-     @Query(value = """
-        SELECT
-            p.participation_id AS participationId,
-            p.name AS participantName,
-            p.photo_url AS participantPhotoUrl,
-            p.season_id AS seasonId
-            
-
-            FROM participation p
-         WHERE p.season_id = :seasonId
-        AND p.status = 'APPROVED'
-        AND p.name ILIKE '%' || :name || '%'
-        """,
-        countQuery = """
-        SELECT COUNT(*)
-        FROM participation p
-        WHERE p.season_id = :seasonId
-        AND p.status = 'APPROVED'
-        AND p.name ILIKE '%' || :name || '%'
-        """,
-        nativeQuery = true)
-    Page<Participants> searchApprovedBySeason(
-            @Param("seasonId") UUID seasonId,
-            @Param("name") String name,
-            @Param("authId") UUID authId,
-            Pageable pageable
-    );
-
-
-
-
-
-
-
-
-@Query(value = """
-SELECT p.*
-FROM participation p
-WHERE p.season_id = :seasonId
-AND p.status = 'APPROVED'
-""", nativeQuery = true)
-List<Participation> findApprovedContestants(UUID seasonId);
+    WHERE p.season_id = :seasonId
+    AND p.status = 'APPROVED'
+    """, nativeQuery = true)
+    List<Participation> findApprovedContestants(@Param("seasonId") UUID seasonId);
 }

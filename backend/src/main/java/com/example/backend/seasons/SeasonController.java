@@ -19,24 +19,39 @@ import com.example.backend.seasons.dto.SeasonFullResponse;
 
 import org.springframework.security.core.Authentication;
 
-
 @RestController
 @RequestMapping("/seasons")
 @RequiredArgsConstructor
 public class SeasonController {
 
-    private final seasonService seasonService; // service
-    private  final ParticipationService participationService;
+    private final seasonService seasonService;
+    private final ParticipationService participationService;
+
+
+
+    // extract authId safely (null if no JWT)
+    private UUID extractAuthId(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+
+        try {
+            return UUID.fromString(authentication.getName());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 
 
     // create season
-  @PostMapping
-public String createSeason(@RequestBody SeasonForm form) {
-
+    @PostMapping
+    public String createSeason(@RequestBody SeasonForm form) {
     seasonService.createSeason(form);
-
     return "Season created successfully";
-}
+    }
+
+
 
     // delete season by id
     @DeleteMapping("/{seasonId}")
@@ -49,22 +64,16 @@ public String createSeason(@RequestBody SeasonForm form) {
 
 
 
-
-
-
-//season lock
- @PatchMapping("/{seasonId}/season-lock")
+    // toggle season lock
+    @PatchMapping("/{seasonId}/season-lock")
     public String toggleSeasonLock(@PathVariable UUID seasonId) {
 
         boolean locked = seasonService.toggleSeasonLock(seasonId);
 
-        if (locked) {
-            return "Season locked successfully";
-        } else {
-            return "Season unlocked successfully";
-        }
+        return locked
+                ? "Season locked successfully"
+                : "Season unlocked successfully";
     }
-
 
 
 
@@ -75,14 +84,19 @@ public String createSeason(@RequestBody SeasonForm form) {
             @RequestParam(required = false) OffsetDateTime registrationStart,
             @RequestParam(required = false) OffsetDateTime registrationEnd,
             @RequestParam(required = false) OffsetDateTime votingStart,
-            @RequestParam(required = false) OffsetDateTime votingEnd) {
+            @RequestParam(required = false) OffsetDateTime votingEnd
+    ) {
 
-        seasonService.adjustDates(seasonId, registrationStart, registrationEnd, votingStart, votingEnd);
+        seasonService.adjustDates(
+                seasonId,
+                registrationStart,
+                registrationEnd,
+                votingStart,
+                votingEnd
+        );
 
         return "Season dates updated successfully";
     }
-
-
 
 
 
@@ -90,7 +104,8 @@ public String createSeason(@RequestBody SeasonForm form) {
     @PatchMapping("/{seasonId}/prize")
     public String updatePrize(
             @PathVariable UUID seasonId,
-            @RequestParam String prize) {
+            @RequestParam String prize
+    ) {
 
         seasonService.updatePrize(seasonId, prize);
 
@@ -99,42 +114,48 @@ public String createSeason(@RequestBody SeasonForm form) {
 
 
 
-//get season  Live/upmcing/past/live-upcpming
-@GetMapping
-public Page<SeasonDetails> getSeasons(
-        Authentication authentication,
-        @RequestParam(defaultValue = "ALL") String type,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size
-) {
+    // get seasons list (JWT optional)
+    @GetMapping
+    public Page<SeasonDetails> getSeasons(
+            Authentication authentication,
+            @RequestParam(defaultValue = "ALL") String type,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
 
-    UUID authId = UUID.fromString(authentication.getName()); // authId from JWT
-     return seasonService.getSeasons(authId, type, page, size);
-}
+        UUID authId = extractAuthId(authentication);
+
+        return seasonService.getSeasons(authId, type, page, size);
+    }
 
 
-@GetMapping("/{seasonId}")
-public ResponseEntity<SeasonFullResponse> getSeasonFull(
-        @PathVariable UUID seasonId,
-        Authentication authentication,
-        @PageableDefault(size = 10) Pageable pageable
-) {
 
-    UUID authId = UUID.fromString(authentication.getName()); // get user id
+    // get full season (JWT optional)
+    @GetMapping("/{seasonId}")
+    public ResponseEntity<SeasonFullResponse> getSeasonFull(
+            @PathVariable UUID seasonId,
+            Authentication authentication,
+            @PageableDefault(size = 10) Pageable pageable
+    ) {
 
-    return ResponseEntity.ok(
-            seasonService.getSeasonFull(seasonId, authId, pageable)
-    );
-}
+        UUID authId = extractAuthId(authentication);
 
-@GetMapping("/live/random")
+        return ResponseEntity.ok(
+                seasonService.getSeasonFull(seasonId, authId, pageable)
+        );
+    }
+
+
+
+    // get random live season (JWT optional)
+    @GetMapping("/live/random")
     public SeasonFullResponse getRandomLiveSeason(
             Authentication authentication,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
 
-        UUID authId = UUID.fromString(authentication.getName()); // assuming name = authId
+        UUID authId = extractAuthId(authentication);
 
         return participationService
                 .getRandomLiveSeasonWithParticipants(authId, page, size);
@@ -142,23 +163,23 @@ public ResponseEntity<SeasonFullResponse> getSeasonFull(
 
 
 
+    // end season
+    @PostMapping("/{seasonId}/end")
+    public String endSeason(@PathVariable UUID seasonId) {
 
+        seasonService.endSeason(seasonId, Instant.now());
 
-
-
-    // end season (set votingEnd = now)
-@PostMapping("/{seasonId}/end")
-public String endSeason(@PathVariable UUID seasonId) {
- seasonService.endSeason(seasonId, Instant.now());
-return "Season ended successfully";
+        return "Season ended successfully";
     }
 
 
 
-// reset season (delete all participations but keep season)
-@PostMapping("/{seasonId}/reset")
-public String resetSeason(@PathVariable UUID seasonId) {
-seasonService.resetSeason(seasonId);
-return "Season reset successfully";
-}
+    // reset season
+    @PostMapping("/{seasonId}/reset")
+    public String resetSeason(@PathVariable UUID seasonId) {
+
+        seasonService.resetSeason(seasonId);
+
+        return "Season reset successfully";
+    }
 }

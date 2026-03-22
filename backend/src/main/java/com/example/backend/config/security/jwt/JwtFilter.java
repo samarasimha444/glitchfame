@@ -34,8 +34,9 @@ public class JwtFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         String header = request.getHeader("Authorization");
+        boolean isGet = "GET".equalsIgnoreCase(request.getMethod());
 
-        // no token → continue (public endpoints may exist)
+        // ✅ No token → just continue (public request)
         if (header == null || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -43,8 +44,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = header.substring(7);
 
-        // 🔴 1. invalid or expired token
+        // 🔴 Invalid / expired token
         if (!jwtUtil.validateToken(token)) {
+
+            if (isGet) {
+                // ✅ ignore invalid token for GET → treat as guest
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             sendUnauthorized(response, "Token expired. Please login again.");
             return;
         }
@@ -52,23 +60,33 @@ public class JwtFilter extends OncePerRequestFilter {
         UUID authId = jwtUtil.extractAuthId(token);
         String role = jwtUtil.extractRole(token);
 
-        // 🔴 2. check Redis (single device login)
+        // 🔴 Redis session check
         String storedToken = redisTemplate.opsForValue()
                 .get("user:" + authId);
 
-        // 🔴 3. no session found
         if (storedToken == null) {
+
+            if (isGet) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             sendUnauthorized(response, "Session expired. Please login again.");
             return;
         }
 
-        // 🔴 4. another device login detected
         if (!storedToken.equals(token)) {
+
+            if (isGet) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             sendUnauthorized(response, "Logged in from another device. Please login again.");
             return;
         }
 
-        // ✅ set authentication
+        // ✅ Set authentication (only if valid)
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(
                         authId,
