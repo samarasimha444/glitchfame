@@ -8,7 +8,9 @@ const Approval = ({ className }) => {
  
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useContestants();
 
+
   const contestants = data?.pages.flatMap((page) => page.content) ?? [];
+
 
   console.log(contestants)
   const { mutate: updateStatus, isLoading } = useUpdateContestantStatus();
@@ -48,26 +50,27 @@ const Approval = ({ className }) => {
 
         
         <div className="space-y-3">
-          {contestants.map((user) => (
+          {contestants?.map((user) => (
             <div
               key={user.id}
               className="flex flex-col sm:flex-row sm:items-center justify-between bg-[#141821] border border-gray-700 rounded-xl p-4 sm:p-5 hover:border-gray-500 transition gap-3"
             >
               
               <div className="flex items-start sm:items-center gap-4">
-                <img
-                  src={user.seasonPhotoUrl}
-                  alt={user.name}
-                  className="w-12 h-12 rounded-full object-cover"
+
+                <img 
+              src={`${user.participantPhotoUrl}?q=60&w=100`}
+                alt={user.name}
+
+               className="w-12 h-12 rounded-full object-contain"
+                loading="lazy"
+                decoding="async"
                 />
+
                 <div>
                   <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-                    <h3 className="text-white font-medium">{user.name}</h3>
-                    {user.isNew && (
-                      <span className="text-xs bg-blue-600/20 text-blue-400 px-2 py-0.5 rounded-full">
-                        NEW
-                      </span>
-                    )}
+                    <h3 className="text-white font-medium">{user.participantName}</h3>
+                   
                   </div>
                   <p className="text-gray-400 text-sm">{user.location}</p>
                   <p className="text-gray-500 text-xs mt-1">{user.time}</p>
@@ -77,7 +80,7 @@ const Approval = ({ className }) => {
               
               <div className="flex flex-col text-xs sm:text-sm sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 mt-2 sm:mt-0">
                 <button
-                  onClick={() => handleAction("approve", user.participationId)}
+                  onClick={() => handleAction("APPROVE", user.participationId)}
                   disabled={isLoading}
                   className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-black border border-gray-600 text-white px-4 py-2 rounded-lg hover:border-gray-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >

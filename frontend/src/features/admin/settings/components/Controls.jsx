@@ -1,32 +1,23 @@
 import { Lock, Save } from "lucide-react";
 import { useState } from "react";
-import { useToggleSeasonLock, useToggleVoteLock, useUpdatePrizePool } from "../hooks";
+import { useToggleSeasonLock, useUpdatePrizePool } from "../hooks";
 
 
-const Controls = ({ id, voteLock, seasonLock, prizeMoney }) => {
+const Controls = ({ id, seasonLock, prizeMoney }) => {
 
-  console.log(prizeMoney,id,voteLock,seasonLock,id)
+  
 
 
-
-  const [votingOpen, setVotingOpen] = useState(!voteLock);
   const [seasonOpen, setSeasonOpen] = useState(!seasonLock);
   const [prizePool, setPrizePool] = useState(prizeMoney);
   
-  console.log(prizePool,voteLock,seasonOpen,prizePool)
+ 
 
-   const {mutate: toggleVoteLock,isPending: votePending,} = useToggleVoteLock();
  const { mutate: updatePrizePool, isPending } = useUpdatePrizePool();
   const {mutate: toggleSeasonLock,isPending: seasonPending,} = useToggleSeasonLock();
 
-  const loading = isPending || votePending 
-
-  const handleVoteToggle = () => {
-   
-    setVotingOpen((prev) => !prev);
-     console.log(id)
-    toggleVoteLock(id);
-  };
+ 
+ 
 
   const handleSeasonToggle = ()=>{
    setSeasonOpen((prev)=>!prev)
@@ -49,34 +40,7 @@ const Controls = ({ id, voteLock, seasonLock, prizeMoney }) => {
       </div>
 
       
-      <div className="flex items-center justify-between bg-[#171A1F] border border-white/5 rounded-lg p-4 mb-3">
-
-
-        <div>
-          <p className="text-white text-sm font-medium">
-            Voting Open
-          </p>
-          <p className="text-white/50 text-xs">
-            Prevent manual vote injection
-          </p>
-        </div>
-
-        <button
-          onClick={handleVoteToggle}
-          disabled={votePending}
-          className={`relative w-11 h-6 rounded-full transition ${
-            votingOpen ? "bg-purple-600" : "bg-gray-600"
-          }`}
-        >
-          <span
-            className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition ${
-              votingOpen ? "translate-x-5" : ""
-            }`}
-          />
-        </button>
-
-        
-      </div>
+      
 
   <div className="flex items-center justify-between bg-[#171A1F] border border-white/5 rounded-lg p-4 mb-3">
 
@@ -118,12 +82,12 @@ const Controls = ({ id, voteLock, seasonLock, prizeMoney }) => {
             type="number"
             value={prizePool}
             onChange={(e) => setPrizePool(e.target.value)}
-            className="flex-1 bg-[#171A1F] border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
+            className="flex-1 bg-[#171A1F] border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
           <button
             onClick={handleChangePricePool}
-            className="bg-[#1E2228] border border-white/10 rounded-lg px-3 flex items-center justify-center hover:bg-purple-600 transition"
+            className="bg-[#1E2228] border border-white/10 rounded-lg px-3 flex items-center justify-center hover:bg-blue-600 transition"
           >
             <Save className="w-4 h-4 text-white" />
           </button>

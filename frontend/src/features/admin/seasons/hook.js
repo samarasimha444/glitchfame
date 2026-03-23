@@ -1,5 +1,6 @@
 import { useInfiniteQuery, useMutation,  useQuery,  useQueryClient } from "@tanstack/react-query";
 import { deleteContestant, getContestants, getLiveContestants, searchContestants, updateContestantStatus, voteContestant } from "./api";
+import toast from "react-hot-toast";
 
 
 
@@ -35,10 +36,13 @@ export const useDeleteContestant = () => {
 
   return useMutation({
     mutationFn: deleteContestant,
-
     onSuccess: () => {
       queryClient.invalidateQueries(["contestants"]);
+      toast.success("ok")
     },
+    onError:()=>{
+      toast.error("failed")
+    }
   });
 };
 

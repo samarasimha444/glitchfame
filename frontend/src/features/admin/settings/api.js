@@ -74,24 +74,7 @@ export const toggleSeasonLock = async (id) => {
 
 
 
-export const toggleVoteLock = async (id) => {
-  console.log(id)
-   const token = localStorage.getItem("token")
-  const res = await fetch(`${BASE_URL}/admin/seasons/${id}/vote-lock`, {
-    method: "PATCH",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
 
-  console.log(res)
-
-  if (!res.ok) {
-    throw new Error(await res.text());
-  }
-
-  return res.text();
-};
 
 
 
@@ -142,7 +125,7 @@ export const endSeasonNow = async ({ id }) => {
 
 export const updatePrizePool = async ({ id, prizeMoney }) => {
   const res = await fetch(
-    `${BASE_URL}/admin/seasons/${id}/prize-money?prizeMoney=${prizeMoney}`,
+    `${BASE_URL}/seasons/${id}/prize?prize=${prizeMoney}`,
     {
       method: "PATCH",
       headers: {
@@ -179,24 +162,26 @@ export const participationLock = async ({ id}) => {
 };
 
 
-export const updateSeasonDates = async ({ id, type, start, end}) => {
 
- const token = localStorage.getItem("token")
 
-  const response = await fetch(
-    `${BASE_URL}/admin/seasons/${id}/${type}-dates?start=${start}&end=${end}`,
-    {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+export const updateSeasonDates = async (data) => {
+  const query = new URLSearchParams();
 
-  console.log(response)
-  if (!response.ok) {
-    throw new Error(`Failed to update ${type} dates`);
-  }
+  if (data.registrationStart)
+    query.append("registrationStart", data.registrationStart);
+  if (data.registrationEnd)
+    query.append("registrationEnd", data.registrationEnd);
+  if (data.votingStart)
+    query.append("votingStart", data.votingStart);
+  if (data.votingEnd)
+    query.append("votingEnd", data.votingEnd);
 
-  return response.text();
+  const url = `${BASE_URL}/seasons/${data.id}/adjust-dates?${query.toString()}`;
+
+  const res = await apiClient(url, {
+    method: "PATCH",
+  });
+
+  
+  return res.data; 
 };

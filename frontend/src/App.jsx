@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
-import NeonLoader from "./components/Loader";
-
+import Vote from "./features/user/Voting/Vote"
 
 const ProtectedRoute = lazy(() => import("./ProtectedRoute"));
 const Layout = lazy(() => import("./Auth/Layout"));
@@ -14,7 +13,7 @@ const ArenaForm = lazy(() => import("./features/user/entryForm/Arena"));
 const SeasonDetails = lazy(() => import("./features/user/season/SeasonDetails"));
 const PlayerDetails = lazy(() => import("./features/user/details/PlayerDetails"));
 const Arena = lazy(() => import("./features/user/arena/Arena"));
-const Vote = lazy(() => import("./features/user/Voting/Vote"));
+
 const LeaderboardPage = lazy(() => import("./features/user/leaderboard/LeaderBoard"));
 const ChallengeDetail = lazy(() => import("./features/user/details/ChallangeDetails"));
 

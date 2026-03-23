@@ -25,7 +25,7 @@ const ParticipantsTable = ({ className }) => {
   const { mutate: vote } = useVoteContestant();
   const { mutate: deleteUser } = useDeleteContestant();
 
-  // debounce logic
+  
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
@@ -118,13 +118,13 @@ const ParticipantsTable = ({ className }) => {
             <tbody>
               {contestants?.map((item) => (
                 <tr
-                  key={item.id}
+                  key={item.participationId}
                   className="border-b border-gray-800 hover:bg-[#141821] transition"
                 >
 
                   <td className="py-3 sm:py-5 flex items-center gap-3 sm:gap-4">
                     <img
-                      src={item?.seasonPhotoUrl}
+                      src={item?.participantPhotoUrl}
                       loading="lazy"
                       alt={item.name}
                       className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
@@ -139,7 +139,7 @@ const ParticipantsTable = ({ className }) => {
                   </td>
 
                   <td className="text-blue-400 font-semibold text-[11px] sm:text-sm">
-                    {item.voteCount}
+                    {item.totalVotes}
                   </td>
 
                   <td className="text-right">
@@ -164,7 +164,8 @@ const ParticipantsTable = ({ className }) => {
                       </button>
 
                       <button
-                        onClick={() => handleDelete(item.id)}
+                        onClick={() => handleDelete(item.participationId
+)}
                         className="text-red-500 hover:text-red-400 transition"
                       >
                         <Trash2 size={16} />

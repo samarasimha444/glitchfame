@@ -6,7 +6,7 @@ import Controls from "./components/Controls";
 import { Plus } from "lucide-react";
 import { useDeleteSeason, useFetchSeasonDetails } from "./hooks";
 import { useFetchSeasons } from "../dashboard/hooks";
-import { dashCards } from "../../../constants/admin";
+import { settingCards } from "../../../constants/admin";
 import NeonLoader from "../../../components/Loader";
 import FunctionModel from "./components/FunctionModel";
 
@@ -98,7 +98,7 @@ const handleRemove = () => {
           <AdminCard
             title="Settings"
             paragraph="Note actions perform here can change the db use it carefully"
-            cardsInfo={dashCards}
+            cardsInfo={settingCards}
             className="max-w-4xl hidden sm:flex"
           />
 
@@ -148,10 +148,10 @@ const handleRemove = () => {
 
             <button
               onClick={handleRemove}
-              className="flex items-center gap-2 cursor-pointer px-5 py-2 rounded-lg border border-purple-600 text-purple-400 hover:bg-purple-600 hover:text-white transition text-sm font-medium"
+              className="flex items-center gap-2 cursor-pointer px-5 py-2 rounded-lg border border-blue-500 text-blue-500 hover:bg-blue-600 hover:text-white transition text-sm font-medium"
             >
               <Plus size={16} />
-              Remove All Votes & Users
+              Reset Season
             </button>
 
             <p className="text-xs text-gray-400">
