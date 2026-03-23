@@ -1,5 +1,7 @@
 import { LockOpen, Lock } from "lucide-react";
 import { useToggleSeasonLock } from "../../settings/hooks";
+import { TableShimmer } from "../../../../components/TableShimmer";
+import NeonLoader from "../../../../components/Loader";
 
 const getStatusStyle = (status) => {
   switch (status) {
@@ -17,21 +19,25 @@ const getStatusStyle = (status) => {
 const SeasonsTable = ({seasons,isLoading}) => {
   console.log(seasons)
 
-  // const { data: seasons, isLoading, isError, error } = useFetchSeasons();
-  // console.log(seasons);
+ 
 
   const { mutate: toggleSeasonLock, isPending: seasonPending } =
     useToggleSeasonLock();
 
-  if (isLoading) return <p>Loading seasons...</p>;
+  if (isLoading) return <TableShimmer/>;
+  
+  if(seasonPending) return <NeonLoader/>
+  
 
-  // if (isError) return <p>Error: {error.message}</p>;
+ 
 
   return (
 <>
 
   <div className="sm:p-4 w-full flex flex-col sm:flex-row justify-between border-b border-gray-800 gap-2 sm:gap-0">
-   
+
+          
+
     <input
       type="text"
       placeholder="Filter by name..."

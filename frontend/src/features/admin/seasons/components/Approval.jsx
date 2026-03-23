@@ -3,10 +3,11 @@ import { CheckCircle, XCircle, ShieldAlert } from "lucide-react";
 
 import { useContestants, useUpdateContestantStatus } from "../hook";
 import toast from "react-hot-toast";
+import { TableShimmer } from "../../../../components/TableShimmer";
 
 const Approval = ({ className }) => {
  
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useContestants();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage,isLoading:seasonLoading } = useContestants();
 
 
   const contestants = data?.pages.flatMap((page) => page.content) ?? [];
@@ -18,20 +19,16 @@ const Approval = ({ className }) => {
   const handleAction = (action, userId) => {
     updateStatus(
       { id: userId, action },
-      {
-        onSuccess: () => {
-          toast.success("success");
-        },
-        onError: (error) => {
-          toast.error("something went wrong")
-        },
-      }
     );
   };
+   
+ {seasonLoading && <TableShimmer />}
+
+
 
   return (
     <div className={`w-full bg-[#0f1115] flex justify-center ${className}`}>
-      <div className="w-full max-w-full bg-[#1a1f2b] rounded-xs p-4 sm:p-6 shadow-xs border border-gray-800">
+      <div className="w-full max-w-full bg-[#1a1f2b] rounded-xs p-4 sm:p-6 min-h-[30dvh] shadow-xs border border-gray-800">
         
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
           <div className="flex gap-3 items-start sm:items-center">
@@ -45,14 +42,14 @@ const Approval = ({ className }) => {
               </p>
             </div>
           </div>
-          <button className="text-blue-400 text-sm hover:underline">Filter</button>
+          <button className="text-blue-400 text-sm hover:underline"></button>
         </div>
 
         
         <div className="space-y-3">
           {contestants?.map((user) => (
             <div
-              key={user.id}
+              key={user.participationId}
               className="flex flex-col sm:flex-row sm:items-center justify-between bg-[#141821] border border-gray-700 rounded-xl p-4 sm:p-5 hover:border-gray-500 transition gap-3"
             >
               
@@ -80,7 +77,7 @@ const Approval = ({ className }) => {
               
               <div className="flex flex-col text-xs sm:text-sm sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 mt-2 sm:mt-0">
                 <button
-                  onClick={() => handleAction("APPROVE", user.participationId)}
+                  onClick={() => handleAction("APPROVED", user.participationId)}
                   disabled={isLoading}
                   className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-black border border-gray-600 text-white px-4 py-2 rounded-lg hover:border-gray-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -89,7 +86,7 @@ const Approval = ({ className }) => {
                 </button>
 
                 <button
-                  onClick={() => handleAction("reject", user.userId)}
+                  onClick={() => handleAction("REJECT", user.participationI)}
                   disabled={isLoading}
                   className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-black border border-red-600 text-red-500 px-4 py-2 rounded-lg hover:bg-red-600 hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >

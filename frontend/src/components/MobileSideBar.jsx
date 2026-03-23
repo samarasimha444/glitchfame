@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap, Search } from "lucide-react";
@@ -11,7 +11,18 @@ const MobileMenu = ({
   setOpenModal,
   handleLogout,
 }) => {
+
+
+  const [token, setToken] = useState(null);
+
+ 
+  useEffect(() => {
+    const t = localStorage.getItem("token");
+    setToken(t);
+  }, []);
+
   return (
+
     <AnimatePresence>
       {isOpen && (
         <>
@@ -92,12 +103,26 @@ const MobileMenu = ({
                 Reset Password
               </button>
 
+          {token ? (
+              
               <button
-                onClick={handleLogout}
+                onClick={() => {
+                  handleLogout();
+                  setIsOpen(false);
+                }}
                 className="text-sm text-red-400 hover:text-red-300"
               >
                 Logout
               </button>
+            ) : (
+              
+              <Link to="/login" onClick={() => setIsOpen(false)}>
+                <button className="text-sm text-red-400 hover:text-red-300">
+                  Login
+                </button>
+              </Link>
+            )}
+
             </div>
           </motion.div>
         </>

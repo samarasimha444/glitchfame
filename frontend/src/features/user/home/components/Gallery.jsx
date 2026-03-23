@@ -1,6 +1,6 @@
 import React from "react";
 import { Trophy } from "lucide-react";
-
+import { useWinners } from "../hooks";
 const data = [
   {
     id: 1,
@@ -23,6 +23,10 @@ const data = [
 ];
 
 const Gallery = () => {
+
+  const {data:winners,isLoading}= useWinners()
+  console.log(winners)
+
   return (
     <div className="w-full px-3 sm:hidden sm:px-6 mt-6">
 
@@ -39,13 +43,13 @@ const Gallery = () => {
     
       <div className="flex gap-5  mt-6 overflow-x-auto no-scrollbar">
 
-        {data.map((item) => (
+        {winners?.map((item) => (
           <div key={item.id} className="flex flex-col items-center min-w-[80px]">
 
             <div className="relative">
               <div className="p-[2px] rounded-full bg-gradient-to-tr from-cyan-400 to-purple-500">
                 <img
-                  src={item.image}
+                  src={item.participantPhoto}
                   alt={item.name}
                   className="w-[70px] h-[70px] rounded-full object-cover bg-[#111]"
                 />
@@ -58,12 +62,12 @@ const Gallery = () => {
 
             
             <p className="text-white text-xs mt-2 text-center font-medium">
-              {item.name}
+              {item.participantName}
             </p>
 
            
             <p className="text-[10px] text-gray-400 uppercase tracking-wide text-center">
-              {item.role}
+              {item.seasonName}
             </p>
 
           </div>

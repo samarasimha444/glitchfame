@@ -25,9 +25,9 @@ const MobileBottomNav=()=> {
         Vote
       </NavLink>
 
-      <NavLink to="/aboutus" className="flex flex-col items-center text-gray-400 text-xs">
+      <NavLink to="/status" className="flex flex-col items-center text-gray-400 text-xs">
         <User size={18} />
-        About
+        Status
       </NavLink>
 
     </nav>

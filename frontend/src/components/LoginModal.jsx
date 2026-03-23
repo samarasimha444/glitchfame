@@ -15,9 +15,9 @@ const LoginRequiredModal = ({ onCancel }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4 ">
-      <div className="bg-[#1C1C1C] rounded-xl shadow-lg w-full max-w-sm sm:max-w-xl - p-6 sm:p-4 relative">
+      <div className="bg-[#1C1C1C] rounded-xl shadow-lg w-full max-w-[350px] sm:max-w-xl - p-6 sm:p-4 relative">
         
-        {/* Close Button */}
+       
         <button
           onClick={onCancel}
           className="absolute top-3 right-3 text-white/50 hover:text-white transition"
@@ -33,7 +33,7 @@ const LoginRequiredModal = ({ onCancel }) => {
           Login required
         </h2>
 
-        <p className="text-gray-400 text-sm text-center mb-6 sm:mb-4">
+        <p className="text-gray-400 text-xs text-center mb-6 sm:mb-4">
           To access this feature, please log in or create an account to continue.
         </p>
 

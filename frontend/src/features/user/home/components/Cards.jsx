@@ -8,37 +8,20 @@ import ShimmerCard from "../../../../components/ShimmerCard";
 
 
 
-const seasons = [
-  {
-    seasonId: "1",
-    seasonName: "Marco 'Pixel' Rossi",
-    seasonPhotoUrl: "https://images.unsplash.com/photo-1607746882042-944635dfe10e",
-    category: "Digital Art",
-    views: "12.4K",
-    votingEndDate: "2026-03-25T23:59:59",
-  },
-  {
-    seasonId: "2",
-    seasonName: "Sarah J. Bloom",
-    seasonPhotoUrl: "https://images.unsplash.com/photo-1543852786-1cf6624b9987",
-    category: "Vocalist",
-    views: "9.8K",
-    votingEndDate: "2026-03-22T18:00:00",
-  }
-];
+
 const Cards = ({ liveSeason,isLoading }) => {
-  console.log(liveSeason)
-  const navigate = useNavigate();
+ 
+ 
 
    return (
-    <div className="w-full  max-w-screen mx-auto  sm:px-6 md:px-10 lg:px-20">
+    <div className="w-full   max-w-screen mx-auto  sm:px-6 md:px-10 lg:px-20">
 
       {isLoading ? (
         <section className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
           <ShimmerCard />
           <ShimmerCard />
         </section>
-      ) : seasons.length === 0 ? (
+      ) : liveSeason.length === 0 ? (
 
         <div className="w-full text-center py-20 text-gray-400 text-xl">
           No live seasons found.

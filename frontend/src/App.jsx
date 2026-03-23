@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Vote from "./features/user/Voting/Vote"
+import Status from "./features/user/entryForm/Status";
 
 const ProtectedRoute = lazy(() => import("./ProtectedRoute"));
 const Layout = lazy(() => import("./Auth/Layout"));
@@ -63,6 +64,7 @@ export default function App() {
           <Route path="/season" element={<SeasonDetails />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/aboutus" element={<ChallengeDetail />} />
+          <Route path="/status" element={<Status />} />
           <Route path="/details/:id" element={<PlayerDetails />} />
         </Route>
         {/* </Route> */}

@@ -8,6 +8,7 @@ import {
 } from "../hook";
 import VoteModal from "./VoteModel";
 import toast from "react-hot-toast";
+import { TableShimmer } from "../../../../components/TableShimmer";
 
 const ParticipantsTable = ({ className }) => {
 
@@ -16,7 +17,7 @@ const ParticipantsTable = ({ className }) => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [activeParticipationId, setActiveParticipationId] = useState(null);
 
-  const { data, isLoading } = useLiveContestants(page, 6);
+  const { data, isLoading:liveLoading } = useLiveContestants(page, 6);
   console.log(data)
 
   const { data: searchData, isLoading: searching } =
@@ -57,6 +58,10 @@ const ParticipantsTable = ({ className }) => {
   };
 
   const totalPages = data?.totalPages || 0;
+
+  const isLoading = liveLoading 
+
+  if(isLoading) return <TableShimmer/>
 
   return (
     <div className={`flex flex-col ${className || "w-full"}`}>

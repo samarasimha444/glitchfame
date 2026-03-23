@@ -4,7 +4,7 @@ import SeasonSummary from "./components/SeasonSummary";
 import Controls from "./components/Controls";
 
 import { Plus } from "lucide-react";
-import { useDeleteSeason, useFetchSeasonDetails } from "./hooks";
+import {  useFetchSeasonDetails } from "./hooks";
 import { useFetchSeasons } from "../dashboard/hooks";
 import { settingCards } from "../../../constants/admin";
 import NeonLoader from "../../../components/Loader";
@@ -17,7 +17,7 @@ const AdminSettings = () => {
   const { data: seasons = [], isLoading: isSeasonsLoading } = useFetchSeasons();
   console.log(seasons);
 
-  const { mutate: deleteSeason,isPending } = useDeleteSeason();
+ 
 
   const [selectedSeasonId, setSelectedSeasonId] = useState();
 
@@ -32,18 +32,13 @@ const AdminSettings = () => {
   console.log("Seasons:", seasons);
   console.log("Selected Season Data:", seasonData);
 
- const handleDelete = () => {
-  setModalType("DELETE_SEASON");
+const handleAction = (type) => {
+  setModalType(type);
 };
 
-const handleCloud = () => {
-  setModalType("DELETE_ASSETS");
-};
 
-const handleRemove = () => {
-  setModalType("REMOVE_USERS");
-};
-  const loading = isPending || isSeasonsLoading
+
+  const loading =  isSeasonsLoading
 
 
 
@@ -55,24 +50,10 @@ const handleRemove = () => {
     <div className="mt-6 w-full flex flex-col gap-6">
    
      {modalType && (
-  <FunctionModel
+    <FunctionModel
     type={modalType}
+    seasonId={selectedSeasonId}
     onCancel={() => setModalType(null)}
-    onConfirm={() => {
-      if (modalType === "DELETE_SEASON") {
-        deleteSeason(selectedSeasonId);
-      }
-
-      if (modalType === "DELETE_ASSETS") {
-        console.log("Delete cloud assets");
-      }
-
-      if (modalType === "REMOVE_USERS") {
-        console.log("Remove users and votes");
-      }
-
-      setModalType(null);
-    }}
   />
 )}
 
@@ -130,24 +111,18 @@ const handleRemove = () => {
             </h5>
 
             <button
-              onClick={handleDelete}
+              onClick={() => handleAction("DELETE_SEASON")}
               className="flex items-center gap-2 px-5 cursor-pointer py-2 rounded-lg border border-red-600 text-red-400 hover:bg-red-600 hover:text-white transition text-sm font-medium"
             >
               <Plus size={16} />
               Delete Current Season
             </button>
 
-             <button
-              onClick={handleCloud}
-              className="flex items-center gap-2 cursor-pointer px-5 py-2 rounded-lg border border-red-600 text-red-400 hover:bg-red-600 hover:text-white transition text-sm font-medium"
-            >
-              <Plus size={16} />
-              Delete Assets (Cloudinary)
-            </button>
+           
 
 
             <button
-              onClick={handleRemove}
+            onClick={() => handleAction("REMOVE_USERS")}
               className="flex items-center gap-2 cursor-pointer px-5 py-2 rounded-lg border border-blue-500 text-blue-500 hover:bg-blue-600 hover:text-white transition text-sm font-medium"
             >
               <Plus size={16} />
@@ -165,3 +140,6 @@ const handleRemove = () => {
 };
 
 export default AdminSettings;
+
+
+

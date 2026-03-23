@@ -81,36 +81,15 @@ export const deleteContestant = async (participationId) => {
 
 //approve reject 
 export const updateContestantStatus = async (id, status) => {
-  const token = localStorage.getItem("token");
-  console.log(id,status)
-
-  console.log("Updating contestant:", id, status);
-
-  const res = await fetch(
+  const response = await apiClient(
     `${BASE_URL}/admin/participations/${id}/status?status=${status}`,
     {
       method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     }
   );
 
- 
-
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-     console.log(errorData);
-    throw new Error(
-      errorData.message || "Failed to update contestant status"
-      
-    );
-    
-  }
-
-  return res.text(); 
+  return response.data; // ✅ always return clean data
 };
-
 
 
 export const getLiveContestants = async (page = 0, size = 6) => {

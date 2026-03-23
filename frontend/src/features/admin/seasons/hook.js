@@ -56,10 +56,12 @@ export const useUpdateContestantStatus = () => {
     onSuccess: () => {
       
       queryClient.invalidateQueries(["liveContestants"]);
+      toast.success
     },
 
     onError: (error) => {
       console.error("Failed to update contestant:", error);
+      toast.error("something went wrrong")
     },
   });
 };

@@ -1,4 +1,4 @@
-import { Activity, Users, DollarSign, Trophy, Calendar, Lock } from "lucide-react"; 
+import { Activity, Users, DollarSign, Trophy, Calendar, Lock, ActivityIcon, ClockIcon } from "lucide-react"; 
 
  export const initialState = {
   name: "",
@@ -100,4 +100,17 @@ export const settingCards = [
     key: "time",
     icon: Users
   }
+];
+
+export const seasonCards = [
+  {
+    title: "Total Contestants",
+    key: "totalContestants", // ✅ MUST match
+    icon: Users,
+  },
+  {
+    title: "Live Contestants",
+    key: "totalLive", // ✅ MUST match
+    icon: Activity,
+  },
 ];

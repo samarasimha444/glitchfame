@@ -105,7 +105,7 @@ export const endSeasonNow = async ({ id }) => {
    const token = localStorage.getItem("token")
   console.log(id)
   const res = await fetch(
-    `${BASE_URL}/admin/seasons/${id}/end-now`,
+    `${BASE_URL}/seasons/${id}/end`,
     {
       method: "POST",
       headers: {
@@ -184,4 +184,17 @@ export const updateSeasonDates = async (data) => {
 
   
   return res.data; 
+};
+
+
+export const resetSeasonApi = async (seasonId) => {
+  console.log(seasonId)
+  const response = await apiClient(
+    `/seasons/${seasonId}/reset`,
+    {
+      method: "POST",
+    }
+  );
+ console.log(response)
+  return response.data; 
 };

@@ -26,14 +26,14 @@ const Leaderboard = () => {
     );
   }
 
-  // Sort data descending by votes
+ 
   const mergedData = data?.merged
     ? [...data.merged].sort((a, b) => b.votes - a.votes)
     : [];
 
   return (
     <div className="min-h-screen text-white flex justify-center py-8 px-4 font-sans relative overflow-hidden">
-      {/* Background blobs */}
+    
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#9DE2E2] opacity-[0.03] blur-[120px]" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#9DE2E2] opacity-[0.03] blur-[120px]" />
 
@@ -43,8 +43,8 @@ const Leaderboard = () => {
           <div className="text-left w-full">
             <div className="flex items-center gap-3 mb-1">
               <Zap size={24} fill={PRIMARY_COLOR} stroke={PRIMARY_COLOR} className="animate-pulse" />
-              <h1 className="text-2xl sm:text-4xl tracking-tighter font-black uppercase italic leading-none">
-                GlitchFame <span style={{ color: PRIMARY_COLOR }}>Leaders</span>
+              <h1 className="text-2xl sm:text-4xl tracking-tighter font-black uppercase  leading-none">
+                GlitchFame  <span style={{ color: PRIMARY_COLOR, }}> Leaders</span>
               </h1>
             </div>
             <p className="text-gray-500 text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase">
@@ -53,7 +53,7 @@ const Leaderboard = () => {
           </div>
         </div>
 
-        {/* Live Global Feed */}
+        
         <div className="mx-4 mb-10 bg-white/3 backdrop-blur-md rounded-3xl p-5 border border-white/5 shadow-2xl">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">

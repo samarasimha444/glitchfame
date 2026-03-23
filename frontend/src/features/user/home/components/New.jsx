@@ -2,65 +2,66 @@ import React from "react";
 import { useWinners } from "../hooks";
 import ShimmerCard from "../../../../components/ShimmerCard";
 
-
-
 const champion = {
   contestantId: 1,
   contestantName: "Lara Knight",
-  photoUrl: "https://images.pexels.com/photos/7590896/pexels-photo-7590896.jpeg",
+  photoUrl:
+    "https://images.pexels.com/photos/7590896/pexels-photo-7590896.jpeg",
   seasonName: "Summer Battle 2025",
-  prizeMoney: 15000
+  prizeMoney: 15000,
 };
 
 const runnerUps = [
   {
     contestantId: 2,
     contestantName: "Max Storm",
-    photoUrl: "https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg",
+    photoUrl:
+      "https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg",
     seasonName: "Summer Battle 2025",
-    prizeMoney: 10000
+    prizeMoney: 10000,
   },
   {
     contestantId: 3,
     contestantName: "Nina Blaze",
-    photoUrl: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg",
+    photoUrl:
+      "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg",
     seasonName: "Summer Battle 2025",
-    prizeMoney: 7500
-  }
+    prizeMoney: 7500,
+  },
 ];
 
 const winners = [
   {
     contestantId: 1,
     contestantName: "Lara Knight",
-    photoUrl: "https://images.pexels.com/photos/7005759/pexels-photo-7005759.jpeg",
+    photoUrl:
+      "https://images.pexels.com/photos/7005759/pexels-photo-7005759.jpeg",
     seasonName: "Summer Battle 2025",
-    prizeMoney: 15000
+    prizeMoney: 15000,
   },
   {
     contestantId: 2,
     contestantName: "Max Storm",
-    photoUrl: "https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg",
+    photoUrl:
+      "https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg",
     seasonName: "Summer Battle 2025",
-    prizeMoney: 10000
+    prizeMoney: 10000,
   },
   {
     contestantId: 3,
     contestantName: "Nina Blaze",
-    photoUrl: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg",
+    photoUrl:
+      "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg",
     seasonName: "Summer Battle 2025",
-    prizeMoney: 7500
-  }
+    prizeMoney: 7500,
+  },
 ];
 
-
 const New = () => {
-https://images.pexels.com/photos/7005759/pexels-photo-7005759.jpeg
+  //images.pexels.com/photos/7005759/pexels-photo-7005759.jpeg
 
-  return (
+   return (
     <>
-     
-
       {/* <div className="w-full sm:hidden min-h-screen mt-12 bg-gradient-to-b text-white flex justify-center">
         <div className="w-full max-w-[420px] px-4 py-8 space-y-6">
           <div>
@@ -153,7 +154,6 @@ https://images.pexels.com/photos/7005759/pexels-photo-7005759.jpeg
         </div>
       </div> */}
 
-     
       <div className="w-full hidden sm:block text-white px-6 md:px-20 py-20">
         <div className="flex justify-between items-start sm:mb-14">
           <div>
@@ -180,14 +180,13 @@ https://images.pexels.com/photos/7005759/pexels-photo-7005759.jpeg
 ${size === "large" ? "w-[420px] h-[520px]" : "w-[320px] h-[420px]"}
 `}
                 >
-                <img
-  src={`${item.photoUrl}?auto=compress&cs=tinysrgb&w=600`}
-  alt={item.contestantName}
-  loading="lazy"
-  decoding="async"
-  fetchpriority="low"
-  className="w-full h-full object-cover"
-/>
+                  <img
+                    src={`${item.photoUrl}?auto=compress&cs=tinysrgb&w=600`}
+                    alt={item.contestantName}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover"
+                  />
 
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
 
