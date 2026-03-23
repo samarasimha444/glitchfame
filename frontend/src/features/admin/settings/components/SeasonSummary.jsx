@@ -9,12 +9,13 @@ const Model = lazy(() => import("./Model"));
 
 
 const SeasonSummary = ({ title, subtitle, data }) => {
+  console.log(data)
 
   const [showMenu, setShowMenu] = useState(false);
   const [selected, setSelected] = useState("");
   const [active, setActive] = useState(false);
 
-  const seasonId = data?.id;
+  const seasonId = data?.seasonId;
 
   const { mutate: endSeason, isPending } = useEndSeasonNow();
 
@@ -65,7 +66,7 @@ const SeasonSummary = ({ title, subtitle, data }) => {
   }
 
   return (
-    <div className="w-full max-w-200 bg-[#0f1115] flex">
+    <div className="w-full max-w-200 bg-[#0f1115] min-h-[50dvh] flex">
       {active && (
         <Suspense fallback={<NeonLoader />}>
           <Model
@@ -107,7 +108,7 @@ const SeasonSummary = ({ title, subtitle, data }) => {
           </div>
         </div>
 
-        <div className="p-6">
+        <div className="py-6 px-3">
           <div className="grid grid-cols-2 gap-y-6 gap-x-12 text-sm">
             {formattedData?.map((item, index) => {
               if (item.label.toLowerCase().includes("photo url")) return null;
@@ -115,10 +116,10 @@ const SeasonSummary = ({ title, subtitle, data }) => {
               return (
                 <div
                   key={index}
-                  className="flex text-xs sm:text-[14px] justify-between"
+                  className="flex text-xs sm:text-[13px] justify-between"
                 >
-                  <span className="text-gray-400">{item.label}</span>
-                  <span className="text-white font-medium">{item.value}</span>
+                  <span className="text-gray-400 uppercase text-[13px]">{item.label}</span>
+                  <span className="text-white font-medium ">{item.value}</span>
                 </div>
               );
             })}

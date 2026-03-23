@@ -1,3 +1,5 @@
+import { apiClient } from "../../../lib/apiClient";
+
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const token = localStorage.getItem("token")
 
@@ -28,11 +30,64 @@ export const getContestants = async ({pageParam = 0,status = "PENDING",size = 5,
 
 
 export const voteContestant = async ({ participationId, value }) => {
-   const token = localStorage.getItem("token")
+  const token = localStorage.getItem("token");
 
-  console.log(participationId,value)
+  console.log(participationId, value);
+
   const response = await fetch(
-    `${BASE_URL}/admin/votes/${participationId}?value=${value}`,
+    `${BASE_URL}/admin/votes`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        participationId: participationId,
+        voteDelta: value, 
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Failed to vote");
+  }
+
+  const data = await response.text(); // or res.json() if backend returns JSON
+  console.log(data);
+
+  return data;
+};
+
+export const deleteContestant = async (participationId) => {
+  try {
+    const res = await apiClient(
+      `${BASE_URL}/participations/${participationId}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    console.log("Delete Success:", res.data);
+
+    return res.data;
+  } catch (err) {
+    console.error("Delete Error:", err.message);
+    throw err; // let React Query handle it
+  }
+};
+
+
+//approve reject 
+export const updateContestantStatus = async (id, status) => {
+  const token = localStorage.getItem("token");
+  console.log(id,status)
+
+  console.log("Updating contestant:", id, status);
+
+  const res = await fetch(
+    `${BASE_URL}/admin/participations/${id}/status?status=${status}`,
     {
       method: "PATCH",
       headers: {
@@ -41,59 +96,19 @@ export const voteContestant = async ({ participationId, value }) => {
     }
   );
 
-  if (!response.ok) {
-    throw new Error("Failed to vote");
-  }
-
-  const data = await response.text(); 
-  console.log(data);
-
-  return data;
-};
-
-export const deleteContestant = async (contestantId) => {
-   const token = localStorage.getItem("token")
-  const response = await fetch(
-    `${BASE_URL}/admin/contestants/${contestantId}`,
-    {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to delete contestant");
-  }
-
-  return response.json();
-};
-
-
-
-//approve reject 
-export const updateContestantStatus = async (id, action) => {
-   const token = localStorage.getItem("token")
-  console.log("Updating contestant:", id, action);
-
-  const res = await fetch(`${BASE_URL}/admin/contestants/status/${id}?action=${action}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({}), 
-  });
-
-  console.log(res)
+ 
 
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.message || "Failed to update contestant status");
+     console.log(errorData);
+    throw new Error(
+      errorData.message || "Failed to update contestant status"
+      
+    );
+    
   }
 
-  return res.text();
+  return res.text(); 
 };
 
 

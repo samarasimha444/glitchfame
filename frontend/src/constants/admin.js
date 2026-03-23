@@ -53,21 +53,17 @@ export const dashCards = [
     icon: Users
   }
 ];
+
  export const menuItems = [
+  
+  { id: 1, label: "End Now", action: "end", color: "text-red-400" },
   {
-    id: 1,
-    label: "Participation Lock",
-    action: "lock",
-    color: "text-gray-300",
-  },
-  { id: 2, label: "End Now", action: "end", color: "text-red-400" },
-  {
-    id: 3,
+    id: 2,
     label: "Modify Registration",
     action: "registration",
     color: "text-gray-300",
   },
-  { id: 4, label: "Modify Voting", action: "voting", color: "text-gray-300" },
+  { id: 3, label: "Modify Voting", action: "voting", color: "text-gray-300" },
 ];
 
 
@@ -80,3 +76,28 @@ export const seasonInitialState = {
   votingStartDate: "",
   votingEndDate: ""
 };
+
+export const settingCards = [
+
+  {
+    title: "Season Name",
+    key: "name",
+    icon: DollarSign
+  },
+  {
+    title: "PrizeMoney",
+    key: "money",
+    icon: Calendar
+  },
+  
+  {
+    title: "Voting Locked",
+    key: "voting",
+    icon: Lock
+  },
+  {
+    title: "Time Left",
+    key: "time",
+    icon: Users
+  }
+];
