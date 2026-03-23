@@ -83,7 +83,7 @@ export const toggleSeasonLock = async (id) => {
 export const deleteSeason = async (id) => {
    const token = localStorage.getItem("token")
   console.log(id)
-  const res = await fetch(`${BASE_URL}/admin/seasons/${id}`, {
+  const res = await fetch(`${BASE_URL}/seasons/${id}`, {
     method: "DELETE",
       headers: {
       Authorization: `Bearer ${token}`,
@@ -103,7 +103,7 @@ export const deleteSeason = async (id) => {
 
 export const endSeasonNow = async ({ id }) => {
    const token = localStorage.getItem("token")
-  console.log(id)
+
   const res = await fetch(
     `${BASE_URL}/seasons/${id}/end`,
     {
@@ -188,13 +188,15 @@ export const updateSeasonDates = async (data) => {
 
 
 export const resetSeasonApi = async (seasonId) => {
-  console.log(seasonId)
+  console.log(seasonId);
+
   const response = await apiClient(
-    `/seasons/${seasonId}/reset`,
+    `${BASE_URL}/seasons/${seasonId}/reset`,
     {
       method: "POST",
     }
   );
- console.log(response)
-  return response.data; 
+
+  console.log(response);
+  return response.data;
 };

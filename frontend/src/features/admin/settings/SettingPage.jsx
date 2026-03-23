@@ -29,8 +29,19 @@ const AdminSettings = () => {
     isError: isSeasonError,
   } = useFetchSeasonDetails(selectedSeasonId);
 
+    
+const { seasonName, prizeMoney } = seasonData?.season || {};
+console.log(seasonName,prizeMoney)
+
   console.log("Seasons:", seasons);
   console.log("Selected Season Data:", seasonData);
+
+    const stats = {
+    seasonName,
+    prizeMoney,
+  };
+
+
 
 const handleAction = (type) => {
   setModalType(type);
@@ -47,7 +58,7 @@ const handleAction = (type) => {
 }
 
   return (
-    <div className="mt-6 w-full flex flex-col gap-6">
+    <div className="mt-6 w-full max-w-screen flex flex-col  gap-6">
    
      {modalType && (
     <FunctionModel
@@ -61,7 +72,7 @@ const handleAction = (type) => {
         <select
           value={selectedSeasonId}
           onChange={(e) => setSelectedSeasonId(e.target.value)}
-          className="w-full bg-[#2C2C2E] max-w-xs text-white px-3 py-2 rounded-xs border border-gray-400 focus:outline-none 
+          className="w-full bg-[#2C2C2E] max-w-xs text-white px-2 py-2 rounded-xs border border-gray-400 focus:outline-none 
        focus:ring-2 focus:ring-blue-500 transition"
         >
           <option value="">Choose Event</option>
@@ -80,7 +91,8 @@ const handleAction = (type) => {
             title="Settings"
             paragraph="Note actions perform here can change the db use it carefully"
             cardsInfo={settingCards}
-            className="max-w-4xl hidden sm:flex"
+            stats={stats}
+            className="max-w-4xl  sm:flex"
           />
 
 

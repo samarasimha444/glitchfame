@@ -23,7 +23,14 @@ const TournamentCard = () => {
             >
               <ShimmerCard />
             </div>
-          ))
+          )): activeRegistrations?.length === 0 ? (
+    // ✅ EMPTY STATE
+    <div className="col-span-full flex justify-center items-center py-20">
+      <p className="text-gray-400 text-sm sm:text-base">
+        🚫 No active registration season right now
+      </p>
+    </div>
+          )
         : activeRegistrations?.map((item, index) => (
             <article
               key={index}

@@ -81,31 +81,22 @@ export const settingCards = [
 
   {
     title: "Season Name",
-    key: "name",
+    key: "seasonName",
     icon: DollarSign
   },
   {
     title: "PrizeMoney",
-    key: "money",
+    key: "prizeMoney",
     icon: Calendar
   },
   
-  {
-    title: "Voting Locked",
-    key: "voting",
-    icon: Lock
-  },
-  {
-    title: "Time Left",
-    key: "time",
-    icon: Users
-  }
+
 ];
 
 export const seasonCards = [
   {
     title: "Total Contestants",
-    key: "totalContestants", // ✅ MUST match
+    key: "totalContestants", 
     icon: Users,
   },
   {

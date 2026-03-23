@@ -36,10 +36,16 @@ export const useDeleteSeason = () => {
 
   return useMutation({
     mutationFn: deleteSeason,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["seasons"] });
-      window.location.reload();
-      toast.success("deleted")
+
+    onSuccess: (_, seasonId) => {
+     
+      queryClient.setQueryData(["seasons"], (old) =>
+        old?.filter((s) => s.id !== seasonId)
+      );
+
+      queryClient.invalidateQueries(["seasons"]);
+
+      toast.success("Deleted");
     },
   });
 };

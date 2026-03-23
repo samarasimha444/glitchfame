@@ -109,17 +109,17 @@ const SeasonSummary = ({ title, subtitle, data }) => {
         </div>
 
         <div className="py-6 px-3">
-          <div className="grid grid-cols-2 gap-y-6 gap-x-12 text-sm">
+          <div className="grid sm:grid-cols-2 gap-y-6 gap-x-12 text-sm">
             {formattedData?.map((item, index) => {
               if (item.label.toLowerCase().includes("photo url")) return null;
 
               return (
                 <div
                   key={index}
-                  className="flex text-xs sm:text-[13px] justify-between"
+                  className="flex space-x-2 text-xs sm:text-[13px] justify-between"
                 >
-                  <span className="text-gray-400 uppercase text-[13px]">{item.label}</span>
-                  <span className="text-white font-medium ">{item.value}</span>
+                  <span className="text-gray-400 sm:uppercase text-[12px]">{item.label}</span>
+                  <span className="text-white  font-medium ">{item.value}</span>
                 </div>
               );
             })}

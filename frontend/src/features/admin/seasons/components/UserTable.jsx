@@ -77,8 +77,8 @@ const ParticipantsTable = ({ className }) => {
 
         <section className="flex items-center justify-between w-full mb-6">
 
-          <h3 className="text-lg sm:text-xl flex items-center gap-2 font-semibold">
-            <UserPlus /> Active Contestants
+          <h3 className="text-[16px] sm:text-xl flex items-center gap-2 font-semibold">
+            <UserPlus /> Active <br /> Contestants
           </h3>
 
       
@@ -94,7 +94,7 @@ const ParticipantsTable = ({ className }) => {
               placeholder="Search contestant..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-44 sm:w-60 h-9 pl-9 pr-8 text-sm bg-[#141821] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              className="w-32 sm:w-60 h-9 pl-9 pr-8 text-sm bg-[#141821] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
             />
 
             {searching && (
@@ -108,83 +108,91 @@ const ParticipantsTable = ({ className }) => {
         </section>
 
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-150 sm:min-w-full">
+        <div className="overflow-x-auto max-h-[70vh] sm:max-h-none">
+  <table className="w-full text-left border-collapse min-w-[150px] sm:min-w-full">
 
-            <thead>
-              <tr className="border-b border-gray-700 text-gray-400 text-xs sm:text-sm">
-                <th className="py-4">Contestant</th>
-                <th className="py-4">Season</th>
-                <th>Votes</th>
-                <th className="text-right">Actions</th>
-              </tr>
-            </thead>
+    <thead>
+      <tr className="border-b border-gray-700 text-gray-400 text-xs sm:text-sm">
+        <th className="py-3 sm:py-4">Contestant</th>
+        <th className="py-3 sm:py-4 hidden sm:table-cell">Season</th>
+        <th className="py-3 sm:py-4">Votes</th>
+        <th className="py-3 sm:py-4 text-right">Actions</th>
+      </tr>
+    </thead>
 
-            <tbody>
-              {contestants?.map((item) => (
-                <tr
-                  key={item.participationId}
-                  className="border-b border-gray-800 hover:bg-[#141821] transition"
-                >
+    <tbody>
+      {contestants?.map((item) => (
+        <tr
+          key={item.participationId}
+          className="border-b border-gray-800 hover:bg-[#141821] transition"
+        >
 
-                  <td className="py-3 sm:py-5 flex items-center gap-3 sm:gap-4">
-                    <img
-                      src={item?.participantPhotoUrl}
-                      loading="lazy"
-                      alt={item.name}
-                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
-                    />
-                    <span className="text-white text-[11px] sm:text-xs font-medium">
-                      {item.participantName}
-                    </span>
-                  </td>
+          <td className="py-2 sm:py-5 flex items-center gap-2 sm:gap-4">
+            <img
+              src={item?.participantPhotoUrl}
+              loading="lazy"
+              alt={item.name}
+              className="w-10 h-10 sm:w-10 sm:h-10 rounded-full object-contain"
+            />
+            <span className="text-white text-[11px] sm:text-xs font-medium">
+              {item.participantName}
+            </span>
+          </td>
 
-                  <td className="text-gray-400 text-[11px] sm:text-sm">
-                    {item.seasonName}
-                  </td>
+          {/* Season (hidden on mobile) */}
+          <td className="hidden sm:table-cell text-gray-400 text-[11px] sm:text-sm">
+            {item.seasonName}
+          </td>
 
-                  <td className="text-blue-400 font-semibold text-[11px] sm:text-sm">
-                    {item.totalVotes}
-                  </td>
+          {/* Votes */}
+          <td className="text-blue-400 font-semibold text-[10px] sm:text-sm">
+            {item.totalVotes}
+          </td>
 
-                  <td className="text-right">
-                    <div className="flex flex-wrap justify-end gap-2 sm:gap-3">
+          {/* Actions */}
+          <td className="text-right">
+            <div className="flex flex-wrap sm:flex-nowrap justify-end gap-1 sm:gap-3">
 
-                      <button
-                        onClick={() =>
-                          setActiveParticipationId(item.participationId)
-                        }
-                        className="bg-[#141821] border border-gray-700 text-gray-300 text-xs sm:text-[12px] px-2 sm:px-3 py-1 rounded-md hover:border-gray-500 transition"
-                      >
-                        Custom
-                      </button>
+              <button
+                onClick={() =>
+                  setActiveParticipationId(item.participationId)
+                }
+                className="bg-[#141821] border border-gray-700 text-gray-300 
+                text-[10px] sm:text-[12px] px-2 sm:px-3 py-[2px] sm:py-1 
+                rounded-md hover:border-gray-500 transition"
+              >
+                Custom
+              </button>
 
-                      <button
-                        onClick={() =>
-                          handleVote(item.participationId, 10)
-                        }
-                        className="bg-[#141821] border border-gray-700 text-gray-300 text-xs sm:text-[12px] px-2 sm:px-3 py-1 rounded-md hover:border-gray-500 transition"
-                      >
-                        +10
-                      </button>
+              <button
+                onClick={() =>
+                  handleVote(item.participationId, 10)
+                }
+                className="bg-[#141821] border border-gray-700 text-gray-300 
+                text-[11px] sm:text-[12px] px-5 sm:px-3 py-[2px] sm:py-1 
+                rounded-md hover:border-gray-500 transition"
+              >
+                +10
+              </button>
 
-                      <button
-                        onClick={() => handleDelete(item.participationId
-)}
-                        className="text-red-500 hover:text-red-400 transition"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+              <button
+                onClick={() =>
+                  handleDelete(item.participationId)
+                }
+                className="text-red-500 hover:text-red-400 transition"
+              >
+                <Trash2 size={14} className="sm:size-4" />
+              </button>
 
-                    </div>
-                  </td>
+            </div>
+          </td>
 
-                </tr>
-              ))}
-            </tbody>
+        </tr>
+      ))}
+    </tbody>
 
-          </table>
-        </div>
+  </table>
+</div>
 
       
         <section className="flex justify-center items-center gap-2 mt-6 flex-wrap">

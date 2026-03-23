@@ -22,7 +22,7 @@ const AdminLayout = () => {
         
       </div>
 
-    <section className="md:ml-[16.6667%] w-full max-w-screen p-6 min-h-screen overflow-y-auto">
+    <section className="md:ml-[16.6667%] w-full max-w-screen py-6  px-3 min-h-screen overflow-y-auto">
        <AdminNavbar/>
         <Outlet />
       </section>

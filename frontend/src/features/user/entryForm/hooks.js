@@ -1,8 +1,9 @@
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { fetchMyApplications } from "../api";
 
 export const useUploadImage = () => {
   return useMutation({
@@ -67,5 +68,18 @@ export const useSubmitEntry = () => {
       }
       return data;
     },
+  });
+};
+
+
+
+export const useMyApplications = () => {
+  return useQuery({
+    queryKey: ["my-applications"],
+    queryFn: fetchMyApplications,
+
+    
+    staleTime: 1000 * 60 * 5, 
+    refetchOnWindowFocus: false,
   });
 };

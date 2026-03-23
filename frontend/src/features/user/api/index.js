@@ -1,3 +1,5 @@
+import { apiClient } from "../../../lib/apiClient";
+
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 
@@ -42,4 +44,18 @@ export const changePasswordApi = async ({ currentPassword, newPassword }) => {
   }
 
   return data;
+};
+
+
+
+export const fetchMyApplications = async () => {
+  const response = await apiClient(
+    `${BASE_URL}/participations/my-applications`,
+    {
+      method: "GET",
+    }
+  );
+
+  console.log("My Applications:", response.data);
+  return response.data;
 };

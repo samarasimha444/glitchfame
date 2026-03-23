@@ -13,6 +13,7 @@ const AdminDashboard = () => {
 const seasons = data?.content || [];
 
 
+
 const stats = useMemo(() => {
   return seasons.reduce(
     (acc, season) => {

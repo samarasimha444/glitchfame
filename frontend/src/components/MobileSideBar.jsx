@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap, Search } from "lucide-react";
 
@@ -12,7 +12,7 @@ const MobileMenu = ({
   handleLogout,
 }) => {
 
-
+  const navigate = useNavigate()
   const [token, setToken] = useState(null);
 
  
@@ -116,11 +116,12 @@ const MobileMenu = ({
               </button>
             ) : (
               
-              <Link to="/login" onClick={() => setIsOpen(false)}>
-                <button className="text-sm text-red-400 hover:text-red-300">
-                  Login
-                </button>
-              </Link>
+              <button
+                onClick={()=>navigate('/auth')}
+                className="text-sm text-red-400 hover:text-red-300"
+              >
+                Login
+              </button>
             )}
 
             </div>

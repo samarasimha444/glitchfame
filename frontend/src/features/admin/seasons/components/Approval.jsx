@@ -1,20 +1,16 @@
 import React from "react";
 import { CheckCircle, XCircle, ShieldAlert } from "lucide-react";
+import {  useUpdateContestantStatus } from "../hook";
 
-import { useContestants, useUpdateContestantStatus } from "../hook";
-import toast from "react-hot-toast";
 import { TableShimmer } from "../../../../components/TableShimmer";
+import NeonLoader from "../../../../components/Loader";
 
-const Approval = ({ className }) => {
+const Approval = ({contestants = [],isLoading,fetchNextPage,hasNextPage,isFetchingNextPage, className}) => {
+
  
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage,isLoading:seasonLoading } = useContestants();
-
-
-  const contestants = data?.pages.flatMap((page) => page.content) ?? [];
-
 
   console.log(contestants)
-  const { mutate: updateStatus, isLoading } = useUpdateContestantStatus();
+  const { mutate: updateStatus, isPending } = useUpdateContestantStatus();
 
   const handleAction = (action, userId) => {
     updateStatus(
@@ -22,9 +18,9 @@ const Approval = ({ className }) => {
     );
   };
    
- {seasonLoading && <TableShimmer />}
+ {isLoading && <TableShimmer />}
 
-
+ {isPending && <NeonLoader/>}
 
   return (
     <div className={`w-full bg-[#0f1115] flex justify-center ${className}`}>
@@ -78,7 +74,7 @@ const Approval = ({ className }) => {
               <div className="flex flex-col text-xs sm:text-sm sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 mt-2 sm:mt-0">
                 <button
                   onClick={() => handleAction("APPROVED", user.participationId)}
-                  disabled={isLoading}
+                  disabled={isPending}
                   className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-black border border-gray-600 text-white px-4 py-2 rounded-lg hover:border-gray-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <CheckCircle size={16} />
@@ -86,8 +82,8 @@ const Approval = ({ className }) => {
                 </button>
 
                 <button
-                  onClick={() => handleAction("REJECT", user.participationI)}
-                  disabled={isLoading}
+                  onClick={() => handleAction("REJECTED", user.participationId)}
+                  disabled={isPending}
                   className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-black border border-red-600 text-red-500 px-4 py-2 rounded-lg hover:bg-red-600 hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <XCircle size={16} />

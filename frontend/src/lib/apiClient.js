@@ -10,7 +10,7 @@ export const apiClient = async (url, options = {}) => {
       method: options.method || "GET",
       ...options,
       headers: {
-        "Content-Type": "application/json", // default
+        "Content-Type": "application/json", 
         ...(token && { Authorization: `Bearer ${token}` }), 
         ...(options.headers || {}),
       },

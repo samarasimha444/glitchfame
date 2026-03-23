@@ -63,7 +63,7 @@ export const voteContestant = async ({ participationId, value }) => {
 export const deleteContestant = async (participationId) => {
   try {
     const res = await apiClient(
-      `${BASE_URL}/participations/${participationId}`,
+      `${BASE_URL}/admin/participations/${participationId}`,
       {
         method: "DELETE",
       }

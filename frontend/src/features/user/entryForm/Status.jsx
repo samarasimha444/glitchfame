@@ -1,40 +1,37 @@
 import React from "react";
 import { ArrowLeft, MoreVertical, Info, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useMyApplications } from "./hooks";
 
-const useProfile = () => {
-  return {
-    isLoading: false,
-    error: null,
-    data: {
-      seasons: [
-        {
-          id: 1,
-          name: "Winter 2024 Innovators Grant",
-          dateRange: "Jan 15, 2024 — Mar 30, 2024",
-          isActive: true,
-          isLive: true,
-          submissions: [
-            {
-              name: "Alex Rivers",
-              email: "a.rivers@techflow.io",
-              status: "pending",
-              avatar: "https://i.pravatar.cc/150?u=alex",
-            },
-            {
-              name: "Jordan Smith",
-              email: "j.smith@designco.com",
-              status: "accepted",
-              avatar: "https://i.pravatar.cc/150?u=jordan",
-            },
-          ],
-        },
-      ],
-    },
-  };
+// ✅ Helper to detect phase
+const getSeasonPhase = (season) => {
+  const now = new Date();
+
+  const regStart = new Date(season.registrationStartDate);
+  const regEnd = new Date(season.registrationEndDate);
+  const voteStart = new Date(season.votingStartDate);
+  const voteEnd = new Date(season.votingEndDate);
+
+  if (now >= regStart && now <= regEnd) {
+    return "REGISTRATION";
+  }
+
+  if (now >= voteStart && now <= voteEnd) {
+    return "LIVE";
+  }
+
+  if (now < regStart) {
+    return "UPCOMING";
+  }
+
+  if (now > voteEnd) {
+    return "ENDED";
+  }
+
+  return "UNKNOWN";
 };
 
-// ✅ Inline StatusChip (same UI feel)
+// ✅ Inline StatusChip
 const StatusChip = ({ status }) => {
   const base =
     "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest";
@@ -48,29 +45,37 @@ const StatusChip = ({ status }) => {
   return <span className={`${base} ${styles[status]}`}>{status}</span>;
 };
 
-// ✅ Inline Loader
+// ✅ Loader
 const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center bg-[#1E2229] text-white">
     <div className="animate-spin w-10 h-10 border-2 border-[#9DE2E2] border-t-transparent rounded-full" />
   </div>
 );
 
-// ✅ Inline Error
+// ✅ Error
 const ErrorMessage = () => (
   <div className="min-h-screen flex items-center justify-center bg-[#1E2229] text-red-400">
     Something went wrong.
   </div>
 );
 
+const getCroppedImage = (url) => {
+  if (!url) return "";
+
+  return url.replace(
+    "/upload/",
+    "/upload/w_200,h_200,c_fill/"
+  );
+};
+
 const SubmissionsPage = () => {
-  const { data, isLoading, error } = useProfile();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const activeSeasons =
-    data?.seasons?.filter((season) => season.isActive) || [];
+  const { data ,isLoading, isError } = useMyApplications();
 
+  const application = data?.content
   if (isLoading) return <LoadingSpinner />;
-  if (error) return <ErrorMessage />;
+  if (isError) return <ErrorMessage />;
 
   return (
     <div className="min-h-screen bg-[#1E2229] text-[#E6EEF0] font-sans">
@@ -92,7 +97,10 @@ const SubmissionsPage = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <button onClick={()=>navigate('/season')} className="flex-1 md:flex-none px-5 py-2.5 rounded-xl bg-[#9DE2E2] text-[#072023] text-sm font-bold hover:brightness-110 transition-all shadow-lg shadow-[#9DE2E2]/10">
+            <button
+              onClick={() => navigate("/season")}
+              className="flex-1 md:flex-none px-5 py-2.5 rounded-xl bg-[#9DE2E2] text-[#072023] text-sm font-bold hover:brightness-110 transition-all shadow-lg shadow-[#9DE2E2]/10"
+            >
               New Applications
             </button>
           </div>
@@ -100,76 +108,88 @@ const SubmissionsPage = () => {
 
         <main className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            {activeSeasons.length > 0 ? (
-              activeSeasons.map((season) => (
-                <div
-                  key={season.id}
-                  className="bg-white/[0.03] border border-[#9DE2E2]/10 rounded-2xl overflow-hidden shadow-2xl"
-                >
-                  <div className="p-5 md:p-8 border-b border-white/5 bg-white/[0.01]">
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1">
-                        <h2 className="text-lg md:text-2xl font-bold">
-                          {season.name}
-                        </h2>
+            {application?.length > 0 ? (
+              application?.map((season) => {
+                const phase = getSeasonPhase(season);
 
-                        <div className="flex items-center gap-2 text-[#95A0A6] text-sm">
-                          <Calendar size={16} />
-                          <span>{season.dateRange}</span>
-                        </div>
-                      </div>
+                return (
+                  <div
+                    key={season.participationId}
+                    className="bg-white/[0.03] border border-[#9DE2E2]/10 rounded-2xl overflow-hidden shadow-2xl"
+                  >
+                    <div className="p-5 md:p-8 border-b border-white/5 bg-white/[0.01]">
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-1">
+                          <h2 className="text-lg md:text-2xl font-bold">
+                            {season.seasonName}
+                          </h2>
 
-                      {season.isLive && (
-                        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#9DE2E2]/10 text-[#9DE2E2] border border-[#9DE2E2]/20 text-[10px] font-black uppercase tracking-widest animate-pulse">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#9DE2E2]" />
-                          Live
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="p-5 md:p-8 space-y-4">
-                    <h3 className="text-[10px] font-black text-[#95A0A6] uppercase tracking-[0.2em] mb-4">
-                      Current Status ({season.submissions?.length})
-                    </h3>
-
-                    {season.submissions?.map((sub, idx) => (
-                      <div
-                        key={idx}
-                        className="group flex md:flex-row md:items-center justify-between gap-4 p-3 rounded-2xl bg-[#1E2229]/50 border border-white/[0.03] hover:border-[#9DE2E2]/30 transition-all duration-300"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className="relative">
-                            <img
-                              src={sub.avatar}
-                              alt={sub.name}
-                              className="w-12 h-12 rounded-full object-cover border-2 border-white/5 group-hover:border-[#9DE2E2]/50 transition-colors"
-                            />
-                            <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[#1E2229] border border-white/10 flex items-center justify-center">
-                              <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                            </div>
+                          <div className="flex items-center gap-2 text-[#95A0A6] text-sm">
+                            <Calendar size={16} />
+                            <span>
+                              {new Date(
+                                season.registrationStartDate
+                              ).toLocaleDateString()}{" "}
+                              —{" "}
+                              {new Date(
+                                season.votingEndDate
+                              ).toLocaleDateString()}
+                            </span>
                           </div>
+                        </div>
+
+                        {/* ✅ LIVE */}
+                        {phase === "LIVE" && (
+                          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#9DE2E2]/10 text-[#9DE2E2] border border-[#9DE2E2]/20 text-[10px] font-black uppercase tracking-widest animate-pulse">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#9DE2E2]" />
+                            Live
+                          </div>
+                        )}
+
+                        {/* ✅ REGISTRATION */}
+                        {phase === "REGISTRATION" && (
+                          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 text-[10px] font-black uppercase tracking-widest">
+                            Registration Open
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="p-5 md:p-8 space-y-4">
+                      <h3 className="text-[10px] font-black text-[#95A0A6] uppercase tracking-[0.2em] mb-4">
+                        Current Status
+                      </h3>
+
+                      <div className="group flex md:flex-row md:items-center justify-between gap-4 p-3 rounded-2xl bg-[#1E2229]/50 border border-white/[0.03] hover:border-[#9DE2E2]/30 transition-all duration-300">
+                        <div className="flex items-center gap-4">
+ <div className="relative w-12 h-12 overflow-hidden rounded-full">
+  <img
+    src={season.participantPhotoUrl}
+    alt={season.participantName}
+    className="w-full h-full object-cover object-top scale-125"
+  />
+</div>
 
                           <div className="min-w-0">
                             <p className="font-bold text-[#E6EEF0] group-hover:text-[#9DE2E2] transition-colors">
-                              {sub.name}
+                              {season.participantName}
                             </p>
                             <p className="text-xs text-[#95A0A6] truncate">
-                              {sub.email}
+                              {season.seasonName}
                             </p>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-4">
-                          <StatusChip status={sub.status} />
-
-                        
+                          <StatusChip
+                            status={season.status?.toLowerCase()}
+                          />
                         </div>
                       </div>
-                    ))}
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <div className="p-20 border-2 border-dashed border-white/5 rounded-3xl text-center">
                 <p className="text-[#95A0A6]">
@@ -195,7 +215,10 @@ const SubmissionsPage = () => {
               </p>
 
               <div className="space-y-3">
-                <button onClick={()=>navigate('/aboutus')}  className="w-full py-3 rounded-xl bg-white/5 text-xs font-bold hover:bg-white/10 transition-all">
+                <button
+                  onClick={() => navigate("/aboutus")}
+                  className="w-full py-3 rounded-xl bg-white/5 text-xs font-bold hover:bg-white/10 transition-all"
+                >
                   View Review Guidelines
                 </button>
 

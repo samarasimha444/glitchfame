@@ -12,7 +12,7 @@ const AdminNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-   <nav className="relative w-full bg-[#111418] border-b border-gray-700 shadow-sm  py-3 flex justify-between items-center md:hidden">
+   <nav className="relative w-full  border-b border-gray-700 shadow-sm  py-3 flex justify-between items-center md:hidden">
   
   <div className="text-white font-bold text-xl">Admin Dashboard</div>
 

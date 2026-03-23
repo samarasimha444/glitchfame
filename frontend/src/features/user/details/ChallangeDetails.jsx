@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 export const ChallangeDetails = () => {
+
+  const navigate = useNavigate()
   return (
     <div className="w-full min-h-screen bg-black text-white flex justify-center">
 
@@ -87,7 +91,7 @@ export const ChallangeDetails = () => {
             </div>
 
           
-            <button className="w-full md:w-fit bg-primary text-black px-8 py-3 rounded-lg font-semibold">
+            <button onClick={()=> navigate("/arena")} className="w-full md:w-fit bg-primary text-black px-8 py-3 rounded-lg font-semibold">
               Join Us Now
             </button>
 
@@ -115,7 +119,7 @@ export const ChallangeDetails = () => {
         <div className="px-5 md:px-10 py-6 max-w-[700px] space-y-4">
 
           <h2 className="text-lg font-semibold">
-            ⚡ About GlitchFame
+           About GlitchFame
           </h2>
 
           <p className="text-gray-400 text-sm md:text-base">

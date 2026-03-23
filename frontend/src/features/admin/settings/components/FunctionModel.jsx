@@ -2,6 +2,7 @@ import React from "react";
 import { useDeleteSeason } from "../hooks";
 import { useResetSeason } from "../hooks";
 import NeonLoader from "../../../../components/Loader";
+import { useNavigate } from "react-router-dom";
 
 
 const messages = {
@@ -25,7 +26,7 @@ const messages = {
 };
 
 const FunctionModel = ({seasonId, type, onCancel }) => {
-  console.log(type)
+  const navigate = useNavigate()
   
   console.log(seasonId)
 
@@ -39,14 +40,21 @@ const FunctionModel = ({seasonId, type, onCancel }) => {
 
 
   const handleConfirm = () => {
-    if (type === "DELETE_SEASON") {
-     deleteSeason(seasonId);
-    } else if (type === "REMOVE_USERS") {
-      reset(seasonId)
-    }
-
-    onCancel(); 
-  };
+  if (type === "DELETE_SEASON") {
+    deleteSeason(seasonId, {
+      onSuccess: () => {
+        onCancel(); 
+        navigate('/admin/seasons')
+      },
+    });
+  } else if (type === "REMOVE_USERS") {
+    reset(seasonId, {
+      onSuccess: () => {
+        onCancel(); 
+      },
+    });
+  }
+};
 
 
   const loading = resetPending || isPending
