@@ -262,6 +262,17 @@ public class ParticipationService {
     }
 
 
+//track my applications
+public Page<TrackMyApplications> getMyApplications(UUID authId, int page, int size) {
+
+    // pagination
+    Pageable pageable = PageRequest.of(page, size);
+
+    // direct repo call → no extra processing needed
+    return participationRepository.findMyApplications(authId, pageable);
+}
+
+
     // ✅ DELETE
     public void deleteParticipation(UUID participationId, UUID authId) {
 

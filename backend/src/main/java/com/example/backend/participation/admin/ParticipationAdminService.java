@@ -77,7 +77,6 @@ public class ParticipationAdminService {
 
         Participation participation = participationAdminRepo.findById(participationId)
                 .orElseThrow(() -> new IllegalStateException("Participation not found"));
-
         if (!status.equals("APPROVED") &&
             !status.equals("REJECTED") &&
             !status.equals("PENDING")) {

@@ -132,6 +132,24 @@ public class ParticipationController {
         );
     }
 
+    //track my applications
+    // get my applications (auth required)
+@GetMapping("/my-applications")
+public Page<TrackMyApplications> getMyApplications(
+        Authentication authentication,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+) {
+
+    UUID authId = extractAuthId(authentication);
+
+    if (authId == null) {
+        throw new IllegalStateException("Authentication required");
+    }
+
+    return participationService.getMyApplications(authId, page, size);
+}
+
 
     // delete participation (auth required)
     @DeleteMapping("/{participationId}")

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.example.backend.participation.dto.ParticipantById;
 import com.example.backend.participation.dto.Participants;
+import com.example.backend.participation.dto.TrackMyApplications;
 
 import org.springframework.data.repository.query.Param;
 
@@ -163,4 +164,35 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
     AND p.status = 'APPROVED'
     """, nativeQuery = true)
     List<Participation> findApprovedContestants(@Param("seasonId") UUID seasonId);
+
+
+    //track my applcations
+    @Query(value = """
+    SELECT
+        p.participation_id AS participationId,
+        p.name AS participantName,
+        p.photo_url AS participantPhotoUrl,
+        p.status AS status,
+
+        s.name AS seasonName,
+        s.registration_start_date AS registrationStartDate,
+        s.registration_end_date AS registrationEndDate,
+        s.voting_start_date AS votingStartDate,
+        s.voting_end_date AS votingEndDate
+
+    FROM participation p
+    JOIN season s ON s.season_id = p.season_id
+    WHERE p.auth_id = :authId
+    ORDER BY p.modified_at DESC
+    """,
+    countQuery = """
+    SELECT COUNT(*)
+    FROM participation p
+    WHERE p.auth_id = :authId
+    """,
+    nativeQuery = true)
+Page<TrackMyApplications> findMyApplications(
+        @Param("authId") UUID authId,
+        Pageable pageable
+);
 }
