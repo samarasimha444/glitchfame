@@ -38,12 +38,12 @@ const SeasonsTable = ({seasons,isLoading}) => {
 
           
 
-    <input
+    {/* <input
       type="text"
       placeholder="Filter by name..."
       className="bg-[#1E2229] border border-gray-700 px-3 py-2 rounded-md text-sm outline-none focus:border-purple-500 w-full sm:w-64"
-    />
-
+    /> */}
+<h5 className="text-xl font-semibold py-3">Seasons Table</h5>
   
     <section className="flex sm:hidden space-x-2 overflow-x-auto text-[12px]">
       <p className="flex-shrink-0 rounded-4xl cursor-pointer border border-gray-600 px-2 py-1 whitespace-nowrap">

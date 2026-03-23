@@ -1,6 +1,7 @@
 import { Lock, Save } from "lucide-react";
 import { useState } from "react";
 import { useToggleSeasonLock, useUpdatePrizePool } from "../hooks";
+import NeonLoader from "../../../../components/Loader";
 
 
 const Controls = ({ id, seasonLock, prizeMoney }) => {
@@ -28,6 +29,11 @@ const Controls = ({ id, seasonLock, prizeMoney }) => {
      updatePrizePool({id,prizeMoney: prizePool,});
   };
 
+  const isLoading = isPending || seasonPending
+
+  if (isLoading) {
+    return <NeonLoader />;
+  }
   return (
     <div className="border  border-white/10 mt-4 rounded-xl p-4 w-full">
       

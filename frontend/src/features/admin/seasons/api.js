@@ -113,32 +113,26 @@ export const getLiveContestants = async (page = 0, size = 6) => {
 
 
 
-export const searchContestants = async ({ name, seasonId }) => {
-   const token = localStorage.getItem("token")
-  console.log(name)
+
+
+export const searchContestants = async ({
+  name,
+  seasonId,
+  page = 0,
+  size = 20,
+}) => {
   const params = new URLSearchParams({
     name,
+    page,
+    size,
   });
 
-  if (seasonId) {
-    params.append("seasonId", seasonId);
-  }
-
-  const response = await fetch(
-    `${BASE_URL}/admin/contestants/search?${params.toString()}`,
+  const response = await apiClient(
+    `/participations/season/${seasonId}/search?${params.toString()}`,
     {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
     }
   );
   console.log(response)
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch contestants");
-  }
-
-  return response.json();
+  return response.data;
 };

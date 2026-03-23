@@ -36,16 +36,17 @@ export const useDeleteContestant = () => {
 
   return useMutation({
     mutationFn: deleteContestant,
+
     onSuccess: () => {
-      queryClient.invalidateQueries(["contestants"]);
-      toast.success("ok")
+      queryClient.invalidateQueries({ queryKey: ["contestants"] });
+      toast.success("Deleted successfully");
     },
-    onError:()=>{
-      toast.error("failed")
-    }
+
+    onError: () => {
+      toast.error("Failed to delete");
+    },
   });
 };
-
 
 export const useUpdateContestantStatus = () => {
   const queryClient = useQueryClient();

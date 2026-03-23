@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteSeason, endSeasonNow, fetchSeasonById, participationLock, resetSeasonApi, toggleSeasonLock, updatePrizePool,  updateSeasonDates } from "./api";
 import toast from "react-hot-toast";
-import { apiClient } from "../../../lib/apiClient";
 
 
 export const useFetchSeasonDetails = (seasonId) => {
@@ -31,24 +30,7 @@ export const useToggleSeasonLock = () => {
 
 
 
-export const useDeleteSeason = () => {
-  const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: deleteSeason,
-
-    onSuccess: (_, seasonId) => {
-     
-      queryClient.setQueryData(["seasons"], (old) =>
-        old?.filter((s) => s.id !== seasonId)
-      );
-
-      queryClient.invalidateQueries(["seasons"]);
-
-      toast.success("Deleted");
-    },
-  });
-};
 
 
 export const useUpdatePrizePool = () => {
@@ -59,8 +41,11 @@ export const useUpdatePrizePool = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries(["season-details"]);
-     
+      toast.success("success")
     },
+    onError:()=>{
+      toast.error("something went wrong")
+    }
   });
 };
 
@@ -100,16 +85,19 @@ export const useParticipationLock = () => {
 };
 
 
-export const useUpdateSeasonDates = () => {
+export const useDeleteSeason = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: updateSeasonDates,
+    mutationFn: deleteSeason,
 
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: ["season-details", variables.id],
-      });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["seasons"] });
+      toast.success("Season deleted successfully");
+    },
+
+    onError: () => {
+      toast.error("Failed to delete season");
     },
   });
 };

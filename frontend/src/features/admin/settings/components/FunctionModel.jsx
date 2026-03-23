@@ -3,6 +3,7 @@ import { useDeleteSeason } from "../hooks";
 import { useResetSeason } from "../hooks";
 import NeonLoader from "../../../../components/Loader";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 
 const messages = {
@@ -44,8 +45,10 @@ const FunctionModel = ({seasonId, type, onCancel }) => {
     deleteSeason(seasonId, {
       onSuccess: () => {
         onCancel(); 
-        navigate('/admin/seasons')
+       
+       
       },
+
     });
   } else if (type === "REMOVE_USERS") {
     reset(seasonId, {

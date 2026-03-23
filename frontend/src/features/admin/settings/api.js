@@ -81,24 +81,19 @@ export const toggleSeasonLock = async (id) => {
 
 
 export const deleteSeason = async (id) => {
-   const token = localStorage.getItem("token")
-  console.log(id)
-  const res = await fetch(`${BASE_URL}/seasons/${id}`, {
-    method: "DELETE",
-      headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  console.log(id);
 
-  console.log(res)
+  const response = await apiClient(
+    `${BASE_URL}/seasons/${id}`,
+    {
+      method: "DELETE",
+    }
+  );
 
-  if (!res.ok) {
-    throw new Error("Failed to delete season");
-  }
+  console.log("Delete response:", response.data);
 
-  return res.json();
+  return response.data;
 };
-
 
 
 export const endSeasonNow = async ({ id }) => {
