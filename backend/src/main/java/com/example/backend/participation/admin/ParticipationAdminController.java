@@ -4,6 +4,7 @@ import com.example.backend.participation.admin.dto.*;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -59,5 +60,14 @@ public class ParticipationAdminController {
                 status
         );
     }
+
+
+
+    //delete participation
+  @DeleteMapping("/{id}")
+public ResponseEntity<String> deleteParticipant(@PathVariable UUID id) {
+    String message = participationAdminService.deleteParticipation(id);
+    return ResponseEntity.ok(message); // 200 with message
+}
     
 }

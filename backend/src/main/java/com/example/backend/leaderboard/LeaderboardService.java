@@ -25,8 +25,7 @@ public class LeaderboardService {
 
     private final ParticipationRepo participationRepo;
     private final SeasonRepo seasonRepo;
-
-    private static final String SEASONS_KEY = "leaderboard:seasons";
+     private static final String SEASONS_KEY = "leaderboard:seasons";
 
     /* update leaderboard when vote changes */
 

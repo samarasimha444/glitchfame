@@ -130,4 +130,18 @@ public class ParticipationAdminService {
             );
         });
     }
+
+
+
+// delete participant by id
+public String deleteParticipation(UUID participationId) {
+
+    if (!participationAdminRepo.existsById(participationId)) {
+        throw new IllegalStateException("Participation not found");
+    }
+
+    participationAdminRepo.deleteById(participationId);
+
+    return "Participant deleted successfully";
+}
 }
