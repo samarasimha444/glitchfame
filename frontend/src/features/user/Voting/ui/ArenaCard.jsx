@@ -5,7 +5,7 @@ import { Heart } from "lucide-react";
 import { ContestantCard } from "./ContestantCards";
 import { useState, useCallback } from "react";
 import LoginModal from "../../../../components/LoginModal";
-import { handleVoteError, isTokenExpired } from "../../../../lib/helper";
+import { handleVoteError } from "../../../../lib/helper";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -13,17 +13,7 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [clickedVotes, setClickedVotes] = useState(() => new Set());
 
-
-const token = localStorage.getItem("token");
-console.log(token)
-
-if (!token || isTokenExpired(token)) {
-  setShowLoginModal(true);
-  return;
-}
-
-
-
+  
   const handleVote = useCallback(
     async (participationId) => {
       const token = localStorage.getItem("token");
