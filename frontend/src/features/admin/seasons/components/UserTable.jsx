@@ -12,7 +12,7 @@ import { TableShimmer } from "../../../../components/TableShimmer";
 import NeonLoader from "../../../../components/Loader";
 import { TableRow } from "./TableRow";
 
-const ParticipantsTable = ({ className }) => {
+const ParticipantsTable = ({ className,setLive }) => {
 
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState("");
@@ -20,7 +20,13 @@ const ParticipantsTable = ({ className }) => {
   const [activeParticipationId, setActiveParticipationId] = useState(null);
 
   const { data, isLoading:liveLoading } = useLiveContestants(page, 6);
-  console.log(data)
+
+
+
+ const total = data?.totalElements;
+  setLive(total)
+
+
 
   const { data: searchData, isLoading: searching } =
   useSearchContestants(debouncedSearch);

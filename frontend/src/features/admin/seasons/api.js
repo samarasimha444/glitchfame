@@ -23,7 +23,7 @@ export const getContestants = async ({pageParam = 0,status = "PENDING",size = 5,
   if (!response.ok) {
     throw new Error("Failed to fetch contestants");
   }
-
+  
   return response.json();
 };
 
@@ -114,12 +114,9 @@ export const getLiveContestants = async (page = 0, size = 6) => {
 
 
 
-export const searchContestants = async ({
-  name,
-  seasonId,
-  page = 0,
-  size = 20,
-}) => {
+export const searchContestants = async ({  name,page = 0,size = 20,}) => {
+  console.log(name)
+
   const params = new URLSearchParams({
     name,
     page,
@@ -127,7 +124,7 @@ export const searchContestants = async ({
   });
 
   const response = await apiClient(
-    `/participations/season/${seasonId}/search?${params.toString()}`,
+    `${BASE_URL}/participations/search?${params.toString()}`,
     {
       method: "GET",
     }

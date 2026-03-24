@@ -45,7 +45,7 @@ const AdminCard = ({ title, paragraph, className, type, cardsInfo,stats}) => {
   </section>
 
   
-<section className="mt-8 sm:mt-12 w-full grid grid-cols-2 sm:grid-cols-2 md:flex md:flex-wrap gap-4 sm:gap-6">
+<section className="mt-8 sm:mt-12 w-full  grid grid-cols-2 sm:grid-cols-2 md:flex md:flex-wrap gap-4 sm:gap-6">
   {cardsInfo?.map((item, idx) => {
     const Icon = item.icon;
 

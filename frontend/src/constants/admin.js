@@ -92,12 +92,12 @@ export const settingCards = [
 export const seasonCards = [
   {
     title: "Pending ",
-    key: "pendign", 
+    key: "pending", 
     icon: Users,
   },
   {
-    title: "Live Contestants",
-    key: "totalLive",
+    title: "Live ",
+    key: "live",
     icon: Activity,
   },
 ];

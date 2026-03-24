@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import AdminCard from '../dashboard/components/AdminCard'
 import Approval from './components/Approval'
 import ParticipantsTable from './components/UserTable'
@@ -6,6 +6,7 @@ import { seasonCards } from '../../../constants/admin'
 import { useContestants } from './hook'
 
 const SeasonPage = () => {
+const [live,setLive ]=useState(false)
 
  const {
     data,
@@ -18,11 +19,14 @@ const SeasonPage = () => {
   const contestants =
     data?.pages?.flatMap(p => p.content || []) || [];
 
-    console.log(data)
 
-    const stats = {
-    pending: contestants.length,
-  };
+const totalElements = data?.pages?.[0]?.totalElements ?? 0;
+
+const stats = {
+  pending: totalElements,
+  live:live
+};
+
 
 
 
@@ -33,7 +37,7 @@ const SeasonPage = () => {
      
    <div className="flex  justify-center items-center max-w-screen flex-col lg:flex-row gap-6 w-full">
   
- <section className="flex-1 border md:flex md:flex-col border-gray-800 rounded-2xl p-4 shadow-sm overflow-y-auto">
+ <section className="flex-1 hidden border md:flex md:flex-col border-gray-800 rounded-2xl p-4 shadow-sm overflow-y-auto">
   <h5 className="text-white font-semibold mb-3">CONTESTANTS ACTION</h5>
   <p className="text-gray-300 text-sm leading-relaxed">
     Once a contestant is <strong>accepted</strong>, they cant  be <strong>rejected</strong>  <strong></strong>, so please take all actions carefully. 
@@ -44,7 +48,7 @@ const SeasonPage = () => {
 </section>
 
  
-  <section className="flex-1">
+  <section className="flex-1 w-full">
     <AdminCard stats={stats} cardsInfo={seasonCards} />
   </section>
 </div>
@@ -62,7 +66,7 @@ const SeasonPage = () => {
       />
     
    
-     <ParticipantsTable type="initial" className="max-w-screen"/>
+     <ParticipantsTable setLive={setLive} type="initial" className="max-w-screen"/>
        
 
       </aside>

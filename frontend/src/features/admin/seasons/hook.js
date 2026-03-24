@@ -95,13 +95,13 @@ export const useLiveContestants = (page, size = 6) => {
   });
 };
 
-export const useSearchContestants = (name, seasonId) => {
+export const useSearchContestants = (name) => {
   return useQuery({
    
-    queryKey: ["contestants", "search", name, seasonId],
+    queryKey: ["contestants", "search", name],
 
    
-    queryFn: () => searchContestants({ name, seasonId }),
+    queryFn: () => searchContestants({ name}),
 
     
     enabled: !!name?.trim(),
