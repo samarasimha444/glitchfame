@@ -12,15 +12,13 @@ import java.util.UUID;
 public class RedisService {
 
     private final StringRedisTemplate redis;
-
     private static final String ALL_SEASONS_KEY = "seasons:all";
 
     
 
     // ✅ register ONLY core keys (call in SeasonService, not VoteService)
     public void registerSeasonKey(UUID seasonId, String key) {
-
-        String registryKey = "season:" + seasonId + ":keys";
+    String registryKey = "season:" + seasonId + ":keys";
 
         // check BEFORE adding (important)
         Boolean exists = redis.hasKey(registryKey);
@@ -34,11 +32,16 @@ public class RedisService {
         }
     }
 
+
+    
+
     // ✅ get all season IDs from Redis
     public Set<String> getAllSeasonIds() {
         Set<String> seasons = redis.opsForSet().members(ALL_SEASONS_KEY);
         return seasons != null ? seasons : Set.of();
     }
+
+
 
     // ✅ delete ALL Redis data for a season (safe cleanup)
     public void deleteSeasonData(UUID seasonId) {
@@ -63,4 +66,15 @@ public class RedisService {
         // 4. remove season from global registry
         redis.opsForSet().remove(ALL_SEASONS_KEY, seasonId.toString());
     }
+    
+
+
+    
+
+    public void clearEntireRedisServer() {
+    redis.getConnectionFactory()
+         .getConnection()
+         .serverCommands()
+         .flushAll();
+}
 }
