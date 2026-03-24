@@ -1,6 +1,6 @@
 import { Client } from "@stomp/stompjs";
 import {  useQuery, useQueryClient } from "@tanstack/react-query";
-import { , useEffect,  } from "react";
+import {  useEffect,  } from "react";
 import {
   connectSocket,
   disconnectSocket,
