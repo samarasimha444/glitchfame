@@ -3,6 +3,7 @@ package com.example.backend.votes.admin;
 import com.example.backend.participation.Participation;
 import com.example.backend.participation.ParticipationRepo;
 import com.example.backend.votes.dto.VoteUpdateDTO;
+import com.example.backend.config.redis.RedisService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +20,7 @@ public class AdminVoteService {
     private final StringRedisTemplate redis;
     private final ParticipationRepo participationRepo;
     private final SimpMessagingTemplate messagingTemplate;
+    private final RedisService redisService; // ✅ centralized registry
 
     public long adjustVotes(UUID participationId, long voteDelta) {
 
@@ -27,34 +29,29 @@ public class AdminVoteService {
 
         UUID seasonId = participation.getSeasonId();
 
-        String participationKey = "votes:participation:" + participationId;
         String leaderboardKey = "leaderboard:season:" + seasonId;
 
-        /* prevent negative votes */
+        // ✅ register via helper (fixed)
+        redisService.registerSeasonKey(seasonId, leaderboardKey);
 
-        if (voteDelta < 0) {
+        // get current votes
+        Double currentScore = redis.opsForZSet()
+                .score(leaderboardKey, participationId.toString());
 
-            String current = redis.opsForValue().get(participationKey);
-            long currentVotes = current == null ? 0 : Long.parseLong(current);
+        long currentVotes = currentScore == null ? 0 : currentScore.longValue();
 
-            if (currentVotes + voteDelta < 0) {
-                throw new IllegalStateException("Votes cannot become negative");
-            }
+        // prevent negative
+        if (voteDelta < 0 && currentVotes + voteDelta < 0) {
+            throw new IllegalStateException("Votes cannot become negative");
         }
 
-        /* update vote count */
-
-        Long newVotes = redis.opsForValue().increment(participationKey, voteDelta);
-
-        /* update leaderboard */
-
-        redis.opsForZSet().incrementScore(
+        Double updated = redis.opsForZSet().incrementScore(
                 leaderboardKey,
                 participationId.toString(),
                 voteDelta
         );
 
-        /* broadcast vote update */
+        long newVotes = updated == null ? 0 : updated.longValue();
 
         broadcastVote(seasonId, participationId, newVotes);
 
@@ -63,10 +60,7 @@ public class AdminVoteService {
 
     private void broadcastVote(UUID seasonId, UUID participationId, long votes) {
 
-        VoteUpdateDTO payload = new VoteUpdateDTO(
-                participationId,
-                votes
-        );
+        VoteUpdateDTO payload = new VoteUpdateDTO(participationId, votes);
 
         messagingTemplate.convertAndSend(
                 "/topic/votes/" + seasonId,

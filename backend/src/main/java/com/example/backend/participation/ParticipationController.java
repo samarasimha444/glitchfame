@@ -133,7 +133,6 @@ public class ParticipationController {
     }
 
     //track my applications
-    // get my applications (auth required)
 @GetMapping("/my-applications")
 public Page<TrackMyApplications> getMyApplications(
         Authentication authentication,

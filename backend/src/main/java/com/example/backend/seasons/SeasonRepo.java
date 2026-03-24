@@ -21,7 +21,7 @@ public interface SeasonRepo extends JpaRepository<Season, UUID> {
             Instant now2
     );
 
-    // 🔥 GET SEASONS (JWT OPTIONAL)
+    // 🔥 GET SEASONS LIVE/LIVE_UPCOMING/PAST/UPCOMING
     @Query("""
         SELECT
             s.seasonId as seasonId,
@@ -66,7 +66,12 @@ public interface SeasonRepo extends JpaRepository<Season, UUID> {
             Pageable pageable
     );
 
-    // 🔥 GET SEASON BY ID (JWT OPTIONAL)
+
+
+
+
+
+    // 🔥 GET SEASON BY ID 
     @Query("""
         SELECT
             s.seasonId as seasonId,
@@ -96,6 +101,10 @@ public interface SeasonRepo extends JpaRepository<Season, UUID> {
     );
 
     List<Season> findByVotingEndDateBefore(Instant now);
+
+
+
+
 
 //get random live season
 @Query("""
