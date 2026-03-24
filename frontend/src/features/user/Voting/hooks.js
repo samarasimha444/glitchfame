@@ -1,6 +1,6 @@
 import { Client } from "@stomp/stompjs";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useState } from "react";
+import {  useQuery, useQueryClient } from "@tanstack/react-query";
+import { , useEffect,  } from "react";
 import {
   connectSocket,
   disconnectSocket,
@@ -43,6 +43,7 @@ export const useSeasonVotes = (seasonId) => {
     if (!seasonId) return;
 
     const token = localStorage.getItem("token");
+      if (!token) return;
     connectSocket(token);
 
     const topic = `/topic/votes/${seasonId}`;
