@@ -120,3 +120,17 @@ export const useDeleteSeason = () => {
     }
   });
 };
+
+export const useUpdateSeasonDates = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateSeasonDates,
+
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["season-details", variables.id],
+      });
+    },
+  });
+};

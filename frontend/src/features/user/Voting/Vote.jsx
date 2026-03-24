@@ -1,8 +1,8 @@
 import { useParticipation, useSearchContestants } from "./hooks";
 import { useParams } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import VotingHeader from "./ui/VotingHeader";
-import ArenaCard from "./ui/ArenaCard";
+const ArenaCard = lazy(() => import("./ui/ArenaCard"));
 import { Search } from "lucide-react";
 import { useSeasonVotes } from "./hooks";
 
@@ -78,6 +78,7 @@ const Vote = () => {
 
      
       <section className="md:px-12 min-h-[50dvh]">
+        <Suspense fallback={null}>
         {isEmpty ? (
           <div className="text-gray-400 text-center mt-6">No contestants found.</div>
         ) : (
@@ -87,6 +88,7 @@ const Vote = () => {
             isLoading={isLoadingState}
           />
         )}
+            </Suspense>
       </section>
 
       <p className="mt-5 py-12 flex w-full items-center justify-center">

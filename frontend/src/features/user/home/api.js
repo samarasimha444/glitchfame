@@ -63,7 +63,7 @@ export const getSeasonById = async (id) => {
 
 
 export const fetchSeasonParticipation = async (seasonId) => {
-  console.log("Season ID:", seasonId);
+  
 
   const token = localStorage.getItem("token");
 
@@ -92,7 +92,7 @@ export const fetchLeaderboards = async () => {
     },
   });
 
-  console.log(res)
+  
 
   if (!res.ok) {
     throw new Error("Failed to fetch leaderboards");

@@ -7,7 +7,12 @@ import path from "path";
 export default defineConfig({
   mode: "production",
   plugins: [
-    react(), // remove babel-plugin-react-compiler
+
+  react({
+  babel: {
+    plugins: ["babel-plugin-react-compiler"],
+  },
+}),
     tailwindcss(),
     analyzer({
       open: true,
