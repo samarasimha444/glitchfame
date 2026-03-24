@@ -80,3 +80,19 @@ export const buildSeasonPayload = (form, imageUrl) => ({
 
 export const getSeasonFolder = (name) =>
   `seasons/${name.trim().replace(/\s+/g, "-").toLowerCase()}/banner`;
+
+
+
+export const isAdult = (dob) => {
+  if (!dob) return false;
+  const birthDate = new Date(dob);
+  const today = new Date();
+
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+
+  return age >= 18;
+};

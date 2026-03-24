@@ -9,10 +9,10 @@ const ContestStats = () => {
   });
 
   return (
-    <div className="hidden md:grid grid-cols-1 mt-3 md:grid-cols-2 gap-4 w-full max-w-5xl mx-auto p-4">
+    <div className="hidden md:grid grid-cols-1 mt-3 md:grid-cols-2 gap-4 w-full items-center text-center max-w-4xl mx-auto p-4">
       
       <div className="bg-[#111214] border border-[#1e1f22] rounded-2xl p-6 shadow-xl">
-        <div className="flex items-center gap-2 mb-4 text-[#8b5cf6] text-[10px] font-bold uppercase tracking-[0.2em]">
+        <div className="flex items-center gap-2 mb-4 text-red-600 text-[10px] font-bold uppercase tracking-[0.2em]">
           <Clock size={14} />
           <span>Voting Ends In</span>
         </div>

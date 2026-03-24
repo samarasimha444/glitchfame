@@ -1,11 +1,15 @@
 
-import React from "react";
+import React, { useMemo } from "react";
 import CountdownTimer from "../../home/components/CountdownTimer";
 
 
 const VotingHeader = ({season}) => {
   
-  const endDate = season?.votingEndDate ? new Date(season.votingEndDate) : new Date();
+ const endDate = useMemo(
+  () => (season?.votingEndDate ? new Date(season.votingEndDate) : new Date()),
+  [season]
+);
+  
   return (
     <section className="w-full  text-white py-6 md:py-4  md:px-16">
 

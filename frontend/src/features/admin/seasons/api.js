@@ -79,7 +79,6 @@ export const deleteContestant = async (participationId) => {
 };
 
 
-//approve reject 
 export const updateContestantStatus = async (id, status) => {
   const response = await apiClient(
     `${BASE_URL}/admin/participations/${id}/status?status=${status}`,
@@ -88,7 +87,7 @@ export const updateContestantStatus = async (id, status) => {
     }
   );
 
-  return response.data; // ✅ always return clean data
+  return response.data; 
 };
 
 

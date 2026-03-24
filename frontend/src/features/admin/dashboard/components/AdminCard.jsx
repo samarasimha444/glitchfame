@@ -59,7 +59,7 @@ const AdminCard = ({ title, paragraph, className, type, cardsInfo,stats}) => {
             {item.title}
           </h3>
 
-          <p className="text-xl sm:text-3xl font-semibold text-white">
+          <p className="text-[16px]  sm:text-3xl font-semibold text-white">
             {stats?.[item.key] ?? 0}
           </p>
 
@@ -69,7 +69,7 @@ const AdminCard = ({ title, paragraph, className, type, cardsInfo,stats}) => {
         </div>
 
         <div
-          className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2
+          className="absolute right-1 sm:right-6 top-1/2 -translate-y-1/2
           w-10 h-10 sm:w-14 sm:h-14 rounded-full 
           bg-[#1B2330] flex items-center justify-center"
         >

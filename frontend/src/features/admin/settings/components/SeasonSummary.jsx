@@ -66,7 +66,7 @@ const SeasonSummary = ({ title, subtitle, data }) => {
   }
 
   return (
-    <div className="w-full max-w-200 bg-[#0f1115] min-h-[50dvh] flex">
+    <div className="w-full max-w-200 bg-[#0f1115] min-h-[50dvh] min-w-[50dvw] flex">
       {active && (
         <Suspense fallback={<NeonLoader />}>
           <Model

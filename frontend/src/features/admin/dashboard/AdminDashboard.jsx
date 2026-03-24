@@ -7,10 +7,11 @@ import { useFetchSeasons } from './hooks'
 
 const AdminDashboard = () => {
 
-  const { data, isLoading, isError, error } = useFetchSeasons();
+  const { data, isLoading, } = useFetchSeasons();
     console.log(data);
     
 const seasons = data?.content || [];
+console.log(seasons)
 
 
 
@@ -19,29 +20,28 @@ const stats = useMemo(() => {
     (acc, season) => {
       acc.totalSeasons += 1;
 
-      
+     
       const prize = season.prizeMoney
         ? Number(season.prizeMoney.replace(/[^0-9]/g, ""))
         : 0;
-
       acc.totalPrizeMoney += prize;
 
-      if (season.voteLock) acc.votingLocked += 1;
-      if (season.participationLock) acc.participationLocked += 1;
+      
+      if (season.seasonLock) acc.totalLocked += 1;
 
       return acc;
     },
     {
       totalSeasons: 0,
       totalPrizeMoney: 0,
-      votingLocked: 0,
-      participationLocked: 0,
+      totalLocked: 0,
     }
   );
 }, [seasons]);
-  const token = localStorage.getItem("token");
-  console.log("TOKEN:", token);
-  console.log(stats)
+
+
+ 
+
 
   return (
     <div className='flex flex-col w-full h-screen '>

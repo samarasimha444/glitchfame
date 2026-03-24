@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Vote from "./features/user/Voting/Vote"
-import Status from "./features/user/entryForm/Status";
+import Status from "./features/user/status/Status";
 
 const ProtectedRoute = lazy(() => import("./ProtectedRoute"));
 const Layout = lazy(() => import("./Auth/Layout"));
@@ -24,13 +24,7 @@ const AdminDashboard = lazy(() => import("./features/admin/dashboard/AdminDashbo
 const SeasonPage = lazy(() => import("./features/admin/seasons/SeasonPage"));
 const AdminSettings = lazy(() => import("./features/admin/settings/SettingPage"));
 
-//  remove in production)
-const ParticipationForm = lazy(() => import("./Testing/PartcipationForm"));
-const AdminSeasonForm = lazy(() => import("./Testing/AdminForm"));
-const Dashboard = lazy(() => import("./Testing/Dashboard"));
-const Login = lazy(() => import("./Testing/Login"));
-const TestingSignup = lazy(() => import("./Testing/TestingSignup"));
-const TLeaderBoard = lazy(() => import("./Testing/TLeaderboard"));
+
 
 export default function App() {
   return (
@@ -45,14 +39,6 @@ export default function App() {
 
     
         <Route path="/auth" element={<AuthLayout />} />
-
-       
-        <Route path="/participationForm" element={<ParticipationForm />} />
-        <Route path="/adminform" element={<AdminSeasonForm />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<TestingSignup />} />
-        <Route path="/leadboardnew" element={<TLeaderBoard />} />
 
       
         <Route element={<Layout />}>

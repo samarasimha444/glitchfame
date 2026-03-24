@@ -47,11 +47,7 @@ export const dashCards = [
     key: "votingLocked",
     icon: Lock
   },
-  {
-    title: "Participation Locked",
-    key: "participationLocked",
-    icon: Users
-  }
+  
 ];
 
  export const menuItems = [
@@ -95,13 +91,13 @@ export const settingCards = [
 
 export const seasonCards = [
   {
-    title: "Total Contestants",
-    key: "totalContestants", 
+    title: "Pending ",
+    key: "pendign", 
     icon: Users,
   },
   {
     title: "Live Contestants",
-    key: "totalLive", // ✅ MUST match
+    key: "totalLive",
     icon: Activity,
   },
 ];

@@ -127,11 +127,14 @@ export const updatePrizePool = async ({ id, prizeMoney }) => {
         Authorization: `Bearer ${token}`,
       },
     }
+    
   );
+    console.log(res)
 
   if (!res.ok) {
     throw new Error(await res.text());
   }
+
 
   return res.text();
 };
