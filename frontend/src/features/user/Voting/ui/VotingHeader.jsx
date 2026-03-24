@@ -11,7 +11,7 @@ const VotingHeader = ({season}) => {
 );
   
   return (
-    <section className="w-full  text-white py-6 md:py-4  md:px-16">
+    <section className="w-full  overflow-x-hidden text-white py-6 md:py-4  md:px-16">
 
 
 

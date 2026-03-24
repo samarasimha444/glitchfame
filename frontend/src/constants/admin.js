@@ -22,7 +22,7 @@ import { Activity, Users, DollarSign, Trophy, Calendar, Lock, ActivityIcon, Cloc
 
  export const seasonfields = [
     { name: "name", label: "Name", type: "text" },
-    { name: "prize", label: "Prize", type: "text" },
+    { name: "prize", label: "Prize", type: "number" },
     { name: "description", label: "Description", type: "textarea", full: true },
     { name: "registrationStartDate", label: "Registration Start", type: "datetime-local" },
     { name: "registrationEndDate", label: "Registration End", type: "datetime-local" },

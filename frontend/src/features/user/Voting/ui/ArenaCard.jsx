@@ -5,21 +5,32 @@ import { Heart } from "lucide-react";
 import { ContestantCard } from "./ContestantCards";
 import { useState, useCallback } from "react";
 import LoginModal from "../../../../components/LoginModal";
+import { handleVoteError, isTokenExpired } from "../../../../lib/helper";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
-
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [clickedVotes, setClickedVotes] = useState(() => new Set());
+
+
+const token = localStorage.getItem("token");
+console.log(token)
+
+if (!token || isTokenExpired(token)) {
+  setShowLoginModal(true);
+  return;
+}
+
+
 
   const handleVote = useCallback(
     async (participationId) => {
       const token = localStorage.getItem("token");
-       if (!token) {
-      setShowLoginModal(true);  
-      return;
-    }
+      if (!token) {
+        setShowLoginModal(true);
+        return;
+      }
 
       setClickedVotes((prev) => {
         const newSet = new Set(prev);
@@ -41,8 +52,15 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
         if (!res.ok) throw new Error("Vote failed");
         await res.json();
       } catch (err) {
-        console.error(err);
-       toast("Whoa! Only 5 votes per person ");
+        const result = handleVoteError(err, { setShowLoginModal });
+
+        if (result.type === "toast") {
+          toast.error(result.message);
+        }
+
+        if (result.type === "login") {
+          setShowLoginModal(true);
+        }
 
         setClickedVotes((prev) => {
           const newSet = new Set(prev);
@@ -61,10 +79,11 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
     </div>
   ));
 
-
   return (
     <section className="flex flex-col w-full sm:px-6 md:pb-20">
-      {showLoginModal&& <LoginModal  onCancel={() => setShowLoginModal(false)}/>}
+      {showLoginModal && (
+        <LoginModal onCancel={() => setShowLoginModal(false)} />
+      )}
 
       <div className="w-full mx-auto">
         <div className="flex items-center justify-between sm:mt-6">
