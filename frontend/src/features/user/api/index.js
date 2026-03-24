@@ -59,3 +59,10 @@ export const fetchMyApplications = async () => {
   console.log("My Applications:", response.data);
   return response.data;
 };
+
+
+export const getProfile = () => {
+  return apiClient(`${BASE_URL}/auth/profile`, {
+    method: "GET",
+  });
+};

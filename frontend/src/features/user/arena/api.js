@@ -180,3 +180,4 @@ export const fetchLeaderboards = async (token) => {
 
   return res.json();
 };
+

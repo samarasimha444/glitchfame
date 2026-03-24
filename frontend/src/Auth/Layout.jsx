@@ -5,6 +5,7 @@ import Footer from "../Footer.jsx";
 
 import { Home, Trophy, Flame, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useProfile } from "../features/user/home/hooks.js";
 
 const MobileBottomNav=()=> {
   return (
@@ -35,22 +36,22 @@ const MobileBottomNav=()=> {
 }
 
 const Layout = () => {
-  // Use dummy data for now
-  const dummyProfile = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    avatar: "https://via.placeholder.com/100",
-  };
+ 
+
+  const { data } = useProfile();
+
+ const profile = data?.data || null;
 
   
-  const { profile } = useOutletContext() || { profile: dummyProfile };
+
+  
+
 
   return (
     <>
       <Navbar profile={profile} />
       <div>
         <Outlet context={{ profile }} />
-
        <Footer/>
       </div>
       <MobileBottomNav/>

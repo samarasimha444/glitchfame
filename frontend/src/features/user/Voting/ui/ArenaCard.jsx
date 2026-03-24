@@ -6,10 +6,14 @@ import { ContestantCard } from "./ContestantCards";
 import { useState, useCallback } from "react";
 import LoginModal from "../../../../components/LoginModal";
 import { handleVoteError } from "../../../../lib/helper";
+import { useOutletContext } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
+
+  const { profile } = useOutletContext();
+  console.log(profile)
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [clickedVotes, setClickedVotes] = useState(() => new Set());
 
@@ -17,10 +21,10 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
   const handleVote = useCallback(
     async (participationId) => {
       const token = localStorage.getItem("token");
-      if (!token) {
-        setShowLoginModal(true);
-        return;
-      }
+       if (!profile) {
+      setShowLoginModal(true);
+      return;
+    }
 
       setClickedVotes((prev) => {
         const newSet = new Set(prev);
