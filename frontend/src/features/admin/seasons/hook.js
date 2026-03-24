@@ -1,9 +1,18 @@
-import { useInfiniteQuery, useMutation,  useQuery,  useQueryClient } from "@tanstack/react-query";
-import { deleteContestant, getContestants, getLiveContestants, searchContestants, updateContestantStatus, voteContestant } from "./api";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import {
+  deleteContestant,
+  getContestants,
+  getLiveContestants,
+  searchContestants,
+  updateContestantStatus,
+  voteContestant,
+} from "./api";
 import toast from "react-hot-toast";
-
-
-
 
 export const useContestants = () => {
   return useInfiniteQuery({
@@ -11,7 +20,7 @@ export const useContestants = () => {
     queryFn: getContestants,
 
     getNextPageParam: (lastPage) => {
-      if (lastPage.last) return undefined; 
+      if (lastPage.last) return undefined;
       return lastPage.number + 1;
     },
   });
@@ -24,22 +33,35 @@ export const useVoteContestant = () => {
     mutationFn: voteContestant,
 
     onSuccess: () => {
-      
       queryClient.invalidateQueries(["contestants"]);
     },
   });
 };
 
-
 export const useDeleteContestant = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: deleteContestant,
+    mutationFn: (id) => deleteContestant(id),
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["contestants"] });
+    onSuccess: (_, deletedId) => {
+      queryClient.setQueryData(["liveContestants"], (oldData) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page) => ({
+            ...page,
+            content: page.content.filter(
+              (item) => item.participationId !== deletedId,
+            ),
+          })),
+        };
+      });
+
       toast.success("Deleted successfully");
+
+      queryClient.invalidateQueries({ queryKey: ["liveContestants"] });
     },
 
     onError: () => {
@@ -47,7 +69,6 @@ export const useDeleteContestant = () => {
     },
   });
 };
-
 export const useUpdateContestantStatus = () => {
   const queryClient = useQueryClient();
 
@@ -55,14 +76,13 @@ export const useUpdateContestantStatus = () => {
     mutationFn: ({ id, action }) => updateContestantStatus(id, action),
 
     onSuccess: () => {
-      
       queryClient.invalidateQueries(["liveContestants"]);
-      toast.success
+      toast.success;
     },
 
     onError: (error) => {
       console.error("Failed to update contestant:", error);
-      toast.error("something went wrrong")
+      toast.error("something went wrrong");
     },
   });
 };
@@ -77,9 +97,19 @@ export const useLiveContestants = (page, size = 6) => {
 
 export const useSearchContestants = (name, seasonId) => {
   return useQuery({
-    queryKey: ["search-contestants", name, seasonId],
+   
+    queryKey: ["contestants", "search", name, seasonId],
+
+   
     queryFn: () => searchContestants({ name, seasonId }),
-    enabled: !!name,
+
+    
+    enabled: !!name?.trim(),
+
+   
     staleTime: 1000 * 60 * 5,
+
+    
+    keepPreviousData: true,
   });
 };

@@ -7,6 +7,7 @@ import LeaderboardLoading from "./ui/LeaderBoardCarousel";
 const Leaderboard = () => {
   const { data, isLoading, error } = useLeaderboard();
   const PRIMARY_COLOR = "#9DE2E2";
+  console.log(data)
 
   useLeaderboardSocket(data);
 

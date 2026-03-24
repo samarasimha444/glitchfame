@@ -22,9 +22,19 @@ const Form = ({ seasonId, image }) => {
   const { mutateAsync: uploadImage, isPending: uploading } = useUploadImage();
   const { mutate: submitEntry, isPending } = useSubmitEntry();
 
-  const handleChange = useCallback((e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  }, []);
+ const handleChange = useCallback((e) => {
+  const { name, value } = e.target;
+
+
+  if (name === "mobile") {
+    const digitsOnly = value.replace(/\D/g, ""); 
+    if (digitsOnly.length <= 10) {
+      setFormData((prev) => ({ ...prev, [name]: digitsOnly }));
+    }
+  } else {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  }
+}, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -102,6 +112,7 @@ const Form = ({ seasonId, image }) => {
               name={field.name}
               value={formData[field.name]}
               onChange={handleChange}
+              required=""
               placeholder={field.label}
               className="bg-[#1a202c] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-white focus:bg-[#1a202c] outline-none"
             />

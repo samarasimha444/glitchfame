@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { UserPlus, Trash2, Search, Loader2 } from "lucide-react";
 import {
   useDeleteContestant,
@@ -9,6 +9,8 @@ import {
 import VoteModal from "./VoteModel";
 import toast from "react-hot-toast";
 import { TableShimmer } from "../../../../components/TableShimmer";
+import NeonLoader from "../../../../components/Loader";
+import { TableRow } from "./TableRow";
 
 const ParticipantsTable = ({ className }) => {
 
@@ -38,30 +40,31 @@ const ParticipantsTable = ({ className }) => {
   const contestants =
     debouncedSearch && searchData ? searchData?.content : data?.content;
 
-  const handleVote = (participationId, votes) => {
-    vote(
-      { participationId, value: votes },
-      {
-        onSuccess: () => {
-          toast.success("Vote submitted successfully");
-          setActiveParticipationId(null);
-        },
-        onError: () => {
-          toast.error("Failed to submit vote");
-        },
-      }
-    );
-  };
+ const handleVote = useCallback((participationId, votes) => {
+  vote(
+    { participationId, value: votes },
+    {
+      onSuccess: () => {
+        toast.success("Vote submitted successfully");
+        setActiveParticipationId(null);
+      },
+      onError: () => {
+        toast.error("Failed to submit vote");
+      },
+    }
+  );
+}, [vote]);
 
-  const handleDelete = (id) => {
-    deleteUser(id);
-  };
+
+const handleDelete = useCallback((id) => {
+  deleteUser(id);
+}, [deleteUser]);
 
   const totalPages = data?.totalPages || 0;
 
   const isLoading = liveLoading 
 
-  if(isLoading) return <TableShimmer/>
+
 
   return (
     <div className={`flex flex-col ${className || "w-full"}`}>
@@ -109,6 +112,8 @@ const ParticipantsTable = ({ className }) => {
 
 
         <div className="overflow-x-auto max-h-[70vh] sm:max-h-none">
+
+
   <table className="w-full text-left border-collapse min-w-[150px] sm:min-w-full">
 
     <thead>
@@ -120,76 +125,33 @@ const ParticipantsTable = ({ className }) => {
       </tr>
     </thead>
 
-    <tbody>
-      {contestants?.map((item) => (
-        <tr
-          key={item.participationId}
-          className="border-b border-gray-800 hover:bg-[#141821] transition"
-        >
-
-          <td className="py-2 sm:py-5 flex items-center gap-2 sm:gap-4">
-            <img
-              src={item?.participantPhotoUrl}
-              loading="lazy"
-              alt={item.name}
-              className="w-10 h-10 sm:w-10 sm:h-10 rounded-full object-contain"
-            />
-            <span className="text-white text-[11px] sm:text-xs font-medium">
-              {item.participantName}
-            </span>
-          </td>
-
-          {/* Season (hidden on mobile) */}
-          <td className="hidden sm:table-cell text-gray-400 text-[11px] sm:text-sm">
-            {item.seasonName}
-          </td>
-
-          {/* Votes */}
-          <td className="text-blue-400 font-semibold text-[10px] sm:text-sm">
-            {item.totalVotes}
-          </td>
-
-          {/* Actions */}
-          <td className="text-right">
-            <div className="flex flex-wrap sm:flex-nowrap justify-end gap-1 sm:gap-3">
-
-              <button
-                onClick={() =>
-                  setActiveParticipationId(item.participationId)
-                }
-                className="bg-[#141821] border border-gray-700 text-gray-300 
-                text-[10px] sm:text-[12px] px-2 sm:px-3 py-[2px] sm:py-1 
-                rounded-md hover:border-gray-500 transition"
-              >
-                Custom
-              </button>
-
-              <button
-                onClick={() =>
-                  handleVote(item.participationId, 10)
-                }
-                className="bg-[#141821] border border-gray-700 text-gray-300 
-                text-[11px] sm:text-[12px] px-5 sm:px-3 py-[2px] sm:py-1 
-                rounded-md hover:border-gray-500 transition"
-              >
-                +10
-              </button>
-
-              <button
-                onClick={() =>
-                  handleDelete(item.participationId)
-                }
-                className="text-red-500 hover:text-red-400 transition"
-              >
-                <Trash2 size={14} className="sm:size-4" />
-              </button>
-
-            </div>
-          </td>
-
-        </tr>
-      ))}
-    </tbody>
+   <tbody>
+  {isLoading ? (
+    <tr>
+      <td colSpan="4" className="text-center py-10">
+        <div className="flex ">
+          <NeonLoader />
+        </div>
+      </td>
+    </tr>
+  ) : contestants?.length === 0 ? (
+    <tr>
+      <td colSpan="4" className="text-center text-gray-400 py-6">
+        No contestants found
+      </td>
+    </tr>
+  ) : (
+    contestants?.map((item) => (
+    <TableRow
+    key={item.participationId}
+    item={item}
+    onVote={handleVote}
+    onDelete={handleDelete}
+    setActive={setActiveParticipationId}
+  />
+    ))
+  )}
+</tbody>
 
   </table>
 </div>
