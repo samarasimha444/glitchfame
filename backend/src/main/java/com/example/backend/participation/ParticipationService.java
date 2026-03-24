@@ -1,5 +1,4 @@
 package com.example.backend.participation;
-
 import com.example.backend.auth.*;
 import com.example.backend.participation.dto.*;
 import com.example.backend.seasons.*;
@@ -7,15 +6,18 @@ import com.example.backend.seasons.dto.SeasonDetails;
 import com.example.backend.seasons.dto.SeasonFullResponse;
 import com.example.backend.votes.dto.*;
 import com.example.backend.votes.VoteQueryService;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.util.*;
+
+
+
+
+
+
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +32,6 @@ public class ParticipationService {
 
     // ✅ map participants with Redis vote data
     private Page<Participants> mapParticipants(Page<Participants> result, UUID authId) {
-
         List<UUID> ids = result.stream()
                 .map(Participants::getParticipationId)
                 .toList();
@@ -63,6 +64,10 @@ public class ParticipationService {
             );
         });
     }
+
+
+
+
 
 
     // create or reapply participation
@@ -130,16 +135,21 @@ public class ParticipationService {
     }
 
 
+
+
+
+
     // ✅ LIVE contestants
     public Page<Participants> getLiveContestants(UUID authId, int page, int size) {
-
         Pageable pageable = PageRequest.of(page, size);
-
         Page<Participants> result =
                 participationRepository.findLiveContestants(pageable);
 
         return mapParticipants(result, authId);
     }
+
+
+
 
 
     // ✅ SEARCH live
@@ -159,6 +169,8 @@ public class ParticipationService {
     }
 
 
+
+
     // ✅ SEARCH by season
     public Page<Participants> searchParticipantsBySeason(
             UUID seasonId,
@@ -169,12 +181,13 @@ public class ParticipationService {
     ) {
 
         Pageable pageable = PageRequest.of(page, size);
-
         Page<Participants> result =
                 participationRepository.searchApprovedBySeason(seasonId, name, pageable);
 
         return mapParticipants(result, authId);
     }
+
+
 
 
     // ✅ random live season
@@ -185,8 +198,7 @@ public class ParticipationService {
     ) {
 
         Instant now = Instant.now();
-
-        SeasonDetails season =
+         SeasonDetails season =
                 seasonRepository.findRandomLiveSeason(
                         authId,
                         now,
@@ -218,7 +230,8 @@ public class ParticipationService {
 
     
 
-    // ✅ GET by ID (Redis-only votes)
+
+    // ✅ GET by ID 
     public ParticipantById getParticipationById(UUID participationId, UUID authId) {
 
         ParticipantById p =
@@ -262,6 +275,9 @@ public class ParticipationService {
     }
 
 
+
+
+
 //track my applications
 public Page<TrackMyApplications> getMyApplications(UUID authId, int page, int size) {
 
@@ -273,9 +289,12 @@ public Page<TrackMyApplications> getMyApplications(UUID authId, int page, int si
 }
 
 
+
+
+
+
     // ✅ DELETE
     public void deleteParticipation(UUID participationId, UUID authId) {
-
         Participation participation =
                 participationRepository.findById(participationId)
                         .orElseThrow(() -> new IllegalStateException("Participation not found"));
@@ -283,7 +302,6 @@ public Page<TrackMyApplications> getMyApplications(UUID authId, int page, int si
         if (!participation.getAuthId().equals(authId)) {
             throw new IllegalStateException("Unauthorized");
         }
-
         participationRepository.delete(participation);
     }
 }
