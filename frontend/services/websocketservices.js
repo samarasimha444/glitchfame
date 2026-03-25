@@ -7,8 +7,7 @@ let isConnected = false;
 let subscriptions = {};
 
 export const connectSocket = (token) => {
-  console.log("🚀 connectSocket called");
-  console.log("🌐 WS URL:", WEB_URL);
+ 
 
   if (client?.active) {
     
@@ -31,10 +30,10 @@ export const connectSocket = (token) => {
       
       isConnected = true;
 
-      console.log("📡 Re-subscribing to topics:", Object.keys(subscriptions));
+      // console.log("📡 Re-subscribing to topics:", Object.keys(subscriptions));
 
       Object.entries(subscriptions).forEach(([topic, subObj]) => {
-        console.log("🔁 Re-subscribing:", topic);
+       
 
         
         subObj.sub = null;
@@ -43,20 +42,20 @@ export const connectSocket = (token) => {
     },
 
     onDisconnect: () => {
-      console.log("❌ WebSocket Disconnected");
+      // console.log("❌ WebSocket Disconnected");
     },
 
     onWebSocketClose: (event) => {
-      console.log("⚠️ WebSocket Closed:", event);
+      // console.log("⚠️ WebSocket Closed:", event);
       isConnected = false;
     },
 
     onWebSocketError: (error) => {
-      console.error("🔥 WebSocket Error:", error);
+      // console.error("🔥 WebSocket Error:", error);
     },
 
     onStompError: (frame) => {
-      console.error("🔥 STOMP Broker error:", frame);
+      // console.error("🔥 STOMP Broker error:", frame);
     },
   });
 
@@ -75,7 +74,7 @@ export const subscribeTopic = (topic, callback) => {
   }
 
   if (subscriptions[topic]) {
-    console.log("⚠️ Already subscribed to:", topic);
+    // console.log("⚠️ Already subscribed to:", topic);
     return subscriptions[topic];
   }
 
@@ -83,34 +82,34 @@ export const subscribeTopic = (topic, callback) => {
     sub: null,
 
     _subscribe: () => {
-      console.log("➡️ محاولة subscribe:", topic);
+      // console.log("➡️ محاولة subscribe:", topic);
 
       if (!client) {
-        console.log("❌ Client missing");
+        
         return;
       }
 
       if (!isConnected) {
-        console.log("⏳ Not connected yet, skipping subscribe");
+       
         return;
       }
 
       if (subObj.sub) {
-        console.log("⚠️ Already has active subscription:", topic);
+   
         return;
       }
 
-      console.log("✅ Subscribing NOW to:", topic);
+     
 
       subObj.sub = client.subscribe(topic, (msg) => {
-        console.log("📨 MESSAGE RECEIVED RAW:", msg);
+       
 
         try {
-          console.log("📦 MESSAGE BODY:", msg.body);
+       
 
           const data = JSON.parse(msg.body);
 
-          console.log("✅ PARSED DATA:", data);
+         
 
           callback(data);
         } catch (err) {
@@ -118,11 +117,11 @@ export const subscribeTopic = (topic, callback) => {
         }
       });
 
-      console.log("🎯 Subscription object:", subObj.sub);
+      
     },
 
     unsubscribe: () => {
-      console.log("🛑 Unsubscribing from:", topic);
+      
 
       subObj.sub?.unsubscribe();
       subObj.sub = null;
@@ -133,7 +132,7 @@ export const subscribeTopic = (topic, callback) => {
 
   subscriptions[topic] = subObj;
 
-  console.log("📌 Stored subscription for:", topic);
+  
 
   subObj._subscribe();
 
@@ -141,7 +140,7 @@ export const subscribeTopic = (topic, callback) => {
 };
 
 export const disconnectSocket = () => {
-  console.log("🔌 disconnectSocket called");
+
 
   Object.entries(subscriptions).forEach(([topic, s]) => {
     console.log("🛑 Cleaning subscription:", topic);
@@ -158,5 +157,5 @@ export const disconnectSocket = () => {
 
   isConnected = false;
 
-  console.log("✅ Socket fully disconnected");
+ 
 };

@@ -1,5 +1,4 @@
 import { Outlet, useOutletContext } from "react-router-dom";
-import UserProfile from "./Navbar.jsx";
 import Navbar from "./Navbar.jsx";
 import Footer from "../Footer.jsx";
 
@@ -7,34 +6,56 @@ import { Home, Trophy, Flame, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useProfile } from "../features/user/home/hooks.js";
 
-const MobileBottomNav=()=> {
-  return (
-    <nav className="fixed bottom-0 left-0 w-full py-3 bg-[#1E2229] border-t border-gray-800 flex justify-around items-center py-2 md:hidden z-50">
+const MobileBottomNav = () => {
+  const baseClass =
+    "flex flex-col items-center text-xs transition-all duration-200";
 
-      <NavLink to="/home" className="flex flex-col items-center text-gray-400 text-xs">
+  return (
+    <nav className="fixed bottom-0 left-0 w-full bg-[#1E2229] border-t border-gray-800 flex justify-around items-center py-2 md:hidden z-50">
+
+      <NavLink
+        to="/home"
+        className={({ isActive }) =>
+          `${baseClass} ${isActive ? "text-primary" : "text-gray-400"}`
+        }
+      >
         <Home size={18} />
         Home
       </NavLink>
 
-      <NavLink to="/leaderboard" className="flex flex-col items-center text-gray-400 text-xs">
+      <NavLink
+        to="/leaderboard"
+        className={({ isActive }) =>
+          `${baseClass} ${isActive ? "text-primary" : "text-gray-400"}`
+        }
+      >
         <Trophy size={18} />
         Rank
       </NavLink>
 
-      <NavLink to="/vote" className="flex flex-col items-center text-gray-400 text-xs">
+      <NavLink
+        to="/vote"
+        className={({ isActive }) =>
+          `${baseClass} ${isActive ? "text-primary" : "text-gray-400"}`
+        }
+      >
         <Flame size={18} />
         Vote
       </NavLink>
 
-      <NavLink to="/status" className="flex flex-col items-center text-gray-400 text-xs">
+      <NavLink
+        to="/status"
+        className={({ isActive }) =>
+          `${baseClass} ${isActive ? "text-primary" : "text-gray-400"}`
+        }
+      >
         <User size={18} />
         Status
       </NavLink>
 
     </nav>
   );
-}
-
+};
 const Layout = () => {
  
 

@@ -32,7 +32,7 @@ const Vote = () => {
   } = useParticipation(seasonId);
   
 
-
+console.log(participationData)
   
   const {
     data: searchData,
@@ -42,11 +42,14 @@ const Vote = () => {
 
  
   const contestants = debouncedSearch
-    ? searchData?.content || []          
-    : participationData?.participants?.content || [];
+  ? searchData?.content || []
+  : participationData?.pages?.flatMap(
+      (page) => page.participants.content
+    ) || [];
 
 
-  const seasonInfo = participationData?.season;
+
+  const seasonInfo = participationData?.pages?.[0]?.season;
 
   
   useSeasonVotes(!isLoadingParticipation ? seasonInfo?.seasonId : null);

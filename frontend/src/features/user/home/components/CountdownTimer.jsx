@@ -56,7 +56,7 @@ export default function CountdownTimer({ prizeMoney, endDate }) {
           <TimerBox value={format(timeLeft?.s)} label="SEC" />
         </div>
 
-        <div className="flex flex-col items-end ml-3 min-w-[70px] max-w-[120px]">
+        {/* <div className="flex flex-col items-end ml-3 min-w-[70px] max-w-[120px]">
           <span className="text-[10px] px-2 py-[2px] rounded-full border border-[#9DE2E2] text-[#9DE2E2] whitespace-nowrap">
             POOL
           </span>
@@ -64,7 +64,7 @@ export default function CountdownTimer({ prizeMoney, endDate }) {
           <span className="text-white font-bold sm:text-lg truncate w-full text-right">
             {prizeMoney}
           </span>
-        </div>
+        </div> */}
 
       </div>
     </div>

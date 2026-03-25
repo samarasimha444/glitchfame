@@ -91,6 +91,7 @@ const Form = ({ seasonId, image }) => {
 
   const isLoading = uploading || isPending;
 
+
   return (
     <>
       
@@ -99,9 +100,9 @@ const Form = ({ seasonId, image }) => {
         <h3 className="text-white font-semibold text-lg">PROFILE INTELLIGENCE</h3>
 
         {isLoading && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-            <NeonLoader />
-          </div>
+         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 min-h-[75dvh]">
+  <NeonLoader />
+</div>
         )}
 
         <div className="grid grid-cols-2 gap-4 text-xs sm:text-base">

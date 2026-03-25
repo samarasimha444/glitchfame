@@ -12,8 +12,9 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
 
+
   const { profile } = useOutletContext();
-  console.log(profile)
+
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [clickedVotes, setClickedVotes] = useState(() => new Set());
 

@@ -2,7 +2,7 @@ import React from "react";
 
 export default function NeonLoader() {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+    <div className="fixed inset-0 z-50 flex items-center justify-center ">
       <div className="flex flex-col items-center gap-4">
        
         <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-transparent border-t-[#9DE2E2] rounded-full animate-spin "></div>

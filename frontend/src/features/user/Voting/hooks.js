@@ -1,5 +1,5 @@
 import { Client } from "@stomp/stompjs";
-import {  useQuery, useQueryClient } from "@tanstack/react-query";
+import {  useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import {  useEffect,  } from "react";
 import {
   connectSocket,
@@ -15,26 +15,26 @@ import toast from "react-hot-toast";
 
 
 export const useParticipation = (seasonId, search = "") => {
-  console.log(seasonId);
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ["participation", seasonId],
 
-    queryFn: async () => {
-      const data =
-        seasonId ?
-          await fetchSeasonParticipation(seasonId, search)
-        : await fetchRandomParticipation();
+    queryFn: async ({ pageParam = 0 }) => {
+      const res =
+        seasonId
+          ? await fetchSeasonParticipation(seasonId, search, pageParam)
+          : await fetchRandomParticipation(pageParam);
 
-      return data;
+     
+
+      return res
     },
 
-    keepPreviousData: true,
-
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 10,
-    refetchOnWindowFocus: false,
+    getNextPageParam: (lastPage) => {
+      return !lastPage.last ? lastPage.number + 1 : undefined;
+    },
   });
 };
+
 
 export const useSeasonVotes = (seasonId) => {
   const queryClient = useQueryClient();
@@ -51,24 +51,36 @@ export const useSeasonVotes = (seasonId) => {
     const subscription = subscribeTopic(topic, (vote) => {
       console.log("LIVE VOTE:", vote);
 
-      queryClient.setQueryData(["participation", seasonId], (oldData) => {
-        if (!oldData?.participants?.content) return oldData;
+queryClient.setQueryData(["participation", seasonId], (oldData) => {
+  if (!oldData?.pages) return oldData;
 
-        return {
-          ...oldData,
-          participants: {
-            ...oldData.participants,
-            content: oldData.participants.content.map((c) =>
-              c.participationId === vote.participationId ?
-                {
-                  ...c,
-                  totalVotes: vote.totalVotes ?? vote.votes ?? c.totalVotes,
-                }
-              : c,
-            ),
-          },
-        };
+  return {
+    ...oldData,
+    pages: oldData.pages.map((page) => {
+      if (!page?.participants?.content) return page;
+
+      const updatedContent = page.participants.content.map((c) => {
+        if (c.participationId === vote.participationId) {
+          return {
+            ...c,
+            totalVotes:
+              vote.totalVotes ?? vote.votes ?? c.totalVotes,
+          };
+        }
+        return c;
       });
+
+      return {
+        ...page,
+        participants: {
+          ...page.participants,
+          content: updatedContent,
+        },
+      };
+    }),
+  };
+});
+
 
       const searchQueries = queryClient
         .getQueryCache()

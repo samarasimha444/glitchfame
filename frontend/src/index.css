@@ -79,79 +79,16 @@ h1, h2, h3, h4, h5, h6 {
 
 
 
-/* =========================
-   DAYPICKER GLOBAL THEME
-========================= */
 
-.rdp {
-  --rdp-accent-color: #9DE2E2 !important;
-  --rdp-background-color: #1f2937 !important;
 
-  background: #111418 !important;
-  color: #e5e7eb !important;
-  font-size: 0.72rem;
-}
 
-/* Days */
-.rdp-day {
-  width: 26px;
-  height: 26px;
-  margin: 2px;
-  border-radius: 6px;
-}
-
-/* Selected */
-.rdp-day_selected {
-  background: #9DE2E2 !important;
-  color: black !important;
-  font-weight: 600;
-}
-
-/* Today */
-.rdp-day_today {
-  border: 1px solid #9DE2E2;
-}
-
-/* Hover */
-.rdp-day:hover {
-  background: #1f2937;
-}
-
-/* Caption (month/year) */
-.rdp-caption {
-  color: #9DE2E2;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-/* Navigation arrows */
-.rdp-nav button {
-  color: white !important;
-  background: transparent !important;
-}
-
-.rdp-nav button:hover {
-  background: #1f2937 !important;
-}
-
-/* ❌ REMOVE BLUE (focus + active) */
-.rdp-button:focus,
-.rdp-button:active,
-.rdp-day:focus,
-.rdp-day:active {
-  outline: none !important;
-  box-shadow: none !important;
-  background-color: transparent !important;
-}
 
 /* ❌ REMOVE MOBILE BLUE TAP */
 .rdp * {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* =========================
-   MODAL ANIMATION
-========================= */
+
 
 @keyframes fadeIn {
   from {
@@ -164,50 +101,31 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-.animate-fadeIn {
-  animation: fadeIn 0.2s ease-out;
+
+
+
+
+
+
+
+/* Slide animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
 }
 
-/* FORCE OVERRIDE EVERYTHING */
-.rdp {
-  --rdp-accent-color: #9DE2E2 !important;
-  --rdp-accent-color-dark: #9DE2E2 !important;
-  --rdp-background-color: #1f2937 !important;
+/* Apply animation */
+.react-hot-toast {
+  animation: slideIn 0.3s ease forwards;
 }
 
-/* kill ALL button styles */
-.rdp button {
-  color: white !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-/* selected */
-.rdp-day_selected {
-  background: #9DE2E2 !important;
-  color: black !important;
-}
-
-/* hover */
-.rdp-day:hover {
-  background: #1f2937 !important;
-}
-
-/* remove blue focus ring completely */
-.rdp button:focus,
-.rdp button:active,
-.rdp button:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-/* remove mobile blue */
-.rdp * {
-  -webkit-tap-highlight-color: transparent !important;
-}
-
-.rdp ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+/* Glow on hover */
+.react-hot-toast:hover {
+  box-shadow: 0 0 12px rgba(145, 207, 208, 0.4);
 }

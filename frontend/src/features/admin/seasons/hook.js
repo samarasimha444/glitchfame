@@ -77,7 +77,7 @@ export const useUpdateContestantStatus = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries(["liveContestants"]);
-      toast.success;
+      toast.success("success");
     },
 
     onError: (error) => {

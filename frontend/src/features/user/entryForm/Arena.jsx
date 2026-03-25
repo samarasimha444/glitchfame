@@ -3,6 +3,7 @@ import Form from "./ui/Form";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import LoginRequiredModal from "../../../components/LoginModal";
+import { useOutletContext } from "react-router-dom";
 
 const ArenaForm = () => {
   const { id } = useParams();
@@ -10,11 +11,13 @@ const ArenaForm = () => {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [show,setShow]=useState(false)
+    const { profile } = useOutletContext();
 
   const handleImageChange = (e) => {
 
   const token = localStorage.getItem("token");
-  if (!token) {
+
+  if (!profile || !token) {
     setShow(true);
     return;
   }
@@ -106,7 +109,7 @@ sm:h-[360px] ">
           </label>
 
           <p className="text-[10px] sm:text-xs text-gray-500 max-w-[200px]">
-            Ensure proper lighting, no masks, and centered subject.
+            You only get one chance to upload your photo — make it count
           </p>
         </div>
       )}
