@@ -30,7 +30,7 @@ export const ContestantCard = React.memo(
             {user.participantName}
           </h3>
 
-          <p className="text-[#9DE2E2] text-xs sm:text-sm">
+          <p className="text-primary text-xs sm:text-sm">
             {user.totalVotes} votes
           </p>
         </div>

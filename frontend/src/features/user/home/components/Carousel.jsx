@@ -109,7 +109,7 @@ export default function FeaturedCarousel({ season }) {
 
             <Link
               to={`/enter/${season?.seasonId}`}
-              className=" border bg-[#9DE2E2] text-black cursor-pointer rounded-full px-5 py-2 text-xs font-semibold"
+              className=" border bg-primary text-black cursor-pointer rounded-full px-5 py-2 text-xs font-semibold"
             >
               Register Now →
             </Link>

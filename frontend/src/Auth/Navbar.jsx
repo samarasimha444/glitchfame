@@ -34,7 +34,7 @@ const Navbar = () => {
     <nav className=" z-50 border-b border-gray-600 px-5 sm:px-8 py-5 flex items-center justify-between relative">
       <div className="flex items-center space-x-2">
 
-      <div className="mx-auto w-10 h-10 rounded-xl flex items-center justify-center bg-[#9DE2E2] shadow-[0_0_40px_rgba(168,85,247,0.5)]">
+      <div className="mx-auto w-10 h-10 rounded-xl flex items-center justify-center bg-primary shadow-[0_0_40px_rgba(168,85,247,0.5)]">
        <Zap className="text-black" size={26} />
     </div>
 
@@ -68,10 +68,10 @@ const Navbar = () => {
               </li>
             : <li
                 key={idx}
-                className="flex items-center gap-1 hover:text-purple-400 cursor-pointer"
+                className="flex items-center gap-1 hover:text-primary cursor-pointer"
               >
                 {item.icon && (
-                  <item.icon size={16} className="text-purple-500" />
+                  <item.icon size={16} className="text-white" />
                 )}
                 {item.label}
               </li>,
@@ -99,7 +99,7 @@ const Navbar = () => {
           {avatarOpen && (
             <div className="absolute right-0 mt-2 w-40 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-lg flex flex-col">
               <button
-                className="px-4 py-2 text-white hover:bg-purple-500 transition"
+                className="px-4 py-2 text-white hover:text-red-400  transition"
                 onClick={() => {
                   handleLogout()
                   setAvatarOpen(false);
@@ -109,7 +109,7 @@ const Navbar = () => {
                 Logout
               </button>
               <button 
-                className="px-4 py-2 text-white hover:bg-purple-500 transition"
+                className="px-4 py-2 text-white hover:bg-gray-500 transition"
                 onClick={() => {
                   setAvatarOpen(false);
                   setOpenModal(true)

@@ -99,13 +99,15 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
             {isLoading && shimmerArray}
 
             {!isLoading &&
-              data?.map((user) => {
+              data?.map((user,index
+                
+              ) => {
                 const isClicked = clickedVotes.has(user.participationId);
                 const isVoted = isClicked ? !user.hasVoted : user.hasVoted;
 
                 return (
                   <div
-                    key={user.participationId}
+                    key={`${user.participationId}-${index}`}
                     className="flex flex-col items-center"
                   >
                     <ContestantCard user={user} />
@@ -115,7 +117,7 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
                       className={`mt-2 w-35 sm:w-full sm:text-base text-[12px] font-semibold py-2 cursor-pointer rounded-md transition-all duration-150 shadow-md active:shadow-sm active:scale-95 active:translate-y-[1px] ${
                         isVoted ?
                           "bg-primary text-black shadow"
-                        : "bg-[#9DE2E2] text-black hover:opacity-90"
+                        : "bg-primary text-black hover:opacity-90"
                       }`}
                     >
                       {isVoted ? "Voted" : "Vote Now"}

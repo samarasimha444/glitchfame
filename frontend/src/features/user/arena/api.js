@@ -183,14 +183,15 @@ export const fetchLeaderboards = async (token) => {
 };
 
 
-export const fetchRandomParticipation = async (page = 0, size = 10) => {
-  const token = localStorage.getItem("token");
-  console.log("Calling fetchRandomParticipation API");
+export const fetchRandomParticipation = async (page,size) => {
+  console.log(page,size)
+  console.log("PAGE FROM HOOK:", page);
 
-  const url = `${BASE_URL}/seasons/live/random?page=${page}&size=${size}`;
+  const token = localStorage.getItem("token");
+
+  const url = `${BASE_URL}/seasons/live/random?page=${page}&size=${size}`; 
 
   const res = await fetch(url, {
-    method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",

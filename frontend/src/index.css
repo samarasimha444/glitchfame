@@ -37,6 +37,17 @@ h1, h2, h3, h4, h5, h6 {
 .bg-primary {
   background-color:#9DE2E2
 }
+ 
+
+
+/* .text-primary {
+  color: #165656;
+}
+
+.bg-primary {
+  background-color:#003939
+}
+  */
 
 
 .no-scrollbar::-webkit-scrollbar {

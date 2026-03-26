@@ -8,32 +8,34 @@ import {
 } from "../../../../services/websocketservices";
 import { fetchRandomParticipation, fetchSearchContestants } from "../arena/api";
 import { fetchSeasonParticipation } from "../home/api";
-import toast from "react-hot-toast";
 
 
 
 
 
-export const useParticipation = (seasonId, search = "") => {
-  return useInfiniteQuery({
-    queryKey: ["participation", seasonId],
 
-    queryFn: async ({ pageParam = 0 }) => {
-      const res =
-        seasonId
-          ? await fetchSeasonParticipation(seasonId, search, pageParam)
-          : await fetchRandomParticipation(pageParam);
+export const useParticipation = (seasonId, page = 0) => {
+  return useQuery({
+    queryKey: ["participation", seasonId,page],
 
-     
+    queryFn: async () => {
+      console.log("FETCHING PAGE:", page); 
 
-      return res
+      const res = seasonId
+        ? await fetchSeasonParticipation(seasonId, page, 10)
+        : await fetchRandomParticipation(page, 8);
+
+      return res;
     },
 
-    getNextPageParam: (lastPage) => {
-      return !lastPage.last ? lastPage.number + 1 : undefined;
-    },
+    keepPreviousData: true,
+    
   });
 };
+
+
+
+
 
 
 export const useSeasonVotes = (seasonId) => {
@@ -43,67 +45,93 @@ export const useSeasonVotes = (seasonId) => {
     if (!seasonId) return;
 
     const token = localStorage.getItem("token");
-      if (!token) return;
+    if (!token) return;
+
     connectSocket(token);
 
     const topic = `/topic/votes/${seasonId}`;
 
     const subscription = subscribeTopic(topic, (vote) => {
-      console.log("LIVE VOTE:", vote);
+      console.log("🔥 LIVE VOTE:", vote);
 
-queryClient.setQueryData(["participation", seasonId], (oldData) => {
-  if (!oldData?.pages) return oldData;
+      
+      const queries = queryClient.getQueryCache().findAll();
 
-  return {
-    ...oldData,
-    pages: oldData.pages.map((page) => {
-      if (!page?.participants?.content) return page;
+      const participationQueries = queries.filter(
+  (q) => q.queryKey[0] === "participation"
+);
 
-      const updatedContent = page.participants.content.map((c) => {
-        if (c.participationId === vote.participationId) {
-          return {
-            ...c,
-            totalVotes:
-              vote.totalVotes ?? vote.votes ?? c.totalVotes,
-          };
-        }
-        return c;
-      });
+      
+      participationQueries.forEach((query) => {
+        queryClient.setQueryData(query.queryKey, (oldData) => {
+          if (!oldData?.participants?.content) return oldData;
 
-      return {
-        ...page,
-        participants: {
-          ...page.participants,
-          content: updatedContent,
-        },
-      };
-    }),
-  };
-});
+          let updated = false;
 
+          const newContent = oldData.participants.content.map((c) => {
+            if (String(c.participationId) === String(vote.participationId)) {
+              const newVotes =
+                vote.totalVotes ?? vote.votes ?? c.totalVotes;
 
-      const searchQueries = queryClient
-        .getQueryCache()
-        .findAll(
-          (query) =>
-            query.queryKey[0] === "searchContestants" &&
-            query.queryKey[1] === seasonId,
-        );
+              if (c.totalVotes === newVotes) return c;
 
-      searchQueries.forEach(({ queryKey }) => {
-        queryClient.setQueryData(queryKey, (oldData) => {
-          if (!oldData?.content) return oldData;
+              updated = true;
+
+              return {
+                ...c,
+                totalVotes: newVotes,
+              };
+            }
+            return c;
+          });
+
+          if (!updated) return oldData;
 
           return {
             ...oldData,
-            content: oldData.content.map((c) =>
-              c.participationId === vote.participationId ?
-                {
-                  ...c,
-                  totalVotes: vote.totalVotes ?? vote.votes ?? c.totalVotes,
-                }
-              : c,
-            ),
+            participants: {
+              ...oldData.participants,
+              content: newContent,
+            },
+          };
+        });
+      });
+
+    
+      const searchQueries = queries.filter(
+        (q) =>
+          q.queryKey[0] === "searchContestants" &&
+          String(q.queryKey[1]) === String(seasonId)
+      );
+
+      searchQueries.forEach((query) => {
+        queryClient.setQueryData(query.queryKey, (oldData) => {
+          if (!oldData?.content) return oldData;
+
+          let updated = false;
+
+          const newContent = oldData.content.map((c) => {
+            if (String(c.participationId) === String(vote.participationId)) {
+              const newVotes =
+                vote.totalVotes ?? vote.votes ?? c.totalVotes;
+
+              if (c.totalVotes === newVotes) return c;
+
+              updated = true;
+
+              return {
+                ...c,
+                totalVotes: newVotes,
+              };
+            }
+            return c;
+          });
+
+          if (!updated) return oldData;
+
+          return {
+            ...oldData,
+            content: newContent,
           };
         });
       });
