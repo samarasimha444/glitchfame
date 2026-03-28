@@ -70,12 +70,16 @@ const Layout = () => {
 
   return (
     <>
+    <section className="flex flex-col w-full max-w-[1700px] m-auto">
+
+   
       <Navbar profile={profile} />
       <div>
         <Outlet context={{ profile }} />
        <Footer/>
       </div>
       <MobileBottomNav/>
+       </section>
     </>
   );
 };

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function FeaturedCarousel({ season }) {
   return (
-    <div className="w-full relative mt-6 md:mt-0 flex justify-center items-center  max-w-400 mx-auto  h-full md:h-[95dvh]">
+    <div className="w-full max-h-dvh relative mt-6 md:mt-0 flex justify-center items-center  max-w-400 mx-auto  h-full md:max-h-[95dvh]">
       {/* <section className=" w-full hidden md:flex  flex-col  max-w-4xl text-center mb-8 md:mb-6 px-4">
         <h2 className="text-white text-xl md:text-5xl font-bold  max-w-xl tracking-wider uppercase">
           ENTER THE{" "}
@@ -112,7 +112,8 @@ export default function FeaturedCarousel({ season }) {
         </section>
       </section>
 
-      <div className=" hidden w-full absolute -bottom-20 max-w-xl md:max-w-5xl h-39 bg-[#123B3B] border border-teal-500/30 rounded-xs p-6 sm:flex flex-col md:flex-row items-center justify-between ]">
+
+      <div className=" hidden w-full absolute -bottom-20 max-w-xl md:max-w-5xl h-39 bg-[#123B3B] border border-teal-500/30 rounded-xs p-6 sm:flex flex-col md:flex-row items-center  justify-between ]">
         <div className="flex items-center gap-4">
 
           <div className="p-3 bg-teal-500/20 rounded-full border border-teal-500/50">
