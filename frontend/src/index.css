@@ -37,7 +37,14 @@ h1, h2, h3, h4, h5, h6 {
 .bg-primary {
   background-color:#9DE2E2
 }
- 
+
+.text-secondary {
+  color: #F4F4F5;
+}
+
+.bg-display{
+  background-color: #16191D;
+}
 
 
 /* .text-primary {

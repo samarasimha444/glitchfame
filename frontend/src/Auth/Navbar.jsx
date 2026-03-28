@@ -31,7 +31,7 @@ const Navbar = () => {
 };
 
   return (
-    <nav className=" z-50 border-b border-gray-600 px-5 sm:px-8 py-5 flex items-center justify-between relative">
+    <nav className=" z-50 border-b sm:border-0 bg-display border-gray-600 px-5 sm:px-8 py-5 flex items-center justify-between relative">
       <div className="flex items-center space-x-2">
 
       <div className="mx-auto w-10 h-10 rounded-xl flex items-center justify-center bg-primary shadow-[0_0_40px_rgba(168,85,247,0.5)]">
@@ -123,7 +123,7 @@ const Navbar = () => {
       </div>
 
       <button
-        className="md:hidden text-white"
+        className="sm:hidden text-white"
         onClick={() => setIsOpen(!isOpen)}
       >
         <Logs size={28} className="animate-[wiggle_2s_ease-in-out_infinite]" />

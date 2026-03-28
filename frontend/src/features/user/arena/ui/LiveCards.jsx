@@ -18,7 +18,7 @@ const LiveCards = ({seasons}) => {
       md:w-full md:h-75
       bg-[#111418] border border-[#1E232B]
       rounded-2xl p-4 text-white flex flex-col relative justify-between
-      hover:border-purple-500 transition-all
+      hover:border-teal-200 transition-all
       "
         >
           <div>
@@ -43,7 +43,7 @@ const LiveCards = ({seasons}) => {
 
               <div className="flex items-center gap-2">
                 <Users size={12} />
-                423 Entries
+                Enter Now
               </div>
 
               <div className="flex items-center gap-2 text-red-400">

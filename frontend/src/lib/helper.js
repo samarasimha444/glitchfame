@@ -1,5 +1,7 @@
 // utils/format.js
 
+import { useEffect, useState } from "react";
+
 
 
 
@@ -135,41 +137,15 @@ export const handleVoteError = (err, { setShowLoginModal }) => {
 };
 
 
-// const decodeToken = (token) => {
-//   try {
-//     const payload = token.split(".")[1];
-//     const decoded = JSON.parse(atob(payload));
-//     return decoded;
-//   } catch (err) {
-//     return null;
-//   }
-// };
 
-export const decodeToken = (token) => {
-  try {
-    const base64Url = token.split(".")[1];
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    const decoded = JSON.parse(atob(base64));
-    return decoded;
-  } catch (err) {
-    console.error("Invalid token", err);
-    return null;
-  }
-};
+ export const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-export const isTokenExpired = (token) => {
-  const decoded = decodeToken(token);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  console.log("FULL TOKEN:", token);
-  console.log("DECODED TOKEN:", decoded); // 🔥 this shows everything
-
-  if (!decoded || !decoded.exp) return true;
-
-  const currentTime = Date.now() / 1000;
-
-  console.log("EXP:", decoded.exp);
-  console.log("CURRENT:", currentTime);
-  console.log("IS EXPIRED:", decoded.exp < currentTime);
-
-  return decoded.exp < currentTime;
+  return isMobile;
 };
