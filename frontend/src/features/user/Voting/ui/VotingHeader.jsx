@@ -11,11 +11,11 @@ const VotingHeader = ({season}) => {
 );
   
   return (
-    <section className="w-full  overflow-x-hidden text-white py-6 md:py-4  md:px-16">
+    <section className="w-full border-gray-600  overflow-x-hidden text-white py-6 md:py-4  md:px-12">
 
 
 
-      <div className="max-w-350 mx-auto">
+      <div className="mx-auto w-full ">
 
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-10">
           <div className="max-w-xl">
@@ -53,7 +53,8 @@ const VotingHeader = ({season}) => {
 
         
       </div>
-
+    
+        <hr className="mt-12 text-gray-600" />
    
     </section>
   );

@@ -61,23 +61,37 @@ const Vote = () => {
   const isEmpty = !isLoadingState && contestants.length === 0;
 
   return (
-    <div className="flex flex-col w-full m-auto max-w-400 px-5 min-h-screen">
+    <div className="flex bg-[#181820] flex-col w-full m-auto  max-w-400 px-5 min-h-screen">
       
       <VotingHeader season={seasonInfo} id={seasonId} />
 
       
-      <div className="md:flex md:px-12 flex-col md:flex-row gap-4 mb-5 md:mt-10 md:mb-8">
-        <div className="flex items-center bg-[#323843] border border-[#1E232B] rounded-xl px-7 w-full py-3.5 flex-1">
-          <Search size={16} className="text-gray-400 mr-2" />
-          <input
-            type="search"
-            autoComplete="off"
-            placeholder="Search contestants..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-transparent outline-none text-sm w-full"
-          />
-        </div>
+      <div className="md:flex md:px-12 flex-col md:flex-row gap-4 mb-5 mt-4 md:mb-8">
+
+
+
+
+<div className="flex justify-center w-full px-4 ">
+
+  <div className="flex items-center w-full max-w-[896px] h-12 md:h-[56px] bg-[#21212B] border border-white/10 focus-within:border-teal-300 rounded-xl px-5 transition-all duration-300 shadow-lg shadow-black/20">
+    
+    <Search size={18} className="text-gray-500 mr-3 shrink-0" />
+    
+   
+    <input
+      type="search"
+      autoComplete="off"
+      placeholder="Search contestants by name"
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      className="bg-transparent outline-none text-gray-200 text-sm w-full placeholder:text-gray-600 font-medium"
+    />
+    
+  
+  </div>
+</div>
+
+
       </div>
 
       

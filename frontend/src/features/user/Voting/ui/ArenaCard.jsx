@@ -7,25 +7,23 @@ import { useState, useCallback } from "react";
 import LoginModal from "../../../../components/LoginModal";
 import { handleVoteError } from "../../../../lib/helper";
 import { useOutletContext } from "react-router-dom";
+import { X } from "lucide-react";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
-
-
   const { profile } = useOutletContext();
 
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [clickedVotes, setClickedVotes] = useState(() => new Set());
 
-  
   const handleVote = useCallback(
     async (participationId) => {
       const token = localStorage.getItem("token");
-       if (!profile) {
-      setShowLoginModal(true);
-      return;
-    }
+      if (!profile) {
+        setShowLoginModal(true);
+        return;
+      }
 
       setClickedVotes((prev) => {
         const newSet = new Set(prev);
@@ -82,12 +80,19 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
 
       <div className="w-full mx-auto">
         <div className="flex items-center justify-between sm:mt-6">
-          <div className="flex items-center justify-center gap-2 text-primary">
-            <Heart size={18} strokeWidth={2} />
-            <span className="text-[18px] font-semibold text-white">
-              Current Participants
-            </span>
+          <div className="flex flex-col  text-primary">
+            <h6 className="flex items-center text-center space-x-2">
+              {" "}
+              <Heart size={18} strokeWidth={2} />{" "}
+              <span className="text-[20px] font-semibold text-white">
+                Current Participants
+              </span>{" "}
+            </h6>
+            <p className="ml-7 text-[13px] text-gray-400">
+              Active for this season
+            </p>
           </div>
+
           <span className="text-xs text-center text-gray-400 font-semibold">
             {data?.length || 0} TOTAL
           </span>
@@ -99,29 +104,71 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
             {isLoading && shimmerArray}
 
             {!isLoading &&
-              data?.map((user,index
-                
-              ) => {
+              data?.map((user, index) => {
                 const isClicked = clickedVotes.has(user.participationId);
                 const isVoted = isClicked ? !user.hasVoted : user.hasVoted;
 
                 return (
                   <div
                     key={`${user.participationId}-${index}`}
-                    className="flex flex-col items-center"
+                    className="flex  relative flex-col items-center"
                   >
                     <ContestantCard user={user} />
 
-                    <button
-                      onClick={() => handleVote(user.participationId)}
-                      className={`mt-2 w-35 sm:w-full sm:text-base text-[12px] font-semibold py-2 cursor-pointer rounded-md transition-all duration-150 shadow-md active:shadow-sm active:scale-95 active:translate-y-[1px] ${
-                        isVoted ?
-                          "bg-primary text-black shadow"
-                        : "bg-primary text-black hover:opacity-90"
-                      }`}
+                    <section
+                      className="
+    absolute bottom-3 right-2
+    flex flex-col items-end gap-2
+
+    md:static md:flex-row md:w-full md:justify-between md:items-center md:px-1
+  "
                     >
-                      {isVoted ? "Voted" : "Vote Now"}
-                    </button>
+                      {/* VOTE BUTTON */}
+                      <button
+                        onClick={(e) => e.stopPropagation()}
+                        className="
+                w-8 h-8 md:flex-1 md:w-[103px] md:h-[40px]
+
+               border border-teal-100 hover:bg-[#28b3a8]
+                   text-teal-200 rounded-full md:rounded-xl
+
+                 flex items-center justify-center gap-1.5
+                  transition-all duration-150
+
+               shadow-[0_4px_10px_rgba(48,213,200,0.3)]
+          "
+                      >
+                        <Heart size={16} fill="currentColor" />
+                        <span className="hidden md:inline text-[12px] font-black uppercase">
+                          Vote
+                        </span>
+                      </button>
+
+                      
+                      <button
+                        onClick={(e) => e.stopPropagation()}
+                        className="
+                     w-8 h-8 md:flex-1 md:w-[103px] md:h-[40px]
+               
+                     border border-[#E11D48] bg-[#E11D48]/5
+                     hover:bg-[#E11D48] hover:text-white
+               
+                     text-[#E11D48] rounded-full md:rounded-xl
+               
+                     flex items-center justify-center gap-1.5
+                     transition-all duration-150
+                   "
+                                     >
+                           <X size={16} strokeWidth={3} />
+                        <span className="hidden md:inline text-[12px] font-black uppercase">
+                          Kill
+                        </span>
+                      </button>
+                    </section>
+
+                    <p className="text-gray-400 hidden sm:flex font-medium text-[12px] pt-3 leading-relaxed tracking-wide">
+                      Vote To Support or Kill to Challenge
+                    </p>
                   </div>
                 );
               })}

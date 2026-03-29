@@ -10,10 +10,10 @@ export const ContestantCard = React.memo(
     return (
       <article
         onClick={() => navigate(`/details/${user.participationId}`)}
-        className="relative flex flex-col w-full max-w-40.75 h-51  mt-4 sm:max-w-77.5 sm:h-97 rounded-xl rounded-b-none overflow-hidden border border-gray-800 hover:border-white transition"
+        className="relative flex flex-col w-full max-w-40.75 h-54  mt-4 sm:max-w-77.5 sm:h-97 rounded-xl md:rounded-b-none overflow-hidden border border-gray-800  transition"
       >
         <img
-          src={`${user?.participantPhotoUrl}?auto=compress&cs=tinysrgb&w=500`}
+          src={`${user?.participantPhotoUr}?auto=compress&cs=tinysrgb&w=500`}
           alt={user?.name}
           loading="lazy"
           decoding="async"
