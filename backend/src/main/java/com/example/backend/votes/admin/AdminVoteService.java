@@ -1,70 +1,46 @@
 package com.example.backend.votes.admin;
 
-import com.example.backend.participation.Participation;
-import com.example.backend.participation.ParticipationRepo;
-import com.example.backend.votes.dto.VoteUpdateDTO;
-import com.example.backend.config.redis.RedisService;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
+
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.UUID;
+import com.example.backend.votes.async.dto.Broadcast;
 
 @Service
 @RequiredArgsConstructor
 public class AdminVoteService {
 
     private final StringRedisTemplate redis;
-    private final ParticipationRepo participationRepo;
     private final SimpMessagingTemplate messagingTemplate;
-    private final RedisService redisService; // ✅ centralized registry
 
-    public long adjustVotes(UUID participationId, long voteDelta) {
+    public long adjustScore(UUID seasonId, UUID participationId, long scoreDelta) {
 
-        Participation participation = participationRepo.findById(participationId)
-                .orElseThrow(() -> new IllegalStateException("Participation not found"));
+        String leaderboardKey = "l:" + seasonId;
 
-        UUID seasonId = participation.getSeasonId();
-
-        String leaderboardKey = "leaderboard:season:" + seasonId;
-
-        // ✅ register via helper (fixed)
-        redisService.registerSeasonKey(seasonId, leaderboardKey);
-
-        // get current votes
-        Double currentScore = redis.opsForZSet()
-                .score(leaderboardKey, participationId.toString());
-
-        long currentVotes = currentScore == null ? 0 : currentScore.longValue();
-
-        // prevent negative
-        if (voteDelta < 0 && currentVotes + voteDelta < 0) {
-            throw new IllegalStateException("Votes cannot become negative");
-        }
-
+        // update score
         Double updated = redis.opsForZSet().incrementScore(
                 leaderboardKey,
                 participationId.toString(),
-                voteDelta
+                scoreDelta
         );
 
-        long newVotes = updated == null ? 0 : updated.longValue();
+        long newScore = updated == null ? 0 : updated.longValue();
 
-        broadcastVote(seasonId, participationId, newVotes);
+        // get rank
+        Long rankObj = redis.opsForZSet()
+                .reverseRank(leaderboardKey, participationId.toString());
 
-        return newVotes;
-    }
+        long rank = (rankObj == null) ? 0 : rankObj + 1;
 
-    private void broadcastVote(UUID seasonId, UUID participationId, long votes) {
-
-        VoteUpdateDTO payload = new VoteUpdateDTO(participationId, votes);
-
+        // broadcast
         messagingTemplate.convertAndSend(
                 "/topic/votes/" + seasonId,
-                payload
+                new Broadcast(participationId, newScore)
         );
+
+        return newScore;
     }
 }

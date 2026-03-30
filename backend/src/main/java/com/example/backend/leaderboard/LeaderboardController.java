@@ -17,20 +17,24 @@ public class LeaderboardController {
 
     private final LeaderboardService leaderboardService;
 
-    /* leaders for one season */
 
+   
+
+    // ================= SINGLE SEASON =================
     @GetMapping("/{seasonId}")
-    public List<LeaderboardDTO> getSeasonLeaderboard(
+    public List<LeaderboardDTO> getTop3Leaderboard(
             @PathVariable UUID seasonId
     ) {
         return leaderboardService.getTop3(seasonId);
     }
 
-    /* leaders for all LIVE seasons */
-
+    // ================= LIVE SEASONS =================
     @GetMapping("/live")
-    public Map<UUID, List<LeaderboardDTO>> getLiveSeasonLeaderboards() {
-
-        return leaderboardService.getLiveSeasonLeaderboards();
+    public Map<UUID, List<LeaderboardDTO>> getLiveSeasonLeaderboards(
+            @RequestParam(defaultValue = "5") int limit
+    ) {
+        return leaderboardService.getLiveSeasonLeaderboards(limit);
     }
 }
+
+

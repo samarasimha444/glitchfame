@@ -1,23 +1,25 @@
 package com.example.backend.participation;
+
 import com.example.backend.auth.*;
 import com.example.backend.participation.dto.*;
+import com.example.backend.participation.dto.base.ParticipantByIdBase;
+import com.example.backend.participation.dto.base.ParticipantsBase;
 import com.example.backend.seasons.*;
-import com.example.backend.seasons.dto.SeasonDetails;
-import com.example.backend.seasons.dto.SeasonFullResponse;
-import com.example.backend.votes.dto.*;
-import com.example.backend.votes.VoteQueryService;
+import com.example.backend.seasons.dto.*;
+import com.example.backend.votes.query.VoteQueryService;
+import com.example.backend.votes.query.dto.VoteQuery;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
-
-
-
-
-
-
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,48 +31,56 @@ public class ParticipationService {
     private final AuthRepo authRepository;
     private final VoteQueryService voteQueryService;
 
+    // ================= MAP PARTICIPANTS =================
+    private Page<Participants> mapParticipants(Page<ParticipantsBase> result, UUID authId) {
 
-    // ✅ map participants with Redis vote data
-    private Page<Participants> mapParticipants(Page<Participants> result, UUID authId) {
-        List<UUID> ids = result.stream()
-                .map(Participants::getParticipationId)
-                .toList();
+        if (result.isEmpty()) return result.map(p -> null);
 
-        UUID seasonId = result.getContent().isEmpty()
-                ? null
-                : result.getContent().get(0).getSeasonId();
+        Map<UUID, List<ParticipantsBase>> grouped =
+                result.getContent().stream()
+                        .collect(Collectors.groupingBy(ParticipantsBase::seasonId));
 
-        Map<UUID, VoteMeta> voteMetaMap =
-                (seasonId != null && !ids.isEmpty())
-                        ? voteQueryService.getVoteMetaBatch(ids, seasonId, authId)
-                        : Collections.emptyMap();
+        Map<UUID, VoteQuery> finalMetaMap = new HashMap<>();
+
+        for (Map.Entry<UUID, List<ParticipantsBase>> entry : grouped.entrySet()) {
+
+            UUID seasonId = entry.getKey();
+
+            List<UUID> ids = entry.getValue().stream()
+                    .map(ParticipantsBase::participationId)
+                    .toList();
+
+            Map<UUID, VoteQuery> partial =
+                    voteQueryService.getMetaBatch(ids, seasonId, authId);
+
+            finalMetaMap.putAll(partial);
+        }
 
         return result.map(p -> {
 
-            VoteMeta meta = voteMetaMap.get(p.getParticipationId());
+            VoteQuery meta = finalMetaMap.get(p.participationId());
 
             if (meta == null) {
-                log.warn("Missing Redis vote data for participationId={}", p.getParticipationId());
-                meta = new VoteMeta(0L, false); // fallback
+                log.warn("Missing Redis data for participationId={}", p.participationId());
+                meta = new VoteQuery(0L, 0L, 0, 0, false, false);
             }
 
-            return new ParticipantsImpl(
-                    p.getParticipationId(),
-                    p.getParticipantName(),
-                    p.getParticipantPhotoUrl(),
-                    p.getSeasonId(),
-                    meta.getVotes(),       // ✅ ALWAYS Redis
-                    meta.isHasVoted()      // ✅ depends on authId
+            return new Participants(
+                    p.participationId(),
+                    p.participantName(),
+                    p.participantPhotoUrl(),
+                    p.seasonId(),
+                    meta.getScore(),
+                    meta.getRank(),
+                    meta.getVoteCount(),
+                    meta.getKillCount(),
+                    meta.isHasVoted(),
+                    meta.isHasKilled()
             );
         });
     }
 
-
-
-
-
-
-    // create or reapply participation
+    // ================= CREATE =================
     public void createParticipation(UUID authId, ParticipationForm form) {
 
         Auth auth = authRepository.findById(authId)
@@ -134,25 +144,18 @@ public class ParticipationService {
         participationRepository.save(participation);
     }
 
-
-
-
-
-
-    // ✅ LIVE contestants
+    // ================= LIVE =================
     public Page<Participants> getLiveContestants(UUID authId, int page, int size) {
+
         Pageable pageable = PageRequest.of(page, size);
-        Page<Participants> result =
+
+        Page<ParticipantsBase> result =
                 participationRepository.findLiveContestants(pageable);
 
         return mapParticipants(result, authId);
     }
 
-
-
-
-
-    // ✅ SEARCH live
+    // ================= SEARCH LIVE =================
     public Page<Participants> searchLiveContestants(
             String name,
             UUID authId,
@@ -162,16 +165,13 @@ public class ParticipationService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Participants> result =
+        Page<ParticipantsBase> result =
                 participationRepository.searchLiveApproved(name, pageable);
 
         return mapParticipants(result, authId);
     }
 
-
-
-
-    // ✅ SEARCH by season
+    // ================= SEARCH BY SEASON =================
     public Page<Participants> searchParticipantsBySeason(
             UUID seasonId,
             String name,
@@ -181,16 +181,14 @@ public class ParticipationService {
     ) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<Participants> result =
+
+        Page<ParticipantsBase> result =
                 participationRepository.searchApprovedBySeason(seasonId, name, pageable);
 
         return mapParticipants(result, authId);
     }
 
-
-
-
-    // ✅ random live season
+    // ================= RANDOM SEASON =================
     public SeasonFullResponse getRandomLiveSeasonWithParticipants(
             UUID authId,
             int page,
@@ -198,7 +196,8 @@ public class ParticipationService {
     ) {
 
         Instant now = Instant.now();
-         SeasonDetails season =
+
+        SeasonDetails season =
                 seasonRepository.findRandomLiveSeason(
                         authId,
                         now,
@@ -211,7 +210,7 @@ public class ParticipationService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Participants> participants =
+        Page<ParticipantsBase> participants =
                 participationRepository.findApprovedParticipants(
                         season.getSeasonId(),
                         pageable
@@ -229,63 +228,59 @@ public class ParticipationService {
 
 
     
+    // ================= GET BY ID =================
+public ParticipantById getParticipationById(UUID participationId, UUID authId) {
+
+    ParticipantByIdBase p =
+            participationRepository.findParticipantById(participationId);
+
+    if (p == null) return null;
+
+    Map<UUID, VoteQuery> metaMap =
+            voteQueryService.getMetaBatch(
+                    List.of(participationId),
+                    p.getSeasonId(),
+                    authId
+            );
+
+    VoteQuery meta = metaMap.getOrDefault(
+            participationId,
+            new VoteQuery(0L, 0L, 0, 0, false, false)
+    );
+
+    return new ParticipantById(
+            p.getParticipationId(),
+            p.getParticipantName(),
+            p.getParticipantPhotoUrl(),
+            p.getDateOfBirth(),
+            p.getLocation(),
+            p.getDescription(),
+            p.getStatus(),
+            p.getSeasonId(),
+            p.getSeasonName(),
+            p.getPrizeMoney(),
+            meta.getScore(),
+            meta.getRank(),
+            meta.getVoteCount(),
+            meta.getKillCount(),
+            meta.isHasVoted(),
+            meta.isHasKilled(),
+            p.getSeasonPhotoUrl(),
+
+            // 🔥 Instant → LocalDateTime (UTC)
+            toLocal(p.getRegistrationStartDate()),
+            toLocal(p.getRegistrationEndDate()),
+            toLocal(p.getVotingStartDate()),
+            toLocal(p.getVotingEndDate())
+    );
+}
 
 
-    // ✅ GET by ID 
-    public ParticipantById getParticipationById(UUID participationId, UUID authId) {
-
-        ParticipantById p =
-                participationRepository.findParticipantById(participationId);
-
-        if (p == null) return null;
-
-        Map<UUID, VoteMeta> metaMap =
-                voteQueryService.getVoteMetaBatch(
-                        List.of(participationId),
-                        p.getSeasonId(),
-                        authId
-                );
-
-        VoteMeta meta = metaMap.get(participationId);
-
-        if (meta == null) {
-            log.warn("Missing Redis vote data for participationId={}", participationId);
-            meta = new VoteMeta(0L, false); // fallback
-        }
-
-        return new ParticipantByIdImpl(
-                p.getParticipationId(),
-                p.getParticipantName(),
-                p.getParticipantPhotoUrl(),
-                p.getDateOfBirth(),
-                p.getLocation(),
-                p.getDescription(),
-                p.getStatus(),
-                p.getSeasonId(),
-                p.getSeasonName(),
-                p.getPrizeMoney(),
-                meta.getVotes(),      // ✅ ALWAYS Redis
-                meta.isHasVoted(),    // ✅ depends on authId
-                p.getSeasonPhotoUrl(),
-                p.getRegistrationStartDate(),
-                p.getRegistrationEndDate(),
-                p.getVotingStartDate(),
-                p.getVotingEndDate()
-        );
-    }
-
-
-
-
-
-//track my applications
-public Page<TrackMyApplications> getMyApplications(UUID authId, int page, int size) {
-
-    // pagination
-    Pageable pageable = PageRequest.of(page, size);
-
-    // direct repo call → no extra processing needed
-    return participationRepository.findMyApplications(authId, pageable);
+// ================= HELPER =================
+private LocalDateTime toLocal(Instant instant) {
+    return instant == null
+            ? null
+            : LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
 }
 
 
@@ -293,7 +288,15 @@ public Page<TrackMyApplications> getMyApplications(UUID authId, int page, int si
 
 
 
-    // ✅ DELETE
+
+
+    // ================= MY APPLICATIONS =================
+    public Page<TrackMyApplications> getMyApplications(UUID authId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return participationRepository.findMyApplications(authId, pageable);
+    }
+
+    // ================= DELETE =================
     public void deleteParticipation(UUID participationId, UUID authId) {
         Participation participation =
                 participationRepository.findById(participationId)
@@ -302,6 +305,7 @@ public Page<TrackMyApplications> getMyApplications(UUID authId, int page, int si
         if (!participation.getAuthId().equals(authId)) {
             throw new IllegalStateException("Unauthorized");
         }
+
         participationRepository.delete(participation);
     }
 }

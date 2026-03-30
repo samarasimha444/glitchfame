@@ -52,4 +52,13 @@ public class Participation {
     @Column(name = "modified_at")
     private Instant modifiedAt;
 
+    @Column(name = "votes", nullable = false)
+private int votes = 0;
+
+@Column(name = "kills", nullable = false)
+private int kills = 0;
+
+@Column(name = "score", nullable = false)
+private long score = 0;
+
 }

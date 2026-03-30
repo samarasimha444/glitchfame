@@ -2,11 +2,14 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Vote from "./features/user/Voting/Vote"
 import Status from "./features/user/status/Status";
+import KillTesting from "./Testing/KillTesting";
+
 
 const ProtectedRoute = lazy(() => import("./ProtectedRoute"));
 const Layout = lazy(() => import("./Auth/Layout"));
 const AuthLayout = lazy(() => import("./Auth/AuthLayout"));
 const RoleRedirect = lazy(() => import("./Auth/RoleRedirect"));
+
 
 
 const Home = lazy(() => import("./features/user/home/Home"));
@@ -36,6 +39,7 @@ export default function App() {
       <Routes>
        
         <Route path="/" element={<RoleRedirect />} />
+        <Route path="/kill" element={<KillTesting />} />
 
     
         <Route path="/auth" element={<AuthLayout />} />

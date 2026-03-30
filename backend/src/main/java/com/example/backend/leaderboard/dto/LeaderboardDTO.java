@@ -16,5 +16,6 @@ public class LeaderboardDTO {
     private String participantName;
     private String participantPhoto;
 
-    private int votes;
+    private int score;
+    private int rank;
 }

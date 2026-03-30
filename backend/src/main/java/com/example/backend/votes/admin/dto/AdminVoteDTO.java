@@ -7,7 +7,6 @@ import java.util.UUID;
 public class AdminVoteDTO {
 
     private UUID participationId;
-
-    /* number of votes to add or remove */
-    private long voteDelta;
+    private UUID seasonId;
+    private long scoreDelta;
 }

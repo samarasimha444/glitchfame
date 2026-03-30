@@ -5,29 +5,33 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public interface ParticipantById {
+public record ParticipantById(
 
-    UUID getParticipationId();
-    String getParticipantName();
-    String getParticipantPhotoUrl();
+        UUID participationId,
+        String participantName,
+        String participantPhotoUrl,
 
-    LocalDate getDateOfBirth();
-    String getLocation();
-    String getDescription();
+        LocalDate dateOfBirth,
+        String location,
+        String description,
 
-    String getStatus(); // participation status
+        String status,
 
-    UUID getSeasonId();
-    String getSeasonName();
-    BigDecimal getPrizeMoney();
+        UUID seasonId,
+        String seasonName,
+        BigDecimal prizeMoney,
 
-    Long getVoteCount();
-    Boolean getHasVoted();
+        long score,
+        long rank,
+        int voteCount,
+        int killCount,
+        boolean hasVoted,
+        boolean hasKilled,
 
-    String getSeasonPhotoUrl();
+        String seasonPhotoUrl,
 
-    LocalDateTime getRegistrationStartDate();
-    LocalDateTime getRegistrationEndDate();
-    LocalDateTime getVotingStartDate();
-    LocalDateTime getVotingEndDate();
-}
+        LocalDateTime registrationStartDate,
+        LocalDateTime registrationEndDate,
+        LocalDateTime votingStartDate,
+        LocalDateTime votingEndDate
+) {}
