@@ -4,13 +4,16 @@ import java.util.UUID;
 
 public interface ParticipantsByStatus {
 
-    UUID getParticipationId();        // participant id
-    String getParticipantName();      // name
-    String getParticipantPhotoUrl();  // photo url
-    String getSeasonName();           // season name
+    UUID getParticipationId();
+    String getParticipantName();
+    String getParticipantPhotoUrl();
+    String getSeasonName();
 
-    UUID getSeasonId();               // required for vote lookup
-    String getStatus();               // required to filter votes
+    UUID getSeasonId();
+    String getStatus();
 
-    Long getTotalVotes();             // populated from service (Redis)
+    Long getScore();
+    Long getRank();
+    Boolean getHasVoted();
+    Boolean getHasKilled();
 }

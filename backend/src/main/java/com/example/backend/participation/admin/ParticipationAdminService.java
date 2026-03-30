@@ -3,16 +3,17 @@ package com.example.backend.participation.admin;
 import com.example.backend.participation.Participation;
 import com.example.backend.participation.admin.dto.ParticipantsByStatus;
 import com.example.backend.participation.admin.dto.ParticipantsByStatusImpl;
-import com.example.backend.votes.VoteQueryService;
-import com.example.backend.votes.dto.VoteMeta;
+import com.example.backend.votes.query.VoteQueryService;
+import com.example.backend.votes.query.dto.VoteQuery;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+
 
 import java.util.*;
 
@@ -22,8 +23,10 @@ public class ParticipationAdminService {
 
     private final ParticipationAdminRepo participationAdminRepo;
     private final VoteQueryService voteQueryService;
+    private final StringRedisTemplate redis; // 🔥 needed for rank
 
-    // get participants from LIVE seasons filtered by status
+    // ================= LIVE PARTICIPANTS =================
+
     public Page<ParticipantsByStatus> getLiveParticipantsByStatus(
             String status,
             int page,
@@ -37,46 +40,56 @@ public class ParticipationAdminService {
 
         if (result.isEmpty()) return result;
 
-        // extract ids
         List<UUID> ids = result.stream()
                 .map(ParticipantsByStatus::getParticipationId)
                 .toList();
 
-        // ⚠️ assuming same season per page (acceptable if your query guarantees it)
         UUID seasonId = result.getContent().get(0).getSeasonId();
 
-        Map<UUID, VoteMeta> voteMap =
-                voteQueryService.getVoteMetaBatch(ids, seasonId, null);
+        String leaderboardKey = "leaderboard:season:" + seasonId;
+
+        Map<UUID, VoteQuery> metaMap =
+                voteQueryService.getMetaBatch(ids, seasonId, null);
 
         return result.map(p -> {
 
-            VoteMeta meta = voteMap.getOrDefault(
+            VoteQuery meta = metaMap.getOrDefault(
                     p.getParticipationId(),
-                    new VoteMeta(0L, false)
+                    new VoteQuery(0L, 0L, 0, 0, false, false)
             );
 
-            long votes = "APPROVED".equals(p.getStatus())
-                    ? meta.getVotes()
+            long score = "APPROVED".equals(p.getStatus())
+                    ? meta.getScore()
                     : 0L;
+
+            // 🔥 rank calculation
+            Long rankObj = redis.opsForZSet()
+                    .reverseRank(leaderboardKey, p.getParticipationId().toString());
+
+            long rank = (rankObj == null) ? 0 : rankObj + 1;
 
             return new ParticipantsByStatusImpl(
                     p.getParticipationId(),
                     p.getParticipantName(),
                     p.getParticipantPhotoUrl(),
                     p.getSeasonName(),
-                    p.getSeasonId(),     
-                    p.getStatus(),       
-                    votes                
+                    p.getSeasonId(),
+                    p.getStatus(),
+                    score,
+                    rank,
+                    meta.isHasVoted(),
+                    meta.isHasKilled()
             );
         });
     }
 
+    // ================= UPDATE STATUS =================
 
-    // admin updates participant status
     public void updateParticipationStatus(UUID participationId, String status) {
 
         Participation participation = participationAdminRepo.findById(participationId)
                 .orElseThrow(() -> new IllegalStateException("Participation not found"));
+
         if (!status.equals("APPROVED") &&
             !status.equals("REJECTED") &&
             !status.equals("PENDING")) {
@@ -87,8 +100,8 @@ public class ParticipationAdminService {
         participationAdminRepo.save(participation);
     }
 
+    // ================= SEARCH =================
 
-    // search LIVE approved participants by name
     public Page<ParticipantsByStatus> searchLiveApprovedParticipants(
             String name,
             int page,
@@ -108,39 +121,48 @@ public class ParticipationAdminService {
 
         UUID seasonId = result.getContent().get(0).getSeasonId();
 
-        Map<UUID, VoteMeta> voteMap =
-                voteQueryService.getVoteMetaBatch(ids, seasonId, null);
+        String leaderboardKey = "leaderboard:season:" + seasonId;
+
+        Map<UUID, VoteQuery> metaMap =
+                voteQueryService.getMetaBatch(ids, seasonId, null);
 
         return result.map(p -> {
 
-            VoteMeta meta = voteMap.getOrDefault(
+            VoteQuery meta = metaMap.getOrDefault(
                     p.getParticipationId(),
-                    new VoteMeta(0L, false)
+                    new VoteQuery(0L, 0L, 0, 0, false, false)
             );
+
+            Long rankObj = redis.opsForZSet()
+                    .reverseRank(leaderboardKey, p.getParticipationId().toString());
+
+            long rank = (rankObj == null) ? 0 : rankObj + 1;
 
             return new ParticipantsByStatusImpl(
                     p.getParticipationId(),
                     p.getParticipantName(),
                     p.getParticipantPhotoUrl(),
                     p.getSeasonName(),
-                    p.getSeasonId(),     // ✅ FIXED
-                    p.getStatus(),       // ✅ FIXED
-                    meta.getVotes()
+                    p.getSeasonId(),
+                    p.getStatus(),
+                    meta.getScore(),
+                    rank,
+                    meta.isHasVoted(),
+                    meta.isHasKilled()
             );
         });
     }
 
+    // ================= DELETE =================
 
+    public String deleteParticipation(UUID participationId) {
 
-// delete participant by id
-public String deleteParticipation(UUID participationId) {
+        if (!participationAdminRepo.existsById(participationId)) {
+            throw new IllegalStateException("Participation not found");
+        }
 
-    if (!participationAdminRepo.existsById(participationId)) {
-        throw new IllegalStateException("Participation not found");
+        participationAdminRepo.deleteById(participationId);
+
+        return "Participant deleted successfully";
     }
-
-    participationAdminRepo.deleteById(participationId);
-
-    return "Participant deleted successfully";
-}
 }

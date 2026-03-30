@@ -1,4 +1,5 @@
-/*package com.example.backend;
+
+package com.example.backend;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -19,4 +20,4 @@ public class RedisCleaner {
         System.out.println("Redis cleared");
     }
 }
- */
+ 

@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.example.backend.participation.dto.ParticipantById;
-import com.example.backend.participation.dto.Participants;
 import com.example.backend.participation.dto.TrackMyApplications;
+import com.example.backend.participation.dto.base.ParticipantByIdBase;
+import com.example.backend.participation.dto.base.ParticipantsBase;
 
 import org.springframework.data.repository.query.Param;
 
@@ -19,8 +20,7 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
 
     Optional<Participation> findByAuthIdAndSeasonId(UUID authId, UUID seasonId);
 
-
-    // ✅ LIVE contestants (NO VOTES)
+    // ================= LIVE =================
     @Query(value = """
     SELECT
         p.participation_id AS participationId,
@@ -42,17 +42,15 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
     AND s.voting_end_date >= CURRENT_TIMESTAMP
     """,
     nativeQuery = true)
-    Page<Participants> findLiveContestants(Pageable pageable);
+    Page<ParticipantsBase> findLiveContestants(Pageable pageable); // ✅ FIXED
 
-
-    // ✅ BY SEASON (NO VOTES)
+    // ================= BY SEASON =================
     @Query(value = """
         SELECT
             p.participation_id AS participationId,
             p.name AS participantName,
             p.photo_url AS participantPhotoUrl,
             p.season_id AS seasonId
-          
         FROM participation p
         WHERE p.season_id = :seasonId
         AND p.status = 'APPROVED'
@@ -64,13 +62,12 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
         AND p.status = 'APPROVED'
         """,
         nativeQuery = true)
-    Page<Participants> findApprovedParticipants(
+    Page<ParticipantsBase> findApprovedParticipants(
             @Param("seasonId") UUID seasonId,
             Pageable pageable
-    );
+    ); // ✅ FIXED
 
-
-    // ✅ SEARCH LIVE (NO VOTES)
+    // ================= SEARCH LIVE =================
     @Query(value = """
     SELECT
         p.participation_id AS participationId,
@@ -94,13 +91,12 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
     AND s.voting_end_date >= CURRENT_TIMESTAMP
     """,
     nativeQuery = true)
-    Page<Participants> searchLiveApproved(
+    Page<ParticipantsBase> searchLiveApproved(
             @Param("name") String name,
             Pageable pageable
-    );
+    ); // ✅ FIXED
 
-
-    // ✅ SEARCH BY SEASON (NO VOTES)
+    // ================= SEARCH BY SEASON =================
     @Query(value = """
         SELECT
             p.participation_id AS participationId,
@@ -120,14 +116,13 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
         AND p.name ILIKE '%' || :name || '%'
         """,
         nativeQuery = true)
-    Page<Participants> searchApprovedBySeason(
+    Page<ParticipantsBase> searchApprovedBySeason(
             @Param("seasonId") UUID seasonId,
             @Param("name") String name,
             Pageable pageable
-    );
+    ); // ✅ FIXED
 
-
-    // ✅ BY ID (REMOVE DB COUNT HERE TOO if you want full Redis)
+    // ================= BY ID =================
     @Query(value = """
         SELECT
             p.participation_id AS participationId,
@@ -152,11 +147,14 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
         WHERE p.participation_id = :participationId
         """,
         nativeQuery = true)
-    ParticipantById findParticipantById(
+    ParticipantByIdBase findParticipantById(
             @Param("participationId") UUID participationId
     );
 
 
+
+
+    // ================= RAW LIST =================
     @Query(value = """
     SELECT p.*
     FROM participation p
@@ -166,7 +164,10 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
     List<Participation> findApprovedContestants(@Param("seasonId") UUID seasonId);
 
 
-    //track my applcations
+
+    
+
+    // ================= MY APPLICATIONS =================
     @Query(value = """
     SELECT
         p.participation_id AS participationId,
@@ -191,8 +192,8 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
     WHERE p.auth_id = :authId
     """,
     nativeQuery = true)
-Page<TrackMyApplications> findMyApplications(
-        @Param("authId") UUID authId,
-        Pageable pageable
-);
+    Page<TrackMyApplications> findMyApplications(
+            @Param("authId") UUID authId,
+            Pageable pageable
+    );
 }

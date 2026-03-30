@@ -2,14 +2,15 @@ package com.example.backend.participation.dto;
 
 import java.util.UUID;
 
-public interface Participants {
-
-    UUID getParticipationId();   // participation_id
- String getParticipantName(); // name
- String getParticipantPhotoUrl(); // photo_url
-UUID getSeasonId(); // season_id
-Long getTotalVotes(); // total_votes
-Boolean getHasVoted(); // calculated from votes table
-
-    
-}
+public record Participants(
+        UUID participationId,
+        String participantName,
+        String participantPhotoUrl,
+        UUID seasonId,
+        Long score,
+        Long rank,
+        Integer voteCount,
+        Integer killCount,
+        Boolean hasVoted,
+        Boolean hasKilled
+) {}

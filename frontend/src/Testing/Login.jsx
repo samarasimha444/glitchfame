@@ -5,18 +5,18 @@ export default function Login() {
 
 const [email,setEmail] = useState("");
 const [password,setPassword] = useState("");
-
 const navigate = useNavigate();
-
 const login = async () => {
 
-const res = await fetch("http://localhost:3000/auth/login",{
+
+    const res = await fetch("http://localhost:3000/auth/login",{
 method:"POST",
 headers:{ "Content-Type":"application/json" },
 body: JSON.stringify({ email,password })
 });
 
 const token = await res.text();
+
 
 if(res.ok){
 

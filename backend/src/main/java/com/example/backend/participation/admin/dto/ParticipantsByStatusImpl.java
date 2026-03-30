@@ -10,7 +10,11 @@ public class ParticipantsByStatusImpl implements ParticipantsByStatus {
     private final String seasonName;
     private final UUID seasonId;
     private final String status;
-    private final Long totalVotes;
+
+    private final Long score;
+    private final Long rank;
+    private final Boolean hasVoted;
+    private final Boolean hasKilled;
 
     public ParticipantsByStatusImpl(
             UUID participationId,
@@ -19,7 +23,10 @@ public class ParticipantsByStatusImpl implements ParticipantsByStatus {
             String seasonName,
             UUID seasonId,
             String status,
-            Long totalVotes
+            Long score,
+            Long rank,
+            Boolean hasVoted,
+            Boolean hasKilled
     ) {
         this.participationId = participationId;
         this.participantName = participantName;
@@ -27,7 +34,10 @@ public class ParticipantsByStatusImpl implements ParticipantsByStatus {
         this.seasonName = seasonName;
         this.seasonId = seasonId;
         this.status = status;
-        this.totalVotes = totalVotes;
+        this.score = score;
+        this.rank = rank;
+        this.hasVoted = hasVoted;
+        this.hasKilled = hasKilled;
     }
 
     @Override
@@ -61,7 +71,22 @@ public class ParticipantsByStatusImpl implements ParticipantsByStatus {
     }
 
     @Override
-    public Long getTotalVotes() {
-        return totalVotes;
+    public Long getScore() {
+        return score;
+    }
+
+    @Override
+    public Long getRank() {
+        return rank;
+    }
+
+    @Override
+    public Boolean getHasVoted() {
+        return hasVoted;
+    }
+
+    @Override
+    public Boolean getHasKilled() {
+        return hasKilled;
     }
 }
