@@ -14,7 +14,7 @@ const Cards = ({ liveSeason, isLoading }) => {
           <ShimmerCard />
           <ShimmerCard />
         </section>
-      : liveSeason.length === 0 ?
+      : liveSeason?.length === 0 ?
         <div className="w-full text-center py-20 text-gray-400 text-xl">
           No live seasons found.
         </div>
@@ -70,7 +70,7 @@ const Cards = ({ liveSeason, isLoading }) => {
                     to={`/vote/${item.seasonId}`}
                     key={item.seasonId}
                     className={`
-          relative w-full rounded-xs overflow-hidden border border-[#364354] 
+          relative w-full rounded-xs overflow-hidden border border-gray-800 
            transition duration-300 flex flex-col
          
           ${

@@ -71,7 +71,7 @@ const Overview = () => {
                 key={item.id}
                 className={`border flex flex-col bg-[#2F3849] items-center justify-center  text-center border-gray-700 py-6 sm:p-5 md:p-6 space-y-2 sm:space-y-3 
                   hover:border-gray-500 transition rounded-lg sm:rounded-xl
-        ${index >= 2 ? "hidden md:block" : ""}
+        ${index >= 2 ? "hidden md:flex" : ""}
         `}
               >
                 <Icon className="text-primary" size={20} />

@@ -66,14 +66,14 @@ const Vote = () => {
       <VotingHeader season={seasonInfo} id={seasonId} />
 
       
-      <div className="md:flex md:px-12 flex-col md:flex-row gap-4 mb-5 mt-4 md:mb-8">
+      <div className="md:flex md:px-12 flex-col md:flex-row gap-4 mb-5 sm:mt-4 md:mb-8">
 
 
 
 
 <div className="flex justify-center w-full px-4 ">
 
-  <div className="flex items-center w-full max-w-[896px] h-12 md:h-[56px] bg-[#21212B] border border-white/10 focus-within:border-teal-300 rounded-xl px-5 transition-all duration-300 shadow-lg shadow-black/20">
+  <div className="flex items-center w-full max-w-4xl h-12 md:h-14 bg-[#21212B] border border-white/10 focus-within:border-teal-300 rounded-xl px-5 transition-all duration-300 shadow-lg shadow-black/20">
     
     <Search size={18} className="text-gray-500 mr-3 shrink-0" />
     
@@ -95,7 +95,7 @@ const Vote = () => {
       </div>
 
       
-      <section className="md:px-12 min-h-[50dvh]">
+      <section className="md:px-12 mt-2 min-h-[50dvh]">
         <Suspense fallback={null}>
           {isEmpty ? (
             <div className="text-gray-400 text-center mt-6">

@@ -116,30 +116,18 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
                     <ContestantCard user={user} />
 
                     <section
-                      className="
-    absolute bottom-3 right-2
-    flex flex-col items-end gap-2
-
-    md:static md:flex-row md:w-full md:justify-between md:items-center md:px-1
-  "
+                      className="absolute bottom-3 right-2 flex flex-col items-end gap-2
+                     sm:static sm:flex-row md:w-full md:justify-between md:items-center md:px-1"
                     >
                       {/* VOTE BUTTON */}
                       <button
                         onClick={(e) => e.stopPropagation()}
-                        className="
-                w-8 h-8 md:flex-1 md:w-[103px] md:h-[40px]
-
-               border border-teal-100 hover:bg-[#28b3a8]
-                   text-teal-200 rounded-full md:rounded-xl
-
-                 flex items-center justify-center gap-1.5
-                  transition-all duration-150
-
-               shadow-[0_4px_10px_rgba(48,213,200,0.3)]
-          "
+                        className="w-8 h-8 md:flex-1 sm:w-[103px] sm:h-[40px] border border-teal-100 hover:bg-[#28b3a8]
+                         rounded-full sm:rounded-xl flex items-center justify-center gap-1.5 transition-all duration-150
+                       shadow-[0_4px_10px_rgba(48,213,200,0.3)]"
                       >
                         <Heart size={16} fill="currentColor" />
-                        <span className="hidden md:inline text-[12px] font-black uppercase">
+                        <span className="hidden sm:inline text-[12px] font-black uppercase">
                           Vote
                         </span>
                       </button>
@@ -148,19 +136,12 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
                       <button
                         onClick={(e) => e.stopPropagation()}
                         className="
-                     w-8 h-8 md:flex-1 md:w-[103px] md:h-[40px]
-               
-                     border border-[#E11D48] bg-[#E11D48]/5
-                     hover:bg-[#E11D48] hover:text-white
-               
-                     text-[#E11D48] rounded-full md:rounded-xl
-               
-                     flex items-center justify-center gap-1.5
-                     transition-all duration-150
-                   "
+                     w-8 h-8 md:flex-1 sm:w-[103px] sm:h-[40px] border border-[#E11D48] bg-[#E11D48]/5
+                     hover:bg-[#E11D48] hover:text-white text-[#E11D48] rounded-full sm:rounded-xl flex items-center justify-center gap-1.5
+                     transition-all duration-150"
                                      >
-                           <X size={16} strokeWidth={3} />
-                        <span className="hidden md:inline text-[12px] font-black uppercase">
+                         <X size={16} strokeWidth={3} />
+                        <span className="hidden sm:inline text-[12px] font-black uppercase">
                           Kill
                         </span>
                       </button>
