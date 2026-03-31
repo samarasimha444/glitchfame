@@ -170,4 +170,15 @@ Page<SeasonDetails> findRandomLiveSeason(
 
     // for schedulers
     List<Season> findByVotingEndDateBeforeAndSeasonEndedFalse(Instant now);
+
+
+    //for leaderboard live seasons
+  @Query("""
+    SELECT s.seasonId
+    FROM Season s
+    WHERE s.votingStartDate <= :now
+      AND s.votingEndDate >= :now
+    ORDER BY s.votingStartDate DESC
+""")
+List<UUID> findLiveSeasonIds(@Param("now") Instant now, Pageable pageable);
 }

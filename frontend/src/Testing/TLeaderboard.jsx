@@ -1,140 +1,148 @@
 import { useEffect, useState, useRef } from "react";
 import { Client } from "@stomp/stompjs";
 
-export default function Leaderboard() {
+export default function TLeaderboard() {
+  const [data, setData] = useState({});
+  const [seasonIds, setSeasonIds] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [connected, setConnected] = useState(false);
 
-  const [leaderboards, setLeaderboards] = useState({});
-  const [wsStatus, setWsStatus] = useState("Disconnected");
-
+  const token = localStorage.getItem("token");
   const stompRef = useRef(null);
 
-  useEffect(() => {
-
-    const token = localStorage.getItem("token");
-
-    const fetchLeaderboards = async () => {
-
+  // ================= FETCH =================
+  const fetchLeaderboard = async () => {
+    try {
       const res = await fetch("http://localhost:3000/leaderboard/live", {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      const data = await res.json();
+      if (!res.ok) throw new Error("Fetch failed");
 
-      setLeaderboards(data);
+      const json = await res.json();
 
-      connectWebSocket(data, token);
+      setData(json);
+      setSeasonIds(Object.keys(json)); // 🔥 extract seasons
+    } catch (err) {
+      console.error("Fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    };
-
-    fetchLeaderboards();
-
-    return () => stompRef.current?.deactivate();
-
+  useEffect(() => {
+    fetchLeaderboard();
   }, []);
 
-  const connectWebSocket = (data, token) => {
+  // ================= WS =================
+  useEffect(() => {
+    if (seasonIds.length === 0) return;
 
-    const stompClient = new Client({
-
+    const client = new Client({
       brokerURL: "ws://localhost:3000/ws",
-      connectHeaders: { Authorization: `Bearer ${token}` },
+
+      connectHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
+
       reconnectDelay: 5000,
 
       onConnect: () => {
+        console.log("WS Connected");
+        setConnected(true);
 
-        setWsStatus("Connected");
+        // 🔥 subscribe to each season
+        seasonIds.forEach((seasonId) => {
+          client.subscribe(`/topic/votes/${seasonId}`, (message) => {
+            const update = JSON.parse(message.body);
+            // { participationId, score }
 
-        Object.keys(data).forEach(seasonId => {
-
-          stompClient.subscribe(`/topic/votes/${seasonId}`, (msg) => {
-
-            const vote = JSON.parse(msg.body);
-
-            setLeaderboards(prev => {
-
-              const season = prev[seasonId];
-              if (!season) return prev;
-
-              const updated = season.map(p =>
-                p.participantId === vote.participationId
-                  ? { ...p, votes: vote.votes }
-                  : p
-              );
-
-              updated.sort((a, b) => b.votes - a.votes);
-
-              return {
-                ...prev,
-                [seasonId]: updated.slice(0, 3)
-              };
-
-            });
-
+            handleRealtimeUpdate(seasonId, update);
           });
-
         });
-
       },
 
-      onWebSocketClose: () => setWsStatus("Disconnected"),
-      onStompError: () => setWsStatus("Error")
+      onDisconnect: () => {
+        setConnected(false);
+      },
 
+      onStompError: (frame) => {
+        console.error("WS error:", frame);
+        setConnected(false);
+      },
     });
 
-    stompRef.current = stompClient;
-    stompClient.activate();
+    client.activate();
+    stompRef.current = client;
 
+    return () => {
+      client.deactivate();
+    };
+  }, [seasonIds]);
+
+  // ================= UPDATE =================
+  const handleRealtimeUpdate = (seasonId, update) => {
+    setData((prev) => {
+      const updated = { ...prev };
+
+      const players = [...(updated[seasonId] || [])];
+
+      const index = players.findIndex(
+        (p) => p.participantId === update.participationId
+      );
+
+      if (index !== -1) {
+        players[index].score = update.score;
+      }
+
+      // 🔥 re-sort
+      players.sort((a, b) => b.score - a.score);
+
+      // 🔥 re-rank
+      players.forEach((p, i) => {
+        p.rank = i + 1;
+      });
+
+      updated[seasonId] = players;
+
+      return updated;
+    });
   };
 
+  // ================= UI =================
+  if (loading) return <h2>Loading...</h2>;
+
   return (
+    <div style={{ padding: "20px" }}>
+      <h1>🔥 Live Leaderboard</h1>
 
-    <div style={{ padding: 20 }}>
+      <p>
+        Status:{" "}
+        <span style={{ color: connected ? "green" : "red" }}>
+          {connected ? "CONNECTED" : "DISCONNECTED"}
+        </span>
+      </p>
 
-      <h2>Live Leaderboards</h2>
+      {Object.entries(data).map(([seasonId, players]) => (
+        <div key={seasonId} style={{ marginBottom: "30px" }}>
+          <h2>Season: {seasonId}</h2>
 
-      <p><b>WebSocket:</b> {wsStatus}</p>
-
-      {Object.entries(leaderboards).map(([seasonId, leaders]) => (
-
-        <div key={seasonId} style={{ marginBottom: 30 }}>
-
-          <h3>{leaders[0]?.seasonName}</h3>
-
-          {leaders.map((p, index) => (
-
+          {players.map((p) => (
             <div
               key={p.participantId}
               style={{
-                border: "1px solid #ccc",
-                padding: 10,
-                marginBottom: 10,
-                width: 320,
-                display: "flex",
-                gap: 12
+                padding: "10px",
+                borderBottom: "1px solid #ccc",
+                fontWeight: p.rank === 1 ? "bold" : "normal",
               }}
             >
-
-              <b>#{index + 1}</b>
-
-              <img src={p.participantPhoto} width="50" />
-
-              <div>
-
-                <div><b>{p.participantName}</b></div>
-                <div>{p.votes} votes</div>
-
-              </div>
-
+              #{p.rank} {p.participantName} — {p.score}
             </div>
-
           ))}
-
         </div>
-
       ))}
-
     </div>
-
   );
-
 }

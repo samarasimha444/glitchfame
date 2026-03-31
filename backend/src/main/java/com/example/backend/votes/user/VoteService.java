@@ -2,6 +2,7 @@ package com.example.backend.votes.user;
 
 import com.example.backend.config.redis.RedisService;
 import com.example.backend.votes.async.VoteAsyncService;
+import com.example.backend.votes.user.dto.VoteResponseDTO;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ import java.util.UUID;
 public class VoteService {
 
     private final StringRedisTemplate redis;
-    private final RedisService redisService; // (kept, but not used here)
+    private final RedisService redisService;
     private final VoteAsyncService voteAsyncService;
 
     private static final DefaultRedisScript<List> SCRIPT;
@@ -35,7 +36,6 @@ public class VoteService {
             local pid = ARGV[1]
             local action = ARGV[2]
 
-            -- 🔒 LOCK CHECK (atomic)
             if redis.call('EXISTS', lockKey) == 1 then
                 return {"LOCKED","0"}
             end
@@ -43,26 +43,20 @@ public class VoteService {
             local score = 0
             local result = ""
 
-            -- ================= VOTE =================
             if action == "VOTE" then
-
                 local voted = redis.call('SISMEMBER', voteSet, pid)
                 local killed = redis.call('GET', killKey)
 
                 if voted == 1 then
-                    -- UNVOTE
                     redis.call('SREM', voteSet, pid)
                     redis.call('HINCRBY', voteCount, pid, -1)
                     score = redis.call('ZINCRBY', leaderboard, -100, pid)
                     result = "UNVOTE"
-
                 else
-                    -- MAX 3 VOTES
                     if redis.call('SCARD', voteSet) >= 3 then
                         return {"LIMIT","0"}
                     end
 
-                    -- REMOVE KILL IF SAME
                     if killed == pid then
                         redis.call('DEL', killKey)
                         redis.call('HINCRBY', killCount, pid, -1)
@@ -76,28 +70,22 @@ public class VoteService {
                 end
             end
 
-            -- ================= KILL =================
             if action == "KILL" then
-
                 local currentKill = redis.call('GET', killKey)
                 local voted = redis.call('SISMEMBER', voteSet, pid)
 
                 if currentKill == pid then
-                    -- UNKILL
                     redis.call('DEL', killKey)
                     redis.call('HINCRBY', killCount, pid, -1)
                     score = redis.call('ZINCRBY', leaderboard, 200, pid)
                     result = "UNKILL"
-
                 else
-                    -- REMOVE VOTE IF EXISTS
                     if voted == 1 then
                         redis.call('SREM', voteSet, pid)
                         redis.call('HINCRBY', voteCount, pid, -1)
                         redis.call('ZINCRBY', leaderboard, -100, pid)
                     end
 
-                    -- REMOVE PREVIOUS KILL (ONLY 1 ALLOWED)
                     if currentKill then
                         redis.call('HINCRBY', killCount, currentKill, -1)
                         redis.call('ZINCRBY', leaderboard, 200, currentKill)
@@ -116,17 +104,15 @@ public class VoteService {
         SCRIPT.setResultType(List.class);
     }
 
-    public String performAction(UUID participationId,
-                               UUID seasonId,
-                               UUID authId,
-                               String action) {
+    public VoteResponseDTO performAction(UUID participationId,
+                                         UUID seasonId,
+                                         UUID authId,
+                                         String action) {
 
-        // 🔴 AUTH VALIDATION
         if (authId == null) {
-            throw new IllegalArgumentException("Unauthorized: authId is null");
+            throw new IllegalArgumentException("Unauthorized");
         }
 
-        // 🔴 INPUT VALIDATION
         if (participationId == null || seasonId == null || action == null) {
             throw new IllegalArgumentException("Invalid request");
         }
@@ -142,7 +128,6 @@ public class VoteService {
         String voteCount = "vc:" + seasonId;
         String killCount = "kc:" + seasonId;
 
-        // 🔥 ONLY ONE REDIS CALL (this is the key improvement)
         List<Object> raw = (List<Object>) redis.execute(
                 SCRIPT,
                 List.of(voteSet, killKey, leaderboard, lockKey, voteCount, killCount),
@@ -166,7 +151,6 @@ public class VoteService {
 
         long score = Long.parseLong(raw.get(1).toString());
 
-        // 🔥 ASYNC (no rank)
         voteAsyncService.process(
                 seasonId,
                 participationId,
@@ -176,6 +160,6 @@ public class VoteService {
                 score
         );
 
-        return type;
+        return new VoteResponseDTO(type, score);
     }
 }

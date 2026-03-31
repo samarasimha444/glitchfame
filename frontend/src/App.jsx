@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 import Vote from "./features/user/Voting/Vote"
 import Status from "./features/user/status/Status";
 import KillTesting from "./Testing/KillTesting";
+import TLeaderboard from "./Testing/TLeaderboard";
 
 
 const ProtectedRoute = lazy(() => import("./ProtectedRoute"));
@@ -40,6 +41,7 @@ export default function App() {
        
         <Route path="/" element={<RoleRedirect />} />
         <Route path="/kill" element={<KillTesting />} />
+        <Route path="/lead" element={<TLeaderboard />} />
 
     
         <Route path="/auth" element={<AuthLayout />} />

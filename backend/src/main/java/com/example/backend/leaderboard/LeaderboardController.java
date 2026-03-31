@@ -17,9 +17,6 @@ public class LeaderboardController {
 
     private final LeaderboardService leaderboardService;
 
-
-   
-
     // ================= SINGLE SEASON =================
     @GetMapping("/{seasonId}")
     public List<LeaderboardDTO> getTop3Leaderboard(
@@ -36,5 +33,3 @@ public class LeaderboardController {
         return leaderboardService.getLiveSeasonLeaderboards(limit);
     }
 }
-
-

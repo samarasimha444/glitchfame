@@ -1,28 +1,38 @@
 import { useEffect, useState, useRef } from "react";
 import { Client } from "@stomp/stompjs";
 
-export default function KillTesting() {
+export default function Participants() {
   const [participants, setParticipants] = useState([]);
   const [seasonId, setSeasonId] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [processingId, setProcessingId] = useState(null);
   const [connected, setConnected] = useState(false);
 
-  const stompClientRef = useRef(null);
   const token = localStorage.getItem("token");
+  const stompRef = useRef(null);
 
-  // 🔥 FETCH INITIAL DATA
+  // 🔥 FETCH DATA
   const fetchData = async () => {
     try {
-      const res = await fetch("http://localhost:3000/seasons/live/random", {
+      const res = await fetch("http://localhost:3000/participations/live", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
+      if (!res.ok) throw new Error("Failed to fetch");
+
       const data = await res.json();
-      setParticipants(data.participants.content);
-      setSeasonId(data.season.seasonId);
+
+      setParticipants(data.content || []);
+
+      if (data.content?.length > 0) {
+        setSeasonId(data.content[0].seasonId);
+      }
     } catch (err) {
       console.error("Fetch error:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -30,15 +40,15 @@ export default function KillTesting() {
     fetchData();
   }, []);
 
-  // 🔥 WEBSOCKET CONNECT (NATIVE)
+  // 🔥 WEBSOCKET CONNECT
   useEffect(() => {
     if (!seasonId) return;
 
     const client = new Client({
-      brokerURL: "ws://localhost:3000/ws", // 🔥 native WS
+      brokerURL: "ws://localhost:3000/ws",
 
       connectHeaders: {
-        Authorization: `Bearer ${token}`, // 🔥 JWT here
+        Authorization: `Bearer ${token}`,
       },
 
       reconnectDelay: 5000,
@@ -49,8 +59,7 @@ export default function KillTesting() {
 
         client.subscribe(`/topic/votes/${seasonId}`, (message) => {
           const data = JSON.parse(message.body);
-
-          // { participationId, score, rank }
+          // { participationId, score }
 
           setParticipants((prev) =>
             prev.map((p) =>
@@ -63,18 +72,17 @@ export default function KillTesting() {
       },
 
       onDisconnect: () => {
-        console.log("WS Disconnected");
         setConnected(false);
       },
 
       onStompError: (frame) => {
-        console.error("STOMP error:", frame);
+        console.error("WS error:", frame);
         setConnected(false);
       },
     });
 
     client.activate();
-    stompClientRef.current = client;
+    stompRef.current = client;
 
     return () => {
       client.deactivate();
@@ -83,8 +91,12 @@ export default function KillTesting() {
 
   // 🔥 HANDLE ACTION
   const handleAction = async (participantId, action) => {
+    if (processingId) return;
+
     try {
-      await fetch("http://localhost:3000/votes", {
+      setProcessingId(participantId);
+
+      const res = await fetch("http://localhost:3000/votes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -92,45 +104,81 @@ export default function KillTesting() {
         },
         body: JSON.stringify({
           participationId: participantId,
-          seasonId: seasonId,
-          action: action,
+          seasonId,
+          action,
         }),
       });
 
-      // toggle UI instantly (not score)
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text);
+      }
+
+      const data = await res.json();
+
+      // 🔥 update toggle immediately
       setParticipants((prev) =>
         prev.map((p) => {
           if (p.participationId !== participantId) return p;
 
-          if (action === "VOTE") {
-            return {
-              ...p,
-              hasVoted: !p.hasVoted,
-              hasKilled: false,
-            };
-          }
+          switch (data.type) {
+            case "VOTE":
+              return {
+                ...p,
+                hasVoted: true,
+                hasKilled: false,
+              };
 
-          if (action === "KILL") {
-            return {
-              ...p,
-              hasKilled: !p.hasKilled,
-              hasVoted: false,
-            };
-          }
+            case "UNVOTE":
+              return {
+                ...p,
+                hasVoted: false,
+              };
 
-          return p;
+            case "KILL":
+              return {
+                ...p,
+                hasKilled: true,
+                hasVoted: false,
+              };
+
+            case "UNKILL":
+              return {
+                ...p,
+                hasKilled: false,
+              };
+
+            default:
+              return p;
+          }
         })
       );
+
+      // ❌ DO NOT update score here
+      // ✅ WebSocket will handle score
     } catch (err) {
       console.error("Action error:", err);
+
+      if (err.message.includes("LIMIT")) {
+        alert("Max 3 votes allowed");
+      } else if (err.message.includes("locked")) {
+        alert("Season ended");
+      } else {
+        alert("Something went wrong");
+      }
+    } finally {
+      setProcessingId(null);
     }
   };
 
+  if (loading) {
+    return <h2 style={{ padding: "20px" }}>Loading...</h2>;
+  }
+
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Kill Testing</h1>
+      <h2>Participants</h2>
 
-      {/* 🔥 CONNECTION STATUS */}
       <p>
         Status:{" "}
         <span style={{ color: connected ? "green" : "red" }}>
@@ -155,10 +203,12 @@ export default function KillTesting() {
             }}
           >
             <h3>{p.participantName}</h3>
+
             <p>Score: {p.score}</p>
 
             {/* VOTE */}
             <button
+              disabled={processingId === p.participationId}
               onClick={() => handleAction(p.participationId, "VOTE")}
               style={{
                 marginRight: "10px",
@@ -171,6 +221,7 @@ export default function KillTesting() {
 
             {/* KILL */}
             <button
+              disabled={processingId === p.participationId}
               onClick={() => handleAction(p.participationId, "KILL")}
               style={{
                 background: p.hasKilled ? "gray" : "red",
