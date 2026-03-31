@@ -132,9 +132,12 @@ public class ParticipationController {
         );
     }
 
+
+
+
     //track my applications
-@GetMapping("/my-applications")
-public Page<TrackMyApplications> getMyApplications(
+  @GetMapping("/my-applications")
+public Page<TrackMyApplicationsResponse> getMyApplications(
         Authentication authentication,
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size
@@ -148,6 +151,8 @@ public Page<TrackMyApplications> getMyApplications(
 
     return participationService.getMyApplications(authId, page, size);
 }
+
+
 
 
     // delete participation (auth required)

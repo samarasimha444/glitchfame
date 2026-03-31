@@ -167,33 +167,39 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
 
     
 
-    // ================= MY APPLICATIONS =================
-    @Query(value = """
-    SELECT
-        p.participation_id AS participationId,
-        p.name AS participantName,
-        p.photo_url AS participantPhotoUrl,
-        p.status AS status,
+  @Query(value = """
+SELECT
+    p.participation_id AS participationId,
+    p.season_id AS seasonId,
 
-        s.name AS seasonName,
-        s.registration_start_date AS registrationStartDate,
-        s.registration_end_date AS registrationEndDate,
-        s.voting_start_date AS votingStartDate,
-        s.voting_end_date AS votingEndDate
+    p.name AS participantName,
+    p.photo_url AS participantPhotoUrl,
+    p.status AS status,
 
-    FROM participation p
-    JOIN season s ON s.season_id = p.season_id
-    WHERE p.auth_id = :authId
-    ORDER BY p.modified_at DESC
-    """,
-    countQuery = """
-    SELECT COUNT(*)
-    FROM participation p
-    WHERE p.auth_id = :authId
-    """,
-    nativeQuery = true)
-    Page<TrackMyApplications> findMyApplications(
-            @Param("authId") UUID authId,
-            Pageable pageable
-    );
+    s.name AS seasonName,
+    s.registration_start_date AS registrationStartDate,
+    s.registration_end_date AS registrationEndDate,
+    s.voting_start_date AS votingStartDate,
+    s.voting_end_date AS votingEndDate,
+
+    p.votes AS votes,
+    p.kills AS kills,
+    p.score AS score,
+    p.rank AS rank
+
+FROM participation p
+JOIN season s ON s.season_id = p.season_id
+WHERE p.auth_id = :authId
+ORDER BY p.modified_at DESC
+""",
+countQuery = """
+SELECT COUNT(*)
+FROM participation p
+WHERE p.auth_id = :authId
+""",
+nativeQuery = true)
+Page<TrackMyApplications> findMyApplications(
+        @Param("authId") UUID authId,
+        Pageable pageable
+);
 }

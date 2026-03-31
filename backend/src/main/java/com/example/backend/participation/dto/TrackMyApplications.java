@@ -5,21 +5,28 @@ import java.util.UUID;
 
 public interface TrackMyApplications {
 
-    UUID getParticipationId();          // participation id
+    UUID getParticipationId();
 
-    String getParticipantName();        // p.name
+    UUID getSeasonId(); // 🔥 REQUIRED
 
-    String getParticipantPhotoUrl();    // p.photo_url
+    String getParticipantName();
 
-    String getStatus();                 // p.status
+    String getParticipantPhotoUrl();
 
-    String getSeasonName();             // s.name
+    String getStatus();
 
-    LocalDateTime getRegistrationStartDate(); // s.registration_start_date
+    String getSeasonName();
 
-    LocalDateTime getRegistrationEndDate();   // s.registration_end_date
+    LocalDateTime getRegistrationStartDate();
 
-    LocalDateTime getVotingStartDate();       // s.voting_start_date
+    LocalDateTime getRegistrationEndDate();
 
-    LocalDateTime getVotingEndDate();         // s.voting_end_date
+    LocalDateTime getVotingStartDate();
+
+    LocalDateTime getVotingEndDate();
+
+    Integer getVotes();
+    Integer getKills();
+    Long getScore();
+    Integer getRank();
 }

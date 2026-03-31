@@ -1,5 +1,4 @@
 package com.example.backend.participation;
-
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.Instant;
@@ -60,5 +59,8 @@ private int kills = 0;
 
 @Column(name = "score", nullable = false)
 private long score = 0;
+
+@Column(name = "rank")
+private Integer rank;
 
 }

@@ -285,16 +285,86 @@ private LocalDateTime toLocal(Instant instant) {
 
 
 
+//track my applications
+public Page<TrackMyApplicationsResponse> getMyApplications(UUID authId, int page, int size) {
 
+    Pageable pageable = PageRequest.of(page, size);
 
+    Page<TrackMyApplications> dbPage =
+            participationRepository.findMyApplications(authId, pageable);
 
+    List<TrackMyApplications> list = dbPage.getContent();
 
+    // ================= GROUP BY SEASON =================
+    Map<UUID, List<TrackMyApplications>> grouped =
+            list.stream().collect(Collectors.groupingBy(TrackMyApplications::getSeasonId));
 
-    // ================= MY APPLICATIONS =================
-    public Page<TrackMyApplications> getMyApplications(UUID authId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return participationRepository.findMyApplications(authId, pageable);
+    Map<UUID, VoteQuery> metaMap = new HashMap<>();
+
+    // ================= FETCH REDIS ONLY FOR LIVE =================
+    for (Map.Entry<UUID, List<TrackMyApplications>> entry : grouped.entrySet()) {
+
+        UUID seasonId = entry.getKey();
+        TrackMyApplications sample = entry.getValue().get(0);
+
+        boolean isLive =
+                !sample.getVotingStartDate().isAfter(LocalDateTime.now()) &&
+                !sample.getVotingEndDate().isBefore(LocalDateTime.now());
+
+        if (!isLive) continue;
+
+        List<UUID> ids = entry.getValue()
+                .stream()
+                .map(TrackMyApplications::getParticipationId)
+                .toList();
+
+        Map<UUID, VoteQuery> partial =
+                voteQueryService.getMetaBatch(ids, seasonId, authId);
+
+        metaMap.putAll(partial);
     }
+
+    // ================= MAP FINAL RESPONSE =================
+    List<TrackMyApplicationsResponse> content = list.stream().map(p -> {
+
+        VoteQuery meta = metaMap.get(p.getParticipationId());
+
+        int votes = p.getVotes() == null ? 0 : p.getVotes();
+        int kills = p.getKills() == null ? 0 : p.getKills();
+        long score = p.getScore() == null ? 0 : p.getScore();
+        Integer rank = p.getRank(); // DB only
+
+        // override only if live
+        if (meta != null) {
+            votes = meta.getVoteCount();
+            kills = meta.getKillCount();
+            score = meta.getScore();
+        }
+
+        return new TrackMyApplicationsResponse(
+                p.getParticipationId(),
+                p.getSeasonId(),
+                p.getParticipantName(),
+                p.getParticipantPhotoUrl(),
+                p.getStatus(),
+                p.getSeasonName(),
+                p.getRegistrationStartDate(),
+                p.getRegistrationEndDate(),
+                p.getVotingStartDate(),
+                p.getVotingEndDate(),
+                votes,
+                kills,
+                score,
+                rank
+        );
+    }).toList();
+
+    return new PageImpl<>(content, pageable, dbPage.getTotalElements());
+}
+
+
+
+
 
     // ================= DELETE =================
     public void deleteParticipation(UUID participationId, UUID authId) {

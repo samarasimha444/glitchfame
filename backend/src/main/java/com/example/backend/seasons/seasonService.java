@@ -8,6 +8,7 @@ import org.springframework.data.domain.*;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.example.backend.seasons.dto.*;
 import com.example.backend.participation.Participation;
@@ -22,6 +23,8 @@ import com.example.backend.config.cloudinary.CloudinaryService;
 import com.example.backend.config.redis.RedisService;
 
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
+
 import jakarta.transaction.Transactional;
 
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -221,67 +224,99 @@ public class seasonService {
         return response;
     }
 
-    // ================= END SEASON =================
-    @Transactional
-    public void endSeason(UUID seasonId, Instant now) {
+  @Transactional
+public void endSeason(UUID seasonId, Instant now) {
 
-        Season season = seasonRepository.findById(seasonId)
-                .orElseThrow(() -> new IllegalArgumentException("Season not found"));
+    Season season = seasonRepository.findById(seasonId)
+            .orElseThrow(() -> new IllegalArgumentException("Season not found"));
 
-        if (season.isSeasonEnded()) return;
+    if (season.isSeasonEnded()) return;
 
-        season.setSeasonEnded(true);
-        season.setVotingEndDate(now);
+    // ================= 🔒 LOCK =================
+    redis.opsForValue().set("lock:" + seasonId, "1");
 
-        String leaderboardKey = "l:" + seasonId;
-        String voteCountKey = "vc:" + seasonId;
-        String killCountKey = "kc:" + seasonId;
+    season.setSeasonEnded(true);
+    season.setVotingEndDate(now);
 
-        Set<String> participantIds =
-                redis.opsForZSet().range(leaderboardKey, 0, -1);
+    String leaderboardKey = "l:" + seasonId;
+    String voteCountKey = "vc:" + seasonId;
+    String killCountKey = "kc:" + seasonId;
 
-        if (participantIds != null && !participantIds.isEmpty()) {
+    // ================= 📊 GET SORTED =================
+    Set<ZSetOperations.TypedTuple<String>> data =
+            redis.opsForZSet().reverseRangeWithScores(leaderboardKey, 0, -1);
 
-            Map<Object, Object> voteCounts = redis.opsForHash().entries(voteCountKey);
-            Map<Object, Object> killCounts = redis.opsForHash().entries(killCountKey);
+    if (data != null && !data.isEmpty()) {
 
-            List<Participation> updates = new ArrayList<>();
+        Map<Object, Object> voteCounts = redis.opsForHash().entries(voteCountKey);
+        Map<Object, Object> killCounts = redis.opsForHash().entries(killCountKey);
 
-            for (String pidStr : participantIds) {
+        // 🔥 fetch all participants in ONE query
+        List<UUID> ids = data.stream()
+                .map(t -> UUID.fromString(t.getValue()))
+                .toList();
 
-                UUID participationId = UUID.fromString(pidStr);
+        Map<UUID, Participation> map =
+                participationRepo.findAllById(ids)
+                        .stream()
+                        .collect(Collectors.toMap(
+                                Participation::getParticipationId,
+                                p -> p
+                        ));
 
-                Participation p = participationRepo.findById(participationId).orElse(null);
-                if (p == null) continue;
+        List<Participation> updates = new ArrayList<>();
 
-                int votes = Integer.parseInt(voteCounts.getOrDefault(pidStr, "0").toString());
-                int kills = Integer.parseInt(killCounts.getOrDefault(pidStr, "0").toString());
+        // ================= 🧠 RANK =================
+        int rank = 0;
+        int position = 0;
+        double prevScore = Double.MIN_VALUE;
 
-                Double scoreObj = redis.opsForZSet().score(leaderboardKey, pidStr);
-                long score = (scoreObj == null) ? 0 : scoreObj.longValue();
+        for (var t : data) {
 
-                p.setVotes(votes);
-                p.setKills(kills);
-                p.setScore(score);
+            position++;
 
-                updates.add(p);
+            UUID pid = UUID.fromString(t.getValue());
+            Participation p = map.get(pid);
+            if (p == null) continue;
+
+            double scoreVal = t.getScore() == null ? 0 : t.getScore();
+
+            if (scoreVal != prevScore) {
+                rank = position;
+                prevScore = scoreVal;
             }
 
-            participationRepo.saveAll(updates);
+            int votes = Integer.parseInt(
+                    voteCounts.getOrDefault(pid.toString(), "0").toString()
+            );
+
+            int kills = Integer.parseInt(
+                    killCounts.getOrDefault(pid.toString(), "0").toString()
+            );
+
+            p.setVotes(votes);
+            p.setKills(kills);
+            p.setScore((long) scoreVal);
+            p.setRank(rank); // 🔥 IMPORTANT
+
+            updates.add(p);
         }
 
-        seasonRepository.save(season);
-
-        TransactionSynchronizationManager.registerSynchronization(
-                new TransactionSynchronization() {
-                    @Override
-                    public void afterCommit() {
-                        redisService.deleteSeason(seasonId);
-                    }
-                }
-        );
+        participationRepo.saveAll(updates);
     }
 
+    seasonRepository.save(season);
+
+    // ================= 🧹 CLEAN AFTER COMMIT =================
+    TransactionSynchronizationManager.registerSynchronization(
+            new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    redisService.deleteSeason(seasonId);
+                }
+            }
+    );
+}
     // ================= RESET =================
     @Transactional
     public void resetSeason(UUID seasonId) {
