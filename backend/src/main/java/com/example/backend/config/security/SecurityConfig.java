@@ -43,7 +43,8 @@ public class SecurityConfig {
                         "/v3/api-docs.yaml",
                         "/redis-test",
                         "/ping",
-                        "/ws/**"
+                        "/ws/**",
+                        "/winner"
                 ).permitAll()
 
                 // 🔒 everything else requires JWT

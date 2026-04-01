@@ -1,4 +1,4 @@
-
+/*
 package com.example.backend;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -21,3 +21,4 @@ public class RedisCleaner {
     }
 }
  
+ */

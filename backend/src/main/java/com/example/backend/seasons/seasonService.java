@@ -1,15 +1,12 @@
 package com.example.backend.seasons;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
-
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import com.example.backend.seasons.dto.*;
 import com.example.backend.participation.Participation;
 import com.example.backend.participation.ParticipationRepo;
@@ -18,17 +15,19 @@ import com.example.backend.participation.dto.*;
 import com.example.backend.participation.dto.base.ParticipantsBase;
 import com.example.backend.votes.query.VoteQueryService;
 import com.example.backend.votes.query.dto.VoteQuery;
-import com.example.backend.winner.*;
 import com.example.backend.config.cloudinary.CloudinaryService;
 import com.example.backend.config.redis.RedisService;
-
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
-
 import jakarta.transaction.Transactional;
-
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+
+
+
+
+
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -38,7 +37,7 @@ public class seasonService {
     private final CloudinaryService cloudinaryService;
     private final ParticipationAdminRepo participationAdminRepo;
     private final StringRedisTemplate redis;
-    private final WinnerService winnerService;
+   
     private final ParticipationRepo participationRepo;
     private final VoteQueryService voteQueryService;
     private final RedisService redisService;
