@@ -11,7 +11,7 @@ export default function Participants() {
   const token = localStorage.getItem("token");
   const stompRef = useRef(null);
 
-  // 🔥 FETCH DATA
+
   const fetchData = async () => {
     try {
       const res = await fetch("http://localhost:3000/participations/live", {
@@ -19,11 +19,13 @@ export default function Participants() {
           Authorization: `Bearer ${token}`,
         },
       });
+      
+
 
       if (!res.ok) throw new Error("Failed to fetch");
 
       const data = await res.json();
-
+       console.log(data)
       setParticipants(data.content || []);
 
       if (data.content?.length > 0) {

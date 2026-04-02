@@ -33,7 +33,7 @@ const Leaderboard = () => {
     : [];
 
   return (
-    <div className="min-h-screen text-white flex justify-center py-8 px-4 font-sans relative overflow-hidden">
+    <div className="min-h-screen sm:pt-30 text-white flex justify-center py-8 px-4 font-sans relative overflow-hidden">
     
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#9DE2E2] opacity-[0.03] blur-[120px]" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#9DE2E2] opacity-[0.03] blur-[120px]" />

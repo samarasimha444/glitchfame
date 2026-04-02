@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Timer } from "lucide-react";
+import { ArrowRight, Timer } from "lucide-react";
 import { getTimeLeft, useIsMobile } from "../../../../lib/helper";
 import ShimmerCard from "../../../../components/ShimmerCard";
 
@@ -61,78 +61,85 @@ const Cards = ({ liveSeason, isLoading }) => {
                 </Link>
               ))}
             </section>
-          : <section className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-              {liveSeason?.map((item, index) => {
-                const isFeatured = index === 0;
-
-                return (
-                  <Link
-                    to={`/vote/${item.seasonId}`}
-                    key={item.seasonId}
-                    className={`
-          relative w-full rounded-xs overflow-hidden border border-gray-800 
-           transition duration-300 flex flex-col
-         
-          ${
-            isFeatured ?
-              "col-span-2 lg:col-span-2 h-69.5 w-2xl md:h-[440px]"
-            : "col-span-1 lg:col-span-1 h-69.5 w-[350px] md:h-[320px] mt-3"
-          }
-        `}
-                  >
+          : <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* 1. THE LIVE SEASON CARD (Zoom Effect Added) */}
+              {liveSeason?.[0] && (
+                <Link
+                  to={`/vote/${liveSeason[0].seasonId}`}
+                  key={liveSeason[0].seasonId}
+                  className="group relative w-full h-[320px] rounded-xl overflow-hidden border border-gray-800 transition duration-500 ease-in-out flex flex-col"
+                >
+                  {/* Zooming Image Container */}
+                  <div className="absolute inset-0 overflow-hidden">
                     <img
-                      src={`${item.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=800`}
-                      alt={item.seasonName}
+                      src={`${liveSeason[0].seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=800`}
+                      alt={liveSeason[0].seasonName}
                       loading="lazy"
-                      decoding="async"
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                     />
+                  </div>
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#000000f2] via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
 
-                    <div className="absolute top-3 left-3 flex gap-2">
-                      <span className="bg-red-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />{" "}
-                        LIVE
+                  
+                  <div className="absolute top-4 left-4 flex gap-2 z-20">
+                    <span className="bg-red-500 text-white text-[10px] px-2.5 py-1 rounded-full font-bold flex items-center gap-1.5 shadow-lg">
+                      <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                      LIVE
+                    </span>
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative z-10 mt-auto p-5 w-full">
+                    <p className="text-[10px] text-primary uppercase font-black tracking-[0.15em] mb-1">
+                      {liveSeason[0].category}
+                    </p>
+                    <h3 className="text-white font-bold leading-tight line-clamp-2 text-lg">
+                      {liveSeason[0].seasonName}
+                    </h3>
+
+                    <div className="flex justify-between items-center mt-4">
+                      <div className="flex items-center gap-2 text-gray-300 text-[11px]">
+                        <Timer size={14} className="text-primary" />
+                        <span>{getTimeLeft(liveSeason[0].votingEndDate)}</span>
+                      </div>
+
+                      <span className="text-white text-[13px] font-bold bg-white/10 px-4 py-1.5 rounded-lg backdrop-blur-md border border-white/10 group-hover:bg-primary group-hover:text-black transition-colors duration-300">
+                        Vote Now
                       </span>
-                      {isFeatured && (
-                        <span className="bg-primary text-black text-[9px] px-2 py-0.5 rounded-full font-bold">
-                          FEATURED
-                        </span>
-                      )}
                     </div>
+                  </div>
+                </Link>
+              )}
 
-                    <div className="relative z-10 mt-auto p-4 w-full">
-                      <div>
-                        <p className="text-[10px] text-primary uppercase font-bold tracking-wider opacity-90">
-                          {item.category}
-                        </p>
-                        <h3
-                          className={`text-white font-bold leading-tight line-clamp-2 
-              ${isFeatured ? "text-lg md:text-2xl" : "text-sm md:text-base"}`}
-                        >
-                          {item.seasonName}
-                        </h3>
-                      </div>
+              <Link
+                to="/live"
+                className="group relative w-full h-[320px] rounded-xl overflow-hidden border border-gray-800 bg-gray-900 flex flex-col items-center justify-center transition duration-500 ease-in-out"
+              >
+                {/* Background Image Zoom (Optional: Use a generic crowd or studio image) */}
+                <div className="absolute inset-0 opacity-30 overflow-hidden">
+                  <img
+                    src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80"
+                    className="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-110"
+                    alt="View all"
+                  />
+                </div>
 
-                      <div className="flex justify-between items-center mt-3 pt-2">
-                        <div className="flex items-center gap-2 text-gray-300 text-[11px]">
-                          <div className="w-5 h-5 rounded-full bg-primary" />
-                          <p className="flex items-center gap-1">
-                            <Timer size={12} className="text-gray-400" />
-                            <span>{getTimeLeft(item.votingEndDate)}</span>
-                          </p>
-                        </div>
+                <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors duration-500" />
 
-                        <span className="text-white text-[13px] font-bold bg-white/10 px-3 py-1 rounded-lg backdrop-blur-sm border border-white/20">
-                          Vote
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
-            </section>
+                <div className="relative z-10 flex flex-col items-center text-center p-6">
+                  <div className="w-14 h-14 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-primary group-hover:text-black transition-all duration-500">
+                    <ArrowRight size={28} />
+                  </div>
+                  <h3 className="text-white font-bold text-xl mb-2">
+                    View All Seasons
+                  </h3>
+                  <p className="text-gray-400 text-sm max-w-[200px]">
+                    Explore the full archive of competitions
+                  </p>
+                </div>
+              </Link>
+            </div>
           }
         </>
       }

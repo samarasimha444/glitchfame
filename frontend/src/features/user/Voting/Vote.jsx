@@ -61,12 +61,14 @@ const Vote = () => {
   const isEmpty = !isLoadingState && contestants.length === 0;
 
   return (
-    <div className="flex bg-[#181820] flex-col w-full m-auto  max-w-400 px-5 min-h-screen">
+    <div className="flex bg-[#000000] flex-col w-full m-auto  max-w-400  min-h-screen">
       
-      <VotingHeader season={seasonInfo} id={seasonId} />
+ 
 
-      
-      <div className="md:flex md:px-12 flex-col md:flex-row gap-4 mb-5 sm:mt-4 md:mb-8">
+ <section className="bg-[#09090B] pt-4 sm:pt-20">
+ <VotingHeader season={seasonInfo} id={seasonId} />
+
+     <div className="md:flex md:px-12 flex-col md:flex-row gap-4 mb-5 sm:mt-4 md:mb-8">
 
 
 
@@ -93,6 +95,12 @@ const Vote = () => {
 
 
       </div>
+ </section>
+      
+     
+
+      
+  
 
       
       <section className="md:px-12 mt-2 min-h-[50dvh]">

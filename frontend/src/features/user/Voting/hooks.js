@@ -1,5 +1,5 @@
 import { Client } from "@stomp/stompjs";
-import {  useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
+import {  useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {  useEffect,  } from "react";
 import {
   connectSocket,
@@ -8,9 +8,119 @@ import {
 } from "../../../../services/websocketservices";
 import { fetchRandomParticipation, fetchSearchContestants } from "../arena/api";
 import { fetchSeasonParticipation } from "../home/api";
+import { handleApiError } from "../../../lib/helper";
+
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 
 
+export const useVoteAction = ({ seasonId, setShowLoginModal }) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ participationId, action }) => {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/votes`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ participationId, seasonId, action }),
+      });
+
+      if (!res.ok) {
+        let errorData;
+        try {
+          errorData = await res.json();
+        } catch {
+          errorData = { message: "Something went wrong" };
+        }
+        throw new Error(errorData.message);
+      }
+
+      return res.json();
+    },
+
+    // ✅ OPTIMISTIC UPDATE + SAVE SNAPSHOT
+    onMutate: async ({ participationId, action }) => {
+      await queryClient.cancelQueries();
+
+      const queries = queryClient.getQueryCache().findAll();
+
+      // 🔥 SAVE PREVIOUS STATE
+      const previousData = queries.map((q) => ({
+        queryKey: q.queryKey,
+        data: queryClient.getQueryData(q.queryKey),
+      }));
+
+      // 🔥 OPTIMISTIC UPDATE
+      queries.forEach((query) => {
+        queryClient.setQueryData(query.queryKey, (oldData) => {
+          if (!oldData) return oldData;
+
+          const updateUser = (user) => {
+            if (String(user.participationId) !== String(participationId))
+              return user;
+
+            switch (action) {
+              case "VOTE":
+                return {
+                  ...user,
+                  hasVoted: !user.hasVoted,
+                  hasKilled: false,
+                };
+
+              case "KILL":
+                return {
+                  ...user,
+                  hasKilled: !user.hasKilled,
+                  hasVoted: false,
+                };
+
+              default:
+                return user;
+            }
+          };
+
+          if (oldData?.participants?.content) {
+            return {
+              ...oldData,
+              participants: {
+                ...oldData.participants,
+                content: oldData.participants.content.map(updateUser),
+              },
+            };
+          }
+
+          if (oldData?.content) {
+            return {
+              ...oldData,
+              content: oldData.content.map(updateUser),
+            };
+          }
+
+          return oldData;
+        });
+      });
+
+      // 🔥 RETURN CONTEXT FOR ROLLBACK
+      return { previousData };
+    },
+
+    // ❌ ERROR → ROLLBACK
+    onError: (err, variables, context) => {
+      handleApiError(err, { setShowLoginModal });
+
+      // 🔥 ROLLBACK
+      context?.previousData?.forEach(({ queryKey, data }) => {
+        queryClient.setQueryData(queryKey, data);
+      });
+    },
+  });
+};
 
 
 
@@ -52,16 +162,15 @@ export const useSeasonVotes = (seasonId) => {
     const topic = `/topic/votes/${seasonId}`;
 
     const subscription = subscribeTopic(topic, (vote) => {
-      console.log("🔥 LIVE VOTE:", vote);
+      console.log("🔥 LIVE UPDATE:", vote);
 
-      
       const queries = queryClient.getQueryCache().findAll();
 
+      // ✅ participation queries
       const participationQueries = queries.filter(
-  (q) => q.queryKey[0] === "participation"
-);
+        (q) => q.queryKey[0] === "participation"
+      );
 
-      
       participationQueries.forEach((query) => {
         queryClient.setQueryData(query.queryKey, (oldData) => {
           if (!oldData?.participants?.content) return oldData;
@@ -70,16 +179,17 @@ export const useSeasonVotes = (seasonId) => {
 
           const newContent = oldData.participants.content.map((c) => {
             if (String(c.participationId) === String(vote.participationId)) {
-              const newVotes =
-                vote.totalVotes ?? vote.votes ?? c.totalVotes;
+              const newScore = vote.score ?? c.score;
+              const newRank = vote.rank ?? c.rank;
 
-              if (c.totalVotes === newVotes) return c;
+              if (c.score === newScore && c.rank === newRank) return c;
 
               updated = true;
 
               return {
                 ...c,
-                totalVotes: newVotes,
+                score: newScore,
+                rank: newRank,
               };
             }
             return c;
@@ -97,7 +207,7 @@ export const useSeasonVotes = (seasonId) => {
         });
       });
 
-    
+      // ✅ search contestants queries
       const searchQueries = queries.filter(
         (q) =>
           q.queryKey[0] === "searchContestants" &&
@@ -112,16 +222,17 @@ export const useSeasonVotes = (seasonId) => {
 
           const newContent = oldData.content.map((c) => {
             if (String(c.participationId) === String(vote.participationId)) {
-              const newVotes =
-                vote.totalVotes ?? vote.votes ?? c.totalVotes;
+              const newScore = vote.score ?? c.score;
+              const newRank = vote.rank ?? c.rank;
 
-              if (c.totalVotes === newVotes) return c;
+              if (c.score === newScore && c.rank === newRank) return c;
 
               updated = true;
 
               return {
                 ...c,
-                totalVotes: newVotes,
+                score: newScore,
+                rank: newRank,
               };
             }
             return c;
@@ -159,7 +270,6 @@ export const useSearchContestants = (
 };
 
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 
 

@@ -25,18 +25,24 @@ export default function FeaturedCarousel({ season }) {
         </p>
       </section> */}
 
-      <section className="border border-gray-900 rounded-xl md:rounded-none w-full max-w-90 sm:max-w-screen sm:h-120 md:h-170 relative overflow-hidden aspect-16\/9">
-        <img
-          src={`${season?.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=1600`}
-          alt="event"
-          loading="eager"
-          decoding="async"
-          className="w-full h-full object-cover"
-        />
+      <section className="border border-gray-900 rounded-xl md:rounded-none w-full max-w-90 h-60 sm:max-w-screen sm:h-120 md:h-170 relative overflow-hidden aspect-16\/9">
+
+    <img
+  src={`${season?.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=1600`}
+  alt="event"
+  loading="eager"
+  decoding="async"
+  className="w-full h-full object-cover"
+  onError={(e) => {
+    e.currentTarget.onerror = null; 
+    e.currentTarget.src =
+      "https://img.freepik.com/free-vector/coming-soon-banner-with-focus-lights_1017-33739.jpg?semt=ais_hybrid&w=740&q=80";
+  }}
+/>
 
         <div className="absolute inset-0 bg-[radial-gradient(circle,_transparent_20%,_rgba(0,0,0,0.8)_100%)] pointer-events-none" />
 
-        {/* desktop */}
+       
         <section className="absolute hidden sm:flex inset-0 flex-col items-center justify-center text-center text-white px-6">
           <span className="border border-white/20 max-w-xs text-teal-400 text-xs px-4 py-1 rounded-full backdrop-blur bg-black/30 tracking-widest">
             PHASE 1 REGISTRATION ENDS IN
@@ -45,7 +51,7 @@ export default function FeaturedCarousel({ season }) {
           <h1
             className="uppercase mt-6 font-black max-w-4xl text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tight bg-gradient-to-b from-white via-white to-[#6A7282] bg-clip-text text-transparent drop-shadow-[0_8px_24px_rgba(255,255,255,0.15)]"
           >
-            {season?.seasonName || "ASCEND TO INFAMY"}
+            {season?.seasonName || "COMING SOON"}
           </h1>
 
           <p className="text-gray-300 mt-4 max-w-2xl text-sm md:text-base opacity-80">
@@ -73,7 +79,7 @@ export default function FeaturedCarousel({ season }) {
 
         {/* mobile */}
 
-        <section className=" sm:hidden bottom-0 left-0 w-full p-4 text-white bg-gradient-to-t from-black/90 via-black/60 to-transparent">
+        <section className=" sm:hidden absolute  bottom-0 left-0 w-full p-4 text-white bg-gradient-to-t from-black/90 via-black/60 to-transparent">
           <span className="border text-black font-semibold bg-primary text-[9px] px-2 py-0.5 w-fit">
             #FEATUREDCHALLENGE
           </span>
@@ -104,6 +110,7 @@ export default function FeaturedCarousel({ season }) {
             </Link>
           </div>
         </section>
+
       </section>
 
       <div className=" hidden w-full absolute -bottom-20 max-w-xl md:max-w-5xl h-39 bg-[#123B3B] border border-teal-500/30 rounded-xs p-6 sm:flex flex-col md:flex-row items-center  justify-between ]">

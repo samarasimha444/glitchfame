@@ -1,6 +1,7 @@
 // utils/format.js
 
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 
 
@@ -102,38 +103,41 @@ export const isAdult = (dob) => {
 
 
 
-export const handleVoteError = (err, { setShowLoginModal }) => {
-  console.log(err);
+export const handleApiError = (error, { setShowLoginModal } = {}) => {
+  const message = error?.message?.toLowerCase() || "";
 
-  const message = err?.message || "";
+  console.log("API ERROR:", message);
 
-  // 🔥 case 1: vote limit
-  if (
-    message.includes("limit") ||
-    message.includes("constructor") ||
-    message.includes("5")
-  ) {
-    return {
-      type: "toast",
-      message: "Vote limit reached",
-    };
+  // 🎯 Smart cases
+  if (message.includes("max") || message.includes("limit")) {
+    toast.error("⚠️ You can only vote 3 times");
+    return { type: "limit" };
   }
 
-  // 🔥 case 2: auth issue
-  if (
-    message.includes("401") ||
-    message.includes("Unauthorized") ||
-    message.includes("token")
-  ) {
-    return {
-      type: "login",
-    };
+  if (message.includes("locked") || message.includes("ended")) {
+    toast.error("⛔ Season has ended");
+    return { type: "season-ended" };
   }
 
-  // 🔥 fallback
-  return {
-    type: "login",
-  };
+  if (message.includes("unauthorized") || message.includes("token")) {
+    toast.error("🔐 Please login to continue");
+
+    if (setShowLoginModal) {
+      setShowLoginModal(true);
+    }
+
+    return { type: "login" };
+  }
+
+  if (message.includes("already")) {
+    toast.error("⚡ Action already performed");
+    return { type: "duplicate" };
+  }
+
+  // 🔁 fallback
+  toast.error(error.message || "Something went wrong");
+
+  return { type: "unknown" };
 };
 
 
