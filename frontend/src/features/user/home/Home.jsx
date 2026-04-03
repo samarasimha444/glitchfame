@@ -43,8 +43,8 @@ const season = useMemo(
             <h5 className="flex items-center gap-2">
 
               <Flame className="text-red-500 w-6 h-6 md:w-10 md:h-10" />
-              <span className="text-white text-2xl md:text-5xl font-bold uppercase tracking-tight">
-                Live <span className="text-[#6A7282]">CHALLANGES</span>
+              <span className="text-white flex  text-lg md:text-5xl font-bold uppercase tracking-tight">
+                Live <span className="text-[#6A7282] hidden ml-2 sm:flex">CHALLANGES</span>
               </span>
             </h5>
 
@@ -52,7 +52,7 @@ const season = useMemo(
           </section>
 
           <Cards liveSeason={liveSeason} isLoading={seasonsLoading} />
-
+{/* 
           <button
             onClick={() => navigate(`/arena`)}
             className="
@@ -66,7 +66,7 @@ const season = useMemo(
           "
           >
             View More
-          </button>
+          </button> */}
 
           <Suspense fallback={<p className="text-white"></p>}>
             <Gallery />

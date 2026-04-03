@@ -33,11 +33,11 @@ export default function FeaturedCarousel({ season }) {
   loading="eager"
   decoding="async"
   className="w-full h-full object-cover"
-  onError={(e) => {
-    e.currentTarget.onerror = null; 
-    e.currentTarget.src =
-      "https://img.freepik.com/free-vector/coming-soon-banner-with-focus-lights_1017-33739.jpg?semt=ais_hybrid&w=740&q=80";
-  }}
+  // onError={(e) => {
+  //   e.currentTarget.onerror = null; 
+  //   e.currentTarget.src =
+  //     "https://img.freepik.com/free-vector/coming-soon-banner-with-focus-lights_1017-33739.jpg?semt=ais_hybrid&w=740&q=80";
+  // }}
 />
 
         <div className="absolute inset-0 bg-[radial-gradient(circle,_transparent_20%,_rgba(0,0,0,0.8)_100%)] pointer-events-none" />

@@ -7,7 +7,10 @@ import { useVoteAction } from "../hooks";
 import ContestantItem from "./ContestantItem";
 
 const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
+  console.log(data)
   const { profile } = useOutletContext();
+
+  
 
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loadingState, setLoadingState] = useState(null);
@@ -17,7 +20,7 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
     setShowLoginModal,
   });
 
-  // 🔥 stable reference
+
   const stableVoteAction = useCallback(voteAction, [voteAction]);
 
   return (
@@ -31,7 +34,7 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
               <HeartHandshake size={22} className="text-red-500" strokeWidth={2.5} />
             </div>
 
-            <h2 className="text-xl sm:text-2xl font-semibold uppercase text-white">
+            <h2 className="text-xs sm:text-2xl font-semibold uppercase text-white">
               Live contestants
             </h2>
           </div>
@@ -41,7 +44,7 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
           </span>
         </div>
 
-        {/* Grid */}
+        
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-8 justify-center">
           
           {isLoading &&

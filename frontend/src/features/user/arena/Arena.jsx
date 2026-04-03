@@ -39,7 +39,7 @@ const Arena = () => {
   );
 
   return (
-    <div className="bg-black w-full text-white py-12 md:py-20 px-4 sm:px-6 min-h-screen">
+    <div className=" sm:bg-black  w-full text-white py-12 md:py-20 px-4 sm:px-6 min-h-screen">
       
       <section className="hidden md:flex flex-col items-center text-center max-w-3xl mx-auto mb-12">
         <p className="text-xs tracking-widest text-primary mb-3">

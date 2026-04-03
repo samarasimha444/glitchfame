@@ -87,7 +87,7 @@ const ResetModal = ({ isOpen, onClose,  }) => {
 
       <button
         onClick={handleSubmit}
-        className="px-3 py-2 rounded-lg bg-primary text-white text-sm hover:bg-purple-700 transition"
+        className="px-3 py-2 rounded-lg bg-primary text-black text-sm hover:bg-purple-700 transition"
       >
         Change
       </button>

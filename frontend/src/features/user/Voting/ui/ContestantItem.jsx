@@ -27,7 +27,7 @@ const ContestantItem = ({
 
       <section className="flex items-center gap-2 p-3 bg-[#121214] rounded-b-2xl border-x border-b border-white/5 shadow-2xl">
         
-        {/* Vote */}
+    
         <button
           disabled={isVoteLoading}
           onClick={(e) => {
