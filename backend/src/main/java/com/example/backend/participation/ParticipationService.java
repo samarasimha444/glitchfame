@@ -1,5 +1,4 @@
 package com.example.backend.participation;
-
 import com.example.backend.auth.*;
 import com.example.backend.participation.dto.*;
 import com.example.backend.participation.dto.base.ParticipantByIdBase;
@@ -8,18 +7,19 @@ import com.example.backend.seasons.*;
 import com.example.backend.seasons.dto.*;
 import com.example.backend.votes.query.VoteQueryService;
 import com.example.backend.votes.query.dto.VoteQuery;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
+
+
+
+
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +30,7 @@ public class ParticipationService {
     private final SeasonRepo seasonRepository;
     private final AuthRepo authRepository;
     private final VoteQueryService voteQueryService;
+    
 
     // ================= MAP PARTICIPANTS =================
     private Page<Participants> mapParticipants(Page<ParticipantsBase> result, UUID authId) {
@@ -144,6 +145,9 @@ public class ParticipationService {
         participationRepository.save(participation);
     }
 
+
+
+
     // ================= LIVE =================
     public Page<Participants> getLiveContestants(UUID authId, int page, int size) {
 
@@ -154,6 +158,9 @@ public class ParticipationService {
 
         return mapParticipants(result, authId);
     }
+
+
+
 
     // ================= SEARCH LIVE =================
     public Page<Participants> searchLiveContestants(
@@ -171,6 +178,8 @@ public class ParticipationService {
         return mapParticipants(result, authId);
     }
 
+
+
     // ================= SEARCH BY SEASON =================
     public Page<Participants> searchParticipantsBySeason(
             UUID seasonId,
@@ -187,6 +196,8 @@ public class ParticipationService {
 
         return mapParticipants(result, authId);
     }
+
+
 
     // ================= RANDOM SEASON =================
     public SeasonFullResponse getRandomLiveSeasonWithParticipants(
@@ -228,6 +239,7 @@ public class ParticipationService {
 
 
     
+
     // ================= GET BY ID =================
 public ParticipantById getParticipationById(UUID participationId, UUID authId) {
 
@@ -282,6 +294,8 @@ private LocalDateTime toLocal(Instant instant) {
             ? null
             : LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
 }
+
+
 
 
 
@@ -361,6 +375,8 @@ public Page<TrackMyApplicationsResponse> getMyApplications(UUID authId, int page
 
     return new PageImpl<>(content, pageable, dbPage.getTotalElements());
 }
+
+
 
 
 

@@ -27,7 +27,7 @@ public class VoteService {
 
         SCRIPT.setScriptText("""
             local voteSet = KEYS[1]
-            local killKey = KEYS[2]
+            local killSet = KEYS[2]
             local leaderboard = KEYS[3]
             local lockKey = KEYS[4]
             local voteCount = KEYS[5]
@@ -36,6 +36,9 @@ public class VoteService {
             local pid = ARGV[1]
             local action = ARGV[2]
 
+            local VOTE_LIMIT = 5
+            local KILL_LIMIT = 3
+
             if redis.call('EXISTS', lockKey) == 1 then
                 return {"LOCKED","0"}
             end
@@ -43,9 +46,10 @@ public class VoteService {
             local score = 0
             local result = ""
 
+            -- ================= VOTE =================
             if action == "VOTE" then
                 local voted = redis.call('SISMEMBER', voteSet, pid)
-                local killed = redis.call('GET', killKey)
+                local killed = redis.call('SISMEMBER', killSet, pid)
 
                 if voted == 1 then
                     redis.call('SREM', voteSet, pid)
@@ -53,12 +57,12 @@ public class VoteService {
                     score = redis.call('ZINCRBY', leaderboard, -100, pid)
                     result = "UNVOTE"
                 else
-                    if redis.call('SCARD', voteSet) >= 3 then
-                        return {"LIMIT","0"}
+                    if redis.call('SCARD', voteSet) >= VOTE_LIMIT then
+                        return {"VOTE_LIMIT","0"}
                     end
 
-                    if killed == pid then
-                        redis.call('DEL', killKey)
+                    if killed == 1 then
+                        redis.call('SREM', killSet, pid)
                         redis.call('HINCRBY', killCount, pid, -1)
                         redis.call('ZINCRBY', leaderboard, 200, pid)
                     end
@@ -70,28 +74,28 @@ public class VoteService {
                 end
             end
 
+            -- ================= KILL =================
             if action == "KILL" then
-                local currentKill = redis.call('GET', killKey)
+                local killed = redis.call('SISMEMBER', killSet, pid)
                 local voted = redis.call('SISMEMBER', voteSet, pid)
 
-                if currentKill == pid then
-                    redis.call('DEL', killKey)
+                if killed == 1 then
+                    redis.call('SREM', killSet, pid)
                     redis.call('HINCRBY', killCount, pid, -1)
                     score = redis.call('ZINCRBY', leaderboard, 200, pid)
                     result = "UNKILL"
                 else
+                    if redis.call('SCARD', killSet) >= KILL_LIMIT then
+                        return {"KILL_LIMIT","0"}
+                    end
+
                     if voted == 1 then
                         redis.call('SREM', voteSet, pid)
                         redis.call('HINCRBY', voteCount, pid, -1)
                         redis.call('ZINCRBY', leaderboard, -100, pid)
                     end
 
-                    if currentKill then
-                        redis.call('HINCRBY', killCount, currentKill, -1)
-                        redis.call('ZINCRBY', leaderboard, 200, currentKill)
-                    end
-
-                    redis.call('SET', killKey, pid)
+                    redis.call('SADD', killSet, pid)
                     redis.call('HINCRBY', killCount, pid, 1)
                     score = redis.call('ZINCRBY', leaderboard, -200, pid)
                     result = "KILL"
@@ -121,8 +125,9 @@ public class VoteService {
             throw new IllegalArgumentException("Invalid action");
         }
 
+        // ✅ PER USER LIMIT KEYS
         String voteSet = "v:" + seasonId + ":" + authId;
-        String killKey = "k:" + seasonId + ":" + authId;
+        String killSet = "k:" + seasonId + ":" + authId;
         String leaderboard = "l:" + seasonId;
         String lockKey = "lock:" + seasonId;
         String voteCount = "vc:" + seasonId;
@@ -130,7 +135,7 @@ public class VoteService {
 
         List<Object> raw = (List<Object>) redis.execute(
                 SCRIPT,
-                List.of(voteSet, killKey, leaderboard, lockKey, voteCount, killCount),
+                List.of(voteSet, killSet, leaderboard, lockKey, voteCount, killCount),
                 participationId.toString(),
                 action
         );
@@ -141,12 +146,17 @@ public class VoteService {
 
         String type = raw.get(0).toString();
 
+        // ✅ PROPER ERROR HANDLING
         if ("LOCKED".equals(type)) {
             throw new IllegalStateException("Season locked");
         }
 
-        if ("LIMIT".equals(type)) {
-            throw new IllegalStateException("Max 3 votes allowed");
+        if ("VOTE_LIMIT".equals(type)) {
+            throw new IllegalStateException("Max 5 votes allowed");
+        }
+
+        if ("KILL_LIMIT".equals(type)) {
+            throw new IllegalStateException("Max 3 kills allowed");
         }
 
         long score = Long.parseLong(raw.get(1).toString());

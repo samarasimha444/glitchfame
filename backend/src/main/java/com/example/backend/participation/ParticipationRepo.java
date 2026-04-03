@@ -4,8 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
-import com.example.backend.participation.dto.ParticipantById;
 import com.example.backend.participation.dto.TrackMyApplications;
 import com.example.backend.participation.dto.base.ParticipantByIdBase;
 import com.example.backend.participation.dto.base.ParticipantsBase;
@@ -96,6 +94,8 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
             Pageable pageable
     ); // ✅ FIXED
 
+
+
     // ================= SEARCH BY SEASON =================
     @Query(value = """
         SELECT
@@ -121,6 +121,8 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
             @Param("name") String name,
             Pageable pageable
     ); // ✅ FIXED
+
+
 
     // ================= BY ID =================
     @Query(value = """
@@ -166,7 +168,7 @@ public interface ParticipationRepo extends JpaRepository<Participation, UUID> {
 
 
     
-
+// ================= TRACK MY APPLICATIONS =================
   @Query(value = """
 SELECT
     p.participation_id AS participationId,

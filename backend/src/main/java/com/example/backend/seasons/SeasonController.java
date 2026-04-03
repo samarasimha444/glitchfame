@@ -72,7 +72,7 @@ public class SeasonController {
 
         return locked
                 ? "Season locked successfully"
-                : "Season unlocked successfully";
+                : "Season unlocked successfully";                
     }
 
 
