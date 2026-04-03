@@ -23,7 +23,7 @@ const Vote = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 500);
 
-  const [page, setPage] = useState(0); 
+  const [page, setPage] = useState(0); // ✅ pagination state
 
   useEffect(() => {
     setPage(0);
@@ -61,11 +61,11 @@ const Vote = () => {
   const isEmpty = !isLoadingState && contestants.length === 0;
 
   return (
-    <div className="flex  sm:bg-[#000000] flex-col w-full m-auto  max-w-400  min-h-screen">
+    <div className="flex bg-[#000000] flex-col w-full m-auto  max-w-400  min-h-screen">
       
  
 
- <section className="sm:bg-[#09090B] pt-4 sm:pt-20">
+ <section className="bg-[#09090B] pt-4 sm:pt-20">
  <VotingHeader season={seasonInfo} id={seasonId} />
 
      <div className="md:flex md:px-12 flex-col md:flex-row gap-4 mb-5 sm:mt-4 md:mb-8">

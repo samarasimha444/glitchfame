@@ -191,7 +191,9 @@ public class seasonService {
         );
     }
 
-    // ================= GET FULL =================
+
+    
+    // ================= GET FULL season data +participants =================
     public SeasonFullResponse getSeasonFull(UUID seasonId, UUID authId, Pageable pageable) {
 
         SeasonDetails season =
@@ -223,6 +225,9 @@ public class seasonService {
         return response;
     }
 
+
+
+// ================= END SEASON =================
   @Transactional
 public void endSeason(UUID seasonId, Instant now) {
 
@@ -316,6 +321,13 @@ public void endSeason(UUID seasonId, Instant now) {
             }
     );
 }
+
+
+
+
+
+
+
     // ================= RESET =================
     @Transactional
     public void resetSeason(UUID seasonId) {
@@ -324,6 +336,12 @@ public void endSeason(UUID seasonId, Instant now) {
         cloudinaryService.deleteFolder("seasons/" + seasonId + "/contestants");
         participationAdminRepo.deleteAllBySeasonId(seasonId);
     }
+
+
+
+
+
+
 
     // ================= DELETE =================
     @Transactional
@@ -341,4 +359,7 @@ public void endSeason(UUID seasonId, Instant now) {
 
         seasonRepository.delete(season);
     }
+
+
+
 }
