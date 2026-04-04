@@ -1,13 +1,17 @@
 package com.example.backend.votes.query;
+
 import com.example.backend.votes.query.dto.VoteQuery;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class VoteQueryService {
@@ -22,44 +26,84 @@ public class VoteQueryService {
 
         if (ids == null || ids.isEmpty()) return Collections.emptyMap();
 
+        try {
+            return internalGetMetaBatch(ids, seasonId, authId);
+        } catch (Exception e) {
+            log.error("🔥 Redis failure in getMetaBatch", e);
+
+            // ✅ fallback (never break API)
+            return ids.stream().collect(Collectors.toMap(
+                    id -> id,
+                    id -> new VoteQuery(0L, 0L, 0, 0, false, false)
+            ));
+        }
+    }
+
+    private Map<UUID, VoteQuery> internalGetMetaBatch(
+            List<UUID> ids,
+            UUID seasonId,
+            UUID authId
+    ) {
+
         String leaderboard = "l:" + seasonId;
         String voteCountKey = "vc:" + seasonId;
         String killCountKey = "kc:" + seasonId;
 
         // ================= USER STATE =================
         Set<String> userVotes = Collections.emptySet();
-        String killed = null;
+        Set<String> userKills = Collections.emptySet();
 
         if (authId != null) {
-            String voteKey = "v:" + seasonId + ":" + authId;
-            userVotes = Optional.ofNullable(redis.opsForSet().members(voteKey))
-                    .orElse(Collections.emptySet());
 
+            String voteKey = "v:" + seasonId + ":" + authId;
             String killKey = "k:" + seasonId + ":" + authId;
-            killed = redis.opsForValue().get(killKey);
+
+            try {
+                userVotes = Optional.ofNullable(redis.opsForSet().members(voteKey))
+                        .orElse(Collections.emptySet());
+            } catch (Exception e) {
+                log.warn("Vote set fetch failed", e);
+            }
+
+            try {
+                userKills = Optional.ofNullable(redis.opsForSet().members(killKey))
+                        .orElse(Collections.emptySet());
+            } catch (Exception e) {
+                log.warn("Kill set fetch failed", e);
+            }
         }
 
         // ================= COUNTS =================
-        Map<Object, Object> voteCounts =
-                redis.opsForHash().entries("vc:" + seasonId);
+        Map<Object, Object> voteCounts = Collections.emptyMap();
+        Map<Object, Object> killCounts = Collections.emptyMap();
 
-        Map<Object, Object> killCounts =
-                redis.opsForHash().entries("kc:" + seasonId);
+        try {
+            voteCounts = redis.opsForHash().entries(voteCountKey);
+            killCounts = redis.opsForHash().entries(killCountKey);
+        } catch (Exception e) {
+            log.warn("Count fetch failed", e);
+        }
 
         // ================= PIPELINE =================
-        List<Object> redisData = redis.executePipelined((RedisCallback<Object>) conn -> {
+        List<Object> redisData = Collections.emptyList();
 
-            byte[] key = leaderboard.getBytes(StandardCharsets.UTF_8);
+        try {
+            redisData = redis.executePipelined((RedisCallback<Object>) conn -> {
 
-            for (UUID id : ids) {
-                byte[] member = id.toString().getBytes(StandardCharsets.UTF_8);
+                byte[] key = leaderboard.getBytes(StandardCharsets.UTF_8);
 
-                conn.zSetCommands().zScore(key, member);
-                conn.zSetCommands().zRevRank(key, member);
-            }
+                for (UUID id : ids) {
+                    byte[] member = id.toString().getBytes(StandardCharsets.UTF_8);
 
-            return null;
-        });
+                    conn.zSetCommands().zScore(key, member);
+                    conn.zSetCommands().zRevRank(key, member);
+                }
+
+                return null;
+            });
+        } catch (Exception e) {
+            log.error("Pipeline failed", e);
+        }
 
         // ================= BUILD RESULT =================
         Map<UUID, VoteQuery> result = new HashMap<>();
@@ -68,11 +112,28 @@ public class VoteQueryService {
 
             UUID id = ids.get(i);
 
-            Double s = (Double) redisData.get(i * 2);
-            Long r = (Long) redisData.get(i * 2 + 1);
+            Object scoreObj = (redisData.size() > i * 2) ? redisData.get(i * 2) : null;
+            Object rankObj = (redisData.size() > i * 2 + 1) ? redisData.get(i * 2 + 1) : null;
 
-            long score = (s == null) ? 0 : s.longValue();
-            long rank = (r == null) ? 0 : r + 1;
+            double scoreVal = 0;
+            long rankVal = 0;
+
+            // ✅ SAFE SCORE PARSE
+            if (scoreObj instanceof Double d) {
+                scoreVal = d;
+            } else if (scoreObj instanceof String s) {
+                scoreVal = Double.parseDouble(s);
+            }
+
+            // ✅ SAFE RANK PARSE
+            if (rankObj instanceof Long l) {
+                rankVal = l;
+            } else if (rankObj instanceof Integer iVal) {
+                rankVal = iVal.longValue();
+            }
+
+            long score = (long) scoreVal;
+            long rank = (rankVal == 0) ? 0 : rankVal + 1;
 
             int votes = Integer.parseInt(
                     voteCounts.getOrDefault(id.toString(), "0").toString()
@@ -83,7 +144,7 @@ public class VoteQueryService {
             );
 
             boolean hasVoted = authId != null && userVotes.contains(id.toString());
-            boolean hasKilled = authId != null && id.toString().equals(killed);
+            boolean hasKilled = authId != null && userKills.contains(id.toString());
 
             result.put(id, new VoteQuery(
                     score,
