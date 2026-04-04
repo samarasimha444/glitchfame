@@ -27,7 +27,7 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
     <section className="w-full px-4 md:px-12 py-10 min-h-screen">
       <div className="w-full mx-auto">
 
-        {/* Header */}
+   
         <div className="flex items-center justify-between mb-8 border-b border-gray-800 pb-4">
           <div className="flex items-center gap-3">
             <div className="bg-red-500/10 p-2 rounded-lg">

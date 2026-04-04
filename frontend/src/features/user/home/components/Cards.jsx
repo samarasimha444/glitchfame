@@ -10,19 +10,18 @@ const Cards = ({ liveSeason, isLoading }) => {
 
   return (
     <div className="w-full max-w-screen mx-auto px-2 sm:px-6 md:px-10 lg:px-20">
-      {isLoading ? (
+      {isLoading ?
         <section className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
           <ShimmerCard />
           <ShimmerCard />
         </section>
-      ) : liveSeason?.length === 0 ? (
+      : liveSeason?.length === 0 ?
         <div className="w-full text-center py-20 text-gray-400 text-xl">
           No live seasons found.
         </div>
-      ) : (
-        <>
-          {isMobile ? (
-            /* ✅ MOBILE — NO ANIMATION */
+      : <>
+          {isMobile ?
+            
             <section className="grid grid-cols-2 gap-3 sm:gap-6">
               {liveSeason?.map((item) => (
                 <Link
@@ -34,7 +33,7 @@ const Cards = ({ liveSeason, isLoading }) => {
                     <img
                       src={`${item.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=600`}
                       alt={item.seasonName}
-                      className="h-[163px] w-full object-cover"
+                      className="h-40.75 w-full object-cover"
                     />
                     <span className="absolute top-2 left-2 bg-red-500 text-white text-[8px] px-2 py-1 rounded-full font-medium">
                       ● LIVE
@@ -61,13 +60,33 @@ const Cards = ({ liveSeason, isLoading }) => {
                   </div>
                 </Link>
               ))}
-              
-            </section>
-          ) : (
-            /* ✅ DESKTOP — WITH ANIMATION */
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-              {/* MAIN CARD */}
+              <Link
+                to="/arena"
+                className=" relative w-full h-69.5 rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br from-[#1f2329] to-[#14161a] flex flex-col items-center justify-center transition-all duration-300 active:scale-[0.97]"
+              >
+                
+                <div className="absolute inset-0 bg-primary/10 opacity-0 hover:opacity-100 transition duration-300 blur-xl"></div>
+
+               
+                <div
+                  className=" relative z-10 flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-primary/20 border border-primary/30 shadow-[0_0_20px_rgba(0,255,200,0.15)] mb-3 transition-all duration-300 group-hover:scale-110"
+                >
+                  <ArrowRight className="text-primary" size={26} />
+                </div>
+
+                <h3 className="relative z-10 text-white text-[15px] font-semibold tracking-wide">
+                  View All
+                </h3>
+
+                <p className="relative z-10 text-gray-400 text-[11px] mt-1">
+                  Explore all seasons
+                </p>
+
+                <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent opacity-70"></div>
+              </Link>
+            </section>
+          : <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {liveSeason?.[0] && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.92 }}
@@ -77,7 +96,7 @@ const Cards = ({ liveSeason, isLoading }) => {
                 >
                   <Link
                     to={`/vote/${liveSeason[0].seasonId}`}
-                    className="group relative w-full h-[320px] rounded-xl overflow-hidden border border-gray-800 flex flex-col"
+                    className="group relative w-full h-80 rounded-xl overflow-hidden border border-gray-800 flex flex-col"
                   >
                     <div className="absolute inset-0 overflow-hidden">
                       <img
@@ -123,7 +142,7 @@ const Cards = ({ liveSeason, isLoading }) => {
                 </motion.div>
               )}
 
-              {/* VIEW ALL CARD */}
+             
               <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -159,11 +178,10 @@ const Cards = ({ liveSeason, isLoading }) => {
                   </div>
                 </Link>
               </motion.div>
-
             </div>
-          )}
+          }
         </>
-      )}
+      }
     </div>
   );
 };

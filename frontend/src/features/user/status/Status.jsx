@@ -18,7 +18,7 @@ const SubmissionsPage = () => {
   const applications = data?.content || [];
 
   return (
-    <div className="min-h-screen bg-[#1E2229] text-[#E6EEF0] font-sans">
+    <div className="min-h-screen pt-20 bg-[#1E2229] text-[#E6EEF0] font-sans">
       <div className="max-w-6xl mx-auto px-4 py-6 md:py-12">
         <HeaderSection />
 

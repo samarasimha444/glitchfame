@@ -13,7 +13,7 @@ const Leaderboard = () => {
 
   if (isLoading) {
     return (
-      <div className="text-white max-w-screen flex justify-center items-center h-screen">
+      <div className="text-white max-w-screen  flex justify-center items-center h-screen">
         <LeaderboardLoading />
       </div>
     );
@@ -29,11 +29,11 @@ const Leaderboard = () => {
 
  
   const mergedData = data?.merged
-    ? [...data.merged].sort((a, b) => b.votes - a.votes)
+    ? [...data.merged].sort((a, b) => b.score - a.score)
     : [];
 
   return (
-    <div className="min-h-screen sm:pt-30 text-white flex justify-center py-8 px-4 font-sans relative overflow-hidden">
+    <div className="min-h-screen pt-28 text-white flex justify-center py-8 px-4 font-sans relative overflow-hidden">
     
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#9DE2E2] opacity-[0.03] blur-[120px]" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#9DE2E2] opacity-[0.03] blur-[120px]" />
@@ -90,10 +90,25 @@ const Leaderboard = () => {
                   {(index + 1).toString().padStart(2, "0")}
                 </span>
                 <div className="relative">
-                  <img
-                    src={item.participantPhoto}
-                    className="w-12 h-12 sm:w-14 sm:h-14 object-cover rounded-xl border border-white/10 group-hover:border-[#9DE2E2]/50 transition-all"
-                  />
+                 <img
+  src={
+    item.participantPhoto
+      ? `${item.participantPhoto}?auto=compress&cs=tinysrgb`
+      : "/avatar.png" 
+  }
+  srcSet={item.participantPhoto
+      ? `${item.participantPhoto}?w=80&q=60 80w,
+      ${item.participantPhoto}?w=120&q=70 120w,
+      ${item.participantPhoto}?w=160&q=80 160w`
+      : "/avatar.png"
+  }
+       sizes="(max-width: 640px) 48px, 56px"
+       alt="participant"
+       loading="lazy"
+       decoding="async"
+       className="w-12 h-12 sm:w-14 sm:h-14 object-cover rounded-xl border
+        border-white/10 group-hover:border-[#9DE2E2]/50 transition-all"/>
+        
                   {index < 3 && (
                     <div className="absolute -top-2 -right-2 shadow-lg">
                       <Star size={14} fill={index === 0 ? "#FBBF24" : PRIMARY_COLOR} stroke="none" />
@@ -107,7 +122,7 @@ const Leaderboard = () => {
               </div>
               <div className="text-right">
                 <p className="text-lg sm:text-2xl font-black italic tracking-tighter group-hover:scale-110 transition-transform origin-right" style={{ color: "white" }}>
-                  <Countup end={item.votes} duration={1000} />
+                  <Countup end={item.score} duration={1000} />
                 </p>
                 <div className="flex items-center justify-end gap-1.5 mt-0.5">
                   <div className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_5px_red]"></div>

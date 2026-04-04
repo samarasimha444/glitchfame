@@ -25,7 +25,7 @@ export default function FeaturedCarousel({ season }) {
         </p>
       </section> */}
 
-      <section className="border border-gray-900 rounded-xl md:rounded-none w-full max-w-90 h-60 sm:max-w-screen sm:h-120 md:h-170 relative overflow-hidden aspect-16\/9">
+      <section className="border border-gray-900 rounded-xl md:rounded-none w-full max-w-92 h-60 sm:max-w-screen sm:h-120 md:h-170 relative overflow-hidden aspect-16\/9">
 
     <img
   src={`${season?.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=1600`}
@@ -33,11 +33,7 @@ export default function FeaturedCarousel({ season }) {
   loading="eager"
   decoding="async"
   className="w-full h-full object-cover"
-  // onError={(e) => {
-  //   e.currentTarget.onerror = null; 
-  //   e.currentTarget.src =
-  //     "https://img.freepik.com/free-vector/coming-soon-banner-with-focus-lights_1017-33739.jpg?semt=ais_hybrid&w=740&q=80";
-  // }}
+ 
 />
 
         <div className="absolute inset-0 bg-[radial-gradient(circle,_transparent_20%,_rgba(0,0,0,0.8)_100%)] pointer-events-none" />

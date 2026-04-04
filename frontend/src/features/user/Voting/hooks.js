@@ -6,8 +6,8 @@ import {
   disconnectSocket,
   subscribeTopic,
 } from "../../../../services/websocketservices";
-import { fetchRandomParticipation, fetchSearchContestants } from "../arena/api";
-import { fetchSeasonParticipation } from "../home/api";
+import { fetchRandomParticipation, fetchSearchContestants, fetchSeasonParticipation } from "../arena/api";
+// import { fetchSeasonParticipation } from "../home/api";
 import { handleApiError } from "../../../lib/helper";
 
 
@@ -134,7 +134,7 @@ export const useParticipation = (seasonId, page = 0) => {
       const res = seasonId
         ? await fetchSeasonParticipation(seasonId, page, 10)
         : await fetchRandomParticipation(page, 8);
-
+      
       return res;
     },
 

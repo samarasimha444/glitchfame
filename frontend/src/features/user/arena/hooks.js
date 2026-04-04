@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  getContestantDetails, getLeaderboard, getVotersById, loginUser, resetPassword, sendOtp, } from "./api";
+import {  getContestantDetails,  getVotersById, loginUser, resetPassword, sendOtp, } from "./api";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -28,14 +28,14 @@ export const useContestantDetails = (id) => {
 
 
 
-export const useLeaderboard = () => {
-  return useQuery({
-    queryKey: ["leaderboard"], 
-    queryFn: getLeaderboard,
-    // staleTime: 1000 * 60,      
-    // refetchInterval: 5000,  
-  });
-};
+// export const useLeaderboard = () => {
+//   return useQuery({
+//     queryKey: ["leaderboard"], 
+//     queryFn: getLeaderboard,
+//     // staleTime: 1000 * 60,      
+//     // refetchInterval: 5000,  
+//   });
+// };
 
 
 export const useLogin = () => {

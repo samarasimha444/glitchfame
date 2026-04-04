@@ -25,7 +25,7 @@ const VotingHeader = ({season}) => {
               </span>
             </div>
 
-            <h1 className="font-serif text-start italic  text-4xl md:text-8xl">
+            <h1 className="font-serif text-start   text-4xl md:text-7xl">
               {season?.seasonName} <span className="text-primary">2026</span>
             </h1>
 

@@ -96,24 +96,24 @@ export const getContestantDetails = async (id) => {
 
 
 
-export const getLeaderboard = async () => {
-   const token = localStorage.getItem("token")
+// export const getLeaderboard = async () => {
+//    const token = localStorage.getItem("token")
   
-  const response = await fetch(`${BASE_URL}/leaderboard`, {
-    method: "GET", 
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
+//   const response = await fetch(`${BASE_URL}/leaderboard`, {
+//     method: "GET", 
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//       "Content-Type": "application/json",
+//     },
+//   });
 
-  console.log(response)
-  if (!response.ok) {
-    throw new Error("Failed to toggle vote");
-  }
+//   console.log(response)
+//   if (!response.ok) {
+//     throw new Error("Failed to toggle vote");
+//   }
 
-  return response.json();
-};
+//   return response.json();
+// };
 
 
 
@@ -124,9 +124,9 @@ export const fetchSeasonParticipation = async (seasonId, page = 0, size = 10) =>
   const url = `${BASE_URL}/seasons/${seasonId}?page=${page}&size=${size}`;
 
   const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   });
 
   if (!res.ok) {
@@ -170,32 +170,29 @@ export const fetchSearchContestants = async (seasonId, name = "", page = 0, size
 
 
 
-export const fetchLeaderboards = async (token) => {
-  const res = await fetch(`${BASE_URL}/leaderboard/live`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+// export const fetchLeaderboards = async (token) => {
+//   const res = await fetch(`${BASE_URL}/leaderboard/live`, {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   });
 
-  if (!res.ok) throw new Error("Failed to fetch leaderboard");
+//   if (!res.ok) throw new Error("Failed to fetch leaderboard");
 
-  return res.json();
-};
+//   return res.json();
+// };
 
 
 export const fetchRandomParticipation = async (page,size) => {
-  console.log(page,size)
-  console.log("PAGE FROM HOOK:", page);
 
-  const token = localStorage.getItem("token");
 
   const url = `${BASE_URL}/seasons/live/random?page=${page}&size=${size}`; 
 
   const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+     
+    // },
   });
 
   if (!res.ok) {
@@ -203,7 +200,7 @@ export const fetchRandomParticipation = async (page,size) => {
   }
 
   const response = await res.json();
-  console.log("API RESPONSE:", response);
+  
 
   return response;
 };

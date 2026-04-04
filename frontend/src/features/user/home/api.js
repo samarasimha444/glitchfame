@@ -62,26 +62,25 @@ export const getSeasonById = async (id) => {
 };
 
 
-export const fetchSeasonParticipation = async (seasonId) => {
+// export const fetchSeasonParticipation = async (seasonId) => {
   
 
-  const token = localStorage.getItem("token");
 
-  const res = await fetch(`${BASE_URL}/seasons/${seasonId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+//   const res = await fetch(`${BASE_URL}/seasons/${seasonId}`, {
+//     // headers: {
+//     //   Authorization: `Bearer ${token}`,
+//     // },
+//   });
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch season details");
-  }
+//   if (!res.ok) {
+//     throw new Error("Failed to fetch season details");
+//   }
 
-  const response = await res.json() 
-  console.log("API RESPONSE:", response);
+//   const response = await res.json() 
+//   console.log("API RESPONSE:", response);
 
-  return response; 
-};
+//   return response; 
+// };
 
 export const fetchLeaderboards = async () => {
   const token = localStorage.getItem("token");

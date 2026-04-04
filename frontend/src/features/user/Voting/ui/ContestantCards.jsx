@@ -11,7 +11,7 @@ export const ContestantCard = React.memo(({ user }) => {
       
       className="group relative w-full cursor-pointer rounded-t-xl overflow-hidden bg-[#1a1a1a] transition-all duration-300 h-64  sm:h-[400px]"
     >
-      {/* Heart Badge */}
+     
       <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20 bg-black/40 backdrop-blur-md p-1 sm:p-1.5 rounded-full border border-white/20">
         <Heart size={12} className="text-white sm:w-[14px]" />
       </div>
@@ -22,14 +22,19 @@ export const ContestantCard = React.memo(({ user }) => {
         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
       /> */}
 
-     <img
-  src="https://tse1.mm.bing.net/th/id/OIP.Ra3Tj-w8J2fSEzmI-rDIogHaHa?pid=Api&P=0&h=180"
-  alt={user?.name}
-  loading="lazy"               
-  decoding="async"             
-  width={200}                  
+ <img
+  src={user?.participantPhotoUr || "https://tse1.mm.bing.net/th/id/OIP.brYCf8YXK2he0a35bkydtwHaJ4?pid=Api&P=0&h=180"}
+  alt={user?.name || "participant"}
+  loading="lazy"
+  decoding="async"
+  width={200}
   height={200}
   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+  style={{
+    imageRendering: "auto", 
+    maxWidth: "100%",
+    height: "auto"
+  }}
 />
 
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
