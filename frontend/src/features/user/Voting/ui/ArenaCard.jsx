@@ -7,7 +7,7 @@ import { useVoteAction } from "../hooks";
 import ContestantItem from "./ContestantItem";
 
 const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
-  console.log(data)
+  
   const { profile } = useOutletContext();
 
   
