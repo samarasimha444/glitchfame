@@ -157,3 +157,19 @@ export const handleApiError = (error, { setShowLoginModal } = {}) => {
 
   return isMobile;
 };
+
+
+
+export const getCloudinarySrcSet = (url) => {
+  if (!url) return null;
+
+  const src = url.replace("/upload/", "/upload/f_webp,w_300,q_auto/");
+
+  const srcSet = `
+    ${url.replace("/upload/", "/upload/f_webp,w_150,q_auto:low/")} 150w,
+    ${url.replace("/upload/", "/upload/f_webp,w_300,q_auto/")} 300w,
+    ${url.replace("/upload/", "/upload/f_webp,w_600,q_auto/")} 600w
+  `;
+
+  return { src, srcSet };
+};

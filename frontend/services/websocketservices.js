@@ -66,7 +66,7 @@ export const connectSocket = (token) => {
 };
 
 export const subscribeTopic = (topic, callback) => {
-  console.log("📩 subscribeTopic called for:", topic);
+  
 
   if (!client) {
     console.log("❌ No client available");

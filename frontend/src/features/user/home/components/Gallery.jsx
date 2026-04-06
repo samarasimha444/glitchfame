@@ -2,31 +2,11 @@ import React from "react";
 import { Trophy } from "lucide-react";
 import { useWinners } from "../hooks";
 
-const data = [
-  {
-    id: 1,
-    name: "Leo Dash",
-    role: "PRE-SEASON",
-    image: "https://randomuser.me/api/portraits/men/32.jpg",
-  },
-  {
-    id: 2,
-    name: "Mia Thorne",
-    role: "BETA TEST",
-    image: "https://randomuser.me/api/portraits/women/44.jpg",
-  },
-  {
-    id: 3,
-    name: "Chen Wei",
-    role: "S0 PILOT",
-    image: "https://randomuser.me/api/portraits/men/46.jpg",
-  },
-];
+
 
 const Gallery = () => {
 
   const {data:winners,isLoading}= useWinners()
-  console.log(winners)
 
   return (
     <div className="w-full px-3 sm:hidden sm:px-6 mt-6">

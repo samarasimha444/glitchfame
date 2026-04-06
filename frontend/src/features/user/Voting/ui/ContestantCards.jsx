@@ -1,6 +1,12 @@
 import { ExternalLink } from 'lucide-react';
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import CloudinaryImage from '../../../../components/CloudinaryImage';
+
+
+
+
+
 
 export const ContestantCard = React.memo(({ user }) => {
   const navigate = useNavigate();
@@ -16,35 +22,11 @@ export const ContestantCard = React.memo(({ user }) => {
       </div>
 
     
-      <img
-  src={
-    user?.participantPhotoUrl
-      ? `${user.participantPhotoUrl}?w=300&f_auto&q_auto`
-      : "https://res.cloudinary.com/dxt9cvxmg/image/upload/v1775192878/seasons/register/banner/dh5ftc0nzp0bsmti9qrs.jpg"
-  }
-    srcSet={
-    user?.participantPhotoUrl
-      ? `
-        ${user.participantPhotoUrl}?w=150&f_auto&q_auto 150w,
-        ${user.participantPhotoUrl}?w=300&f_auto&q_auto 300w,
-        ${user.participantPhotoUrl}?w=600&f_auto&q_auto 600w
-      `
-      : undefined
-  }
-  sizes="(max-width: 640px) 140px, (max-width: 1024px) 180px, 220px"
-  alt={user?.name || "participant"}
-  loading="lazy"
-  decoding="async"
-  className="w-full h-full object-cover transition-transform duration-500 sm:group-hover:scale-110"
-  style={{
-    transform: "scale(1.05)",
-    filter: "none",
-  }}
-  onLoad={(e) => {
-    e.currentTarget.style.transition = "transform 0.5s ease, opacity 0.5s ease";
-    e.currentTarget.style.opacity = "1";
-  }}
-/>
+   <CloudinaryImage 
+        url={user?.participantPhotoUrl} 
+        alt={user?.name || "participant"} 
+        className="w-full h-full object-cover"
+      />
 
    
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />

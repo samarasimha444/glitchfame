@@ -1,9 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Vote from "./features/user/Voting/Vote"
-import Status from "./features/user/status/Status";
-import KillTesting from "./Testing/KillTesting";
-import TLeaderboard from "./Testing/TLeaderboard";
+
 import  { ReactLenis } from "lenis/react"
 
 const ProtectedRoute = lazy(() => import("./ProtectedRoute"));
@@ -18,7 +16,7 @@ const ArenaForm = lazy(() => import("./features/user/entryForm/Arena"));
 const SeasonDetails = lazy(() => import("./features/user/season/SeasonDetails"));
 const PlayerDetails = lazy(() => import("./features/user/details/PlayerDetails"));
 const Arena = lazy(() => import("./features/user/arena/Arena"));
-
+const Status = lazy(()=>import("./features/user/status/Status"))
 const LeaderboardPage = lazy(() => import("./features/user/leaderboard/LeaderBoard"));
 const ChallengeDetail = lazy(() => import("./features/user/details/ChallangeDetails"));
 
@@ -34,11 +32,7 @@ export default function App() {
   return (
     <Suspense fallback={null}>
       <Routes>
-        {/* Public/Testing routes */}
-        <Route path="/" element={<RoleRedirect />} />
-        <Route path="/kill" element={<KillTesting />} />
-        <Route path="/lead" element={<TLeaderboard />} />
-        <Route path="/auth" element={<AuthLayout />} />
+      
 
         {/* Lenis smooth scroll only wraps the Layout for user routes */}
         <Route
