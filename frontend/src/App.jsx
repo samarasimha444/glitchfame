@@ -63,9 +63,9 @@ export default function App() {
           <Route path="/aboutus" element={<ChallengeDetail />} />
           <Route path="/status" element={<Status />} />
           <Route path="/details/:id" element={<PlayerDetails />} />
-            <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path="/" element={<Navigate to="/home" replace />} />
         </Route>
-
+        <Route path="/auth" element={<AuthLayout />} />
         {/* Admin routes */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
