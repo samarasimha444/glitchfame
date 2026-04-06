@@ -51,6 +51,10 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #16191D;
 }
 
+.small-text {
+  @apply text-gray-400 text-[11px] uppercase tracking-widest sm:text-base sm:normal-case sm:tracking-normal;
+}
+
 /* .text-primary {
   color: #165656;
 }
@@ -60,6 +64,18 @@ h1, h2, h3, h4, h5, h6 {
 }
   */
 
+  @keyframes slowSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.slow-spin {
+  animation: slowSpin 6s linear infinite;
+}
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;

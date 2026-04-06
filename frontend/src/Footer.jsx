@@ -19,7 +19,7 @@ const Footer=()=> {
       <h2 className="text-white font-semibold text-lg mb-4">
         {footerData.brand.name}
       </h2>
-      <p className="text-sm leading-relaxed max-w-sm">
+      <p className=" small-text">
         {footerData.brand.description}
       </p>
     </div>

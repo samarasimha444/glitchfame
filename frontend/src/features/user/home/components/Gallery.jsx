@@ -1,6 +1,7 @@
 import React from "react";
 import { Trophy } from "lucide-react";
 import { useWinners } from "../hooks";
+
 const data = [
   {
     id: 1,
@@ -32,13 +33,19 @@ const Gallery = () => {
 
       
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-white text-lg font-semibold flex items-center gap-2">
+        <h2 className="text-white text-lg  uppercase font-semibold flex items-center gap-2">
           <Trophy size={18} className="text-primary" />
           Hall of Fame
         </h2>
 
         
       </div>
+
+  {winners?.length === 0 && !isLoading && (
+    <p className="small-text">
+      Winners will appear here
+    </p>
+  )}
 
     
       <div className="flex gap-5  mt-6 overflow-x-auto no-scrollbar">

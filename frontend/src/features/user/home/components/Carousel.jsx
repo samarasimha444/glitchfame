@@ -1,60 +1,53 @@
 import { Link } from "react-router-dom";
+import CountdownTimer from "./CountdownTimer";
 
 export default function FeaturedCarousel({ season }) {
   return (
     <div className="w-full max-h-dvh relative mt-6 md:mt-0 flex justify-center items-center  max-w-400 mx-auto  h-full md:max-h-[95dvh]">
-      {/* <section className=" w-full hidden md:flex  flex-col  max-w-4xl text-center mb-8 md:mb-6 px-4">
-        <h2 className="text-white text-xl md:text-5xl font-bold  max-w-xl tracking-wider uppercase">
-          ENTER THE{" "}
-          <span className="bg-primary bg-clip-text text-transparent">
-            GLITCH ARENA
-          </span>
-        </h2>
-
-        <p className="text-gray-400 text-sm md:text-base mt-3  max-w-xl leading-relaxed">
-          Step into the digital spotlight and prove your presence. The Glitch
-          Arena is where creators, challengers, and rising icons compete for
-          recognition and rewards. Upload your entry, gather votes from the
-          community, and climb the leaderboard to claim your place among the
-          elite.
-        </p>
-
-        <p className="text-gray-500 text-xs max-w-xl md:text-sm mt-3">
-          Every season introduces a new challenge. Every vote pushes someone
-          closer to the crown. Are you ready to enter the arena?
-        </p>
-      </section> */}
-
       <section className="border border-gray-900 rounded-xl md:rounded-none w-full max-w-92 h-60 sm:max-w-screen sm:h-120 md:h-170 relative overflow-hidden aspect-16\/9">
+        <div className="relative w-full h-full overflow-hidden">
+          <img
+            src={
+              season?.seasonPhotoUrl + "?w=20&q=20" ||
+              "/images/default-event.jpg"
+            }
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover blur-sm scale-105"
+          />
 
-    <img
-  src={`${season?.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=1600`}
-  alt="event"
-  loading="eager"
-  decoding="async"
-  className="w-full h-full object-cover"
- 
-/>
-
+          <img
+            src={season?.seasonPhotoUrl || "/images/default-event.jpg"}
+            srcSet={`
+      ${season?.seasonPhotoUrl}?w=320&q=60 320w,
+      ${season?.seasonPhotoUrl}?w=640&q=70 640w,
+      ${season?.seasonPhotoUrl}?w=1280&q=85 1280w,
+      ${season?.seasonPhotoUrl}?w=1600&q=90 1600w
+    `}
+            sizes="(max-width: 640px) 320px, (max-width: 1280px) 1280px, 1600px"
+            alt={season?.name || "event"}
+            loading="lazy"
+            decoding="async"
+            className="relative w-full h-full object-cover transition-opacity duration-700 ease-in-out"
+          />
+        </div>
         <div className="absolute inset-0 bg-[radial-gradient(circle,_transparent_20%,_rgba(0,0,0,0.8)_100%)] pointer-events-none" />
 
-       
         <section className="absolute hidden sm:flex inset-0 flex-col items-center justify-center text-center text-white px-6">
           <span className="border border-white/20 max-w-xs text-teal-400 text-xs px-4 py-1 rounded-full backdrop-blur bg-black/30 tracking-widest">
             PHASE 1 REGISTRATION ENDS IN
           </span>
 
-          <h1
-            className="uppercase mt-6 font-black max-w-4xl text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tight bg-gradient-to-b from-white via-white to-[#6A7282] bg-clip-text text-transparent drop-shadow-[0_8px_24px_rgba(255,255,255,0.15)]"
-          >
+          <h1 className="uppercase mt-6 font-black max-w-4xl text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tight bg-gradient-to-b from-white via-white to-[#6A7282] bg-clip-text text-transparent drop-shadow-[0_8px_24px_rgba(255,255,255,0.15)]">
             {season?.seasonName || "COMING SOON"}
           </h1>
 
           <p className="text-gray-300 mt-4 max-w-2xl text-sm md:text-base opacity-80">
             {season?.seasonDesc}
           </p>
-
-          <div className="flex gap-4 mt-8">
+          
+          <CountdownTimer endDate={season?.registrationEndDate} variant="dark"/>
+          {/* <div className="flex gap-4 mt-8">
             {[
               { label: "DAYS", value: "02" },
               { label: "HOURS", value: "14" },
@@ -70,7 +63,7 @@ export default function FeaturedCarousel({ season }) {
                 </span>
               </div>
             ))}
-          </div>
+          </div> */}
         </section>
 
         {/* mobile */}
@@ -92,7 +85,7 @@ export default function FeaturedCarousel({ season }) {
 
           <div className="flex items-center justify-between mt-3">
             <div>
-              <p className="text-[10px] text-gray-300">PRIZE POOL</p>
+              <p className="small-text">PRIZE POOL</p>
               <p className="text-lg font-bold">
                 ₹{season?.prizeMoney?.toLocaleString() || "0"}
               </p>
@@ -106,27 +99,33 @@ export default function FeaturedCarousel({ season }) {
             </Link>
           </div>
         </section>
-
       </section>
 
       <div className=" hidden w-full absolute -bottom-20 max-w-xl md:max-w-5xl h-39 bg-[#123B3B] border border-teal-500/30 rounded-xs p-6 sm:flex flex-col md:flex-row items-center  justify-between ]">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-teal-500/20 rounded-full border border-teal-500/50">
+          <div className="p-3 bg-teal-500/20 rounded-full border border-teal-500/50 slow-spin">
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-12 w-12 text-primary"
-              fill="none"
               viewBox="0 0 24 24"
-              stroke="currentColor"
+              className="h-12 w-12 text-[#9DE2E2]"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
               <path
+                d="M12 2L5 9l7 13 7-13-7-7z"
+                stroke="currentColor"
+                strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+              />
+              <path
+                d="M12 22V9M5 9h14M12 2l4 7M12 2l-4 7"
+                stroke="currentColor"
+                strokeWidth="1"
+                opacity="0.5"
               />
             </svg>
           </div>
+
           <div className="text-left">
             <p className="text-[20px] md:text-[24px] font-bold uppercase tracking-wider">
               Seasonal Prize Pool

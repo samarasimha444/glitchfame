@@ -111,6 +111,7 @@ const Form = ({ seasonId, image }) => {
               key={field.name}
               type={field.type}
               name={field.name}
+              maxLength={30}
               value={formData[field.name]}
               onChange={handleChange}
               required=""
@@ -138,6 +139,7 @@ const Form = ({ seasonId, image }) => {
         <textarea
           name="bio"
           value={formData.bio}
+          maxLength={170}
           onChange={handleChange}
           placeholder="Tell the arena why you deserve the crown..."
           rows="4"

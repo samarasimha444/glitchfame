@@ -4,7 +4,7 @@ export const ChallangeDetails = () => {
 
   const navigate = useNavigate()
   return (
-    <div className="w-full min-h-screen bg-black text-white flex justify-center">
+    <div className="w-full  pt-20 min-h-screen bg-black text-white flex justify-center">
 
       <div className="w-full max-w-[1200px]">
 

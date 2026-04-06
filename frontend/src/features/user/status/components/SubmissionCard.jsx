@@ -50,7 +50,7 @@ const SubmissionCard = memo(({ season }) => {
       <div className="p-5 md:p-8 space-y-4">
         <div className="flex items-center justify-between gap-4 p-3 rounded-2xl bg-[#1E2229]/50 border border-white/[0.03]">
           <div className="flex items-center gap-4">
-            <div className="relative w-12 h-12 overflow-hidden rounded-full">
+            <div className="relative w-12 h-12 overflow-hidden rounded-full">z
               <img
                 src={season.participantPhotoUrl}
                 alt={season.participantName}

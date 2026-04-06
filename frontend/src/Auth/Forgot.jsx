@@ -47,22 +47,34 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
   }, [timer]);
 
   
-  const handleSendOtp = () => {
-    if (!email) {
-      return toast.error("Please enter email");
-    }
+ const handleSendOtp = () => {
+  if (!email) {
+    return toast.error("Please enter email");
+  }
 
-    sendOtpMutation(email, {
-      onSuccess: () => {
-        toast.success("OTP sent to your email");
-        setStep(2);
-        setTimer(30);
-      },
-      onError: (err) => {
-        toast.error(err.message);
-      },
-    });
-  };
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+    return toast.error("Check your email format");
+  }
+
+  sendOtpMutation(email, {
+    onSuccess: () => {
+      toast.success("OTP sent to your email");
+      setStep(2);
+      setTimer(30);
+    },
+   onError: (err) => {
+  const msg = err?.message?.toLowerCase();
+
+  if (msg?.includes("user not found")) {
+    toast.error("This email is not registered yet.");
+  } else {
+    toast.error("Something went wrong. Please try again.");
+  }
+}
+  });
+};
 
   
   const handleOtpChange = (value, index) => {

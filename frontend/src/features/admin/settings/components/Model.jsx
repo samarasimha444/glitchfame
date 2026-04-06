@@ -39,10 +39,10 @@ const Model = ({ type, seasonId, onClose }) => {
   };
 
   const handleSubmit = () => {
-    if (!formData.start || !formData.end) {
-      toast.error("Both dates are required");
-      return;
-    }
+    // if (!formData.start || !formData.end) {
+    //   toast.error("Both dates are required");
+    //   return;
+    // }
 
     const utcStart = toUTC(formData.start);
     const utcEnd = toUTC(formData.end);

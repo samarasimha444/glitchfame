@@ -40,11 +40,11 @@ const ArenaForm = () => {
   };
 
   return (
-  <div className="min-h-screen w-full bg-gradient-to-br from-[#0f0f18] via-[#141a24] to-[#0c1b22] flex flex-col items-center py-12 md:py-16 px-4 sm:px-6">
+  <div className="min-h-screen mt-8 w-full bg-gradient-to-br from-[#0f0f18] via-[#141a24] to-[#0c1b22] flex flex-col items-center py-12 md:py-16 px-4 sm:px-6">
 
     {show && <LoginRequiredModal onCancel={()=>setShow(false)}/>}
 
-  <div className="text-center mb-5 sm:mb-12 md:mb-16 max-w-xl">
+  <div className="text-center mb-5 sm:mb-12  max-w-xl">
     <span className="text-[10px] sm:text-xs text-primary border border-white px-3 py-1 rounded-full">
       NEW SEASON ENTRY
     </span>

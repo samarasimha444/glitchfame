@@ -14,8 +14,8 @@ const New = () => {
         
         <div className="flex justify-between items-start sm:mb-14">
           <div>
-            <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">
-              PAST <span className="text-gray-500">WINNERS</span>
+            <h1 className="text-white flex  text-lg md:text-5xl font-bold uppercase tracking-tight">
+              PAST <span className="text-gray-500 ml-2">WINNERS</span>
             </h1>
 
             <p className="text-gray-400 mt-4 max-w-xl text-sm">

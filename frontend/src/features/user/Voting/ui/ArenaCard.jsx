@@ -28,7 +28,7 @@ const ArenaCard = ({ data, seasonId, isLoading, isError }) => {
       <div className="w-full mx-auto">
 
    
-        <div className="flex items-center justify-between mb-8 border-b border-gray-800 pb-4">
+        <div className="flex items-center justify-between sm:mb-4 border-b border-gray-800 pb-4">
           <div className="flex items-center gap-3">
             <div className="bg-red-500/10 p-2 rounded-lg">
               <HeartHandshake size={22} className="text-red-500" strokeWidth={2.5} />

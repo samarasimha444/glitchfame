@@ -19,7 +19,7 @@ const useDebounce = (value, delay = 500) => {
 
 const Vote = () => {
   const { id: seasonId } = useParams();
-
+ 
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 500);
 
@@ -35,6 +35,7 @@ const Vote = () => {
     isFetching: isFetchingParticipation,
   } = useParticipation(seasonId, page); 
 
+  
   const {
     data: searchData,
     isLoading: isLoadingSearch,

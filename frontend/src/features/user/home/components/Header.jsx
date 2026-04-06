@@ -1,21 +1,20 @@
 import { memo, useEffect, useState } from "react";
 
-export const StickyHeader = memo(({ liveSeason, season }) => {
+export const StickyHeader = memo(({ season }) => {
   const [timeLeft, setTimeLeft] = useState(null);
 
   const calculateTimeLeft = () => {
     let targetDate;
 
-    if (season?.votingEndDate) {
-      targetDate = new Date(season.votingEndDate);
+  
+    if (season?.registrationEndDate) {
+      targetDate = new Date(season.registrationEndDate);
     } else {
-      // fake 2-hour timer
-      targetDate = new Date(new Date().getTime() + 2 * 60 * 60 * 1000);
+      targetDate = new Date(Date.now() + 2 * 60 * 60 * 1000);
     }
 
-    const diff = targetDate - new Date();
+    const diff = targetDate - Date.now();
 
-    
     if (diff <= 0) {
       return {
         days: 0,
@@ -34,30 +33,31 @@ export const StickyHeader = memo(({ liveSeason, season }) => {
   };
 
   useEffect(() => {
+    // ✅ set initial value
     setTimeLeft(calculateTimeLeft());
 
+    // ✅ FIX: only one interval, no unnecessary reset
     const interval = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [season?.votingEndDate]);
+  }, [season?.registrationEndDate]); // ✅ FIX: correct dependency
 
   return (
     <div className="sticky sm:hidden sm:static top-0 z-30 w-full backdrop-blur-sm">
       <div className="w-full md:max-w-xl md:mx-auto">
         <div className="w-full mt-4 md:mt-6 px-0 md:px-4">
           <div
-            className="w-full p-4 sm:p-6 
-        rounded-none md:rounded-2xl 
-        border-y md:border border-cyan-500/20 
-        shadow-none md:shadow-[0_0_30px_rgba(0,255,255,0.05)]"
+            className="w-full p-4 sm:p-6
+         rounded-none md:rounded-2xl
+         border-y md:border border-cyan-500/20
+         shadow-none md:shadow-[0_0_30px_rgba(0,255,255,0.05)]"
           >
-           
             <div className="flex items-center justify-between mb-4 px-2 md:px-0">
               <div>
                 <p className="text-xs text-gray-400">TIME REMAINING</p>
-                <p className="text-sm text-gray-500">
+                <p className="small-text">
                   PHASE 1 REGISTRATION
                 </p>
               </div>
@@ -67,7 +67,6 @@ export const StickyHeader = memo(({ liveSeason, season }) => {
               </span>
             </div>
 
-            
             <div className="flex justify-between sm:justify-center gap-2 sm:gap-5 px-2 md:px-0">
               {[
                 { label: "DAYS", value: timeLeft?.days ?? 0 },
@@ -80,10 +79,10 @@ export const StickyHeader = memo(({ liveSeason, season }) => {
                   className="flex flex-col items-center flex-1"
                 >
                   <div
-                    className="w-full max-w-[70px] sm:max-w-none h-14 sm:h-20 
-                  flex items-center justify-center rounded-xl 
-                  bg-[#0f1e22] border border-cyan-500/20 
-                  shadow-[0_0_15px_rgba(0,255,255,0.12)]"
+                    className="w-full max-w-[70px] sm:max-w-none h-14 sm:h-20
+                   flex items-center justify-center rounded-xl
+                   bg-[#0f1e22] border border-cyan-500/20
+                   shadow-[0_0_15px_rgba(0,255,255,0.12)]"
                   >
                     <span className="text-lg sm:text-3xl font-bold text-cyan-400">
                       {String(item.value).padStart(2, "0")}

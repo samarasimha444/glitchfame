@@ -108,19 +108,24 @@ export const handleApiError = (error, { setShowLoginModal } = {}) => {
 
   console.log("API ERROR:", message);
 
-  // 🎯 Smart cases
+  
+  if (message.includes("max 3 kills")) {
+    toast.error("You can only perform 3 kills");
+    return { type: "limit" };
+  }
+
   if (message.includes("max") || message.includes("limit")) {
-    toast.error("⚠️ You can only vote 3 times");
+    toast.error("Action limit reached");
     return { type: "limit" };
   }
 
   if (message.includes("locked") || message.includes("ended")) {
-    toast.error("⛔ Season has ended");
+    toast.error("Season has ended");
     return { type: "season-ended" };
   }
 
   if (message.includes("unauthorized") || message.includes("token")) {
-    toast.error("🔐 Please login to continue");
+    toast.error("Please login to continue");
 
     if (setShowLoginModal) {
       setShowLoginModal(true);
@@ -130,11 +135,10 @@ export const handleApiError = (error, { setShowLoginModal } = {}) => {
   }
 
   if (message.includes("already")) {
-    toast.error("⚡ Action already performed");
+    toast.error("Action already performed");
     return { type: "duplicate" };
   }
 
-  // 🔁 fallback
   toast.error(error.message || "Something went wrong");
 
   return { type: "unknown" };

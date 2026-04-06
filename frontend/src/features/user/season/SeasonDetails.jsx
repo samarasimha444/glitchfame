@@ -4,7 +4,7 @@ import TournamentCard from './seasonui/TournamentCard'
 
 const SeasonDetails = () => {
   return (
-    <div  className='min-h-screen sm:pt-24 w-full bg-black sm:bg-[#181B20] flex sm:px-20'>
+    <div  className='min-h-screen pt-24 w-full bg-black sm:bg-[#181B20] flex sm:px-20'>
          
         <div className='flex flex-col w-full'>
          

@@ -21,7 +21,6 @@ const Cards = ({ liveSeason, isLoading }) => {
         </div>
       : <>
           {isMobile ?
-            
             <section className="grid grid-cols-2 gap-3 sm:gap-6">
               {liveSeason?.map((item) => (
                 <Link
@@ -30,11 +29,29 @@ const Cards = ({ liveSeason, isLoading }) => {
                   className="w-full h-[278px] bg-[#181B20] rounded-2xl overflow-hidden border border-[#364354] hover:border-white transition duration-300 flex flex-col"
                 >
                   <div className="relative">
-                    <img
-                      src={`${item.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=600`}
-                      alt={item.seasonName}
-                      className="h-40.75 w-full object-cover"
-                    />
+                    <div className="relative w-full h-40.75 overflow-hidden rounded-xl">
+                      {/* Blur placeholder */}
+                      <img
+                        src={`${item.seasonPhotoUrl}?w=20&q=20`} // tiny blurred version
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute inset-0 w-full h-full object-cover blur-sm scale-105"
+                      />
+
+                      <img
+                        src={item.seasonPhotoUrl}
+                        srcSet={`
+                         ${item.seasonPhotoUrl}?w=320&q=60 320w,
+                         ${item.seasonPhotoUrl}?w=480&q=70 480w,
+                         ${item.seasonPhotoUrl}?w=600&q=80 600w
+                        `}
+                        sizes="(max-width: 640px) 320px, (max-width: 768px) 480px, 600px"
+                        alt={item.seasonName || "season"}
+                        loading="lazy"
+                        decoding="async"
+                        className="relative w-full h-full object-cover transition-opacity duration-700 ease-in-out"
+                      />
+                    </div>
                     <span className="absolute top-2 left-2 bg-red-500 text-white text-[8px] px-2 py-1 rounded-full font-medium">
                       ● LIVE
                     </span>
@@ -65,13 +82,9 @@ const Cards = ({ liveSeason, isLoading }) => {
                 to="/arena"
                 className=" relative w-full h-69.5 rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br from-[#1f2329] to-[#14161a] flex flex-col items-center justify-center transition-all duration-300 active:scale-[0.97]"
               >
-                
                 <div className="absolute inset-0 bg-primary/10 opacity-0 hover:opacity-100 transition duration-300 blur-xl"></div>
 
-               
-                <div
-                  className=" relative z-10 flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-primary/20 border border-primary/30 shadow-[0_0_20px_rgba(0,255,200,0.15)] mb-3 transition-all duration-300 group-hover:scale-110"
-                >
+                <div className=" relative z-10 flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-primary/20 border border-primary/30 shadow-[0_0_20px_rgba(0,255,200,0.15)] mb-3 transition-all duration-300 group-hover:scale-110">
                   <ArrowRight className="text-primary" size={26} />
                 </div>
 
@@ -142,7 +155,6 @@ const Cards = ({ liveSeason, isLoading }) => {
                 </motion.div>
               )}
 
-             
               <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}

@@ -29,7 +29,7 @@ const VotingHeader = ({season}) => {
               {season?.seasonName} <span className="text-primary">2026</span>
             </h1>
 
-            <p className="text-gray-400 w-full max-w-xl sm:flex sm:mt-4 leading-relaxed">
+            <p className="text-gray-400 text-[12px] mt-1 pl-1.5 uppercase tracking-widest sm:text-base sm:normal-case sm:tracking-normal">
               {season?.seasonDesc}
               <span className="text-yellow-400 hidden sm:flex font-semibold px-3">
                 Rs {season?.prizeMoney} Grand Prize.
@@ -41,6 +41,7 @@ const VotingHeader = ({season}) => {
           <CountdownTimer
             prizeMoney={season?.prizeMoney}
             endDate={endDate}
+            variant="glass"
             className="font-mono text-lg sm:text-xl font-bold text-white tracking-widest"
           />
 

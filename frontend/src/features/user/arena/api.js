@@ -1,8 +1,6 @@
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 
-const token = localStorage.getItem("token");
- 
 
 export const loginUser = async (formData) => {
 
@@ -124,9 +122,9 @@ export const fetchSeasonParticipation = async (seasonId, page = 0, size = 10) =>
   const url = `${BASE_URL}/seasons/${seasonId}?page=${page}&size=${size}`;
 
   const res = await fetch(url, {
-    // headers: {
-    //   Authorization: `Bearer ${token}`,
-    // },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 
   if (!res.ok) {
@@ -148,8 +146,7 @@ export const fetchSearchContestants = async (seasonId, name = "", page = 0, size
 
   console.log("Fetching search contestants for season:", seasonId, "query:", name);
 
-  const response = await fetch(
-    `${BASE_URL}/participations/seasons/${seasonId}/participants/search?${params.toString()}`,
+  const response = await fetch(`${BASE_URL}/participations/season/${seasonId}/search?${params.toString()}`,
     {
       method: "GET",
       headers: {
@@ -185,14 +182,15 @@ export const fetchSearchContestants = async (seasonId, name = "", page = 0, size
 
 export const fetchRandomParticipation = async (page,size) => {
 
-
+  const token = localStorage.getItem("token");
+  console.log(token)
   const url = `${BASE_URL}/seasons/live/random?page=${page}&size=${size}`; 
 
   const res = await fetch(url, {
-    // headers: {
-    //   Authorization: `Bearer ${token}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
      
-    // },
+    },
   });
 
   if (!res.ok) {

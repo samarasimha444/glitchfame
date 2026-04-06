@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react";
+import { ExternalLink } from 'lucide-react';
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -13,29 +13,40 @@ export const ContestantCard = React.memo(({ user }) => {
     >
      
       <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20 bg-black/40 backdrop-blur-md p-1 sm:p-1.5 rounded-full border border-white/20">
-        <Heart size={12} className="text-white sm:w-[14px]" />
+        <ExternalLink size={12} className="text-white sm:w-[14px]" />
       </div>
 
-      {/* <img
-        src={user?.image || user?.participantPhotoUr} // Support your dummy data keys
-        alt={user?.name}
-        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-      /> */}
+     
 
- <img
-  src={user?.participantPhotoUr || "https://tse1.mm.bing.net/th/id/OIP.brYCf8YXK2he0a35bkydtwHaJ4?pid=Api&P=0&h=180"}
-  alt={user?.name || "participant"}
-  loading="lazy"
-  decoding="async"
-  width={200}
-  height={200}
-  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-  style={{
-    imageRendering: "auto", 
-    maxWidth: "100%",
-    height: "auto"
-  }}
-/>
+  <img
+    src={
+      user?.participantPhotoUrl
+        ? `${user.participantPhotoUrl}?w=300&q=70`
+        : "https://tse1.mm.bing.net/th/id/OIP.brYCf8YXK2he0a35bkydtwHaJ4?pid=Api&P=0&h=180"
+    }
+
+    srcSet={
+      user?.participantPhotoUrl
+        ? `
+          ${user.participantPhotoUrl}?w=150&q=60 150w,
+          ${user.participantPhotoUrl}?w=300&q=70 300w,
+          ${user.participantPhotoUrl}?w=600&q=80 600w
+        `
+        : undefined
+    }
+
+    sizes="(max-width: 640px) 140px, (max-width: 1024px) 180px, 220px"
+
+    alt={user?.name || "participant"}
+    loading="lazy"
+    decoding="async"
+
+    className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 blur-[2px] scale-105"
+
+    onLoad={(e) => {
+      e.currentTarget.classList.remove("blur-[2px]", "scale-105");
+    }}
+  />
 
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
 

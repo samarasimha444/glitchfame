@@ -39,16 +39,16 @@ const Arena = () => {
   );
 
   return (
-    <div className=" sm:bg-black  w-full text-white py-12 md:py-20 px-4 sm:px-6 min-h-screen">
+    <div className="pt-24 bg-black  w-full text-white py-12 md:py-24 px-4 sm:px-6 min-h-screen">
       
-      <section className="hidden md:flex flex-col items-center text-center max-w-3xl mx-auto mb-12">
-        <p className="text-xs tracking-widest text-primary mb-3">
+      <section className=" md:flex flex-col items-center text-center max-w-3xl mx-auto mb-12">
+        <p className=" hidden sm:block text-xs tracking-widest text-primary mb-3">
           LIVE COMPETITIONS
         </p>
-        <h2 className="text-3xl md:text-5xl font-bold mb-4">
+        <h2 className="text-2xl md:text-5xl font-bold mb-4">
           Explore Active <span className="text-primary">Seasons</span>
         </h2>
-        <p className="text-gray-400 text-sm md:text-base">
+        <p className="small-text">
           Step into the arena where the world's most talented digital artists
           compete for seasonal glory and massive prize pools.
         </p>
@@ -66,7 +66,7 @@ const Arena = () => {
             placeholder="Find a specific season..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[#0e0e11] border border-gray-700 rounded-md pl-9 pr-3 py-2 text-sm outline-none focus:border-purple-500"
+            className="w-full bg-[#0e0e11] border border-gray-700 rounded-md pl-9 pr-3 py-2 text-sm outline-none focus:border-teal-300"
           />
         </div>
       </div>

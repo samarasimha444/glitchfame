@@ -44,19 +44,19 @@ export const useVoteAction = ({ seasonId, setShowLoginModal }) => {
       return res.json();
     },
 
-    // ✅ OPTIMISTIC UPDATE + SAVE SNAPSHOT
+    
     onMutate: async ({ participationId, action }) => {
       await queryClient.cancelQueries();
 
       const queries = queryClient.getQueryCache().findAll();
 
-      // 🔥 SAVE PREVIOUS STATE
+   
       const previousData = queries.map((q) => ({
         queryKey: q.queryKey,
         data: queryClient.getQueryData(q.queryKey),
       }));
 
-      // 🔥 OPTIMISTIC UPDATE
+   
       queries.forEach((query) => {
         queryClient.setQueryData(query.queryKey, (oldData) => {
           if (!oldData) return oldData;
@@ -106,7 +106,7 @@ export const useVoteAction = ({ seasonId, setShowLoginModal }) => {
         });
       });
 
-      // 🔥 RETURN CONTEXT FOR ROLLBACK
+     
       return { previousData };
     },
 

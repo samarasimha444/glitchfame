@@ -75,7 +75,7 @@ const Overview = () => {
           </div>
         </motion.div>
 
-        {/* RIGHT SIDE CARDS */}
+    
         <motion.div
           initial="hidden"
           whileInView="visible"

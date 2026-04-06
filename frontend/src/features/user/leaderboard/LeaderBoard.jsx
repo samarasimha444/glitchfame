@@ -44,8 +44,8 @@ const Leaderboard = () => {
           <div className="text-left w-full">
             <div className="flex items-center gap-3 mb-1">
               <Zap size={24} fill={PRIMARY_COLOR} stroke={PRIMARY_COLOR} className="animate-pulse" />
-              <h1 className="text-2xl sm:text-4xl tracking-tighter font-black uppercase  leading-none">
-                GlitchFame  <span style={{ color: PRIMARY_COLOR, }}> Leaders</span>
+              <h1 className="text-2xl  sm:text-4xl tracking-tighter font-black uppercase  leading-none">
+                GlitchFame  <span style={{ color: PRIMARY_COLOR, marginLeft:3 }}> Leaders</span>
               </h1>
             </div>
             <p className="text-gray-500 text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase">
