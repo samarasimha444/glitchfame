@@ -12,7 +12,7 @@ import java.util.UUID;
 public class JwtUtil {
 
     private final String SECRET = "supersecuresecretkeysupersecuresecretkey"; // change in prod
-    private final long EXPIRATION = 1000 * 60 * 60 * 24; // 24h
+    private final long EXPIRATION = 1000 * 60 * 60 * 24; // 7 days
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes()); // create signing key
