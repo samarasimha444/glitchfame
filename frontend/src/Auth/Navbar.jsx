@@ -13,6 +13,7 @@ const Navbar = () => {
     const [openModal, setOpenModal] = useState(false);
 
   const menuItems = [
+    
     { label: "Live Arena", path: "/arena", icon: Zap },
     { label: "LeaderBoard", path: "/leaderboard", icon: Award },
     { label: "How it Works", path: "/aboutus", icon: Info },

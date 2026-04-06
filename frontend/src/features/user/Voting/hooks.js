@@ -157,7 +157,7 @@ export const useSeasonVotes = (seasonId) => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    connectSocket(token);
+    connectSocket(token); // ✅ same name
 
     const topic = `/topic/votes/${seasonId}`;
 
@@ -166,94 +166,80 @@ export const useSeasonVotes = (seasonId) => {
 
       const queries = queryClient.getQueryCache().findAll();
 
-      // ✅ participation queries
-      const participationQueries = queries.filter(
-        (q) => q.queryKey[0] === "participation"
-      );
+      // participation
+      queries
+        .filter((q) => q.queryKey[0] === "participation")
+        .forEach((query) => {
+          queryClient.setQueryData(query.queryKey, (oldData) => {
+            if (!oldData?.participants?.content) return oldData;
 
-      participationQueries.forEach((query) => {
-        queryClient.setQueryData(query.queryKey, (oldData) => {
-          if (!oldData?.participants?.content) return oldData;
+            let updated = false;
 
-          let updated = false;
+            const newContent = oldData.participants.content.map((c) => {
+              if (String(c.participationId) === String(vote.participationId)) {
+                const newScore = vote.score ?? c.score;
+                const newRank = vote.rank ?? c.rank;
 
-          const newContent = oldData.participants.content.map((c) => {
-            if (String(c.participationId) === String(vote.participationId)) {
-              const newScore = vote.score ?? c.score;
-              const newRank = vote.rank ?? c.rank;
+                if (c.score === newScore && c.rank === newRank) return c;
 
-              if (c.score === newScore && c.rank === newRank) return c;
+                updated = true;
 
-              updated = true;
+                return { ...c, score: newScore, rank: newRank };
+              }
+              return c;
+            });
 
-              return {
-                ...c,
-                score: newScore,
-                rank: newRank,
-              };
-            }
-            return c;
+            if (!updated) return oldData;
+
+            return {
+              ...oldData,
+              participants: {
+                ...oldData.participants,
+                content: newContent,
+              },
+            };
           });
-
-          if (!updated) return oldData;
-
-          return {
-            ...oldData,
-            participants: {
-              ...oldData.participants,
-              content: newContent,
-            },
-          };
         });
-      });
 
-      // ✅ search contestants queries
-      const searchQueries = queries.filter(
-        (q) =>
-          q.queryKey[0] === "searchContestants" &&
-          String(q.queryKey[1]) === String(seasonId)
-      );
+      // search
+      queries
+        .filter(
+          (q) =>
+            q.queryKey[0] === "searchContestants" &&
+            String(q.queryKey[1]) === String(seasonId)
+        )
+        .forEach((query) => {
+          queryClient.setQueryData(query.queryKey, (oldData) => {
+            if (!oldData?.content) return oldData;
 
-      searchQueries.forEach((query) => {
-        queryClient.setQueryData(query.queryKey, (oldData) => {
-          if (!oldData?.content) return oldData;
+            let updated = false;
 
-          let updated = false;
+            const newContent = oldData.content.map((c) => {
+              if (String(c.participationId) === String(vote.participationId)) {
+                const newScore = vote.score ?? c.score;
+                const newRank = vote.rank ?? c.rank;
 
-          const newContent = oldData.content.map((c) => {
-            if (String(c.participationId) === String(vote.participationId)) {
-              const newScore = vote.score ?? c.score;
-              const newRank = vote.rank ?? c.rank;
+                if (c.score === newScore && c.rank === newRank) return c;
 
-              if (c.score === newScore && c.rank === newRank) return c;
+                updated = true;
 
-              updated = true;
+                return { ...c, score: newScore, rank: newRank };
+              }
+              return c;
+            });
 
-              return {
-                ...c,
-                score: newScore,
-                rank: newRank,
-              };
-            }
-            return c;
+            if (!updated) return oldData;
+
+            return { ...oldData, content: newContent };
           });
-
-          if (!updated) return oldData;
-
-          return {
-            ...oldData,
-            content: newContent,
-          };
         });
-      });
     });
 
     return () => {
       subscription?.unsubscribe();
     };
-  }, [seasonId, queryClient]);
+  }, [seasonId]); // ✅ IMPORTANT: remove queryClient
 };
-
 export const useSearchContestants = (
   seasonId,
   name = "",
