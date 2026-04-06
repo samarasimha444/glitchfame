@@ -112,7 +112,7 @@ const MobileMenu = ({
                 }}
                 className="text-sm text-red-400 hover:text-red-300"
               >
-                Logout
+                Exit
               </button>
             ) : (
               
@@ -120,7 +120,7 @@ const MobileMenu = ({
                 onClick={()=>navigate('/auth')}
                 className="text-sm text-red-400 hover:text-red-300"
               >
-                Login
+                Exit
               </button>
             )}
 
