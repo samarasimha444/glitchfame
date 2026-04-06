@@ -10,7 +10,7 @@ export const ContestantCard = React.memo(({ user }) => {
       onClick={() => navigate(`/details/${user.participationId}`)}
       className="group relative w-full cursor-pointer rounded-t-xl overflow-hidden bg-[#1a1a1a] transition-all duration-300 h-64 sm:h-[400px]"
     >
-      {/* External link icon */}
+     
       <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20 bg-black/40 backdrop-blur-md p-1 sm:p-1.5 rounded-full border border-white/20">
         <ExternalLink size={12} className="text-white sm:w-[14px]" />
       </div>
@@ -20,7 +20,7 @@ export const ContestantCard = React.memo(({ user }) => {
         src={
           user?.participantPhotoUrl
             ? `${user.participantPhotoUrl}?w=300&q=70`
-            : "https://tse1.mm.bing.net/th/id/OIP.brYCf8YXK2he0a35bkydtwHaJ4?pid=Api&P=0&h=180"
+            : "https://res.cloudinary.com/dxt9cvxmg/image/upload/v1775192878/seasons/register/banner/dh5ftc0nzp0bsmti9qrs.jpg"
         }
         srcSet={
           user?.participantPhotoUrl

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import CountdownTimer from "./CountdownTimer";
 
 export default function FeaturedCarousel({ season }) {
+  console.log(season)
   return (
     <div className="w-full max-h-dvh relative mt-6 md:mt-0 flex justify-center items-center  max-w-400 mx-auto  h-full md:max-h-[95dvh]">
       <section className="border border-gray-900 rounded-xl md:rounded-none w-full max-w-92 h-60 sm:max-w-screen sm:h-120 md:h-170 relative overflow-hidden aspect-16\/9">
