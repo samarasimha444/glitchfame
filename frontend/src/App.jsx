@@ -4,7 +4,7 @@ import Vote from "./features/user/Voting/Vote"
 import Status from "./features/user/status/Status";
 import KillTesting from "./Testing/KillTesting";
 import TLeaderboard from "./Testing/TLeaderboard";
-
+import  { ReactLenis } from "lenis/react"
 
 const ProtectedRoute = lazy(() => import("./ProtectedRoute"));
 const Layout = lazy(() => import("./Auth/Layout"));
@@ -32,22 +32,33 @@ const AdminSettings = lazy(() => import("./features/admin/settings/SettingPage")
 
 export default function App() {
   return (
-    <Suspense
-      fallback={
-        null
-      }
-    >
+    <Suspense fallback={null}>
       <Routes>
-       
+        {/* Public/Testing routes */}
         <Route path="/" element={<RoleRedirect />} />
         <Route path="/kill" element={<KillTesting />} />
         <Route path="/lead" element={<TLeaderboard />} />
-
-    
         <Route path="/auth" element={<AuthLayout />} />
 
-      
-        <Route element={<Layout />}>
+        {/* Lenis smooth scroll only wraps the Layout for user routes */}
+        <Route
+          element={
+          <ReactLenis
+           root
+           options={{
+             lerp: 0.25,           
+             duration: 0.8,        
+             orientation: "vertical",
+             smoothWheel: true,
+             wheelMultiplier: 1,
+             smoothTouch: false,  
+             touchMultiplier: 2,
+           }}
+>
+              <Layout />
+            </ReactLenis>
+          }
+        >
           <Route path="/home" element={<Home />} />
           <Route path="/enter/:id" element={<ArenaForm />} />
           <Route path="/arena" element={<Arena />} />
@@ -59,17 +70,14 @@ export default function App() {
           <Route path="/status" element={<Status />} />
           <Route path="/details/:id" element={<PlayerDetails />} />
         </Route>
-        {/* </Route> */}
 
-
-        {/* <Route element={<ProtectedRoute allowedRole="ADMIN" />}> */}
+        {/* Admin routes */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="season" element={<SeasonPage />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
-        {/* </Route> */}
       </Routes>
     </Suspense>
   );

@@ -15,39 +15,38 @@ export const ContestantCard = React.memo(({ user }) => {
         <ExternalLink size={12} className="text-white sm:w-[14px]" />
       </div>
 
-      {/* Participant Image */}
+    
       <img
-        src={
-          user?.participantPhotoUrl
-            ? `${user.participantPhotoUrl}?w=300&q=70`
-            : "https://res.cloudinary.com/dxt9cvxmg/image/upload/v1775192878/seasons/register/banner/dh5ftc0nzp0bsmti9qrs.jpg"
-        }
-        srcSet={
-          user?.participantPhotoUrl
-            ? `
-              ${user.participantPhotoUrl}?w=150&q=60 150w,
-              ${user.participantPhotoUrl}?w=300&q=70 300w,
-              ${user.participantPhotoUrl}?w=600&q=80 600w
-            `
-            : undefined
-        }
-        sizes="(max-width: 640px) 140px, (max-width: 1024px) 180px, 220px"
-        alt={user?.name || "participant"}
-        loading="lazy"
-        decoding="async"
-        className="w-full h-full object-cover transition-transform duration-500 sm:group-hover:scale-110"
-        style={{
-          transform: "scale(1.05)",
-          filter: "none",
-        }}
-        onLoad={(e) => {
-          // optional fade-in effect without blur
-          e.currentTarget.style.transition = "transform 0.5s ease, opacity 0.5s ease";
-          e.currentTarget.style.opacity = "1";
-        }}
-      />
+  src={
+    user?.participantPhotoUrl
+      ? `${user.participantPhotoUrl}?w=300&f_auto&q_auto`
+      : "https://res.cloudinary.com/dxt9cvxmg/image/upload/v1775192878/seasons/register/banner/dh5ftc0nzp0bsmti9qrs.jpg"
+  }
+    srcSet={
+    user?.participantPhotoUrl
+      ? `
+        ${user.participantPhotoUrl}?w=150&f_auto&q_auto 150w,
+        ${user.participantPhotoUrl}?w=300&f_auto&q_auto 300w,
+        ${user.participantPhotoUrl}?w=600&f_auto&q_auto 600w
+      `
+      : undefined
+  }
+  sizes="(max-width: 640px) 140px, (max-width: 1024px) 180px, 220px"
+  alt={user?.name || "participant"}
+  loading="lazy"
+  decoding="async"
+  className="w-full h-full object-cover transition-transform duration-500 sm:group-hover:scale-110"
+  style={{
+    transform: "scale(1.05)",
+    filter: "none",
+  }}
+  onLoad={(e) => {
+    e.currentTarget.style.transition = "transform 0.5s ease, opacity 0.5s ease";
+    e.currentTarget.style.opacity = "1";
+  }}
+/>
 
-      {/* Gradient overlay */}
+   
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
 
       {/* Info box */}
@@ -68,7 +67,7 @@ export const ContestantCard = React.memo(({ user }) => {
     </article>
   );
 }, (prevProps, nextProps) => {
-  // Only re-render if score or user changes
+  
   return (
     prevProps.user.participationId === nextProps.user.participationId &&
     prevProps.user.score === nextProps.user.score
