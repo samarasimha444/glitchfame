@@ -17,7 +17,7 @@ export const ContestantCard = React.memo(({ user }) => {
 
     
 <picture className="w-full h-full">
-  {/* Small devices */}
+  {/* Small device */}
   <source
     media="(max-width: 640px)"
     srcSet={`
