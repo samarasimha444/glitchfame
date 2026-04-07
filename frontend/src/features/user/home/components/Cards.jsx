@@ -30,7 +30,7 @@ const Cards = ({ liveSeason, isLoading }) => {
                 >
                   <div className="relative">
                     <div className="relative w-full h-40.75 overflow-hidden rounded-xl">
-                      {/* Blur placeholder */}
+                      
                       <img
                         src={`${item.seasonPhotoUrl}?w=20&q=20`} // tiny blurred version
                         alt=""
@@ -78,26 +78,29 @@ const Cards = ({ liveSeason, isLoading }) => {
                 </Link>
               ))}
 
-              <Link
-                to="/arena"
-                className=" relative w-full h-69.5 rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br from-[#1f2329] to-[#14161a] flex flex-col items-center justify-center transition-all duration-300 active:scale-[0.97]"
-              >
-                <div className="absolute inset-0 bg-primary/10 opacity-0 hover:opacity-100 transition duration-300 blur-xl"></div>
+            <Link
+  to="/arena"
+  className="relative w-full h-69.5 rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br from-[#1f2329] to-[#14161a] flex flex-col items-center justify-center transition-all duration-300 active:scale-[0.97] transform-gpu"
+>
+  {/* 🔥 blur + hover only on desktop */}
+  <div className="absolute inset-0 bg-primary/10 opacity-0 md:hover:opacity-100 transition duration-300 md:blur-xl"></div>
 
-                <div className=" relative z-10 flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-primary/20 border border-primary/30 shadow-[0_0_20px_rgba(0,255,200,0.15)] mb-3 transition-all duration-300 group-hover:scale-110">
-                  <ArrowRight className="text-primary" size={26} />
-                </div>
+  {/* Icon */}
+  <div className="relative z-10 flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-primary/20 border border-primary/30 shadow-[0_0_20px_rgba(0,255,200,0.15)] mb-3 transition-all duration-300 md:group-hover:scale-110">
+    <ArrowRight className="text-primary" size={26} />
+  </div>
 
-                <h3 className="relative z-10 text-white text-[15px] font-semibold tracking-wide">
-                  View All
-                </h3>
+  <h3 className="relative z-10 text-white text-[15px] font-semibold tracking-wide">
+    View All
+  </h3>
 
-                <p className="relative z-10 text-gray-400 text-[11px] mt-1">
-                  Explore all seasons
-                </p>
+  <p className="relative z-10 text-gray-400 text-[11px] mt-1">
+    Explore all seasons
+  </p>
 
-                <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent opacity-70"></div>
-              </Link>
+  {/* Bottom line */}
+  <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent opacity-70"></div>
+</Link>
             </section>
           : <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {liveSeason?.[0] && (

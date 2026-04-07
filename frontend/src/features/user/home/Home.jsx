@@ -2,16 +2,17 @@ import React, { Suspense, lazy } from "react";
 import FeaturedCarousel from "./components/Carousel";
 const Gallery = lazy(() => import("./components/Gallery"));
 const Overview = lazy(() => import("./components/OverviewSection"));
+const New = lazy(() => import("./components/New"));
 import { useLiveUpcomingSeasons } from "./hooks";
 import { StickyHeader } from "./components/Header";
-import { isRegistrationOpen, isVotingLive } from "../../../lib/helper";
+import { isRegistrationOpen, isVotingLive, useIsMobile } from "../../../lib/helper";
 import Cards from "./components/Cards";
 import { Flame, Search } from "lucide-react";
-import New from "./components/New";
 import { useMemo } from "react";
 
 
 const Home = () => {
+   const isMobile = useIsMobile();
   
 
   const { data: seasons = [], isLoading: seasonsLoading } =
@@ -53,9 +54,8 @@ const season = useMemo(
           <Cards liveSeason={liveSeason} isLoading={seasonsLoading} />
 
           <Suspense fallback={<p className="text-white"></p>}>
-            <Gallery />
-            <New />
-          </Suspense>
+  {isMobile ? <Gallery /> : <New />}
+</Suspense>
         </section>
       </section>
 

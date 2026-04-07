@@ -33,7 +33,7 @@ const SubmissionsPage = () => {
             {isError && (
               <div className="p-20 border-2 border-dashed border-red-500/20 rounded-3xl text-center">
                 <p className="text-red-400">
-                  Something went wrong. Try logging in again.
+                 You need to log in to continue.
                 </p>
               </div>
             )}

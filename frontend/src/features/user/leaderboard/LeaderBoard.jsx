@@ -54,11 +54,11 @@ const Leaderboard = () => {
         </div>
 
         
-        <div className="mx-4 mb-10 bg-white/3 backdrop-blur-md rounded-3xl p-5 border border-white/5 shadow-2xl">
+        <div className="mx-2 mb-10 bg-white/3 md:backdrop-blur-md rounded-3xl p-5 border border-white/5 shadow-2xl">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
               <div className="relative">
-                <div className="w-3 h-3 bg-red-500 rounded-full animate-ping absolute inset-0"></div>
+                <div className="w-3 h-3 bg-red-500 rounded-full md:animate-ping absolute inset-0"></div>
                 <div className="w-3 h-3 bg-red-600 rounded-full relative"></div>
               </div>
               <div>
@@ -67,7 +67,7 @@ const Leaderboard = () => {
                 </span>
                 <div className="flex gap-3 text-[9px] text-gray-500 font-bold uppercase mt-0.5">
                   <span className="flex items-center gap-1">
-                    <Activity size={10} /> 1.2k Viewing
+                    <Activity size={10} /> 200+ Viewing daily
                   </span>
                   <span className="hidden sm:inline">• Server: Asia-01</span>
                 </div>
@@ -81,7 +81,7 @@ const Leaderboard = () => {
         </div>
 
         {/* Full Leaderboard List */}
-        <div className="px-4 py-2 grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-3">
+        <div className="px-1 py-2 grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-3">
           {mergedData.map((item, index) => (
             <div key={item.participantId} className="group flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/[0.03] hover:bg-white/[0.05] hover:border-[#9DE2E2]/30 transition-all duration-300">
               <div className="flex items-center gap-4">
