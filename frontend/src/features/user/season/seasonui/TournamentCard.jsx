@@ -7,7 +7,7 @@ import { MousePointerClick } from "lucide-react";
 
 const TournamentCard = () => {
   const { data: seasons = [], isLoading } = useLiveUpcomingSeasons();
- console.log(seasons)
+ 
   const navigate = useNavigate();
 
   const activeRegistrations = seasons?.content?.filter(isRegistrationOpen);

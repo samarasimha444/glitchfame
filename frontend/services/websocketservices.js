@@ -28,14 +28,14 @@ export const connectSocket = (token) => {
       // 🔁 Re-subscribe all topics
       Object.entries(subscriptions).forEach(([topic, subObj]) => {
         if (!subObj.sub) {
-          console.log("🔁 Re-subscribing:", topic);
+        
           subObj.sub = client.subscribe(topic, subObj.callback);
         }
       });
     },
 
     onDisconnect: () => {
-      console.log("❌ WebSocket Disconnected");
+    
     },
 
     onWebSocketClose: () => {
@@ -43,11 +43,11 @@ export const connectSocket = (token) => {
     },
 
     onStompError: (frame) => {
-      console.error("🔥 STOMP Error:", frame);
+      
     },
   });
 
-  console.log("⚡ Activating client...");
+  
   client.activate();
 
   isSocketInitialized = true;
@@ -57,13 +57,13 @@ export const connectSocket = (token) => {
 
 export const subscribeTopic = (topic, callback) => {
   if (!client) {
-    console.log("❌ No client available");
+   
     return;
   }
 
-  // ✅ Prevent duplicate subscriptions
+ 
   if (subscriptions[topic]) {
-    console.log("⚠️ Already subscribed:", topic);
+   
     return subscriptions[topic];
   }
 
@@ -72,7 +72,7 @@ export const subscribeTopic = (topic, callback) => {
       const data = JSON.parse(msg.body);
       callback(data);
     } catch (err) {
-      console.error("❌ JSON parse error:", err);
+      throw new err
     }
   };
 
@@ -85,12 +85,12 @@ export const subscribeTopic = (topic, callback) => {
       if (!isConnected) return; // wait for connection
       if (subObj.sub) return;
 
-      console.log("📡 Subscribing:", topic);
+  
       subObj.sub = client.subscribe(topic, wrappedCallback);
     },
 
     unsubscribe: () => {
-      console.log("🛑 Unsubscribing:", topic);
+  
       subObj.sub?.unsubscribe();
       subObj.sub = null;
       delete subscriptions[topic];
@@ -99,7 +99,7 @@ export const subscribeTopic = (topic, callback) => {
 
   subscriptions[topic] = subObj;
 
-  // ✅ Try now OR auto later via onConnect
+  
   subObj._subscribe();
 
   return subObj;
@@ -107,14 +107,14 @@ export const subscribeTopic = (topic, callback) => {
 
 export const disconnectSocket = () => {
   Object.entries(subscriptions).forEach(([topic, s]) => {
-    console.log("🛑 Cleaning subscription:", topic);
+   
     s?.unsubscribe();
   });
 
   subscriptions = {};
 
   if (client) {
-    console.log("❌ Deactivating client...");
+  
     client.deactivate();
     client = null;
   }

@@ -1,5 +1,5 @@
 import { Client } from "@stomp/stompjs";
-import {  useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {  useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {  useEffect,  } from "react";
 import {
   connectSocket,
@@ -7,12 +7,10 @@ import {
   subscribeTopic,
 } from "../../../../services/websocketservices";
 import { fetchRandomParticipation, fetchSearchContestants, fetchSeasonParticipation } from "../arena/api";
-// import { fetchSeasonParticipation } from "../home/api";
 import { handleApiError } from "../../../lib/helper";
 
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
-
 
 
 export const useVoteAction = ({ seasonId, setShowLoginModal }) => {
@@ -110,7 +108,7 @@ export const useVoteAction = ({ seasonId, setShowLoginModal }) => {
       return { previousData };
     },
 
-    // ❌ ERROR → ROLLBACK
+    //  ROLLBACK
     onError: (err, variables, context) => {
       handleApiError(err, { setShowLoginModal });
 
@@ -129,7 +127,7 @@ export const useParticipation = (seasonId, page = 0) => {
     queryKey: ["participation", seasonId,page],
 
     queryFn: async () => {
-      console.log("FETCHING PAGE:", page); 
+       
 
       const res = seasonId
         ? await fetchSeasonParticipation(seasonId, page, 10)

@@ -1,12 +1,6 @@
 import { ExternalLink } from 'lucide-react';
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import CloudinaryImage from '../../../../components/CloudinaryImage';
-
-
-
-
-
 
 export const ContestantCard = React.memo(({ user }) => {
   const navigate = useNavigate();
@@ -22,12 +16,43 @@ export const ContestantCard = React.memo(({ user }) => {
       </div>
 
     
-   <CloudinaryImage 
-        url={user?.participantPhotoUrl} 
-        alt={user?.name || "participant"} 
-        className="w-full h-full object-cover"
-      />
+<picture className="w-full h-full">
+  {/* Small devices */}
+  <source
+    media="(max-width: 640px)"
+    srcSet={`
+      https://res.cloudinary.com/dw3ymazvl/image/upload/f_avif,q_auto:low,w_400/v1760368348/threesix/jeep7.webp
+    `}
+    type="image/avif"
+  />
 
+  {/* Tablets */}
+  <source
+    media="(max-width: 1024px)"
+    srcSet={`
+      https://res.cloudinary.com/dw3ymazvl/image/upload/f_avif,q_auto:good,w_800/v1760368348/threesix/jeep7.webp
+    `}
+    type="image/avif"
+  />
+
+ 
+  <source
+    media="(min-width: 1025px)"
+    srcSet={`
+      https://res.cloudinary.com/dw3ymazvl/image/upload/f_avif,q_auto:good,w_1200/v1760368348/threesix/jeep7.webp
+    `}
+    type="image/avif"
+  />
+
+  {/* Fallback */}
+  <img
+    src="https://res.cloudinary.com/dw3ymazvl/image/upload/q_auto,w_800/v1760368348/threesix/jeep7.webp"
+    alt={user?.name || "participant"}
+    className="w-full h-full object-cover transition-transform duration-500 sm:group-hover:scale-110"
+    loading="lazy"
+    decoding="async"
+  />
+</picture>
    
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
 

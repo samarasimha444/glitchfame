@@ -2,11 +2,7 @@
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-console.log(BASE_URL)
 
-
-const token = localStorage.getItem("token")
-console.log(token)
 
 
 
@@ -18,7 +14,7 @@ export const getLiveUpcomingSeasons = async () => {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log(res)
+ 
 
   if (!res.ok) {
     throw new Error("Failed to fetch seasons");
@@ -62,25 +58,7 @@ export const getSeasonById = async (id) => {
 };
 
 
-// export const fetchSeasonParticipation = async (seasonId) => {
-  
 
-
-//   const res = await fetch(`${BASE_URL}/seasons/${seasonId}`, {
-//     // headers: {
-//     //   Authorization: `Bearer ${token}`,
-//     // },
-//   });
-
-//   if (!res.ok) {
-//     throw new Error("Failed to fetch season details");
-//   }
-
-//   const response = await res.json() 
-//   console.log("API RESPONSE:", response);
-
-//   return response; 
-// };
 
 export const fetchLeaderboards = async () => {
   const token = localStorage.getItem("token");
