@@ -16,15 +16,13 @@ export const ContestantCard = React.memo(({ user }) => {
         <ExternalLink size={12} className="text-white sm:w-[14px]" />
       </div>
 
-      {/* Image */}
       <picture className="w-full h-full">
         
-        {/* Mobile */}
-        <source
-          media="(max-width: 640px)"
-          srcSet="https://res.cloudinary.com/dw3ymazvl/image/upload/f_webp,q_auto:low,w_300/v1760368348/threesix/jeep7.webp"
-          type="image/webp"
-        />
+       <source
+  media="(max-width: 640px)"
+  srcSet="https://res.cloudinary.com/dw3ymazvl/image/upload/f_webp,q_auto:good,w_400/v1760368348/threesix/jeep7.webp"
+  type="image/webp"
+/>
 
         {/* Tablet */}
         <source
