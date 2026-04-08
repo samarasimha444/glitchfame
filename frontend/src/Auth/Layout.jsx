@@ -1,10 +1,11 @@
-import { Outlet, useOutletContext } from "react-router-dom";
+import { Outlet} from "react-router-dom";
 import Navbar from "./Navbar.jsx";
 import Footer from "../Footer.jsx";
 
 import { Home, Trophy, Flame, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useProfile } from "../features/user/home/hooks.js";
+import { useMemo } from "react";
 
 const MobileBottomNav = () => {
   const baseClass =
@@ -12,7 +13,6 @@ const MobileBottomNav = () => {
 
   return (
     <nav className="fixed bottom-0 left-0 w-full bg-[#1E2229] border-t border-gray-800 flex justify-around items-center py-2 md:hidden z-50">
-
       <NavLink
         to="/home"
         className={({ isActive }) =>
@@ -52,34 +52,24 @@ const MobileBottomNav = () => {
         <User size={18} />
         Status
       </NavLink>
-
     </nav>
   );
 };
 const Layout = () => {
- 
-
   const { data } = useProfile();
 
- const profile = data?.data || null;
-
-  
-
-  
-
+  const profile = useMemo(() => data?.data || null, [data]);
 
   return (
     <>
-    <section className="flex flex-col w-full max-w-[1700px] m-auto">
-
-   
-      <Navbar profile={profile} />
-      <div>
-        <Outlet context={{ profile }} />
-       <Footer/>
-      </div>
-      <MobileBottomNav/>
-       </section>
+      <section className="flex flex-col w-full max-w-[1700px] m-auto">
+        <Navbar profile={profile} />
+        <div>
+          <Outlet context={{ profile }} />
+          <Footer />
+        </div>
+        <MobileBottomNav />
+      </section>
     </>
   );
 };

@@ -35,7 +35,7 @@ const Controls = ({ id, seasonLock, prizeMoney }) => {
     return <NeonLoader />;
   }
   return (
-    <div className="border  border-white/10 mt-4 rounded-xl p-4 w-full">
+    <div className="border    border-white/10 mt-4 rounded-xl p-4 w-full">
       
    
       <div className="flex items-center gap-2 mb-6">

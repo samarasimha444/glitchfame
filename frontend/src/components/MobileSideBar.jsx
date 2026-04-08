@@ -3,7 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap, Search } from "lucide-react";
 
+
+
 const MobileMenu = ({
+  profile,
   isOpen,
   setIsOpen,
   menuItems,
@@ -12,6 +15,7 @@ const MobileMenu = ({
   handleLogout,
 }) => {
 
+  console.log(profile)
   const navigate = useNavigate()
   const [token, setToken] = useState(null);
 
@@ -26,7 +30,7 @@ const MobileMenu = ({
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* BACKDROP */}
+        
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.6 }}
@@ -71,7 +75,7 @@ const MobileMenu = ({
                   key={idx}
                   to={item.path}
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-between text-white text-sm hover:text-primary transition"
+                  className="flex items-center justify-between text-white text-sm md:hover:text-primary transition"
                 >
                   <div className="flex items-center gap-3">
                     <item.icon size={18} className="text-gray-400" />
@@ -87,7 +91,7 @@ const MobileMenu = ({
 
             
             <Link to={actionButton.path} onClick={() => setIsOpen(false)}>
-              <button className="w-full bg-[#9DE2E2] text-black font-semibold py-2 rounded-lg hover:opacity-90 transition">
+              <button className="w-full bg-[#9DE2E2] text-black font-semibold py-2 rounded-lg md:hover:opacity-90 md:transition">
                {actionButton.label}
               </button>
             </Link>
@@ -103,7 +107,7 @@ const MobileMenu = ({
                 Reset Password
               </button>
 
-          {token ? (
+          {profile ? (
               
               <button
                 onClick={() => {
@@ -112,7 +116,7 @@ const MobileMenu = ({
                 }}
                 className="text-sm text-red-400 hover:text-red-300"
               >
-                Exit
+                Logout
               </button>
             ) : (
               
@@ -120,7 +124,7 @@ const MobileMenu = ({
                 onClick={()=>navigate('/auth')}
                 className="text-sm text-red-400 hover:text-red-300"
               >
-                Exit
+                Login
               </button>
             )}
 

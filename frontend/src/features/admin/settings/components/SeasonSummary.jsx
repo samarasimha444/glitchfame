@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useState } from "react";
+import React, { lazy, Suspense, useCallback, useMemo, useState } from "react";
 import { MoreVertical } from "lucide-react";
 import { useEndSeasonNow, useParticipationLock } from "../hooks";
 import NeonLoader from "../../../../components/Loader";
@@ -24,39 +24,45 @@ const SeasonSummary = ({ title, subtitle, data }) => {
 
   const loading = isPending || locking;
 
-  const formattedData =
-    data ?
-      Object.entries(data).map(([key, value]) => {
-        let formattedValue = value;
+ const formattedData = useMemo(() => {
+    if (!data) return [];
 
-        if (key.toLowerCase().includes("date") && typeof value === "string") {
-          formattedValue = new Date(value).toLocaleString();
-        }
+    return Object.entries(data).map(([key, value]) => {
+      let formattedValue = value;
 
-        return {
-          label: key.replace(/([A-Z])/g, " $1"),
-          value: String(formattedValue),
-        };
-      })
-    : [];
+      if (key.toLowerCase().includes("date") && typeof value === "string") {
+        formattedValue = new Date(value).toLocaleString();
+      }
 
-  const handleClick = (item) => {
-    if (item.action === "lock") {
-      lockParticipation({ id: seasonId });
-    } else if (item.action === "end") {
-      endSeason({ id: seasonId });
-    } else {
-      setSelected(item.action);
-      setActive(true);
-    }
+      return {
+        label: key.replace(/([A-Z])/g, " $1"),
+        value: String(formattedValue),
+      };
+    });
+  }, [data]);
 
-    setShowMenu(false);
-  };
+   const handleClick = useCallback(
+    (item) => {
+      switch (item.action) {
+        case "lock":
+          lockParticipation({ id: seasonId });
+          break;
+        case "end":
+          endSeason({ id: seasonId });
+          break;
+        default:
+          setSelected(item.action);
+          setActive(true);
+      }
+      setShowMenu(false);
+    },
+    [seasonId, lockParticipation, endSeason]
+  );
 
-  const preloadModal = () => {
+ const preloadModal = useCallback(() => {
     import("./Model");
-  };
-
+  }, []);
+  
   if (loading) {
     return (
       <section className="w-full h-full flex items-center justify-center">
@@ -118,8 +124,8 @@ const SeasonSummary = ({ title, subtitle, data }) => {
                   key={index}
                   className="flex space-x-2 text-xs sm:text-[13px] justify-between"
                 >
-                  <span className="text-gray-400 sm:uppercase text-[12px]">{item.label}</span>
-                  <span className="text-white  font-medium ">{item.value}</span>
+                  <span className="text-gray-400 uppercase text-[11px] sm:text-[12px]">{item.label}</span>
+                  <span className="text-white text-[10px] sm:text-[11px]  font-medium ">{item.value}</span>
                 </div>
               );
             })}

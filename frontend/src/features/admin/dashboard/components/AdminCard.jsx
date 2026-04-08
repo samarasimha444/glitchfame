@@ -26,7 +26,7 @@ const AdminCard = ({ title, paragraph, className, type, cardsInfo,stats}) => {
       </Suspense>
 
   
-  <section className="flex w-full flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 ">
+  <section className="flex w-full px-2 flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 ">
     <h3 className="flex flex-col font-semibold text-2xl sm:text-3xl">
       {title}
       <p className="text-[13px] max-w-full sm:max-w-xl text-gray-300 mt-1">

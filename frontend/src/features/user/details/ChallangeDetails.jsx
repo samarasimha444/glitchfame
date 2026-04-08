@@ -12,9 +12,9 @@ export const ChallangeDetails = () => {
         <div className="flex flex-col md:flex-row">
 
           {/* HERO IMAGE */}
-          <div className="relative md:w-1/2 h-[260px] md:h-[420px]">
+          <div className="relative md:w-1/2 h-[260px] md:h-[75dvh] md:mt-7">
             <img
-              src="https://media.istockphoto.com/id/2062707084/photo/gold-star-as-a-reward-top-performance-award-winner-certificate-first-place-in-a-computer-game.jpg?s=2048x2048&w=is&k=20&c=9TRWAK2dRxbevw4luOFKBhb-rMvqpbpcCQuEfUWMtmk="
+              src="/trophy.webp"
               className="w-full h-full object-cover"
               alt="about-us"
             />
@@ -57,12 +57,12 @@ export const ChallangeDetails = () => {
 
               <div className="flex-1 bg-[#0f0f0f] border border-gray-800 p-4 rounded-lg">
                 <p className="text-xs text-gray-400">ACTIVE USERS</p>
-                <p className="text-lg md:text-xl font-bold">1K+</p>
+                <p className="text-lg md:text-xl font-bold">COMING SOON</p>
               </div>
 
               <div className="flex-1 bg-[#0f0f0f] border border-gray-800 p-4 rounded-lg">
                 <p className="text-xs text-gray-400">PRIZES AWARDED</p>
-                <p className="text-lg md:text-xl font-bold">$120K+</p>
+                <p className="text-lg md:text-xl font-bold">COMING SOON</p>
               </div>
 
             </div>
@@ -91,10 +91,13 @@ export const ChallangeDetails = () => {
             </div>
 
           
-            <button onClick={()=> navigate("/arena")} className="w-full md:w-fit bg-primary text-black px-8 py-3 rounded-lg font-semibold">
-              Join Us Now
-            </button>
-
+          <button
+  onClick={() => navigate("/arena")}
+  className="w-full md:w-fit bg-primary text-black px-8 py-3 rounded-lg font-semibold
+             transition active:scale-95 sm:active:translate-y-[2px]"
+>
+  Join Us Now
+</button>
           </div>
         </div>
 

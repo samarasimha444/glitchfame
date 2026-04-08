@@ -1,13 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CountdownTimer from "./CountdownTimer";
+import { useIsMobile } from "../../../../lib/helper";
 
 export default function FeaturedCarousel({ season }) {
-  
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
+
   return (
-    <div className="w-full max-h-dvh relative mt-6 md:mt-0 flex justify-center items-center  max-w-400 mx-auto  h-full md:max-h-[95dvh]">
+    <div className="w-full max-h-dvh relative mt-6 sm:mt-0 flex justify-center items-center  max-w-400 mx-auto  h-full md:max-h-[95dvh]">
+      
       <section className="border border-gray-900 rounded-xl md:rounded-none w-full max-w-92 h-60 sm:max-w-screen sm:h-120 md:h-170 relative overflow-hidden aspect-16\/9">
         <div className="relative w-full h-full overflow-hidden">
-
           <img
             src={
               season?.seasonPhotoUrl + "?w=20&q=20" ||
@@ -47,30 +50,19 @@ export default function FeaturedCarousel({ season }) {
           <p className="text-gray-300 mt-4 max-w-2xl text-sm md:text-base opacity-80">
             {season?.seasonDesc}
           </p>
-          
-          <CountdownTimer endDate={season?.registrationEndDate} variant="dark"/>
-          {/* <div className="flex gap-4 mt-8">
-            {[
-              { label: "DAYS", value: "02" },
-              { label: "HOURS", value: "14" },
-              { label: "MINS", value: "38" },
-              { label: "SECS", value: "05" },
-            ].map((item, idx) => (
-              <div key={idx} className="flex flex-col items-center">
-                <div className="bg-black/60 border border-white/10 w-25 h-24 rounded-md flex items-center text-primary justify-center text-[36px] font-bold font-mono">
-                  {item.value}
-                </div>
-                <span className="text-[10px] mt-2 text-gray-400 font-bold">
-                  {item.label}
-                </span>
-              </div>
-            ))}
-          </div> */}
+
+          <CountdownTimer
+            endDate={season?.registrationEndDate}
+            variant="dark"
+          />
         </section>
 
         {/* mobile */}
 
-        <section className=" sm:hidden absolute  bottom-0 left-0 w-full p-4 text-white bg-gradient-to-t from-black/90 via-black/60 to-transparent">
+        <section
+          onClick={() => navigate("/season")}
+          className=" sm:hidden absolute  bottom-0 left-0 w-full p-4 text-white bg-gradient-to-t from-black/90 via-black/60 to-transparent"
+        >
           <span className="border text-black font-semibold bg-primary text-[9px] px-2 py-0.5 w-fit">
             #FEATUREDCHALLENGE
           </span>
@@ -93,17 +85,22 @@ export default function FeaturedCarousel({ season }) {
               </p>
             </div>
 
-            <Link
-              to={`/enter/${season?.seasonId}`}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/enter/${season?.seasonId}`);
+              }}
               className=" border bg-primary text-black cursor-pointer rounded-full px-5 py-2 text-xs font-semibold"
             >
               Register Now →
-            </Link>
+            </button>
           </div>
         </section>
       </section>
 
-      <div className=" hidden w-full absolute -bottom-20 max-w-xl md:max-w-5xl h-39 bg-[#123B3B] border border-teal-500/30 rounded-xs p-6 sm:flex flex-col md:flex-row items-center  justify-between ]">
+       {
+        !isMobile && (
+            <div className=" hidden w-full absolute -bottom-20 max-w-xl md:max-w-5xl h-39 bg-[#123B3B] border border-teal-500/30 rounded-xs p-6 sm:flex flex-col md:flex-row items-center  justify-between ]">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-teal-500/20 rounded-full border border-teal-500/50 slow-spin">
             <svg
@@ -139,10 +136,18 @@ export default function FeaturedCarousel({ season }) {
           </div>
         </div>
 
-        <button className="mt-4 md:mt-0 bg-primary hover:bg-teal-300 text-black px-8 py-3 rounded-lg font-bold transition-all flex items-center gap-2">
+        <button
+          onClick={() => navigate(`/enter/${season?.seasonId}}`)}
+          className="mt-4 md:mt-0 bg-primary hover:bg-teal-300 text-black px-8 py-3 rounded-lg font-bold transition-all flex items-center gap-2"
+        >
           REGISTER NOW <span>&gt;</span>
         </button>
       </div>
+
+        )
+       }
+
+    
     </div>
   );
 }

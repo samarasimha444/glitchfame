@@ -1,19 +1,20 @@
-import React, { lazy, Suspense, useState } from "react";
+import React, { lazy, Suspense, useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Zap, Award, Info, Logs,UserPlus } from "lucide-react";
+import { Zap, Award, Info, Logs,UserPlus, Home } from "lucide-react";
 import MobileMenu from "../components/MobileSideBar";
 import { Settings } from "lucide-react";
 import NeonLoader from "../components/Loader";
 const ResetModal = lazy(() => import("../components/ResetModel"));
 
-const Navbar = () => {
+const Navbar = ({profile}) => {
+  console.log(profile)
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
     const [openModal, setOpenModal] = useState(false);
 
   const menuItems = [
-    
+    { label: "Home", path: "/home", icon: Home },
     { label: "Live Arena", path: "/arena", icon: Zap },
     { label: "LeaderBoard", path: "/leaderboard", icon: Award },
     { label: "How it Works", path: "/aboutus", icon: Info },
@@ -26,11 +27,11 @@ const Navbar = () => {
   };
 
 
- const handleLogout = () => {
-  localStorage.removeItem("token"); 
-  navigate("/auth"); 
-};
-
+ const handleLogout = useCallback(() => {
+    localStorage.removeItem("token");
+    navigate("/auth");
+  }, [navigate]);
+  
   return (
    <nav className="absolute  max-w-[1600px] mx-auto top-0 left-0 w-full z-50   border-gray-600/50 px-5 sm:px-8 py-5 flex items-center justify-between">
       <div className="flex items-center space-x-2">
@@ -131,6 +132,7 @@ const Navbar = () => {
       </button>
 
       <MobileMenu
+       profile={profile}
         isOpen={isOpen}
         setOpenModal={setOpenModal}
         setIsOpen={setIsOpen}

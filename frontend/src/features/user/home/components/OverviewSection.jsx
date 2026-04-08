@@ -1,5 +1,5 @@
 import { Trophy, Users, Camera, Zap } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const features = [
@@ -33,14 +33,14 @@ const features = [
   },
 ];
 
-const Overview = () => {
+const Overview = ({totalPrizeMoney}) => {
   const navigate = useNavigate();
 
   return (
     <div className="w-full mt-4 py-3 mb-4 md:py-24 flex justify-center">
       <div className="w-full max-w-7xl px-2 md:px-16 flex flex-col md:flex-row justify-between gap-6 sm:gap-12 md:gap-20">
 
-        {/* LEFT SIDE TEXT */}
+      
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -48,7 +48,7 @@ const Overview = () => {
           transition={{ duration: 0.6 }}
           className="w-full hidden sm:flex flex-col md:w-1/2 text-white space-y-6"
         >
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-extrabold leading-tight">
             NOT JUST ANOTHER PICTURE.
           </h2>
 
@@ -119,7 +119,7 @@ const Overview = () => {
           })}
         </motion.div>
 
-        {/* MOBILE CARD */}
+        
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -133,12 +133,12 @@ const Overview = () => {
                 <Trophy className="text-cyan-300" size={18} />
               </div>
 
-              <div className="flex flex-col">
+              <Link to='/arena' className="flex flex-col">
                 <span className="text-[10px] text-gray-400 uppercase tracking-wide">
                   Live Reward Pool
                 </span>
-                <span className="text-white text-lg font-bold">₹250,000</span>
-              </div>
+                <span className="text-white text-lg font-bold">₹{totalPrizeMoney || 0}</span>
+              </Link>
             </div>
 
             <span className="text-gray-400 text-xl">›</span>

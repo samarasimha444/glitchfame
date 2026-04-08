@@ -82,10 +82,10 @@ const Cards = ({ liveSeason, isLoading }) => {
   to="/arena"
   className="relative w-full h-69.5 rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br from-[#1f2329] to-[#14161a] flex flex-col items-center justify-center transition-all duration-300 active:scale-[0.97] transform-gpu"
 >
-  {/* 🔥 blur + hover only on desktop */}
+  
   <div className="absolute inset-0 bg-primary/10 opacity-0 md:hover:opacity-100 transition duration-300 md:blur-xl"></div>
 
-  {/* Icon */}
+  
   <div className="relative z-10 flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-primary/20 border border-primary/30 shadow-[0_0_20px_rgba(0,255,200,0.15)] mb-3 transition-all duration-300 md:group-hover:scale-110">
     <ArrowRight className="text-primary" size={26} />
   </div>
@@ -98,7 +98,7 @@ const Cards = ({ liveSeason, isLoading }) => {
     Explore all seasons
   </p>
 
-  {/* Bottom line */}
+  
   <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent opacity-70"></div>
 </Link>
             </section>
