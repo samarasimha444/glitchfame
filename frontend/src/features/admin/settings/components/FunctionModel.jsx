@@ -1,7 +1,7 @@
 import React from "react";
 import { useDeleteSeason } from "../hooks";
 import { useResetSeason } from "../hooks";
-import NeonLoader from "../../../../components/Loader";
+import NeonLoader from "../../../../components/NeonLoader";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 

@@ -41,7 +41,7 @@ const totalPrizeMoney = useMemo(() => {
 
 
   return (
-    <div className="w-full pt-17 px-2 sm:p-0  flex-col max-w-screen m-auto bg-display flex items-center justify-center bg-fixed bg-cover bg-center  ">
+    <div className="w-full pt-18 px-2 sm:p-0  flex-col max-w-screen m-auto bg-display flex items-center justify-center bg-fixed bg-cover bg-center  ">
       <FeaturedCarousel season={season} />
 
       <StickyHeader season={season} />
