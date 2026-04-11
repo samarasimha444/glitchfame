@@ -40,7 +40,7 @@ const GlitchLoader = () => {
           </div>
 
          
-          <div className="w-10 h-10 md:w-14 md:h-14 bg-teal-300/5 border border-teal-300/30 rounded-xl flex items-center justify-center backdrop-blur-sm">
+          <div className="w-10 h-10 md:w-14 md:h-14 bg-teal-300/5 border border-teal-300 rounded-xl flex items-center justify-center backdrop-blur-sm">
             <Zap className="w-5 h-5 md:w-7 md:h-7 text-primary" fill="currentColor" fillOpacity="0.1" />
           </div>
         </div>
@@ -52,7 +52,7 @@ const GlitchLoader = () => {
         </h1>
 
         {/* Status Message */}
-        <div className="mt-4 flex items-center gap-2 md:gap-3 font-mono text-xs md:text-sm text-teal-300/80">
+        <div className="mt-4 flex items-center gap-2 md:gap-3 font-mono text-xs md:text-sm text-primary">
           <span className="opacity-50 text-primary">{`>>`}</span>
           <span className="min-w-[180px] md:min-w-[220px]">{messages[statusIndex]}</span>
           <div className="w-1.5 h-4 bg-primary animate-pulse" />

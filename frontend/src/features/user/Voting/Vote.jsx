@@ -20,7 +20,14 @@ const useDebounce = (value, delay = 500) => {
 
 const Vote = () => {
   const { id: seasonId } = useParams();
-   const [showInitialLoader, setShowInitialLoader] = useState(true);
+
+  const key = `vote_loaded_${seasonId}`;
+
+  // ✅ state (NOT direct sessionStorage)
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(
+    sessionStorage.getItem(key) === "true"
+  );
+ 
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 500);
 
@@ -36,6 +43,12 @@ const Vote = () => {
     isFetching: isFetchingParticipation,
   } = useParticipation(seasonId, page); 
 
+  useEffect(() => {
+    if (!isLoadingParticipation) {
+      sessionStorage.setItem(key, "true");
+      setHasLoadedOnce(true);
+    }
+  }, [isLoadingParticipation, key]);
   
   const {
     data: searchData,
@@ -54,17 +67,9 @@ const Vote = () => {
 
   useSeasonVotes(!isLoadingParticipation ? seasonInfo?.seasonId : null);
 
-    useEffect(() => {
-    if (!isLoadingParticipation && participationData) {
-      const timer = setTimeout(() => {
-        setShowInitialLoader(false);
-      }, 543332300); 
+   const isInitialLoading = !hasLoadedOnce && isLoadingParticipation;
 
-      return () => clearTimeout(timer);
-    }
-  }, [isLoadingParticipation, participationData]);
-
-    if (showInitialLoader && isLoadingParticipation) {
+  if (isInitialLoading) {
     return <GlitchLoader />;
   }
 

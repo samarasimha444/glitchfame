@@ -134,10 +134,20 @@ export const useParticipation = (seasonId, page = 0) => {
         ? await fetchSeasonParticipation(seasonId, page, 10)
         : await fetchRandomParticipation(page, 8);
       
-      return res;
+      return (
+        res || {
+          participants: {
+            content: [],
+            totalPages: 0,
+          },
+          season: null,
+        }
+      );
     },
 
-    keepPreviousData: true,
+  keepPreviousData:true,
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false,
     
   });
 };
