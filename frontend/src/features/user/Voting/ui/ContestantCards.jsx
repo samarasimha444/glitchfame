@@ -20,21 +20,21 @@ export const ContestantCard = React.memo(({ user }) => {
         
        <source
   media="(max-width: 640px)"
-  srcSet="https://res.cloudinary.com/dw3ymazvl/image/upload/f_webp,q_auto:good,w_400/v1760368348/threesix/jeep7.webp"
+  srcSet={user?.participantPhotoUrl}
   type="image/webp"
 />
 
         {/* Tablet */}
         <source
           media="(max-width: 1024px)"
-          srcSet="https://res.cloudinary.com/dw3ymazvl/image/upload/f_webp,q_auto:good,w_600/v1760368348/threesix/jeep7.webp"
+       srcSet={user?.participantPhotoUrl}
           type="image/webp"
         />
 
         {/* Desktop */}
         <source
           media="(min-width: 1025px)"
-          srcSet="https://res.cloudinary.com/dw3ymazvl/image/upload/f_webp,q_auto:good,w_1000/v1760368348/threesix/jeep7.webp"
+           srcSet={user?.participantPhotoUrl}
           type="image/webp"
         />
 
