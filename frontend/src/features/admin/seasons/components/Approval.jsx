@@ -3,7 +3,7 @@ import { CheckCircle, XCircle, ShieldAlert } from "lucide-react";
 import {  useUpdateContestantStatus } from "../hook";
 
 import { TableShimmer } from "../../../../components/TableShimmer";
-import NeonLoader from "../../../../components/Loader";
+import NeonLoader from "../../../../components/NeonLoader";
 
 const Approval = ({contestants = [],isLoading,fetchNextPage,hasNextPage,isFetchingNextPage, className}) => {
 
