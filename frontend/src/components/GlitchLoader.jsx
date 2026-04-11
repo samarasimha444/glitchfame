@@ -59,12 +59,12 @@ const GlitchLoader = () => {
         </div>
 
         {/* Bottom Alert Box - Adjusted Padding for Mobile */}
-        <div className="mt-12 md:mt-16 flex items-start md:items-center gap-3 px-5 py-3 bg-teal-950/20 border border-teal-300/10 rounded-2xl md:rounded-full text-[10px] md:text-xs text-teal-100/40 max-w-[90%] md:max-w-none">
+        {/* <div className="mt-12 md:mt-16 flex items-start md:items-center gap-3 px-5 py-3 bg-teal-950/20 border border-teal-300/10 rounded-2xl md:rounded-full text-[10px] md:text-xs text-teal-100/40 max-w-[90%] md:max-w-none">
           <Info className="w-4 h-4 text-primary shrink-0" />
           <p className="leading-tight">
             Initializing secure session. <span className="text-teal-300/80 font-medium">Please do not close this window.</span>
           </p>
-        </div>
+        </div> */}
 
         {/* Refresh Link */}
         <button 
