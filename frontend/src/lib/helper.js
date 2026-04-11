@@ -160,16 +160,37 @@ export const handleApiError = (error, { setShowLoginModal } = {}) => {
 
 
 
-export const getCloudinarySrcSet = (url) => {
-  if (!url) return null;
+export const createImage = (url) =>
+  new Promise((resolve, reject) => {
+    const image = new Image();
+    image.addEventListener("load", () => resolve(image));
+    image.addEventListener("error", (error) => reject(error));
+    image.src = url;
+  });
 
-  const src = url.replace("/upload/", "/upload/f_webp,w_300,q_auto/");
+export default async function getCroppedImg(imageSrc, croppedAreaPixels) {
+  const image = await createImage(imageSrc);
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
 
-  const srcSet = `
-    ${url.replace("/upload/", "/upload/f_webp,w_150,q_auto:low/")} 150w,
-    ${url.replace("/upload/", "/upload/f_webp,w_300,q_auto/")} 300w,
-    ${url.replace("/upload/", "/upload/f_webp,w_600,q_auto/")} 600w
-  `;
+  canvas.width = croppedAreaPixels.width;
+  canvas.height = croppedAreaPixels.height;
 
-  return { src, srcSet };
-};
+  ctx.drawImage(
+    image,
+    croppedAreaPixels.x,
+    croppedAreaPixels.y,
+    croppedAreaPixels.width,
+    croppedAreaPixels.height,
+    0,
+    0,
+    croppedAreaPixels.width,
+    croppedAreaPixels.height
+  );
+
+  return new Promise((resolve) => {
+    canvas.toBlob((blob) => {
+      resolve(blob);
+    }, "image/jpeg");
+  });
+}

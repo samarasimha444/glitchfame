@@ -3,6 +3,7 @@ import CountdownTimer from "./CountdownTimer";
 import { useIsMobile } from "../../../../lib/helper";
 
 export default function FeaturedCarousel({ season }) {
+  console.log(season)
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
@@ -131,7 +132,7 @@ export default function FeaturedCarousel({ season }) {
             </p>
 
             <p className="text-primary font-mono text-[24px] md:text-[36px] font-extrabold">
-              ₹{season?.prizeMoney?.toLocaleString() || "250,000"}
+             ₹{season?.prizeMoney?.toLocaleString() || "TBA"}
             </p>
           </div>
         </div>

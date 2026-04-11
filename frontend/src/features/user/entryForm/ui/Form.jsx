@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { formFields } from "../../../../constants/userdata";
 import toast from "react-hot-toast";
-import NeonLoader from "../../../../components/Loader";
+import NeonLoader from "../../../../components/NeonLoader";
 import { useNavigate } from "react-router-dom";
 import { useSubmitEntry, useUploadImage } from "../hooks";
 import DatePicker from "../../../../components/DatePicker";
@@ -96,19 +96,19 @@ const Form = ({ seasonId, image }) => {
     <>
       
 
-      <form onSubmit={handleSubmit} className="space-y-6 relative">
+      <form onSubmit={handleSubmit} className="space-y-6 relative w-full  ">
         <h3 className="text-white font-semibold text-lg">PROFILE INTELLIGENCE</h3>
 
         {isLoading && (
-         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 min-h-[75dvh]">
+         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 h-full">
   <NeonLoader />
 </div>
         )}
 
         <div className="grid grid-cols-2 gap-4 text-xs sm:text-base">
-          {formFields?.map((field) => (
+          {formFields?.map((field,index) => (
             <input
-              key={field.name}
+              key={`${field.name}-${index}`}
               type={field.type}
               name={field.name}
               maxLength={30}

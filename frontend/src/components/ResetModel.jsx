@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useChangePassword } from "../features/user/home/hooks";
 import toast from "react-hot-toast";
 import { Eye, EyeOff } from "lucide-react";
-import NeonLoader from "./Loader";
+import NeonLoader from "./NeonLoader";
 
 const ResetModal = ({ isOpen, onClose,  }) => {
   const [oldPassword, setOldPassword] = useState("");

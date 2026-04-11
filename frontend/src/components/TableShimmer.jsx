@@ -48,10 +48,10 @@ export const TableShimmer = ({ rows = 5 }) => {
               </div>
             </div>
 
-            {/* 💻 DESKTOP VIEW (table/grid) */}
+            
             <div className="hidden md:grid grid-cols-4 gap-4 items-center">
               
-              {/* Avatar + Name */}
+       
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-white/5 animate-pulse" />
                 <div className="space-y-2">
@@ -60,13 +60,12 @@ export const TableShimmer = ({ rows = 5 }) => {
                 </div>
               </div>
 
-              {/* Email */}
+              
               <div className="h-3 w-40 bg-white/5 rounded animate-pulse" />
 
-              {/* Status */}
+            
               <div className="h-6 w-20 bg-white/5 rounded-full animate-pulse" />
 
-              {/* Actions */}
               <div className="flex justify-end">
                 <div className="h-6 w-6 bg-white/5 rounded animate-pulse" />
               </div>

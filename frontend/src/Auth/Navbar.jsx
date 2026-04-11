@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Zap, Award, Info, Logs,UserPlus, Home } from "lucide-react";
 import MobileMenu from "../components/MobileSideBar";
 import { Settings } from "lucide-react";
-import NeonLoader from "../components/Loader";
+import NeonLoader from "../components/NeonLoader";
 const ResetModal = lazy(() => import("../components/ResetModel"));
 
 const Navbar = ({profile}) => {

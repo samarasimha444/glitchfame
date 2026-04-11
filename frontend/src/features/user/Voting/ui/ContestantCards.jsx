@@ -16,7 +16,7 @@ export const ContestantCard = React.memo(({ user }) => {
         <ExternalLink size={12} className="text-white sm:w-[14px]" />
       </div>
 
-      <picture className="w-full h-full">
+      <picture className="w-full h-full object-cover object-top ">
         
        <source
   media="(max-width: 640px)"

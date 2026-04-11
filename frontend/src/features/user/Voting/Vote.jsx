@@ -5,6 +5,7 @@ import VotingHeader from "./ui/VotingHeader";
 const ArenaCard = lazy(() => import("./ui/ArenaCard"));
 import { Search } from "lucide-react";
 import { useSeasonVotes } from "./hooks";
+import GlitchLoader from "../../../components/GlitchLoader";
 
 const useDebounce = (value, delay = 500) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -19,7 +20,7 @@ const useDebounce = (value, delay = 500) => {
 
 const Vote = () => {
   const { id: seasonId } = useParams();
- 
+   const [showInitialLoader, setShowInitialLoader] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 500);
 
@@ -52,6 +53,20 @@ const Vote = () => {
     participationData?.participants?.totalPages || 0;
 
   useSeasonVotes(!isLoadingParticipation ? seasonInfo?.seasonId : null);
+
+    useEffect(() => {
+    if (!isLoadingParticipation && participationData) {
+      const timer = setTimeout(() => {
+        setShowInitialLoader(false);
+      }, 543332300); 
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoadingParticipation, participationData]);
+
+    if (showInitialLoader && isLoadingParticipation) {
+    return <GlitchLoader />;
+  }
 
   const isLoadingState =
     isLoadingParticipation ||
