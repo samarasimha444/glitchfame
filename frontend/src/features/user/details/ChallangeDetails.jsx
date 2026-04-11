@@ -12,7 +12,7 @@ export const ChallangeDetails = () => {
         <div className="flex flex-col md:flex-row">
 
           {/* HERO IMAGE */}
-          <div className="relative md:w-1/2 h-[260px] md:h-[75dvh] md:mt-7">
+          <div className="relative md:w-1/2 h-[260px] md:h-[75dvh] max-h-[800px] md:mt-7">
             <img
               src="/trophy.webp"
               className="w-full h-full object-cover"

@@ -33,7 +33,7 @@ const Navbar = ({profile}) => {
   }, [navigate]);
   
   return (
-   <nav className="absolute  max-w-[1600px] mx-auto top-0 left-0 w-full z-50   border-gray-600/50 px-5 sm:px-8 py-5 flex items-center justify-between">
+   <nav className="absolute  max-w-[1600px] mx-auto top-0 left-0 w-full z-50   border-gray-600/50 px-5 sm:px-8 py-5 flex items-center justify-between min-[1800px]:relative">
       <div className="flex items-center space-x-2">
 
       <div className="mx-auto w-10 h-10 rounded-xl flex items-center justify-center bg-primary shadow-[0_0_40px_rgba(168,85,247,0.5)]">
