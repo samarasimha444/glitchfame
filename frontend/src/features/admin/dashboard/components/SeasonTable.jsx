@@ -1,7 +1,7 @@
 import { LockOpen, Lock } from "lucide-react";
 import { useToggleSeasonLock } from "../../settings/hooks";
 import { TableShimmer } from "../../../../components/TableShimmer";
-import NeonLoader from "../../../../components/Loader";
+import NeonLoader from "../../../../components/NeonLoader";
 import { useState, useMemo } from "react";
 
 const getStatusStyle = (status) => {

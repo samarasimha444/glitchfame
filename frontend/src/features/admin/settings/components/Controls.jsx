@@ -1,7 +1,7 @@
 import { Lock, Save } from "lucide-react";
 import { useState } from "react";
 import { useToggleSeasonLock, useUpdatePrizePool } from "../hooks";
-import NeonLoader from "../../../../components/Loader";
+import NeonLoader from "../../../../components/NeonLoader";
 
 
 const Controls = ({ id, seasonLock, prizeMoney }) => {

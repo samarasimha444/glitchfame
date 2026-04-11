@@ -3,7 +3,7 @@ import { useCreateSeason, useUploadImage } from "../hooks";
 import { buildSeasonPayload, getSeasonFolder } from "../../../../lib/helper";
 import { seasonInitialState, seasonfields } from "../../../../constants/admin";
 import { validateSeasonDates } from "../../../../lib/helper";
-import NeonLoader from "../../../../components/Loader";
+import NeonLoader from "../../../../components/NeonLoader";
 
 const SeasonForm = ({ close }) => {
   const { mutateAsync: createSeason, isPending } = useCreateSeason();

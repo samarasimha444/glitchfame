@@ -1,7 +1,7 @@
 import React, { lazy, Suspense, useCallback, useMemo, useState } from "react";
 import { MoreVertical } from "lucide-react";
 import { useEndSeasonNow, useParticipationLock } from "../hooks";
-import NeonLoader from "../../../../components/Loader";
+import NeonLoader from "../../../../components/NeonLoader";
 import { menuItems } from "../../../../constants/admin";
 
 const Model = lazy(() => import("./Model"));
