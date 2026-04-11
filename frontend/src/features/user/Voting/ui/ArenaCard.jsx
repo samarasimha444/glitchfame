@@ -20,7 +20,7 @@ const ArenaCard = memo(({ data, seasonId, isLoading }) => {
   const stableVoteAction = useCallback(voteAction, [voteAction]);
 
   return (
-    <section className="w-full px-3 md:px-8 py-6"> {/* 🔥 reduced spacing */}
+    <section className="w-full px-3 md:px-8 py-6"> 
       <div className="w-full mx-auto">
 
         <div className="flex items-center justify-between mb-3 border-b border-gray-800 pb-3">

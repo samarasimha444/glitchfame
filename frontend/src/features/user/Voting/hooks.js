@@ -14,6 +14,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 
 export const useVoteAction = ({ seasonId, setShowLoginModal }) => {
+  
   const queryClient = useQueryClient();
 
   return useMutation({
