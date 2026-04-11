@@ -9,7 +9,7 @@ import {
 import VoteModal from "./VoteModel";
 import toast from "react-hot-toast";
 import { TableShimmer } from "../../../../components/TableShimmer";
-import NeonLoader from "../../../../components/Loader";
+import NeonLoader from "../../../../components/NeonLoader";
 import { TableRow } from "./TableRow";
 
 const ParticipantsTable = ({ className,setLive }) => {
