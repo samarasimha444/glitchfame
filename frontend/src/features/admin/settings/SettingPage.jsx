@@ -7,7 +7,7 @@ import { Plus } from "lucide-react";
 import {  useFetchSeasonDetails } from "./hooks";
 import { useFetchSeasons } from "../dashboard/hooks";
 import { settingCards } from "../../../constants/admin";
-import NeonLoader from "../../../components/Loader";
+import NeonLoader from "../../../components/NeonLoader";
 import FunctionModel from "./components/FunctionModel";
 
 const AdminSettings = () => {
