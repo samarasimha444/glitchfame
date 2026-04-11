@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from "react";
 import AdminCard from "../dashboard/components/AdminCard";
 import SeasonSummary from "./components/SeasonSummary";
 import Controls from "./components/Controls";
-
 import { Plus } from "lucide-react";
 import {  useFetchSeasonDetails } from "./hooks";
 import { useFetchSeasons } from "../dashboard/hooks";

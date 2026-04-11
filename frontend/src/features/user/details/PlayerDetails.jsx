@@ -1,7 +1,7 @@
 import { Zap, Trophy, Target, TrendingUp } from "lucide-react";
 import { useContestantDetails } from "../arena/hooks";
 import { useNavigate, useParams } from "react-router-dom";
-import NeonLoader from "../../../components/Loader";
+import NeonLoader from "../../../components/NeonLoader";
 
 const PlayerDetails = () => {
   const navigate = useNavigate();

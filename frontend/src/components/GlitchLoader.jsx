@@ -69,7 +69,7 @@ const GlitchLoader = () => {
         {/* Refresh Link */}
         <button 
           onClick={() => window.location.reload()}
-          className="mt-6 text-[9px] md:text-[10px] text-teal-900 tracking-[0.15em] uppercase hover:text-teal-300 transition-colors underline decoration-teal-900/30 underline-offset-4"
+          className="mt-6 text-[9px] md:text-[10px] text-teal-900 tracking-[0.15em] uppercase hover:text-teal-400 transition-colors underline decoration-teal-900/30 underline-offset-4"
         >
           Connection slow? Try Refreshing
         </button>
