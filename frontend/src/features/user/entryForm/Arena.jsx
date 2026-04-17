@@ -74,8 +74,8 @@ const ArenaForm = () => {
 
 
 return (
-    <div className="min-h-screen w-full  bg-[#0a0a0f] bg-gradient-to-br from-[#0f0f18] via-[#141a24] to-[#0c1b22] 
-      flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-24 py-15 md:py-20 px-4 sm:px-10 overflow-x-hidden">
+    <div className="min-h-screen w-full   bg-[#0a0a0f] bg-gradient-to-br from-[#0f0f18] via-[#141a24] to-[#0c1b22] 
+      flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-24 py-24 px-4 sm:px-10 overflow-x-hidden">
 
       {show && <LoginRequiredModal onCancel={() => setShow(false)} />}
 

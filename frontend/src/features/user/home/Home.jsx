@@ -37,14 +37,14 @@ const Home = () => {
   }, [liveSeason]);
 
   return (
-    <div className="w-full pt-18   sm:p-0  flex-col max-w-screen m-auto  bg-display flex min-h-screen border border-gray-800 items-center justify-center bg-fixed bg-cover bg-center  ">
+    <div className="w-full pt-18  sm:p-0  flex-col max-w-screen m-auto  bg-display flex min-h-screen border border-gray-800 items-center justify-center bg-fixed bg-cover bg-center  ">
       <FeaturedCarousel/>
 
       <StickyHeader season={season} />
 
       <SeasonData season={season} />
 
-      <section className="w-full px-3 bg-black md:bg-[#16191D] py-16 flex flex-col max-w-296 mx-auto  ">
+      <section className="w-full px-3 bg-black md:bg-[#16191D]  flex flex-col max-w-296 mx-auto py-18  ">
         <div className="flex flex-col  md:flex-row md:items-end justify-between mb-8 gap-4">
           <div className="flex flex-col gap-2">
             <div className="hidden sm:flex items-center gap-2">
@@ -95,7 +95,7 @@ const Home = () => {
         <Cards liveSeason={liveSeason} isLoading={seasonsLoading} />
       </section>
 
-      <section className="md:bg-black w-full px-3 py-16">
+      <section className="md:bg-black w-full px-3 py-16 ">
         <Suspense fallback={<p className="text-white"></p>}>
           <New />
         </Suspense>

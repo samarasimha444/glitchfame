@@ -64,7 +64,7 @@ export default function FeaturedCarousel() {
               name in the Hall of Legends.
             </p>
 
-            <button className="border-2 sm:hidden border-white/20 backdrop-blur-md px-8 py-3 font-black uppercase text-sm tracking-widest hover:bg-white/10 transition-colors">
+            <button onClick={()=>navigate('/arena')} className="border-2 sm:hidden border-white/20 backdrop-blur-md px-8 py-3 font-black uppercase text-sm tracking-widest hover:bg-white/10 transition-colors">
               View All Seasons
             </button>
 
