@@ -26,10 +26,10 @@ const SeasonData = ({ season }) => {
         </div>
 
         
-        <div className="flex flex-col lg:flex-row bg-[#1A1A23] border border-gray-600 rounded-sm overflow-hidden ">
+        <div className="flex flex-col md:flex-row bg-[#1A1A23] border border-gray-800 rounded-sm overflow-hidden ">
           
 
-          <div className="relative w-full  lg:w-[45%] xl:w-[473px] shrink-0">
+          <div className="relative w-full md:w-[40%] lg:w-[45%] xl:w-[473px] shrink-0">
             
             <div className="relative h-[240px] sm:h-[350px] md:h-[500px] w-full">
               <img
@@ -41,20 +41,20 @@ const SeasonData = ({ season }) => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent md:bg-black/40" />
             </div>
 
-            {/* Mobile/Desktop Floating Labels */}
+            
             <div className="absolute bottom-0 left-0 w-full p-4 md:p-8 flex flex-col justify-end h-full">
               <span className="hidden md:inline-block text-[10px] font-bold uppercase tracking-[0.2em] text-primary mb-3">
                 Live Now
               </span>
-              <h3 className="text-2xl md:text-4xl font-black uppercase  tracking-tighter">
-                {season?.seasonName || "Loading Season..."}
+              <h3 className="text-2xl md:text-2xl font-black uppercase  tracking-tighter">
+                {season?.seasonName || "Coming Soon..."}
               </h3>
             </div>
           </div>
 
           
           <div className="flex-1 p-6 md:p-10 flex flex-col justify-between">
-            <div className="space-y-8">
+            <div className="sm:space-y-8">
               
               <div className="flex justify-between items-start">
                 <div className="space-y-1">

@@ -37,23 +37,18 @@ const stats = {
      
    <div className="flex  justify-center items-center max-w-screen flex-col lg:flex-row gap-6 w-full">
   
- <section className="flex-1 hidden border md:flex md:flex-col border-gray-800 rounded-2xl p-4 shadow-sm overflow-y-auto">
-  <h5 className="text-white font-semibold mb-3">CONTESTANTS ACTION</h5>
-  <p className="text-gray-300 text-sm leading-relaxed">
-    Once a contestant is <strong>accepted</strong>, they cant  be <strong>rejected</strong>  <strong></strong>, so please take all actions carefully. 
-    Admin actions include: accepting, rejecting, or deleting contestants, as well as modifying their details if necessary. 
-    Users can also <strong>vote</strong> or interact with contestants, so ensure all updates are accurate and verified before making changes. 
-    Handle every action responsibly to maintain fairness and integrity in the system.
-  </p>
-</section>
+ 
 
  
   <section className="flex-1 w-full">
     <AdminCard stats={stats} cardsInfo={seasonCards} />
+    <p className="text-gray-300 text-sm leading-relaxed">
+  Once accepted, a contestant cannot be rejected. Admins can accept, reject, delete, or edit details.
+</p>
   </section>
 </div>
-      
-      
+  
+ 
       
       <aside className='flex flex-col w-full  max-w-screen '>
        

@@ -9,7 +9,7 @@ const Cards = ({ liveSeason, isLoading }) => {
   const isMobile = useIsMobile();
 
   return (
-   <div className="w-full flex sm:block justify-center max-w-screen mx-auto md:py-10">
+    <div className="w-full flex sm:block justify-center max-w-screen mx-auto md:py-10">
       {isLoading ?
         <section className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
           <ShimmerCard />
@@ -20,54 +20,54 @@ const Cards = ({ liveSeason, isLoading }) => {
           No live seasons found.
         </div>
       : <>
-
-
           {isMobile ?
-      <div className="w-full max-w-[340px] rounded-lg overflow-hidden border border-[#2A323C] bg-[#111418] font-sans">
-  
-  <div className="relative h-[180px] w-full">
-      <img
-            src={`${liveSeason[0].seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=800`}
-               alt={liveSeason[0].seasonName}
-               loading="lazy"
-              className="w-full h-full object-cover "/>
+            <div className="w-full max-w-[340px] rounded-lg overflow-hidden border border-[#2A323C] bg-[#111418] font-sans">
+              <div className="relative h-[180px] w-full">
+                <img
+                  src={`${liveSeason[0].seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=800`}
+                  alt={liveSeason[0].seasonName}
+                  loading="lazy"
+                  className="w-full h-full object-cover "
+                />
 
-  
-    <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-[#181820] border border-[#FF3B3B] px-2.5 py-1 rounded">
-      <span className="w-1.5 h-1.5 rounded-full bg-[#FF3B3B] animate-pulse"></span>
-      <span className="text-[10px] font-bold uppercase tracking-wider text-[#FF3B3B]">
-        Live Now
-      </span>
-    </div>
+                <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-[#181820] border border-[#FF3B3B] px-2.5 py-1 ">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF3B3B] animate-pulse"></span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#FF3B3B]">
+                    Live Now
+                  </span>
+                </div>
 
-    
-    <div className="absolute top-3 right-3 bg-[#8B5CF6]/20 border border-[#8B5CF6] px-3 py-1 rounded">
-      <span className="text-[10px] font-bold uppercase tracking-wider text-[#A78BFA]">
-        Trending
-      </span>
-    </div>
-  </div>
+                <div className="absolute top-3 right-3 bg-[#8B5CF6]/20 border border-[#8B5CF6] px-3 py-1 rounded">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#A78BFA]">
+                    Trending
+                  </span>
+                </div>
+              </div>
 
-  
-  <div className="p-5">
-  
-    <h3 className="text-[18px] font-bold text-white uppercase tracking-tight mb-3">
-      Neon Overload: Zero Hour
-    </h3>
-    
-    {/* Info Row (Entries & Prize) */}
-    <div className="flex items-center justify-between text-gray-400 text-sm border-t border-[#2A323C] pt-3">
-      <div className="flex items-center gap-2">
-        <span className=""><User size={12}/></span> 
-        1.2k entries
-      </div>
-      <div className="flex items-center gap-2">
-        <span className="text-xs"><Trophy size={12}/></span> {/* Use an actual Trophy icon here if needed */}
-        Prize: <span className="text-white font-medium">$5,000</span>
-      </div>
-    </div>
-  </div>
-</div>
+              <div className="p-5">
+                <h3 className="text-[18px] font-bold text-white uppercase tracking-tight mb-3">
+                  Neon Overload: Zero Hour
+                </h3>
+
+                {/* Info Row (Entries & Prize) */}
+                <div className="flex items-center justify-between text-gray-400 text-sm border-t border-[#2A323C] pt-3">
+                  <div className="flex items-center gap-2">
+                    <span className="">
+                      <User size={12} />
+                    </span>
+                    1.2k entries
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs">
+                      <Trophy size={12} />
+                    </span>{" "}
+                    {/* Use an actual Trophy icon here if needed */}
+                    Prize:{" "}
+                    <span className="text-white font-medium">$5,000</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           : <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {liveSeason?.[0] && (
                 <motion.div

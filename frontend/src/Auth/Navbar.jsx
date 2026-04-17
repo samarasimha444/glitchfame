@@ -54,7 +54,7 @@ const Navbar = ({profile}) => {
 )}
       
 
-        <ul className="hidden md:flex space-x-6 ml-4 text-[14px] font-medium">
+        <ul className="hidden  min-[850px]:flex space-x-6 ml-4 text-[14px] font-medium">
           {menuItems.map((item, idx) =>
             item.path ?
               <li key={idx}>

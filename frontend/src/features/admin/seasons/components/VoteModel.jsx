@@ -23,7 +23,7 @@ const VoteModal = ({ open, onClose, onSubmit, participationId }) => {
       <div className="bg-[#111418] w-[380px] p-6 rounded-2xl shadow-xl border border-gray-700">
         
         <h2 className="text-lg font-semibold text-white mb-6">
-          Add Custom Votes
+          Add Votes
         </h2>
 
         <input

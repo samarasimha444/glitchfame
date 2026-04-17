@@ -49,13 +49,14 @@ const Home = () => {
           <div className="flex flex-col gap-2">
             <div className="hidden sm:flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
-              <h6 className="text-red-600 hidden md:blocktext-[12px] uppercase tracking-widest text-xs font-bold">
+              <h6 className="text-red-600 hidden md:block text-[12px] uppercase tracking-widest text-xs font-bold">
                 Real-Time Hub
               </h6>
             </div>
             <h2 className="mobile-h2 md:home-h2 mt-1 flex items-center gap-3">
               Live Seasons
-              <div className="inline-flex items-center gap-1.5 bg-[#1a0505] border border-red-900/40 px-2 py-0.5 rounded-md">
+
+              <div className="inline-flex items-center gap-1.5 md:hidden bg-[#1a0505] border border-red-900/40 px-2 py-0.5 rounded-md">
                 <span className="relative flex h-2 w-2">
                   <span className="sm:animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
 
@@ -74,18 +75,18 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="flex items-center space-x-3  justify-center bg-black p-1 rounded-md md:border text-[14px] border-gray-500 self-center md:self-end">
-            <button className="flex items-center gap-2 px-6 py-3 bg-primary text-black  font-semibold rounded-sm border border-gray-500">
+          <div className="flex items-center space-x-3  justify-center bg-black p-1 rounded-md md:border text-[13px] border-gray-500 self-center md:self-end">
+            <button className="flex items-center gap-2 px-6 py-2 bg-primary text-black  font-semibold rounded-sm border border-gray-500 md:border-none">
               <span className="">
                 <MenuSquare />
               </span>{" "}
               All
             </button>
-            <button className="flex items-center gap-2 px-6 py-3 text-gray-400  font-semibold hover:text-white border border-gray-500 transition-colors">
+            <button className="flex items-center gap-2 px-6 py-2 text-gray-400  font-semibold hover:text-white border border-gray-500 transition-colors md:border-none">
               Trending
             </button>
 
-            <button className="flex items-center gap-2 px-6 py-3 border border-gray-500 text-gray-400  font-semibold hover:text-white transition-colors">
+            <button className="flex items-center gap-2 px-6 py-2 border border-gray-500 text-gray-400  font-semibold hover:text-white transition-colors md:border-none">
               Newest
             </button>
           </div>

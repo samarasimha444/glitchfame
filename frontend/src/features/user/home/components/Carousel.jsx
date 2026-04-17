@@ -8,9 +8,10 @@ export default function FeaturedCarousel() {
 
   return (
     <>
-      <div className="w-full max-h-dvh relative  sm:mt-0 flex justify-center items-center  max-w-400 mx-auto  h-full md:max-h-[95dvh]">
+      <div className="w-full max-h-dvh relative  sm:mt-0 flex justify-center items-center  max-w-400 mx-auto  h-full  md:max-h-[95dvh]">
+        
         <section
-          className="relative overflow-hidden w-full  sm:max-w-screen min-h-120 md:h-170  md:rounded-none border border-gray-900 aspect-[16/9]"
+          className="relative overflow-hidden w-full  sm:max-w-screen min-h-120 sm:h-170  md:rounded-none border border-gray-900 aspect-[16/9]"
           aria-hidden="false"
         >
           <div className="relative w-full h-full overflow-hidden">
@@ -33,14 +34,14 @@ export default function FeaturedCarousel() {
 
           <section
             className="absolute flex inset-0 flex-col items-start
-         md:items-center justify-center text-start md:text-center text-white px-6"
+         sm:items-center justify-center text-start sm:text-center text-white px-6"
           >
             <span className="border border-white/20 max-w-xs text-teal-400 text-xs px-4 py-1 rounded-full backdrop-blur bg-black/30 tracking-widest">
               PHASE 1 REGISTRATION ENDS IN
             </span>
 
             <h1
-              className="uppercase mt-6 hidden md:inline font-black max-w-4xl text-5xl md:text-8xl leading-[0.95] tracking-[-0.04em] bg-gradient-to-b from-white via-white to-gray-400 bg-clip-text text-transparent 
+              className="uppercase mt-6 hidden sm:inline font-black max-w-4xl text-7xl lg:text-8xl leading-[0.95] tracking-[-0.04em] bg-gradient-to-b from-white via-white to-gray-400 bg-clip-text text-transparent 
                    drop-shadow-[0_10px_40px_rgba(255,255,255,0.25)][-webkit-text-stroke:1px_rgba(255,255,255,0.15) ]"
             >
               ASCEND TO <br />
@@ -48,7 +49,7 @@ export default function FeaturedCarousel() {
             </h1>
 
             <h1
-              className="uppercase mt-6 font-black md:hidden max-w-4xl text-5xl md:text-8xl leading-[0.95] tracking-[-0.04em] bg-gradient-to-b from-white via-white to-gray-400 bg-clip-text text-transparent 
+              className="uppercase mt-6 font-black sm:hidden max-w-4xl text-5xl sm:text-6xl leading-[0.95] tracking-[-0.04em] bg-gradient-to-b from-white via-white to-gray-400 bg-clip-text text-transparent 
                    drop-shadow-[0_10px_40px_rgba(255,255,255,0.25)][-webkit-text-stroke:1px_rgba(255,255,255,0.15) ]"
             >
               BEcome the  <br />
@@ -57,17 +58,17 @@ export default function FeaturedCarousel() {
 
 
             <p className="text-gray-200 mb-3
-             mt-6 max-w-xs md:max-w-2xl text-sm md:text-lg font-medium opacity-90 leading-relaxed">
+             mt-6 max-w-xs sm:max-w-[400px] md:max-w-2xl text-sm md:text-lg font-medium opacity-90 leading-relaxed">
               Where high-stakes competition meets digital dominance. 
               Showcase your skill, dominate the seasons, and immortalize your
               name in the Hall of Legends.
             </p>
 
-            <button className="border-2  border-white/20 backdrop-blur-md px-8 py-3 font-black uppercase text-sm tracking-widest hover:bg-white/10 transition-colors">
+            <button className="border-2 sm:hidden border-white/20 backdrop-blur-md px-8 py-3 font-black uppercase text-sm tracking-widest hover:bg-white/10 transition-colors">
               View All Seasons
             </button>
 
-            <div className="mt-8 hidden md:flex flex gap-4">
+            <div className="mt-8 hidden sm:flex  gap-4">
               <button className="bg-primary text-black px-8 py-3 font-black uppercase text-sm tracking-widest hover:bg-white transition-colors">
                 Join the Arena
               </button>

@@ -43,7 +43,14 @@ const Approval = ({contestants = [],isLoading,fetchNextPage,hasNextPage,isFetchi
 
         
         <div className="space-y-3">
-          {contestants?.map((user) => (
+          {
+          contestants.length === 0? (
+              <div className="flex flex-col items-center justify-center min-h-[100px] text-center text-gray-400">
+  <p className="text-sm">  You're all caught up</p>
+</div>
+
+          ):
+          contestants?.map((user) => (
             <div
               key={user.participationId}
               className="flex flex-col sm:flex-row sm:items-center justify-between bg-[#141821] border border-gray-700 rounded-xl p-4 sm:p-5 hover:border-gray-500 transition gap-3"
