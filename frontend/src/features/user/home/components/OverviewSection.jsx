@@ -1,4 +1,4 @@
-import { Trophy, Users, Camera, Zap } from "lucide-react";
+import { Trophy, Users, Camera, Zap, Flame } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -37,8 +37,37 @@ const Overview = ({totalPrizeMoney}) => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full mt-4 py-3 mb-4 md:py-24 flex justify-center">
+    <div className="w-full px-2 bg-black md:bg-[#16191D]  py-12 mb-4 md:py-24 flex justify-center">
+
       <div className="w-full max-w-7xl px-2 md:px-16 flex flex-col md:flex-row justify-between gap-6 sm:gap-12 md:gap-20">
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+
+          className="w-full  order-first md:order-2 flex flex-col items-center justify-center  md:hidden border-teal-300 rounded-2xl p-8  text-center space-y-6 "
+        >
+          <div className="p-3 bg-[#BE5EED]/10 rounded-full">
+            <Flame className="text-primary" size={32} />
+          </div>
+          
+          <div className="space-y-2">
+            <h2 className="mobile-h2">
+              Ready to Play?
+            </h2>
+            <p className="small-text">
+              Registration for Season 12 is now open. Don't let your chance expire.
+            </p>
+          </div>
+
+          <button 
+            onClick={() => navigate("/season-12")}
+            className="w-full bg-primary text-black font-bold py-3 rounded-xl  uppercase tracking-widest text-sm"
+          >
+            Enter Season 12
+          </button>
+        </motion.div>
 
       
         <motion.div
@@ -46,7 +75,7 @@ const Overview = ({totalPrizeMoney}) => {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.6 }}
-          className="w-full hidden sm:flex flex-col md:w-1/2 text-white space-y-6"
+          className="w-full hidden md:flex flex-col md:w-1/2 text-white space-y-6"
         >
           <h2 className="text-3xl sm:text-4xl md:text-6xl font-extrabold leading-tight">
             NOT JUST ANOTHER PICTURE.
@@ -101,7 +130,7 @@ const Overview = ({totalPrizeMoney}) => {
                   visible: { opacity: 1, y: 0 },
                 }}
                 transition={{ duration: 0.4 }}
-                className={`border flex flex-col bg-[#2F3849] items-center justify-center text-center border-gray-700 py-6 sm:p-5 md:p-6 space-y-2 sm:space-y-3 
+                className={`border flex flex-col  items-center justify-center text-center border-gray-700 py-6 sm:p-5 md:p-6 space-y-2 sm:space-y-3 
                 hover:border-gray-500 transition rounded-lg sm:rounded-xl
                 ${index >= 2 ? "hidden md:flex" : ""}`}
               >
@@ -127,7 +156,7 @@ const Overview = ({totalPrizeMoney}) => {
           transition={{ duration: 0.5 }}
           className="col-span-2 sm:hidden"
         >
-          <div className="flex items-center justify-between bg-[#2A3442] border border-[#3A4656] rounded-2xl px-4 py-4 hover:border-[#BE5EED] transition">
+          <div className="flex items-center justify-between  border border-[#3A4656] rounded-2xl px-4 py-4 hover:border-[#BE5EED] transition">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-[#3A4656] flex items-center justify-center">
                 <Trophy className="text-cyan-300" size={18} />

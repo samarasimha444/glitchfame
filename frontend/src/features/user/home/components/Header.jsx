@@ -45,7 +45,7 @@ export const StickyHeader = memo(({ season }) => {
   }, [season?.registrationEndDate]); // ✅ FIX: correct dependency
 
   return (
-    <div className="sticky sm:hidden sm:static top-0 z-30 w-full backdrop-blur-sm">
+    <div className="  sm:hidden sm:static top-0 z-30 w-full backdrop-blur-sm">
       <div className="w-full md:max-w-xl md:mx-auto">
         <div className="w-full mt-4 md:mt-6 px-0 md:px-4">
           <div

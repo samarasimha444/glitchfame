@@ -1,74 +1,103 @@
 import React, { Suspense, lazy } from "react";
 import FeaturedCarousel from "./components/Carousel";
-const Gallery = lazy(() => import("./components/Gallery"));
 const Overview = lazy(() => import("./components/OverviewSection"));
 const New = lazy(() => import("./components/New"));
 import { useLiveUpcomingSeasons } from "./hooks";
 import { StickyHeader } from "./components/Header";
-import { isRegistrationOpen, isVotingLive, useIsMobile } from "../../../lib/helper";
+import {
+  isRegistrationOpen,
+  isVotingLive,
+  useIsMobile,
+} from "../../../lib/helper";
 import Cards from "./components/Cards";
-import { Flame, Search } from "lucide-react";
+import { Flame, MenuSquare, Search } from "lucide-react";
 import { useMemo } from "react";
-
-
+import SeasonData from "./components/SeasonData";
 
 const Home = () => {
-
-   const isMobile = useIsMobile();
-  
+  const isMobile = useIsMobile();
 
   const { data: seasons = [], isLoading: seasonsLoading } =
     useLiveUpcomingSeasons();
-    
 
- 
-const season = useMemo(
-  () => seasons?.content?.find(isRegistrationOpen),
-  [seasons]
-);
+  const season = useMemo(
+    () => seasons?.content?.find(isRegistrationOpen),
+    [seasons],
+  );
 
- const liveSeason = useMemo(
-  () => seasons?.content?.filter(isVotingLive)?.slice(0, 2),
-  [seasons]
-);
+  const liveSeason = useMemo(
+    () => seasons?.content?.filter(isVotingLive)?.slice(0, 2),
+    [seasons],
+  );
 
-
-const totalPrizeMoney = useMemo(() => {
-  return liveSeason?.reduce((sum, item) => {
-    return sum + Number(item.prizeMoney || 0);
-  }, 0);
-}, [liveSeason]);
-
+  const totalPrizeMoney = useMemo(() => {
+    return liveSeason?.reduce((sum, item) => {
+      return sum + Number(item.prizeMoney || 0);
+    }, 0);
+  }, [liveSeason]);
 
   return (
-    <div className="w-full pt-18 px-2 sm:p-0  flex-col max-w-screen m-auto bg-display flex items-center justify-center bg-fixed bg-cover bg-center  ">
-      <FeaturedCarousel season={season} />
+    <div className="w-full pt-18   sm:p-0  flex-col max-w-screen m-auto  bg-display flex min-h-screen border border-gray-800 items-center justify-center bg-fixed bg-cover bg-center  ">
+      <FeaturedCarousel/>
 
       <StickyHeader season={season} />
 
-      <section className="sm:mt-32 w-full">
-    
-        <section className="w-full sm:mt-12  space-y-6 md:space-y-12 flex flex-col items-center mt-5  ">
+      <SeasonData season={season} />
 
-          <section className="flex flex-wrap  w-full px-3  md:px-20 justify-between items-center gap-4 sm:py-8">
-            
-            <h5 className="flex  items-center gap-1">
+      <section className="w-full px-3 bg-black md:bg-[#16191D] py-16 flex flex-col max-w-296 mx-auto  ">
+        <div className="flex flex-col  md:flex-row md:items-end justify-between mb-8 gap-4">
+          <div className="flex flex-col gap-2">
+            <div className="hidden sm:flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+              <h6 className="text-red-600 hidden md:blocktext-[12px] uppercase tracking-widest text-xs font-bold">
+                Real-Time Hub
+              </h6>
+            </div>
+            <h2 className="mobile-h2 md:home-h2 mt-1 flex items-center gap-3">
+              Live Seasons
+              <div className="inline-flex items-center gap-1.5 bg-[#1a0505] border border-red-900/40 px-2 py-0.5 rounded-md">
+                <span className="relative flex h-2 w-2">
+                  <span className="sm:animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
 
-              <Flame className="text-red-500 w-6 h-6 md:w-10 md:h-10" />
-              <span className="text-white flex  text-lg sm:text-4xl md:text-5xl font-bold uppercase tracking-tight">
-                Live <span className="text-[#6A7282] hidden ml-2 sm:flex">CHALLANGES</span>
-              </span>
-            </h5>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+                </span>
 
-         
-          </section>
+                <span className="text-[10px] font-black uppercase tracking-tighter text-red-600 leading-none">
+                  Active
+                </span>
+              </div>
+            </h2>
 
-          <Cards liveSeason={liveSeason} isLoading={seasonsLoading} />
+            <p className="text-gray-400 max-w-xl hidden sm:flex text-[18px] leading-relaxed">
+              Currently active circuits. Join now to secure your spot in the
+              bracket.
+            </p>
+          </div>
 
-          <Suspense fallback={<p className="text-white"></p>}>
-  {isMobile ? <Gallery /> : <New />}
-</Suspense>
-        </section>
+          <div className="flex items-center space-x-3  justify-center bg-black p-1 rounded-md md:border text-[14px] border-gray-500 self-center md:self-end">
+            <button className="flex items-center gap-2 px-6 py-3 bg-primary text-black  font-semibold rounded-sm border border-gray-500">
+              <span className="">
+                <MenuSquare />
+              </span>{" "}
+              All
+            </button>
+            <button className="flex items-center gap-2 px-6 py-3 text-gray-400  font-semibold hover:text-white border border-gray-500 transition-colors">
+              Trending
+            </button>
+
+            <button className="flex items-center gap-2 px-6 py-3 border border-gray-500 text-gray-400  font-semibold hover:text-white transition-colors">
+              Newest
+            </button>
+          </div>
+        </div>
+
+        <Cards liveSeason={liveSeason} isLoading={seasonsLoading} />
+      </section>
+
+      <section className="md:bg-black w-full px-3 py-16">
+        <Suspense fallback={<p className="text-white"></p>}>
+          <New />
+        </Suspense>
       </section>
 
       <Overview totalPrizeMoney={totalPrizeMoney} />

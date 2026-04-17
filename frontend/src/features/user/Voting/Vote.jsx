@@ -23,7 +23,7 @@ const Vote = () => {
 
   const key = `vote_loaded_${seasonId}`;
 
-  // ✅ state (NOT direct sessionStorage)
+  
   const [hasLoadedOnce, setHasLoadedOnce] = useState(
     sessionStorage.getItem(key) === "true"
   );

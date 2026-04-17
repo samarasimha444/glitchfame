@@ -34,7 +34,13 @@ h1, h2, h3, h4, h5, h6 {
   scrollbar-width: none;
 }
 
+.home-h2 {
+  @apply text-[36px] font-black uppercase tracking-tight leading-tight;
+}
 
+.mobile-h2 {
+  @apply text-[24px] font-black uppercase tracking-tight leading-tight;
+}
 .text-primary {
   color: #9DE2E2;
 }

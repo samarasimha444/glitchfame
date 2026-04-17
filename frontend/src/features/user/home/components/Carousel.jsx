@@ -1,154 +1,157 @@
 import { Link, useNavigate } from "react-router-dom";
-import CountdownTimer from "./CountdownTimer";
-import { useIsMobile } from "../../../../lib/helper";
+import { User, Zap } from "lucide-react";
 
-export default function FeaturedCarousel({ season }) {
-  console.log(season)
-  const isMobile = useIsMobile();
+export default function FeaturedCarousel() {
+
+  
   const navigate = useNavigate();
 
   return (
-    <div className="w-full max-h-dvh relative mt-6 sm:mt-0 flex justify-center items-center  max-w-400 mx-auto  h-full md:max-h-[95dvh]">
-      
-      <section className="border border-gray-900 rounded-xl md:rounded-none w-full max-w-92 h-60 sm:max-w-screen sm:h-120 md:h-170 relative overflow-hidden aspect-16\/9">
-        <div className="relative w-full h-full overflow-hidden">
-          <img
-            src={
-              season?.seasonPhotoUrl + "?w=20&q=20" ||
-              "/images/default-event.jpg"
-            }
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-cover blur-sm scale-105"
-          />
-
-          <img
-            src={season?.seasonPhotoUrl || "/images/default-event.jpg"}
-            srcSet={`
-      ${season?.seasonPhotoUrl}?w=320&q=60 320w,
-      ${season?.seasonPhotoUrl}?w=640&q=70 640w,
-      ${season?.seasonPhotoUrl}?w=1280&q=85 1280w,
-      ${season?.seasonPhotoUrl}?w=1600&q=90 1600w
-    `}
-            sizes="(max-width: 640px) 320px, (max-width: 1280px) 1280px, 1600px"
-            alt={season?.name || "event"}
-            loading="lazy"
-            decoding="async"
-            className="relative w-full h-full object-cover transition-opacity duration-700 ease-in-out"
-          />
-        </div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle,_transparent_20%,_rgba(0,0,0,0.8)_100%)] pointer-events-none" />
-
-        <section className="absolute hidden sm:flex inset-0 flex-col items-center justify-center text-center text-white px-6">
-          <span className="border border-white/20 max-w-xs text-teal-400 text-xs px-4 py-1 rounded-full backdrop-blur bg-black/30 tracking-widest">
-            PHASE 1 REGISTRATION ENDS IN
-          </span>
-
-          <h1 className="uppercase mt-6 font-black max-w-4xl text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tight bg-gradient-to-b from-white via-white to-[#6A7282] bg-clip-text text-transparent drop-shadow-[0_8px_24px_rgba(255,255,255,0.15)]">
-            {season?.seasonName || "COMING SOON"}
-          </h1>
-
-          <p className="text-gray-300 mt-4 max-w-2xl text-sm md:text-base opacity-80">
-            {season?.seasonDesc}
-          </p>
-
-          <CountdownTimer
-            endDate={season?.registrationEndDate}
-            variant="dark"
-          />
-        </section>
-
-        {/* mobile */}
-
+    <>
+      <div className="w-full max-h-dvh relative  sm:mt-0 flex justify-center items-center  max-w-400 mx-auto  h-full md:max-h-[95dvh]">
         <section
-          onClick={() => navigate("/season")}
-          className=" sm:hidden absolute  bottom-0 left-0 w-full p-4 text-white bg-gradient-to-t from-black/90 via-black/60 to-transparent"
+          className="relative overflow-hidden w-full  sm:max-w-screen min-h-120 md:h-170  md:rounded-none border border-gray-900 aspect-[16/9]"
+          aria-hidden="false"
         >
-          <span className="border text-black font-semibold bg-primary text-[9px] px-2 py-0.5 w-fit">
-            #FEATUREDCHALLENGE
-          </span>
+          <div className="relative w-full h-full overflow-hidden">
+            <img
+              src="/hero.webp"
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover object-center blur-[7px] transform scale-[1.02] transition-transform duration-700 ease-out will-change-transform"
+            />
+            <div className="absolute  inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40 pointer-events-none" />
 
-          <h1 className="font-extrabold  uppercase text-2xl leading-tight mt-1">
-            {season?.seasonName || "Upcoming Challenge"}
-          </h1>
+            <div
+              className="absolute inset-0 
+      bg-gradient-to-b from-black/80 via-black/40 to-black/90 
+      pointer-events-none"
+            />
 
-          <p className="text-gray-300 text-xs mt-1">
-            {season?.registrationEndDate ?
-              new Date(season.registrationEndDate).toLocaleString()
-            : "TBD"}
-          </p>
+            <div className="absolute inset-0 bg-[#0a0a0f]/40 mix-blend-multiply pointer-events-none" />
+          </div>
 
-          <div className="flex items-center justify-between mt-3">
-            <div>
-              <p className="small-text">PRIZE POOL</p>
-              <p className="text-lg font-bold">
-                ₹{season?.prizeMoney?.toLocaleString() || "0"}
-              </p>
-            </div>
+          <section
+            className="absolute flex inset-0 flex-col items-start
+         md:items-center justify-center text-start md:text-center text-white px-6"
+          >
+            <span className="border border-white/20 max-w-xs text-teal-400 text-xs px-4 py-1 rounded-full backdrop-blur bg-black/30 tracking-widest">
+              PHASE 1 REGISTRATION ENDS IN
+            </span>
 
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/enter/${season?.seasonId}`);
-              }}
-              className=" border bg-primary text-black cursor-pointer rounded-full px-5 py-2 text-xs font-semibold"
+            <h1
+              className="uppercase mt-6 hidden md:inline font-black max-w-4xl text-5xl md:text-8xl leading-[0.95] tracking-[-0.04em] bg-gradient-to-b from-white via-white to-gray-400 bg-clip-text text-transparent 
+                   drop-shadow-[0_10px_40px_rgba(255,255,255,0.25)][-webkit-text-stroke:1px_rgba(255,255,255,0.15) ]"
             >
-              Register Now →
+              ASCEND TO <br />
+              <span className="text-primary ">GLITCHFAME</span>
+            </h1>
+
+            <h1
+              className="uppercase mt-6 font-black md:hidden max-w-4xl text-5xl md:text-8xl leading-[0.95] tracking-[-0.04em] bg-gradient-to-b from-white via-white to-gray-400 bg-clip-text text-transparent 
+                   drop-shadow-[0_10px_40px_rgba(255,255,255,0.25)][-webkit-text-stroke:1px_rgba(255,255,255,0.15) ]"
+            >
+              BEcome the  <br />
+              <span className="text-primary  italic">GLITCH</span>
+            </h1>
+
+
+            <p className="text-gray-200 mb-3
+             mt-6 max-w-xs md:max-w-2xl text-sm md:text-lg font-medium opacity-90 leading-relaxed">
+              Where high-stakes competition meets digital dominance. 
+              Showcase your skill, dominate the seasons, and immortalize your
+              name in the Hall of Legends.
+            </p>
+
+            <button className="border-2  border-white/20 backdrop-blur-md px-8 py-3 font-black uppercase text-sm tracking-widest hover:bg-white/10 transition-colors">
+              View All Seasons
             </button>
-          </div>
+
+            <div className="mt-8 hidden md:flex flex gap-4">
+              <button className="bg-primary text-black px-8 py-3 font-black uppercase text-sm tracking-widest hover:bg-white transition-colors">
+                Join the Arena
+              </button>
+              <button className="border-2 border-white/20 backdrop-blur-md px-8 py-3 font-black uppercase text-sm tracking-widest hover:bg-white/10 transition-colors">
+                View Seasons
+              </button>
+            </div>
+          </section>
         </section>
-      </section>
-
-       {
-        !isMobile && (
-            <div className=" hidden w-full absolute -bottom-20 max-w-xl md:max-w-5xl h-39 bg-[#123B3B] border border-teal-500/30 rounded-xs p-6 sm:flex flex-col md:flex-row items-center  justify-between ]">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-teal-500/20 rounded-full border border-teal-500/50 slow-spin">
-            <svg
-              viewBox="0 0 24 24"
-              className="h-12 w-12 text-[#9DE2E2]"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 2L5 9l7 13 7-13-7-7z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M12 22V9M5 9h14M12 2l4 7M12 2l-4 7"
-                stroke="currentColor"
-                strokeWidth="1"
-                opacity="0.5"
-              />
-            </svg>
-          </div>
-
-          <div className="text-left">
-            <p className="text-[20px] md:text-[24px] font-bold uppercase tracking-wider">
-              Seasonal Prize Pool
-            </p>
-
-            <p className="text-primary font-mono text-[24px] md:text-[36px] font-extrabold">
-             ₹{season?.prizeMoney?.toLocaleString() || "TBA"}
-            </p>
-          </div>
-        </div>
-
-        <button
-          onClick={() => navigate(`/enter/${season?.seasonId}}`)}
-          className="mt-4 md:mt-0 bg-primary hover:bg-teal-300 text-black px-8 py-3 rounded-lg font-bold transition-all flex items-center gap-2"
-        >
-          REGISTER NOW <span>&gt;</span>
-        </button>
       </div>
 
-        )
-       }
+      <section className="bg-[#181820] hidden md:flex text-white  =py-14 md:py-20 px-6 ">
 
-    
-    </div>
+        <div className="max-w-[1184px] mx-auto flex flex-col md:flex-row items-center gap-12">
+
+          <div className="flex-1 space-y-6">
+
+            <h2 className=" mobile-h2 md:home-h2">
+             <span className="hidden md:inline">What is GlitchFame?</span>
+                <span className="md:hidden">THe mission</span>
+               </h2>
+
+            <p className=" text-[14px] md:text-[18px] text-gray-300 font-medium leading-relaxed max-w-xl">
+              GlitchFame is the premier destination for seasonal esports and
+              competitive creativity. We provide a global platform for top-tier
+              talent to compete for massive prize pools, fame, and a permanent
+              spot in digital history.
+            </p>
+
+            <div className="w-16 hidden md:inline  h-1 bg-primary rounded-full mb-10" />
+
+            <div className=" hidden md:flex grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
+              <div className="flex gap-4">
+                <div className="w-10 h-10 bg-primary flex items-center justify-center rounded border border-purple-500/30">
+                  <span className="text-black">
+                    <Zap />
+                  </span>
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm uppercase tracking-wide">
+                    Rapid Seasons
+                  </h4>
+                  <p className="text-xs text-gray-400 mt-1">
+                    Four high-octane competitive seasons annually.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="w-10 h-10 bg-primary flex items-center justify-center rounded border border-purple-500/30">
+                  <span className="text-black">
+                    <User />
+                  </span>
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm uppercase tracking-wide">
+                    Global Registry
+                  </h4>
+                  <p className="text-xs text-gray-400 mt-1">
+                    Join 50k+ verified competitors worldwide.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="hidden md:flex flex-1 relative w-full max-w-[542px] ">
+            <div className="border  border-gray-800 p-2 rounded-sm bg-gray-900/20">
+              <img
+                src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1000&auto=format&fit=crop"
+                alt="Esports Arena"
+                className="w-full h-auto object-cover rounded-sm"
+              />
+            </div>
+
+            <div className="absolute -bottom-6 -left-6 bg-primary text-black p-4 pr-10 min-w-[180px] shadow-xl">
+              <p className="text-2xl font-black leading-none">200K+</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest mt-1">
+                Prizes Paid Out
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
