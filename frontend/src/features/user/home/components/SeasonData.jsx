@@ -6,17 +6,20 @@ const SeasonData = ({ season }) => {
   const navigate = useNavigate();
   console.log(season);
   return (
-    <div className=" py-16 px-4 md:py-20 sm:bg-black  text-white w-full ">
+    <div className=" py-6 px-4 md:py-20 sm:bg-black  text-white w-full ">
       <div className="max-w-300 mx-auto">
-        <div className="mb-8">
-          <h2 className="mobile-h2 md:home-h2">Active Competition</h2>
 
-          <div className="hidden md:block w-16 h-1 bg-primary mb-6"></div>
-          <p className="hidden md:block text-gray-400 text-lg max-w-xl leading-relaxed">
-            The currents are shifting. Enter the most anticipated season of the
-            year and claim your share of the glory.
-          </p>
-        </div>
+          <div className="flex justify-between items-start mb-10 sm:mb-14">
+    <div className="space-y-4 sm:space-y-6">
+      <h1 className="mobile-h2 md:home-h2 mt-1 flex items-center gap-3">
+       Active competition
+
+      </h1>
+      <p className="small-text max-w-xs">
+      The gates are open. Step in now
+      </p>
+    </div>
+  </div>
 
         <div className="flex flex-col md:flex-row bg-[#1A1A23] border border-gray-800 rounded-sm overflow-hidden ">
           <div className="relative w-full md:w-[40%] lg:w-[45%] xl:w-[473px] shrink-0">

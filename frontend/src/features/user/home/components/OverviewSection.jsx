@@ -33,9 +33,9 @@ const Overview = ({ totalPrizeMoney }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full py-2 px-4  md:bg-[#16191D]  sm:py-24 flex  flex-col justify-center overflow-hidden">
+    <div className="w-full py-2 px-4 mb-6  md:bg-[#16191D]  sm:py-24 flex  flex-col justify-center overflow-hidden">
 
-        <div className="flex justify-between items-start mb-10 sm:mb-14">
+     <div className="flex sm:hidden justify-between items-start mb-10 sm:mb-14">
     <div className="space-y-4 sm:space-y-6">
       <h1 className="mobile-h2 md:home-h2 mt-1 flex items-center gap-3">
         The Arena Awaits
@@ -45,9 +45,10 @@ const Overview = ({ totalPrizeMoney }) => {
       </p>
     </div>
   </div>
+   
 
 
-      <div className="w-full max-w-7xl flex flex-col lg:flex-row items-center justify-between gap-10 sm:gap-16 lg:gap-20">
+      <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10 sm:gap-16 lg:gap-20">
 
         
      
