@@ -33,7 +33,7 @@ const Overview = ({ totalPrizeMoney }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full py-2 px-4 mb-6  md:bg-[#16191D]  sm:py-24 flex  flex-col justify-center overflow-hidden">
+    <div className="w-full py-12 px-4 mb-6  md:bg-[#16191D]  sm:py-24 flex  flex-col justify-center overflow-hidden">
 
      <div className="flex sm:hidden justify-between items-start mb-10 sm:mb-14">
     <div className="space-y-4 sm:space-y-6">

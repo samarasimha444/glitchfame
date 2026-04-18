@@ -39,11 +39,28 @@ const Home = () => {
   return (
 <div className="w-full min-h-screen bg-display bg-fixed bg-cover bg-center flex flex-col items-center">
   <FeaturedCarousel />
-  <StickyHeader season={season} />
+  {/* <StickyHeader season={season} /> */}
+
+
+<section className="min-h-[305px] border-y border-gray-800  px-6 py-12 flex flex-col justify-center">
+  <div className="max-w-screen-xl mx-auto w-full">
+    <h5 className="mobile-h2 mb-6">
+      The Mission
+    </h5>
+    <p className="text-sm md:text-base text-gray-400 leading-relaxed max-w-xl">
+      GlitchFame celebrates the anomalies. Each season presents a new digital 
+      frontier where competitors clash for supremacy. We reward the creative, 
+      the bold, and the fast. One winner takes the crown; everyone else is 
+      just a glitch in the background.
+    </p>
+  </div>
+</section>
+
+
   <SeasonData season={season} />
 
   {/* Main Section */}
-  <section className="w-full px-4 py-8 md:py-12 md:bg-[#16191D] flex flex-col max-w-7xl mx-auto">
+  <section className="w-full px-4 py-16 md:py-12 md:bg-[#16191D] flex flex-col max-w-7xl mx-auto">
     
     {/* Header & Filter Container */}
     <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
@@ -66,21 +83,22 @@ const Home = () => {
             </span>
           </div>
         </div>
-        <p className="text-gray-400 text-sm md:text-base max-w-md leading-relaxed">
+        <p className="text-gray-400 hidden sm:inline text-sm md:text-base max-w-md leading-relaxed">
           Catch the action live as players compete for top prizes in our active circuits.
         </p>
       </div>
 
       
-      <div className="flex items-center p-1 bg-black/50 backdrop-blur-sm rounded-lg border border-gray-800 w-full md:w-auto overflow-x-auto no-scrollbar">
-        <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-black font-bold rounded-md transition-all text-sm">
+      <div className="flex  items-center p-1 bg-black/50 backdrop-blur-sm rounded-lg border border-gray-800 w-full md:w-auto overflow-x-auto no-scrollbar">
+
+        <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-black font-bold rounded-md transition-all text-[12px] sm:text-sm">
           <MenuSquare size={16} />
           All
         </button>
-        <button className="flex-1 md:flex-none px-5 py-2.5 text-gray-400 font-semibold hover:text-white transition-colors text-sm">
+        <button className="flex-1 md:flex-none px-5 py-2.5 text-gray-400 font-semibold hover:text-white transition-colors text-[12px] sm:text-sm">
           Trending
         </button>
-        <button className="flex-1 md:flex-none px-5 py-2.5 text-gray-400 font-semibold hover:text-white transition-colors text-sm">
+        <button className="flex-1 md:flex-none px-5 py-2.5 text-gray-400 font-semibold hover:text-white transition-colors text-[12px] sm:text-sm">
           Newest
         </button>
       </div>
@@ -93,7 +111,7 @@ const Home = () => {
   </section>
 
   {/* Secondary Section */}
-  <section className="w-full px-4 py-12 md:bg-black">
+  <section className="w-full px-4 py-12 bg-black">
     <div className="max-w-7xl mx-auto">
       <Suspense fallback={<div className="h-40 w-full animate-pulse bg-gray-900 rounded-xl" />}>
         <New />

@@ -57,13 +57,13 @@ export default function FeaturedCarousel() {
             </h1>
 
 
-            <p className="small-text py-2 md:max-w-2xl">
+            <p className="small-text py-3 md:max-w-2xl">
               Where high-stakes competition meets digital dominance. 
               Showcase your skill, dominate the seasons, and immortalize your
               name in the Hall of Legends.
             </p>
 
-            <button onClick={()=>navigate('/arena')} className="border-2 sm:hidden border-white/20 backdrop-blur-md px-8 py-3 font-black uppercase text-sm tracking-widest hover:bg-white/10 transition-colors">
+            <button onClick={()=>navigate('/arena')} className="border-2 mt-3 sm:hidden border-white/20 backdrop-blur-md px-8 py-3 font-black uppercase text-sm tracking-widest hover:bg-white/10 transition-colors">
               View All Seasons
             </button>
 

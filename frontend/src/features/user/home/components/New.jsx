@@ -49,7 +49,7 @@ const New = () => {
 
   return (
     <>
- <div className="w-full  max-w-7xl mx-auto  sm:px-6 lg:px-8">
+ <div className="w-full b max-w-7xl mx-auto  sm:px-6 lg:px-8">
   
   <div className="flex justify-between items-start mb-8 sm:mb-14">
     <div className="space-y-4 sm:space-y-6">
