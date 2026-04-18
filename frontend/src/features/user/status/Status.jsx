@@ -17,7 +17,7 @@ const SubmissionsPage = () => {
   const applications = data?.content || [];
 
   return (
-    <div className="min-h-screen pt-20 bg-[#1E2229] text-[#E6EEF0] font-sans">
+    <div className="min-h-screen py-24 bg-[#1E2229] text-[#E6EEF0] font-sans">
       <div className="max-w-6xl mx-auto px-4 py-6 md:py-12">
          <header className="flex flex-col md:flex-row md:items-center justify-between mb-8 md:mb-12 gap-4">
       <div className="flex items-center gap-2">
