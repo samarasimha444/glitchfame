@@ -118,7 +118,7 @@ const New = () => {
                 </div>
               </div>
             ) : (
-              /* DESKTOP CARD */
+          
               <div
                 key={item.participationId}
                 className="relative rounded-2xl overflow-hidden border border-[#2A323C] bg-[#111418] w-full max-w-[410px] aspect-[4/5]"
@@ -146,7 +146,7 @@ const New = () => {
         )}
 
         {/* MOBILE ONLY COMING SOON CARD */}
-        {isMobile && (
+        {isMobile && winners?.length > 0 && (
           <div className="relative flex flex-col items-center justify-center p-4 sm:p-5 rounded-2xl border border-dashed border-white/20 bg-[#16161D]/50 w-full aspect-[4/5] shadow-xl">
             <div className="relative mb-4">
               <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full flex items-center justify-center border-2 border-dashed border-white/10 bg-white/5">

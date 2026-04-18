@@ -57,8 +57,7 @@ export default function FeaturedCarousel() {
             </h1>
 
 
-            <p className="text-gray-200 mb-3
-             mt-6 max-w-xs sm:max-w-[400px] md:max-w-2xl text-sm md:text-lg font-medium opacity-90 leading-relaxed">
+            <p className="small-text py-2 md:max-w-2xl">
               Where high-stakes competition meets digital dominance. 
               Showcase your skill, dominate the seasons, and immortalize your
               name in the Hall of Legends.
