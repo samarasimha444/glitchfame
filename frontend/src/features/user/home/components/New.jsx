@@ -49,12 +49,12 @@ const New = () => {
 
   return (
     <>
- <div className="w-full max-w-7xl mx-auto  sm:px-6 lg:px-8">
+ <div className="w-full  max-w-7xl mx-auto  sm:px-6 lg:px-8">
   
   <div className="flex justify-between items-start mb-8 sm:mb-14">
     <div className="space-y-4 sm:space-y-6">
-      <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent">
-        Hall of Fame
+      <h1 className="mobile-h2 md:home-h2 mt-1 flex items-center gap-3">
+        hall of fame
       </h1>
       <p className="small-text">
        Honoring glitch architects who dominated eras and claimed grand prizes

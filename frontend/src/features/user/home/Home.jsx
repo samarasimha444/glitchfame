@@ -44,7 +44,7 @@ const Home = () => {
 
       <SeasonData season={season} />
 
-      <section className="w-full px-3 min-h-[660px]   md:bg-[#16191D]  flex flex-col max-w-296 mx-auto py-18  ">
+      <section className="w-full px-3 min-h-[400px]   md:bg-[#16191D]  flex flex-col max-w-296 mx-auto py-9  ">
         <div className="flex flex-col  md:flex-row md:items-end justify-between mb-8 gap-4">
 
           {/* <div className="flex flex-col gap-2 mb-10">
@@ -123,7 +123,7 @@ const Home = () => {
        
       </section>
 
-      <section className="md:bg-black w-full px-3 py-16 ">
+      <section className="md:bg-black w-full px-3 py-9 ">
         <Suspense fallback={<p className="text-white"></p>}>
           <New />
         </Suspense>
