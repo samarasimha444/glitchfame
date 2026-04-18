@@ -21,7 +21,7 @@ export const TableRow = React.memo(({ item, onVote, onDelete, setActive }) => {
       </td>
 
       <td className="text-blue-400 font-semibold text-[10px] sm:text-sm">
-        {item.totalVotes}
+        {item.voteCount}
       </td>
 
       <td className="text-right">
@@ -34,7 +34,7 @@ export const TableRow = React.memo(({ item, onVote, onDelete, setActive }) => {
             text-[10px] sm:text-[12px] px-2 sm:px-3 py-[2px] sm:py-1 
             rounded-md hover:border-gray-500 transition"
           >
-            Custom
+             Add Votes
           </button>
 
           {/* +10 Button */}
