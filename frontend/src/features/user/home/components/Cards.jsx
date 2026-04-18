@@ -9,7 +9,7 @@ const Cards = ({ liveSeason, isLoading }) => {
   const isMobile = useIsMobile();
 
   return (
-    <div className="w-full flex sm:block justify-center max-w-screen mx-auto md:py-10">
+    <div className="w-full  flex sm:block justify-center max-w-screen mx-auto md:py-10">
       {isLoading ?
         <section className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
           <ShimmerCard />

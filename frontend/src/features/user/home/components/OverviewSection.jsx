@@ -31,35 +31,56 @@ const features = [
 
 const Overview = ({ totalPrizeMoney }) => {
   const navigate = useNavigate();
-
+<h2 className="mobile-h2 md:home-h2 mt-1 flex items-center gap-3"></h2>
   return (
-    <div className="w-full py-16 px-4 bg-black md:bg-[#16191D]  sm:py-24 flex justify-center overflow-hidden">
+    <div className="w-full py-16 px-4 bg-black md:bg-[#16191D]  sm:py-24 flex  flex-col justify-center overflow-hidden">
+
+        <div className="flex justify-between items-start mb-10 sm:mb-14">
+    <div className="space-y-4 sm:space-y-6">
+      <h1 className="mobile-h2 md:home-h2 mt-1 flex items-center gap-3">
+        The Arena Awaits
+      </h1>
+      <p className="small-text max-w-xs">
+       Only the best rise — are you ready to win big?.
+      </p>
+    </div>
+  </div>
+
 
       <div className="w-full max-w-7xl flex flex-col lg:flex-row items-center justify-between gap-10 sm:gap-16 lg:gap-20">
+
+        
+     
         
         
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="w-full sm:hidden flex flex-col items-center justify-center border border-teal-500/30 bg-teal-500/5 rounded-2xl p-8 text-center space-y-6"
-        >
-          <div className="p-3 bg-[#BE5EED]/10 rounded-full">
-            <Flame className="text-primary" size={32} />
-          </div>
-          <div className="space-y-2">
-            <h2 className="text-2xl font-bold text-white uppercase tracking-tighter">Ready to Play?</h2>
-            <p className="text-gray-400 text-sm">
-              Registration for Season 12 is now open. Don't let your chance expire.
-            </p>
-          </div>
-          <button 
-            onClick={() => navigate("/season-12")}
-            className="w-full bg-primary text-black font-bold py-4 rounded-xl uppercase tracking-widest text-xs"
-          >
-            Enter Season 12
-          </button>
-        </motion.div>
+ <motion.div
+  initial={{ opacity: 0, y: 20 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  className="sm:hidden flex flex-col items-center justify-center text-center 
+  border border-gray-800 bg-[#1A1D21]/50 
+  px-4 py-8 md:p-8 space-y-3 rounded-xl 
+  transition-all hover:border-primary/40"
+>
+  <Flame className="text-primary" size={24} />
+
+  <h2 className="text-white font-bold text-[11px] md:text-sm tracking-widest uppercase">
+    Ready to Play
+  </h2>
+
+  <p className="text-gray-500 text-[10px] md:text-xs leading-snug">
+    Registration is open. Compete and win big.
+  </p>
+
+  <button 
+    onClick={() => navigate("/season-12")}
+    className="w-full bg-primary text-black font-bold 
+    py-3 rounded-xl uppercase tracking-widest 
+    text-[10px] md:text-xs"
+  >
+    Enter Season 12
+  </button>
+</motion.div>
 
         {/* TABLET & DESKTOP HEADER (From 'sm' upwards) */}
         <motion.div
