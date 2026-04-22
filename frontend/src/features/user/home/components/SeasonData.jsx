@@ -6,7 +6,7 @@ const SeasonData = ({ season }) => {
   const navigate = useNavigate();
   console.log(season);
   return (
-   <div className="py-12 px-4 md:py-20 bg-black text-white w-full">
+   <div className=" px-4 py-20 bg-black text-white w-full">
   <div className="max-w-300 mx-auto">
     
     <div className="flex justify-between items-start mb-6 md:mb-14">
@@ -25,7 +25,8 @@ const SeasonData = ({ season }) => {
       <div className="relative w-full md:w-[40%] lg:w-[45%] xl:w-[473px] shrink-0">
         <div className="relative h-[180px] sm:h-[350px] md:h-[500px] w-full">
           <img
-            src={season?.seasonPhotoUrl}
+            // src={season?.seasonPhotoUrl}
+            src="https://tse2.mm.bing.net/th/id/OIP.2zrihmVTBlApFrtoNQ-uvwHaEK?pid=Api&P=0&h=180"
             alt={season?.seasonName}
             className="w-full h-full object-cover"
           />

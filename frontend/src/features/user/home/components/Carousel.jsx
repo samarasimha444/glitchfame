@@ -11,7 +11,7 @@ export default function FeaturedCarousel() {
       <div className="w-full max-h-dvh relative  sm:mt-0 flex justify-center items-center  max-w-400 mx-auto  h-full  md:max-h-[95dvh]">
         
         <section
-          className="relative overflow-hidden w-full  sm:max-w-screen min-h-120 sm:h-170  md:rounded-none border border-gray-900 aspect-[16/9]"
+          className="relative overflow-hidden w-full  sm:max-w-screen min-h-130 sm:h-170  md:rounded-none border border-gray-900 aspect-[16/9]"
           aria-hidden="false"
         >
           <div className="relative w-full h-full overflow-hidden">
@@ -36,7 +36,7 @@ export default function FeaturedCarousel() {
             className="absolute flex inset-0 flex-col items-start
          sm:items-center justify-center text-start sm:text-center text-white px-6"
           >
-            <span className="border border-white/20 max-w-xs text-teal-400 text-xs px-4 py-1 rounded-full backdrop-blur bg-black/30 tracking-widest">
+            <span className="border border-white/20 max-w-xs text-teal-400 text-[9px] sm:text-xs px-4 py-1 rounded-full backdrop-blur bg-black/30 tracking-widest">
               PHASE 1 REGISTRATION ENDS IN
             </span>
 

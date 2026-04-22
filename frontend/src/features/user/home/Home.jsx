@@ -14,6 +14,28 @@ import { Flame, MenuSquare, Search } from "lucide-react";
 import { useMemo } from "react";
 import SeasonData from "./components/SeasonData";
 
+
+export const fakeLiveSeason = [
+  {
+    seasonId: "season-001",
+    seasonName: "Neon Overload: Zero Hour",
+    category: "Gaming",
+    seasonPhotoUrl: "https://images.unsplash.com/photo-1542751371-adc38448a05e",
+    votingEndDate: "2026-05-01T23:59:59Z",
+    entries: 1200,
+    prize: 5000
+  },
+  {
+    seasonId: "season-002",
+    seasonName: "Code Clash Championship",
+    category: "Development",
+    seasonPhotoUrl: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f",
+    votingEndDate: "2026-05-05T23:59:59Z",
+    entries: 850,
+    prize: 3000
+  }
+];
+
 const Home = () => {
   const isMobile = useIsMobile();
 
@@ -42,12 +64,12 @@ const Home = () => {
   {/* <StickyHeader season={season} /> */}
 
 
-<section className="min-h-[305px] border-y border-gray-800  px-6 py-12 flex flex-col justify-center">
+<section className="min-h-[305px] md:hidden border-y border-gray-800  px-6 py-12 flex flex-col justify-center">
   <div className="max-w-screen-xl mx-auto w-full">
     <h5 className="mobile-h2 mb-6">
       The Mission
     </h5>
-    <p className="text-sm md:text-base text-gray-400 leading-relaxed max-w-xl">
+    <p className="text-[13px] md:text-base text-gray-400 leading-relaxed max-w-xl">
       GlitchFame celebrates the anomalies. Each season presents a new digital 
       frontier where competitors clash for supremacy. We reward the creative, 
       the bold, and the fast. One winner takes the crown; everyone else is 
@@ -106,7 +128,8 @@ const Home = () => {
 
     {/* Cards Grid */}
     <div className="w-full">
-      <Cards liveSeason={liveSeason} isLoading={seasonsLoading} />
+      {/* <Cards liveSeason={liveSeason} isLoading={seasonsLoading} /> */}
+       <Cards liveSeason={fakeLiveSeason} isLoading={seasonsLoading} />
     </div>
   </section>
 
@@ -118,6 +141,59 @@ const Home = () => {
       </Suspense>
     </div>
   </section>
+
+<div className="flex flex-col items-center sm:hidden justify-center py-16  p-4 font-sans">
+      {/* Main Border Container - Updated to border-teal-300 */}
+      <div className="w-full max-w-sm border-2 border-teal-300  p-8 text-center relative">
+        
+        {/* Flame Icon - Stroke updated to teal-300 */}
+        <div className="flex justify-center mb-4">
+          <svg 
+            width="32" 
+            height="32" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            className="stroke-teal-300"
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.5 3.5 6.5 1 1.5 1 3.5 0 5s-3 3-5 3a5 5 0 0 1-5-5c0-1.1.32-2.13.88-3L8.5 14.5z" />
+          </svg>
+        </div>
+
+        {/* Heading - 30px */}
+        <h2 className="text-[30px] font-black text-white uppercase tracking-tighter leading-tight mb-4">
+          Ready to Play?
+        </h2>
+
+        {/* Paragraph - 11px */}
+        <p className="text-[11px] text-gray-300 leading-relaxed mb-8 px-4">
+          Registration for Season 12 is now open. Don't let your chance expire.
+        </p>
+
+        {/* Button - Updated to bg-teal-300 with a darker hover state */}
+        <button className="w-full bg-teal-300 hover:bg-teal-400 text-black font-bold py-3 px-6 transition-colors duration-200 uppercase tracking-wide">
+          Enter Season 12
+        </button>
+      </div>
+
+      {/* Footer Logo Area */}
+      <div className="mt-12 flex flex-col items-center">
+        <div className="flex items-center gap-2 mb-2">
+           {/* Logo background updated to teal-300 */}
+           <div className="bg-teal-300 p-1 rounded-md">
+             <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
+               <path d="M13 10V3L4 14H11V21L20 10H13Z" />
+             </svg>
+           </div>
+           <span className="text-white text-2xl font-bold tracking-tight">GlitchFame</span>
+        </div>
+        <p className="text-[11px] text-gray-400 text-center max-w-[280px]">
+          The premier platform for seasonal competition and fame. Celebrating winners one glitch at a time.
+        </p>
+      </div>
+    </div>
 
   <Overview totalPrizeMoney={totalPrizeMoney} />
 </div>

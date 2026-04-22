@@ -24,8 +24,8 @@ const Cards = ({ liveSeason, isLoading }) => {
             <div className="w-full max-w-[340px] rounded-lg overflow-hidden border border-[#2A323C] bg-[#111418] font-sans">
               <div className="relative h-[180px] w-full">
                 <img
-                  src={`${liveSeason[0].seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=800`}
-                  alt={liveSeason[0].seasonName}
+                  src={`${liveSeason[0]?.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=800`}
+                  alt={liveSeason[0]?.seasonName}
                   loading="lazy"
                   className="w-full h-full object-cover "
                 />
