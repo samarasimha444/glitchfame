@@ -12,7 +12,7 @@ h1, h2, h3, h4, h5, h6 {
 
 @layer base {
   body {
-    @apply bg-[#181820] text-white; 
+    @apply bg-[#0D0E10] text-white; 
     font-family: 'Inter', sans-serif; 
     margin: 0;
     padding: 0;
@@ -34,13 +34,15 @@ h1, h2, h3, h4, h5, h6 {
   scrollbar-width: none;
 }
 
-.home-h2 {
+.home-head {
   @apply text-[36px] font-black uppercase tracking-tight leading-tight;
 }
 
-.mobile-h2 {
-  @apply text-[24px] font-black uppercase tracking-tight leading-tight;
+.home-h2 {
+  @apply font-black text-[clamp(2rem,4vw,4rem)] leading-[0.85] tracking-[-0.04em] uppercase  mb-8;
 }
+
+
 .text-primary {
   color: #9DE2E2;
 }

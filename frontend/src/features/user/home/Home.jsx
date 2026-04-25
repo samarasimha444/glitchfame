@@ -15,27 +15,7 @@ import { useMemo } from "react";
 import SeasonData from "./components/SeasonData";
 
 
-export const fakeLiveSeason = [
-  {
-    seasonId: "season-001",
-    seasonName: "Neon Overload: Zero Hour",
-    category: "Gaming",
-    seasonPhotoUrl: "https://images.unsplash.com/photo-1542751371-adc38448a05e",
-    votingEndDate: "2026-05-01T23:59:59Z",
-    entries: 1200,
-    prize: 5000
-  },
-  {
-    seasonId: "season-002",
-    seasonName: "Code Clash Championship",
-    category: "Development",
-    seasonPhotoUrl: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f",
-    votingEndDate: "2026-05-05T23:59:59Z",
-    entries: 850,
-    prize: 3000
-  }
-];
-
+ 
 const Home = () => {
   const isMobile = useIsMobile();
 
@@ -59,7 +39,7 @@ const Home = () => {
   }, [liveSeason]);
 
   return (
-<div className="w-full min-h-screen bg-display bg-fixed bg-cover bg-center flex flex-col items-center">
+<div className="w-full min-h-screen    bg-fixed bg-cover bg-center flex flex-col items-center">
   <FeaturedCarousel />
   {/* <StickyHeader season={season} /> */}
 
@@ -82,7 +62,7 @@ const Home = () => {
   <SeasonData season={season} />
 
   {/* Main Section */}
-  <section className="w-full px-4 py-16 md:py-12 md:bg-[#16191D] flex flex-col max-w-7xl mx-auto">
+  <section className="w-full px-4 py-16 md:py-12  flex flex-col max-w-7xl mx-auto">
     
     {/* Header & Filter Container */}
     <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
@@ -90,7 +70,7 @@ const Home = () => {
       {/* Title & Description */}
       <div className="space-y-2">
         <div className="flex items-center gap-3">
-          <h2 className="text-2xl md:text-4xl font-bold text-white tracking-tight">
+          <h2 className="home-h2">
             Live Seasons
           </h2>
   
@@ -105,31 +85,21 @@ const Home = () => {
             </span>
           </div>
         </div>
-        <p className="text-gray-400 hidden sm:inline text-sm md:text-base max-w-md leading-relaxed">
-          Catch the action live as players compete for top prizes in our active circuits.
-        </p>
+       
       </div>
 
       
-      <div className="flex  items-center p-1 bg-black/50 backdrop-blur-sm rounded-lg border border-gray-800 w-full md:w-auto overflow-x-auto no-scrollbar">
+      
 
-        <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-black font-bold rounded-md transition-all text-[12px] sm:text-sm">
-          <MenuSquare size={16} />
-          All
-        </button>
-        <button className="flex-1 md:flex-none px-5 py-2.5 text-gray-400 font-semibold hover:text-white transition-colors text-[12px] sm:text-sm">
-          Trending
-        </button>
-        <button className="flex-1 md:flex-none px-5 py-2.5 text-gray-400 font-semibold hover:text-white transition-colors text-[12px] sm:text-sm">
-          Newest
-        </button>
-      </div>
+      
     </div>
 
-    {/* Cards Grid */}
+
+
+   
     <div className="w-full">
-      {/* <Cards liveSeason={liveSeason} isLoading={seasonsLoading} /> */}
-       <Cards liveSeason={fakeLiveSeason} isLoading={seasonsLoading} />
+      <Cards liveSeason={liveSeason} isLoading={seasonsLoading} />
+      
     </div>
   </section>
 
@@ -142,58 +112,66 @@ const Home = () => {
     </div>
   </section>
 
-<div className="flex flex-col items-center sm:hidden justify-center py-16  p-4 font-sans">
-      {/* Main Border Container - Updated to border-teal-300 */}
-      <div className="w-full max-w-sm border-2 border-teal-300  p-8 text-center relative">
-        
-        {/* Flame Icon - Stroke updated to teal-300 */}
-        <div className="flex justify-center mb-4">
-          <svg 
-            width="32" 
-            height="32" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            className="stroke-teal-300"
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          >
-            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.5 3.5 6.5 1 1.5 1 3.5 0 5s-3 3-5 3a5 5 0 0 1-5-5c0-1.1.32-2.13.88-3L8.5 14.5z" />
-          </svg>
-        </div>
+<div className="flex flex-col items-center sm:hidden justify-between p-6 font-sans">
+  {/* Top Spacer to push content toward center/bottom for ergonomics */}
+  <div className="h-4" />
 
-        {/* Heading - 30px */}
-        <h2 className="text-[30px] font-black text-white uppercase tracking-tighter leading-tight mb-4">
-          Ready to Play?
-        </h2>
-
-        {/* Paragraph - 11px */}
-        <p className="text-[11px] text-gray-300 leading-relaxed mb-8 px-4">
-          Registration for Season 12 is now open. Don't let your chance expire.
-        </p>
-
-        {/* Button - Updated to bg-teal-300 with a darker hover state */}
-        <button className="w-full bg-teal-300 hover:bg-teal-400 text-black font-bold py-3 px-6 transition-colors duration-200 uppercase tracking-wide">
-          Enter Season 12
-        </button>
-      </div>
-
-      {/* Footer Logo Area */}
-      <div className="mt-12 flex flex-col items-center">
-        <div className="flex items-center gap-2 mb-2">
-           {/* Logo background updated to teal-300 */}
-           <div className="bg-teal-300 p-1 rounded-md">
-             <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
-               <path d="M13 10V3L4 14H11V21L20 10H13Z" />
-             </svg>
-           </div>
-           <span className="text-white text-2xl font-bold tracking-tight">GlitchFame</span>
-        </div>
-        <p className="text-[11px] text-gray-400 text-center max-w-[280px]">
-          The premier platform for seasonal competition and fame. Celebrating winners one glitch at a time.
-        </p>
+  {/* Main Card */}
+  <div className="w-full max-w-[320px] bg-neutral-900/40 border border-white/10 rounded-2xl p-8 backdrop-blur-sm relative">
+    {/* Accent corner - gives it a technical/gaming feel without being tacky */}
+    <div className="absolute top-0 right-0 w-16 h-16 border-t border-r border-primary rounded-tr-2xl opacity-50" />
+    
+    {/* Icon with a soft glow */}
+    <div className="mb-8 flex justify-start">
+      <div className="relative">
+        <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full" />
+        <svg 
+          width="28" 
+          height="28" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          className="stroke-primary relative"
+          strokeWidth="2" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"
+        >
+          <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.5 3.5 6.5 1 1.5 1 3.5 0 5s-3 3-5 3a5 5 0 0 1-5-5c0-1.1.32-2.13.88-3L8.5 14.5z" />
+        </svg>
       </div>
     </div>
+
+    {/* Heading - Clean, tight, and professional */}
+    <h2 className="text-3xl font-bold text-white tracking-tight leading-tight mb-2">
+      Ready to Play?
+    </h2>
+
+    {/* Paragraph - More readable, less aggressive */}
+    <p className="text-[13px] text-gray-400 leading-relaxed mb-8">
+      Registration for <span className="text-white font-medium">Season 12</span> is now open. Secure your spot before the countdown ends.
+    </p>
+
+    {/* Button - Focused on utility */}
+    <button className="w-full bg-primary text-black font-semibold py-3.5 rounded-xl transition-transform active:scale-[0.98] shadow-lg shadow-primary/10">
+      Enter Season 12
+    </button>
+  </div>
+
+  {/* Footer - Minimalist approach */}
+  <div className="w-full flex flex-col items-center gap-4 pb-8">
+    <div className="flex items-center gap-2.5">
+       <div className="bg-primary aspect-square w-8 flex items-center justify-center rounded-lg">
+         <svg width="18" height="18" viewBox="0 0 24 24" fill="black">
+           <path d="M13 10V3L4 14H11V21L20 10H13Z" />
+         </svg>
+       </div>
+       <span className="text-white text-xl font-bold tracking-tight">GlitchFame</span>
+    </div>
+    <div className="h-[1px] w-12 bg-white/10" />
+    <p className="text-[11px] text-gray-500 text-center max-w-[200px] leading-tight">
+      The premier platform for seasonal competition.
+    </p>
+  </div>
+</div>
 
   <Overview totalPrizeMoney={totalPrizeMoney} />
 </div>
@@ -201,3 +179,4 @@ const Home = () => {
 };
 
 export default Home;
+

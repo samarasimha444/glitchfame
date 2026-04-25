@@ -11,16 +11,16 @@ const SeasonData = ({ season }) => {
     
     <div className="flex justify-between items-start mb-6 md:mb-14">
       <div className="space-y-1 sm:space-y-6">
-        <h1 className="text-2xl md:home-h2 font-black uppercase tracking-tight flex items-center gap-3">
+        <h2 className="home-h2">
           Active competition
-        </h1>
+        </h2>
         <p className="text-xs md:small-text text-gray-400 max-w-xs">
           The gates are open. Step in now
         </p>
       </div>
     </div>
 
-    <div className="flex flex-col md:flex-row bg-[#1A1A23] border border-gray-800 rounded-sm overflow-hidden">
+    <div className="flex flex-col md:flex-row bg-[#0D0E10] border border-gray-800 rounded-sm overflow-hidden">
       {/* IMAGE SECTION: Height reduced for mobile */}
       <div className="relative w-full md:w-[40%] lg:w-[45%] xl:w-[473px] shrink-0">
         <div className="relative h-[180px] sm:h-[350px] md:h-[500px] w-full">

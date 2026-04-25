@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ShimmerCard from "../../../../components/ShimmerCard";
 import { useWinners } from "../hooks";
 import { useIsMobile } from "../../../../lib/helper";
@@ -7,44 +7,45 @@ import { Star, Trophy } from 'lucide-react';
 
 
 
-// const winners = [
-//   {
-//     participationId: "1",
-//     contestantName: "Aarav Singh",
-//     participantName: "Aarav Singh",
-//     seasonName: "Season 1",
-//     prizeMoney: 50000,
-//     photoUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e"
-//   },
-//   {
-//     participationId: "2",
-//     contestantName: "Priya Sharma",
-//     participantName: "Priya Sharma",
-//     seasonName: "Season 2",
-//     prizeMoney: 75000,
-//     photoUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330"
-//   },
-//   {
-//     participationId: "3",
-//     contestantName: "Rohan Mehta",
-//     participantName: "Rohan Mehta",
-//     seasonName: "Season 3",
-//     prizeMoney: 100000,
-//     photoUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d"
-//   },
-//   {
-//     participationId: "4",
-//     contestantName: "Simran Kaur",
-//     participantName: "Simran Kaur",
-//     seasonName: "Season 4",
-//     prizeMoney: 120000,
-//     photoUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2"
-//   }
-// ];
+const winners = [
+  {
+    participationId: "1",
+    contestantName: "Aarav Singh",
+    participantName: "Aarav Singh",
+    seasonName: "Season 1",
+    prizeMoney: 50000,
+    photoUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e"
+  },
+  {
+    participationId: "2",
+    contestantName: "Priya Sharma",
+    participantName: "Priya Sharma",
+    seasonName: "Season 2",
+    prizeMoney: 75000,
+    photoUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330"
+  },
+  {
+    participationId: "3",
+    contestantName: "Rohan Mehta",
+    participantName: "Rohan Mehta",
+    seasonName: "Season 3",
+    prizeMoney: 100000,
+    photoUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d"
+  },
+  {
+    participationId: "4",
+    contestantName: "Simran Kaur",
+    participantName: "Simran Kaur",
+    seasonName: "Season 4",
+    prizeMoney: 120000,
+    photoUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2"
+  }
+];
 
 const New = () => {
+ const [isLoading, setIsLoading] = useState(false);
   
-  const { data: winners = [], isLoading } = useWinners();
+  // const { data: winners = [], isLoading } = useWinners();
   const isMobile = useIsMobile();
 
   return (
@@ -53,7 +54,7 @@ const New = () => {
   
   <div className="flex justify-between items-start mb-8 sm:mb-14">
     <div className="space-y-4 sm:space-y-6">
-      <h1 className="mobile-h2 md:home-h2 mt-1 flex items-center gap-3">
+      <h1 className="home-h2 mt-1 flex items-center gap-3">
         hall of fame
       </h1>
       <p className="small-text">

@@ -1,168 +1,197 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Timer, Trophy, User } from "lucide-react";
 import { motion } from "framer-motion";
 import { getTimeLeft, useIsMobile } from "../../../../lib/helper";
 import ShimmerCard from "../../../../components/ShimmerCard";
 
-const Cards = ({ liveSeason, isLoading }) => {
+const liveSeason = [
+  {
+    seasonId: "season-001",
+    seasonName: "Neon Overload: Zero Hour",
+    category: "Gaming",
+    seasonPhotoUrl: "https://images.unsplash.com/photo-1542751371-adc38448a05e",
+    votingEndDate: "2026-05-01T23:59:59Z",
+    entries: 1200,
+    prize: 5000,
+  },
+  {
+    seasonId: "season-002",
+    seasonName: "Code Clash Championship",
+    category: "Development",
+    seasonPhotoUrl:
+      "https://images.unsplash.com/photo-1518779578993-ec3579fee39f",
+    votingEndDate: "2026-05-05T23:59:59Z",
+    entries: 850,
+    prize: 3000,
+  },
+];
+
+// const Cards = ({ liveSeason, isLoading }) => {
+const Cards = ({}) => {
+  const [isLoading, setIsLoading] = useState(false);
   const isMobile = useIsMobile();
 
-  return (
-    <div className="w-full  flex sm:block justify-center max-w-screen mx-auto md:py-10">
-      {isLoading ?
-        <section className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-          <ShimmerCard />
-          <ShimmerCard />
-        </section>
-      : liveSeason?.length === 0 ?
-        <div className="w-full text-center py-20 text-gray-400 text-xl">
-          No live seasons found.
+return (
+    <div className="w-full relative">
+
+      {isLoading ? (
+        <div className="flex flex-col border-t border-white/10">
+          <div className="h-64 border-b border-white/10 animate-pulse bg-white/5" />
+          <div className="h-64 border-b border-white/10 animate-pulse bg-white/5" />
         </div>
-      : <>
-          {isMobile ?
-            <div className="w-full max-w-[340px] rounded-lg overflow-hidden border border-[#2A323C] bg-[#111418] font-sans">
-              <div className="relative h-[180px] w-full">
-                <img
-                  src={`${liveSeason[0]?.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=800`}
-                  alt={liveSeason[0]?.seasonName}
-                  loading="lazy"
-                  className="w-full h-full object-cover "
-                />
+      ) : liveSeason?.length === 0 ? (
 
-                <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-[#181820] border border-[#FF3B3B] px-2.5 py-1 ">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF3B3B] animate-pulse"></span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#FF3B3B]">
-                    Live Now
-                  </span>
-                </div>
+        <div className="py-20 text-center border-y border-white/10">
+          <p className="text-[10px] tracking-[0.5em] text-gray-600 uppercase">
+            No Active Seasons Found
+          </p>
+        </div>
 
-                <div className="absolute top-3 right-3 bg-[#8B5CF6]/20 border border-[#8B5CF6] px-3 py-1 rounded">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#A78BFA]">
-                    Trending
-                  </span>
-                </div>
-              </div>
+      ) : (
 
-              <div className="p-5">
-                <h3 className="text-[18px] font-bold text-white uppercase tracking-tight mb-3">
-                  Neon Overload: Zero Hour
-                </h3>
+  <div className="flex flex-col md:flex-row w-full max-w-7xl gap-6">
+  
+  <div className="flex flex-wrap w-full gap-6 content-start">
+    {liveSeason.map((season) => (
+      <div
+        key={season.seasonId}
+        className="flex items-center gap-4 sm:block w-full sm:w-[calc(50%-12px)]"
+      >
+        
+        <div className="sm:hidden w-1/2">
+          <h3 className="text-white text-xs font-bold uppercase leading-tight">
+            {season.seasonName}
+          </h3>
+          <p className="text-[10px] text-primary mt-2 uppercase tracking-widest font-medium">
+            {getTimeLeft?.(season.votingEndDate)}
+          </p>
+        </div>
 
-                {/* Info Row (Entries & Prize) */}
-                <div className="flex items-center justify-between text-gray-400 text-sm border-t border-[#2A323C] pt-3">
-                  <div className="flex items-center gap-2">
-                    <span className="">
-                      <User size={12} />
-                    </span>
-                    1.2k entries
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs">
-                      <Trophy size={12} />
-                    </span>{" "}
-                    {/* Use an actual Trophy icon here if needed */}
-                    Prize:{" "}
-                    <span className="text-white font-medium">$5,000</span>
-                  </div>
-                </div>
+        
+        <Link
+          to={`/vote/${season.seasonId}`}
+          className="group relative flex flex-col w-full aspect-7/10 border border-white/10 overflow-hidden bg-black transition-colors"
+        >
+          
+
+          <div className="flex justify-between items-center px-4 py-2 bg-[#0A0A0A] border-b border-white/10 z-20">
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse" />
+              <span className="text-[9px] font-bold text-white uppercase tracking-widest">
+                Live_Season
+              </span>
+            </div>
+            <span className="text-[9px] text-gray-600 uppercase font-bold">
+              Ref. 2026
+            </span>
+          </div>
+
+
+         
+          <div className="relative grow overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+            <img
+              src={`${season.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=800`}
+              alt={season.seasonName}
+              className="w-full h-full object-cover object-center brightness-[0.4] group-hover:brightness-75 group-hover:scale-105 transition-all duration-700"
+            />
+
+         
+            <div className="hidden sm:flex absolute inset-0 flex-col items-center justify-center p-6 text-center z-10 pointer-events-none">
+              <h3 className="text-white font-black text-3xl md:text-5xl lg:text-6xl leading-[0.8] tracking-[-0.05em] uppercase group-hover:scale-110 transition-transform duration-500">
+                {season.seasonName}
+              </h3>
+              <div className="mt-6 px-4 py-1 border border-white/20 backdrop-blur-sm">
+                <p className="text-[9px] text-primary font-bold uppercase tracking-[0.3em]">
+                  {getTimeLeft?.(season.votingEndDate)}
+                </p>
               </div>
             </div>
-          : <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {liveSeason?.[0] && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.92 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                >
-                  <Link
-                    to={`/vote/${liveSeason[0].seasonId}`}
-                    className="group relative w-full h-92 rounded-xl overflow-hidden border border-gray-800 flex flex-col"
-                  >
-                    <div className="absolute inset-0 overflow-hidden">
-                      <img
-                        src={`${liveSeason[0].seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=800`}
-                        alt={liveSeason[0].seasonName}
-                        loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                      />
-                    </div>
+          </div>
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90 group-hover:opacity-100 transition duration-500" />
 
-                    <div className="absolute top-4 left-4 z-20">
-                      <span className="bg-red-500 text-white text-[10px] px-2.5 py-1 rounded-full font-bold flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                        LIVE
-                      </span>
-                    </div>
 
-                    <div className="relative z-10 mt-auto p-5">
-                      <p className="text-[10px] text-primary uppercase font-black tracking-[0.15em]">
-                        {liveSeason[0].category}
-                      </p>
+        
+          <div className="flex justify-between items-center p-5 bg-black border-t border-white/10 group-hover:bg-primary transition-all duration-300">
+            <span className="text-[10px] font-black text-white group-hover:text-black uppercase tracking-widest">
+              Enter Arena
+            </span>
+            <ArrowRight size={16} className="text-white group-hover:text-black transition-colors" />
+          </div>
+        </Link>
+      </div>
+    ))}
 
-                      <h3 className="text-white font-bold text-lg mt-1">
-                        {liveSeason[0].seasonName}
-                      </h3>
+   
+   {/* 🔥 VIEW ALL SEASONS - SYNCHRONIZED CLASSES */}
+<div className="flex items-center gap-4 sm:block w-full sm:w-[calc(50%-12px)]">
+  
+  {/* MOBILE INFO SIDEBAR (Matching the map layout) */}
+  <div className="sm:hidden w-1/2">
+    <h3 className="text-white text-xs font-bold uppercase leading-tight">
+      Archive
+    </h3>
+    <p className="text-[10px] text-primary mt-2 uppercase tracking-widest">
+      History [01-99]
+    </p>
+  </div>
 
-                      <div className="flex justify-between items-center mt-4">
-                        <div className="flex items-center gap-2 text-gray-300 text-[11px]">
-                          <Timer size={14} className="text-primary" />
-                          <span>
-                            {getTimeLeft(liveSeason[0].votingEndDate)}
-                          </span>
-                        </div>
+  <Link
+    to="/arena"
+    className="group relative flex flex-col w-full aspect-[7/10] border border-white/10 overflow-hidden bg-black transition-colors"
+  >
+    {/* TOP BAR */}
+    <div className="flex justify-between items-center px-4 py-2 bg-[#0A0A0A] border-b border-white/10 z-20">
+      <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">
+        Database_Archive
+      </span>
+      <span className="text-[9px] text-gray-600 uppercase font-bold">
+        Vol. 01
+      </span>
+    </div>
 
-                        <span className="text-white text-[13px] font-bold bg-white/10 px-4 py-1.5 rounded-lg group-hover:bg-primary group-hover:text-black transition">
-                          Vote Now
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              )}
+    {/* BODY / IMAGE */}
+    <div className="relative flex-grow overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+      <img
+        src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80"
+        className="w-full h-full object-cover object-center opacity-20 brightness-50 group-hover:opacity-40 transition-all duration-700"
+        alt="View all"
+      />
+      
+      {/* CENTER OVERLAY */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 pointer-events-none">
+        <h3 className="text-white font-black text-3xl md:text-5xl lg:text-6xl uppercase leading-[0.85] tracking-tight group-hover:scale-110 transition-transform duration-500">
+          View All <br /> Seasons
+        </h3>
+        <p className="mt-4 text-primary text-[9px] font-bold uppercase tracking-[0.4em]">
+          Explore History
+        </p>
+      </div>
+    </div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                <Link
-                  to="/arena"
-                  className="group relative w-full h-92 rounded-xl overflow-hidden border border-gray-800 bg-gray-900 flex items-center justify-center"
-                >
-                  <div className="absolute inset-0 opacity-30 overflow-hidden">
-                    <img
-                      src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80"
-                      className="w-full h-full object-cover grayscale group-hover:scale-110 transition duration-700"
-                      alt="View all"
-                    />
-                  </div>
+    {/* FOOTER */}
+    <div className="flex justify-between items-center p-5 bg-black border-t border-white/10 group-hover:bg-white transition-all duration-300">
+      <span className="text-[10px] font-black text-white group-hover:text-black uppercase tracking-widest">
+        Explore All
+      </span>
+      <ArrowRight size={16} className="text-white group-hover:text-black transition-colors" />
+    </div>
+  </Link>
+</div>
+  </div>
 
-                  <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition" />
-
-                  <div className="relative z-10 flex flex-col items-center text-center">
-                    <div className="w-14 h-14 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-primary group-hover:text-black transition">
-                      <ArrowRight size={28} />
-                    </div>
-
-                    <h3 className="text-white font-bold text-xl">
-                      View All Seasons
-                    </h3>
-
-                    <p className="text-gray-400 text-sm mt-2">
-                      Explore the full archive
-                    </p>
-                  </div>
-                </Link>
-              </motion.div>
-            </div>
-          }
-        </>
-      }
+ 
+  <div className="hidden md:block w-full max-w-87.5">
+    <div className="sticky top-32 mt-[40%]">
+      <p className="text-xl font-extrabold italic text-white/90 leading-relaxed">
+        "We live in an age where everything is everywhere, all the time.
+        The real challenge is no longer visibility, but meaning.
+        GlitchFame exists to build authentic connections."
+      </p>
+    </div>
+  </div>
+</div>
+      )}
     </div>
   );
 };

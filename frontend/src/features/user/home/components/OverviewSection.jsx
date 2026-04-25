@@ -33,7 +33,7 @@ const Overview = ({ totalPrizeMoney }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full py-12 px-4 mb-6  hidden md:bg-[#16191D]  sm:py-24 sm:flex  flex-col justify-center overflow-hidden">
+    <div className="w-full py-12 px-4 mb-6  hidden   sm:py-24 sm:flex  flex-col justify-center overflow-hidden">
 
      <div className="flex sm:hidden justify-between items-start mb-10 sm:mb-14">
     <div className="space-y-4 sm:space-y-6">
@@ -91,10 +91,10 @@ const Overview = ({ totalPrizeMoney }) => {
           transition={{ duration: 0.6 }}
           className="w-full hidden sm:flex flex-col lg:w-1/2 text-white space-y-6 md:space-y-8"
         >
-          <h2 className="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-[1.1] tracking-tighter uppercase">
+          <h2 className="home-h2">
             NOT JUST ANOTHER PICTURE.
           </h2>
-          <p className="text-gray-400 max-w-xl text-base md:text-lg lg:text-xl leading-relaxed">
+         <p className="small-text py-3 md:max-w-2xl">
             GlitchFame is where creators compete and the community decides.
             Discover talent, cast your vote, and help crown the next digital icon.
           </p>
