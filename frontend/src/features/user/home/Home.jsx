@@ -45,11 +45,11 @@ const Home = () => {
 
 
 <section className="min-h-[305px] md:hidden border-y border-gray-800  px-6 py-12 flex flex-col justify-center">
-  <div className="max-w-screen-xl mx-auto w-full">
-    <h5 className="mobile-h2 mb-6">
+  <div className="max-w-screen md:mx-auto w-full">
+    <h5 className="home-h2">
       The Mission
     </h5>
-    <p className="text-[13px] md:text-base text-gray-400 leading-relaxed max-w-xl">
+    <p className="text-[13px] sm:text-base text-gray-400 leading-relaxed max-w-xl">
       GlitchFame celebrates the anomalies. Each season presents a new digital 
       frontier where competitors clash for supremacy. We reward the creative, 
       the bold, and the fast. One winner takes the crown; everyone else is 
@@ -61,13 +61,13 @@ const Home = () => {
 
   <SeasonData season={season} />
 
-  {/* Main Section */}
+  
   <section className="w-full px-4 py-16 md:py-12  flex flex-col max-w-7xl mx-auto">
     
-    {/* Header & Filter Container */}
+    
     <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
       
-      {/* Title & Description */}
+      
       <div className="space-y-2">
         <div className="flex items-center gap-3">
           <h2 className="home-h2">
@@ -113,7 +113,7 @@ const Home = () => {
   </section>
 
 <div className="flex flex-col items-center sm:hidden justify-between p-6 font-sans">
-  {/* Top Spacer to push content toward center/bottom for ergonomics */}
+  
   <div className="h-4" />
 
   {/* Main Card */}

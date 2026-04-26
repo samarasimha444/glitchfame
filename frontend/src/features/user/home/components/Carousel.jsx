@@ -22,7 +22,7 @@ export default function FeaturedCarousel() {
   return (
     <>
 
- <div className="w-full  h-130  sm:h-full md:max-h-dvh  relative flex justify-center items-center mx-auto overflow-hidden">
+ <div className="w-full  h-120  sm:min-h-150  md:h-full md:max-h-dvh  relative flex justify-center items-center mx-auto overflow-hidden">
 
      
       
@@ -63,12 +63,12 @@ export default function FeaturedCarousel() {
             Phase 1 Registration Open — 2026
           </span>
 
-          <h1 className="font-black text-[clamp(3rem,12vw,9rem)] leading-[0.85] tracking-[-0.04em] uppercase  mb-8">
+          <h1 className="font-black text-[clamp(3rem,12vw,9rem)] leading-[0.85] tracking-[-0.04em] uppercase   mb-4 sm:mb-8">
             Ascend to <br />
             <span className="block text-primary">GLITCHFAME</span>
           </h1>
 
-          <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
+          <div className="flex flex-col md:flex-row gap-6 sm:gap-8 items-start md:items-center">
             <p className="max-w-md text-gray-300 text-sm md:text-base leading-relaxed">
               Where high-stakes competition meets digital dominance.
               The premier destination for seasonal esports.

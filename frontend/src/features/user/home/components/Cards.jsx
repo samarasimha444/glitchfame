@@ -50,7 +50,7 @@ return (
 
       ) : (
 
-  <div className="flex flex-col md:flex-row w-full max-w-7xl gap-6">
+  <div className="flex flex-col lg:flex-row w-full max-w-7xl gap-6">
   
   <div className="flex flex-wrap w-full gap-6 content-start">
     {liveSeason.map((season) => (

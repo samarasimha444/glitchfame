@@ -39,7 +39,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .home-h2 {
-  @apply font-black text-[clamp(2rem,4vw,4rem)] leading-[0.85] tracking-[-0.04em] uppercase  mb-8;
+  @apply font-black text-[clamp(1.7rem,4vw,4rem)] leading-[0.85] tracking-[-0.04em] uppercase  mb-8;
 }
 
 
