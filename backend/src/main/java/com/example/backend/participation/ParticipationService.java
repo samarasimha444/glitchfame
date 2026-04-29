@@ -81,6 +81,9 @@ public class ParticipationService {
         });
     }
 
+
+
+    
     // ================= CREATE =================
     public void createParticipation(UUID authId, ParticipationForm form) {
 
@@ -200,43 +203,51 @@ public class ParticipationService {
 
 
     // ================= RANDOM SEASON =================
-    public SeasonFullResponse getRandomLiveSeasonWithParticipants(
-            UUID authId,
-            int page,
-            int size
-    ) {
+   public SeasonFullResponse getRandomLiveSeasonWithParticipants(
+        UUID authId,
+        int page,
+        int size,
+        String sortDir
+) {
 
-        Instant now = Instant.now();
+    Instant now = Instant.now();
 
-        SeasonDetails season =
-                seasonRepository.findRandomLiveSeason(
-                        authId,
-                        now,
-                        PageRequest.of(0, 1)
-                )
-                .getContent()
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("No live season found"));
+    SeasonDetails season =
+            seasonRepository.findRandomLiveSeason(
+                    authId,
+                    now,
+                    PageRequest.of(0, 1)
+            )
+            .getContent()
+            .stream()
+            .findFirst()
+            .orElseThrow(() -> new IllegalStateException("No live season found"));
 
-        Pageable pageable = PageRequest.of(page, size);
+    // 🔥 THIS IS THE IMPORTANT PART
+    Sort sort = sortDir.equalsIgnoreCase("asc") ?
+            Sort.by("score").ascending() :
+            Sort.by("score").descending();
 
-        Page<ParticipantsBase> participants =
-                participationRepository.findApprovedParticipants(
-                        season.getSeasonId(),
-                        pageable
-                );
+    Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<Participants> enriched =
-                mapParticipants(participants, authId);
+    Page<ParticipantsBase> participants =
+            participationRepository.findApprovedParticipants(
+                    season.getSeasonId(),
+                    pageable
+            );
 
-        SeasonFullResponse response = new SeasonFullResponse();
-        response.setSeason(season);
-        response.setParticipants(enriched);
+    Page<Participants> enriched =
+            mapParticipants(participants, authId);
 
-        return response;
-    }
+    SeasonFullResponse response = new SeasonFullResponse();
+    response.setSeason(season);
+    response.setParticipants(enriched);
 
+    return response;
+}
+
+
+    
 
     
 
@@ -391,7 +402,6 @@ public Page<TrackMyApplicationsResponse> getMyApplications(UUID authId, int page
         if (!participation.getAuthId().equals(authId)) {
             throw new IllegalStateException("Unauthorized");
         }
-
         participationRepository.delete(participation);
     }
 }

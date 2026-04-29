@@ -57,10 +57,10 @@ private int votes = 0;
 @Column(name = "kills", nullable = false)
 private int kills = 0;
 
-@Column(name = "score", nullable = false)
-private long score = 0;
+@Column(name = "score", insertable = false, updatable = false)
+private long score;
 
-@Column(name = "rank")
+@Column(name = "player_rank")
 private Integer rank;
 
 }
