@@ -192,38 +192,63 @@ public class seasonService {
     }
 
 
-    
     // ================= GET FULL season data +participants =================
-    public SeasonFullResponse getSeasonFull(UUID seasonId, UUID authId, Pageable pageable) {
+public SeasonFullResponse getSeasonFull(
+        UUID seasonId,
+        UUID authId,
+        Pageable pageable,
+        String order // 👈 new param
+) {
 
-        SeasonDetails season =
-                seasonRepository.findSeasonBySeasonId(seasonId, authId);
+    SeasonDetails season =
+            seasonRepository.findSeasonBySeasonId(seasonId, authId);
 
-        if (season == null) throw new RuntimeException("Season not found");
+    if (season == null) throw new RuntimeException("Season not found");
 
-        Instant now = Instant.now();
+    Instant now = Instant.now();
 
-        boolean isVotingActive =
-                season.getVotingStartDate() != null &&
-                season.getVotingEndDate() != null &&
-                !now.isBefore(season.getVotingStartDate()) &&
-                !now.isAfter(season.getVotingEndDate());
+    boolean isVotingActive =
+            season.getVotingStartDate() != null &&
+            season.getVotingEndDate() != null &&
+            !now.isBefore(season.getVotingStartDate()) &&
+            !now.isAfter(season.getVotingEndDate());
 
-        Page<Participants> participantsPage = Page.empty();
+    Page<Participants> participantsPage = Page.empty();
 
-        if (isVotingActive) {
-            Page<ParticipantsBase> dbPage =
-                    participationRepo.findApprovedParticipants(seasonId, pageable);
+    if (isVotingActive) {
 
-            participantsPage = enrichParticipants(dbPage, seasonId, authId);
+        // fallback safety (avoid garbage input breaking logic)
+        if (!"asc".equalsIgnoreCase(order) && !"desc".equalsIgnoreCase(order)) {
+            order = "desc";
         }
 
-        SeasonFullResponse response = new SeasonFullResponse();
-        response.setSeason(season);
-        response.setParticipants(participantsPage);
+        Page<ParticipantsBase> dbPage =
+                participationRepo.findApprovedParticipants(seasonId, pageable);
 
-        return response;
+        Page<Participants> enriched =
+                enrichParticipants(dbPage, seasonId, authId);
+
+        List<Participants> content = new ArrayList<>(enriched.getContent());
+
+        if ("asc".equalsIgnoreCase(order)) {
+            content.sort(Comparator.comparingLong(Participants::score));
+        } else {
+            content.sort(Comparator.comparingLong(Participants::score).reversed());
+        }
+
+        participantsPage = new PageImpl<>(
+                content,
+                pageable,
+                enriched.getTotalElements()
+        );
     }
+
+    SeasonFullResponse response = new SeasonFullResponse();
+    response.setSeason(season);
+    response.setParticipants(participantsPage);
+
+    return response;
+}
 
 
 
@@ -235,6 +260,7 @@ public void endSeason(UUID seasonId, Instant now) {
             .orElseThrow(() -> new IllegalArgumentException("Season not found"));
 
     if (season.isSeasonEnded()) return;
+
 
     // ================= 🔒 LOCK =================
     redis.opsForValue().set("lock:" + seasonId, "1");

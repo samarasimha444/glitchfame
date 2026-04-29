@@ -1,23 +1,21 @@
 package com.example.backend.seasons;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.UUID;
-
 import com.example.backend.participation.ParticipationService;
 import com.example.backend.seasons.dto.SeasonDetails;
 import com.example.backend.seasons.dto.SeasonForm;
 import com.example.backend.seasons.dto.SeasonFullResponse;
-
 import org.springframework.security.core.Authentication;
+
+
+
 
 @RestController
 @RequestMapping("/seasons")
@@ -130,36 +128,42 @@ public class SeasonController {
 
 
 
+
+
     // get full season (JWT optional)
-    @GetMapping("/{seasonId}")
-    public ResponseEntity<SeasonFullResponse> getSeasonFull(
-            @PathVariable UUID seasonId,
-            Authentication authentication,
-            @PageableDefault(size = 10) Pageable pageable
-    ) {
+   @GetMapping("/{seasonId}")
+public ResponseEntity<SeasonFullResponse> getSeasonFull(
+        @PathVariable UUID seasonId,
+        Authentication authentication,
+        @PageableDefault(size = 10) Pageable pageable,
+        @RequestParam(defaultValue = "DESC") String order // default = DESC
+) {
 
-        UUID authId = extractAuthId(authentication);
+    UUID authId = extractAuthId(authentication);
 
-        return ResponseEntity.ok(
-                seasonService.getSeasonFull(seasonId, authId, pageable)
-        );
-    }
+    return ResponseEntity.ok(
+            seasonService.getSeasonFull(seasonId, authId, pageable, order)
+    );
+}
+
+
 
 
 
     // get random live season (JWT optional)
-    @GetMapping("/live/random")
-    public SeasonFullResponse getRandomLiveSeason(
-            Authentication authentication,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+  @GetMapping("/live/random")
+public SeasonFullResponse getRandomLiveSeason(
+        Authentication authentication,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "desc") String order // asc | desc
+) {
 
-        UUID authId = extractAuthId(authentication);
+    UUID authId = extractAuthId(authentication);
 
-        return participationService
-                .getRandomLiveSeasonWithParticipants(authId, page, size);
-    }
+    return participationService
+            .getRandomLiveSeasonWithParticipants(authId, page, size,order);
+}
 
 
 

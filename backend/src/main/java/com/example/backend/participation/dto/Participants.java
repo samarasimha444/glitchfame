@@ -7,7 +7,7 @@ public record Participants(
         String participantName,
         String participantPhotoUrl,
         UUID seasonId,
-        Long score,
+        long score,
         Long rank,
         Integer voteCount,
         Integer killCount,

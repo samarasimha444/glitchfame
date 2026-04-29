@@ -116,22 +116,7 @@ public class ParticipationController {
     }
 
 
-    // get random live season + participants
-    @GetMapping("/random-season")
-    public SeasonFullResponse getRandomLiveSeason(
-            Authentication authentication,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-
-        UUID authId = extractAuthId(authentication);
-    return participationService.getRandomLiveSeasonWithParticipants(
-                authId,
-                page,
-                size
-        );
-    }
-
+    
 
 
 
