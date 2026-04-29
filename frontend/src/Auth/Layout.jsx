@@ -68,7 +68,7 @@ const Layout = () => {
           <Outlet context={{ profile }} />
           <Footer />
         </div>
-        <MobileBottomNav />
+        {/* <MobileBottomNav /> */}
       </section>
     </>
   );
