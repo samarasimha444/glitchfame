@@ -135,7 +135,7 @@ const Overview = ({ totalPrizeMoney }) => {
                     hidden: { opacity: 0, y: 20 },
                     visible: { opacity: 1, y: 0 },
                   }}
-                  className={`flex flex-col items-center justify-center text-center border border-gray-800 bg-[#1A1D21]/50 p-5 md:p-8 space-y-3 rounded-xl transition-all hover:border-primary/40
+                  className={`flex flex-col items-center justify-center text-center border border-gray-800 bg-[#1A1D21]/50 p-5 md:p-12 space-y-3 rounded-xl transition-all hover:border-primary/40
                   ${index >= 2 ? "hidden lg:flex" : "flex"}`} 
                 >
                   <Icon className="text-primary" size={24} />

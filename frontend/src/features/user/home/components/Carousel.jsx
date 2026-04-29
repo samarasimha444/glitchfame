@@ -3,9 +3,11 @@ import { User, Zap } from "lucide-react";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
-// Import standard Swiper styles (remove fade styles)
+
 import "swiper/css";
 import "swiper/css/pagination";
+import { useScroll,motion,useTransform } from "framer-motion";
+import { useRef } from "react";
 
 
 const images = [
@@ -19,14 +21,21 @@ export default function FeaturedCarousel() {
   
   const navigate = useNavigate();
 
+   const sectionRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+  target: sectionRef,
+  offset: ["start 80%", "end 40%"],
+});
+
+const textFill = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+
   return (
     <>
 
  <div className="w-full  h-120  sm:min-h-150  md:h-full md:max-h-dvh  relative flex justify-center items-center mx-auto overflow-hidden">
 
-     
-      
-      
 
      
       <Swiper
@@ -115,11 +124,27 @@ export default function FeaturedCarousel() {
             </div>
           </div>
 
-          <h2 className="text-[clamp(2rem,6vw,3rem)] font-medium leading-[1.1] tracking-tight max-w-6xl">
-            GlitchFame is the premier destination for seasonal esports and 
-            competitive creativity. A global platform for top-tier talent 
-            to compete for massive prize pools and fame.
-          </h2>
+            
+            <div ref={sectionRef} className="relative">
+             <motion.h2
+                style={{
+                  // CHANGED: "to bottom" instead of "to right"
+                  backgroundImage: useTransform(
+                    textFill,
+                    (v) => `linear-gradient(to bottom, white ${v}, #4b5563 ${v})`
+                  ),
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                }}
+                className="text-[clamp(2rem,6vw,4.3rem)] font-bold leading-[1.1] tracking-tighter uppercase text-transparent max-w-6xl"
+              >
+                Innovation is connection. We bridge the gap between complex 
+                infrastructure and human experience to turn vision into momentum.
+              </motion.h2>
+
+            </div>
+
+        
         </div>
 
         {/* Bottom Section - 4 Column Layout Style */}
@@ -143,7 +168,7 @@ export default function FeaturedCarousel() {
             </p>
           </div>
 
-          {/* Column 3: The Image (Replacing the 4-image layout with one wide style) */}
+          
           <div className="md:col-span-2 border-l border-gray-800 pl-4 md:pl-6 pt-2 flex flex-col md:flex-row gap-6">
             <div className="flex-1">
                <h4 className="text-[10px] uppercase tracking-widest text-gray-500 mb-4">03 / Legacy</h4>

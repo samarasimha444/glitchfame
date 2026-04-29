@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ShimmerCard from "../../../../components/ShimmerCard";
 import { useWinners } from "../hooks";
 import { useIsMobile } from "../../../../lib/helper";
-import { Star, Trophy } from 'lucide-react';
+import { Star, Trophy,ArrowRight } from 'lucide-react';
 
 
 
@@ -50,9 +50,9 @@ const New = () => {
 
   return (
     <>
- <div className="w-full b max-w-7xl mx-auto  sm:px-6 lg:px-8">
-  
-  <div className="flex justify-between items-start mb-8 sm:mb-14">
+<div className="w-full relative">
+
+    <div className="flex justify-between items-start mb-8 sm:mb-14">
     <div className="space-y-4 sm:space-y-6">
       <h1 className="home-h2 mt-1 flex items-center gap-3">
         hall of fame
@@ -62,148 +62,87 @@ const New = () => {
       </p>
     </div>
   </div>
+  {isLoading ? (
+    <div className="flex flex-col border-t border-white/10 p-4">
+      <div className="h-64 animate-pulse bg-white/5 rounded-xl mb-4" />
+      <div className="h-64 animate-pulse bg-white/5 rounded-xl" />
+    </div>
+  ) : (
+    <div className="w-full max-w-7xl mx-auto px-4">
+      
+      {/* Container: 2 cards per row on desktop with spacing between */}
+      <div className="flex flex-wrap gap-y-12 sm:gap-y-20 md:justify-between justify-start py-8">
+        {winners.map((item, index) => {
+          const isFlipped = index % 2 !== 0;
 
-  
-  <div
-    className={`pt-6 mb-12 grid gap-4 sm:gap-6 lg:gap-8 ${
-      isMobile 
-        ? "grid-cols-2" 
-        : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center"
-    }`}
-  >
-    {isLoading ? (
-      <>
-        <ShimmerCard />
-        <ShimmerCard />
-        <ShimmerCard />
-      </>
-    ) : (
-      <>
-        {/* Render existing winner cards */}
-        {winners.length > 0 ? (
-          winners.map((item) => {
-            return isMobile ? (
-              /* MOBILE CARD */
-              <div
-                key={item.participationId}
-                className="relative flex flex-col items-center justify-center p-4 sm:p-5 rounded-2xl border border-white/10 bg-[#16161D] w-full aspect-[4/5] shadow-xl"
-              >
-                <div className="relative mb-4">
-                  <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-white/10">
-                    <img
-                      src={`${item.photoUrl}?auto=compress&cs=tinysrgb&w=200`}
-                      alt={item.contestantName}
-                      className="w-full h-full object-cover"
-                    />
+          return (
+            <div
+              key={item.participationId}
+              
+              className="w-full md:w-[35%] md:max-w-[450px]"
+            >
+              {/* Mobile: Original Row/Reverse | Desktop: Stacked Column */}
+              <div className={`flex w-full md:flex-col items-center md:items-start gap-4 sm:gap-8 md:gap-4 ${isFlipped ? "flex-row-reverse" : "flex-row"}`}>
+                
+                {/* 1. IMAGE BOX 
+                    Mobile: 60% width 
+                    Desktop: Full width of container, max height 550px 
+                */}
+                <div className="relative w-[60%] sm:max-w- md:w-full aspect-[4/5] md:max-h-[550px] rounded-2xl overflow-hidden border border-white/10 bg-[#0A0A0A] group shadow-2xl shrink-0">
+                  <img
+                    src={`${item.photoUrl}?auto=compress&cs=tinysrgb&w=800`}
+                    alt={item.contestantName}
+                    className="absolute inset-0 w-full h-full object-cover md:group-hover:grayscale-0 md:transition-all duration-700 md:group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
+                  
+                  <div className="absolute bottom-3 left-3 sm:bottom-6 sm:left-6">
+                    <p className="text-primary font-black text-[10px] sm:text-lg tracking-tighter bg-black/80 sm:backdrop-blur-md w-fit px-3 py-1 rounded-lg border border-white/10">
+                      ${item.prizeMoney.toLocaleString()}
+                    </p>
                   </div>
-                  <span className="absolute bottom-1 right-1 sm:right-2 w-3 h-3 sm:w-3.5 sm:h-3.5 bg-green-500 border-2 border-[#16161D] rounded-full shadow-lg shadow-green-500/20"></span>
                 </div>
 
-                <div className="text-center w-full">
-                  <h3 className="text-white font-bold text-[10px] sm:text-sm uppercase tracking-wider truncate px-1">
-                    {item.participantName || item.contestantName}
-                  </h3>
-
-                  <div className="flex items-center justify-center gap-1 mt-1">
-                    <Trophy size={10} className="text-gray-500" />
-                    <p className="text-[8px] sm:text-[10px] text-gray-500 font-medium uppercase tracking-tight">
+                {/* 2. TEXT CONTENT 
+                    Mobile: 40% width 
+                    Desktop: Full width, always left-aligned 
+                */}
+                <div className={`w-[40%] md:w-full flex flex-col justify-center ${isFlipped ? "text-right md:text-left" : "text-left"}`}>
+                  <div className="space-y-1 sm:space-y-3">
+                    <p className="text-primary text-[8px] sm:text-xs font-black uppercase tracking-[0.3em]">
                       {item.seasonName}
                     </p>
+                    <h3 className="text-white font-black text-xs sm:text-2xl lg:text-4xl uppercase leading-[0.85] tracking-tighter break-words">
+                      {item.participantName || item.contestantName}
+                    </h3>
                   </div>
 
-                  <div className="mt-3 sm:mt-4 pt-3 border-t border-white/5 w-full">
-                    <p className="text-primary font-black text-xs sm:text-sm tracking-tighter">
-                      ${item.prizeMoney} <span className="text-[8px] sm:text-[10px] opacity-70">WON</span>
-                    </p>
+                  {/* Supplemental Info Line */}
+                  <div className={`mt-4 pt-4 border-t border-white/10 flex flex-col ${isFlipped ? "items-end md:items-start" : "items-start"}`}>
+                    <span className="text-[7px] sm:text-[10px] text-gray-500 uppercase font-black tracking-[0.2em] opacity-80">
+                      Ref. Hall_Of_Fame
+                    </span>
+                    <span className="text-[7px] sm:text-[9px] text-white/40 uppercase font-bold tracking-widest mt-1">
+                      Finalist_2026
+                    </span>
                   </div>
                 </div>
-              </div>
-            ) : (
-          
-              <div
-                key={item.participationId}
-                className="relative rounded-2xl overflow-hidden border border-[#2A323C] bg-[#111418] w-full max-w-[410px] aspect-[4/5]"
-              >
-                <img
-                  src={`${item.photoUrl}?auto=compress&cs=tinysrgb&w=600`}
-                  alt={item.contestantName}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6">
-                  <p className="text-sm text-gray-300 mb-1">{item.seasonName}</p>
-                  <h3 className="text-lg font-semibold tracking-wide text-white">{item.contestantName}</h3>
-                  <p className="text-gray-400 text-xs mt-1">Prize ₹{item.prizeMoney}</p>
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          <div className="text-gray-400 text-sm py-10 col-span-full text-center">
-            Winners will appear here after the season ends.
-          </div>
-        )}
 
-        {/* MOBILE ONLY COMING SOON CARD */}
-        {isMobile && winners?.length > 0 && (
-          <div className="relative flex flex-col items-center justify-center p-4 sm:p-5 rounded-2xl border border-dashed border-white/20 bg-[#16161D]/50 w-full aspect-[4/5] shadow-xl">
-            <div className="relative mb-4">
-              <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full flex items-center justify-center border-2 border-dashed border-white/10 bg-white/5">
-                 <Star size={24} className="text-gray-600 animate-pulse" />
               </div>
             </div>
-
-            <div className="text-center w-full">
-              <h3 className="text-gray-500 font-bold text-[10px] sm:text-sm uppercase tracking-wider">
-                Coming Soon
-              </h3>
-
-              <div className="flex items-center justify-center gap-1 mt-1">
-                <p className="text-[8px] sm:text-[10px] text-gray-600 font-medium uppercase tracking-tight">
-                  Next Architect
-                </p>
-              </div>
-
-              <div className="mt-3 sm:mt-4 pt-3 border-t border-white/5 w-full">
-                <p className="text-gray-700 font-black text-xs sm:text-sm tracking-tighter">
-                  $??? <span className="text-[8px] sm:text-[10px] opacity-50">TBD</span>
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-      </>
-    )}
-  </div>
-
-  <div className="flex sm:hidden items-center justify-center mb-10">
-    <div className="relative flex flex-col items-center justify-center w-full py-6 border border-dashed border-gray-700 rounded-xl bg-white/5 overflow-hidden">
-      <div className="absolute -right-4 -top-4 opacity-10">
-         <Star size={80} />
+          );
+        })}
       </div>
-      <Star size={24} className="text-gray-600 mb-3" strokeWidth={1.5} />
-      <div className="text-center">
-        <h2 className="text-[14px] font-bold tracking-widest text-white uppercase">
-          Your Name Here?
-        </h2>
-        <p className="mt-1 text-[9px] font-medium tracking-widest text-gray-500 uppercase">
-          Join Next Season to Qualify
-        </p>
-      </div>
-    </div>
-  </div>
 
-  <div className="hidden md:flex justify-between items-center border-t border-[#2A323C] pt-6 pb-10">
-    <div className="flex items-center gap-2 text-sm text-gray-400">
-      <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-      New season coming soon.
+      {/* MINIMAL FOOTER */}
+      <div className="mt-12 py-10 border-t border-white/5 flex items-center justify-between">
+        <p className="text-[9px] text-gray-600 uppercase tracking-[0.6em]">GlitchFame Arena</p>
+        <div className="h-px flex-1 mx-12 bg-white/5"></div>
+        <p className="text-[9px] text-gray-600 uppercase tracking-[0.6em]">Archive 01</p>
+      </div>
+      
     </div>
-    <button className="bg-primary text-black px-6 py-2 rounded-sm text-sm font-semibold hover:opacity-90 transition transform active:scale-95">
-      HALL OF FAME
-    </button>
-  </div>
+  )}
 </div>
     </>
   );
