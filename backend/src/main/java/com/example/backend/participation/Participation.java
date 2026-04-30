@@ -39,7 +39,10 @@ public class Participation {
     @Column(name = "location", length = 150)
     private String location;
 
-    @Column(name = "description", length = 500)
+    @Column(name = "mobile_number", nullable = false, length = 20)
+    private String mobileNumber;
+
+    @Column(name = "description", length = 500 ,nullable = false)
     private String description;
 
     @Column(name = "status", nullable = false, length = 20)

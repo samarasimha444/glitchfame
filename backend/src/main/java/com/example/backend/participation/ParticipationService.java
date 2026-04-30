@@ -83,70 +83,93 @@ public class ParticipationService {
 
 
 
+
     
-    // ================= CREATE =================
-    public void createParticipation(UUID authId, ParticipationForm form) {
 
-        Auth auth = authRepository.findById(authId)
-                .orElseThrow(() -> new IllegalStateException("User not found"));
 
-        if (!Boolean.TRUE.equals(auth.getCanParticipate())) {
-            throw new IllegalStateException("Participation not allowed");
-        }
+// ================= CREATE =================
+public void createParticipation(UUID authId, ParticipationForm form) {
 
-        Season season = seasonRepository.findById(form.getSeasonId())
-                .orElseThrow(() -> new IllegalStateException("Season not found"));
-
-        if (season.isLocked()) {
-            throw new IllegalStateException("Season is locked");
-        }
-
-        Instant now = Instant.now();
-
-        if (now.isBefore(season.getRegistrationStartDate())) {
-            throw new IllegalStateException("Registration not started");
-        }
-
-        if (now.isAfter(season.getRegistrationEndDate())) {
-            throw new IllegalStateException("Registration ended");
-        }
-
-        Participation existing =
-                participationRepository.findByAuthIdAndSeasonId(authId, form.getSeasonId())
-                        .orElse(null);
-
-        if (existing != null) {
-
-            if (!"REJECTED".equals(existing.getStatus())) {
-                throw new IllegalStateException("Already applied");
-            }
-
-            existing.setName(form.getName());
-            existing.setDateOfBirth(form.getDateOfBirth());
-            existing.setLocation(form.getLocation());
-            existing.setDescription(form.getDescription());
-            existing.setPhotoUrl(form.getPhotoUrl());
-            existing.setStatus("PENDING");
-            existing.setModifiedAt(now);
-
-            participationRepository.save(existing);
-            return;
-        }
-
-        Participation participation = Participation.builder()
-                .authId(authId)
-                .seasonId(form.getSeasonId())
-                .name(form.getName())
-                .dateOfBirth(form.getDateOfBirth())
-                .location(form.getLocation())
-                .description(form.getDescription())
-                .photoUrl(form.getPhotoUrl())
-                .status("PENDING")
-                .modifiedAt(now)
-                .build();
-
-        participationRepository.save(participation);
+    // ===== REQUIRED FIELD CHECKS =====
+    if (form.getName() == null || form.getName().isBlank()) {
+        throw new IllegalStateException("Name is required");
     }
+
+    if (form.getDescription() == null || form.getDescription().isBlank()) {
+        throw new IllegalStateException("Description is required");
+    }
+
+    if (form.getMobileNumber() == null || form.getMobileNumber().isBlank()) {
+        throw new IllegalStateException("Mobile number is required");
+    }
+
+    Auth auth = authRepository.findById(authId)
+            .orElseThrow(() -> new IllegalStateException("User not found"));
+
+    if (!Boolean.TRUE.equals(auth.getCanParticipate())) {
+        throw new IllegalStateException("Participation not allowed");
+    }
+
+    Season season = seasonRepository.findById(form.getSeasonId())
+            .orElseThrow(() -> new IllegalStateException("Season not found"));
+
+    if (season.isLocked()) {
+        throw new IllegalStateException("Season is locked");
+    }
+
+    Instant now = Instant.now();
+
+    if (now.isBefore(season.getRegistrationStartDate())) {
+        throw new IllegalStateException("Registration not started");
+    }
+
+    if (now.isAfter(season.getRegistrationEndDate())) {
+        throw new IllegalStateException("Registration ended");
+    }
+
+    Participation existing =
+            participationRepository.findByAuthIdAndSeasonId(authId, form.getSeasonId())
+                    .orElse(null);
+
+    if (existing != null) {
+
+        if (!"REJECTED".equals(existing.getStatus())) {
+            throw new IllegalStateException("Already applied");
+        }
+
+        existing.setName(form.getName());
+        existing.setDateOfBirth(form.getDateOfBirth());
+        existing.setLocation(form.getLocation());
+        existing.setDescription(form.getDescription());
+        existing.setPhotoUrl(form.getPhotoUrl());
+        existing.setMobileNumber(form.getMobileNumber()); // ✅ added
+        existing.setStatus("PENDING");
+        existing.setModifiedAt(now);
+
+        participationRepository.save(existing);
+        return;
+    }
+
+    Participation participation = Participation.builder()
+            .authId(authId)
+            .seasonId(form.getSeasonId())
+            .name(form.getName())
+            .dateOfBirth(form.getDateOfBirth())
+            .location(form.getLocation())
+            .description(form.getDescription())
+            .photoUrl(form.getPhotoUrl())
+            .mobileNumber(form.getMobileNumber()) // ✅ added
+            .status("PENDING")
+            .modifiedAt(now)
+            .build();
+
+    participationRepository.save(participation);
+}
+
+
+
+
+
 
 
 
@@ -251,6 +274,7 @@ public class ParticipationService {
 
     
 
+
     // ================= GET BY ID =================
 public ParticipantById getParticipationById(UUID participationId, UUID authId) {
 
@@ -305,6 +329,7 @@ private LocalDateTime toLocal(Instant instant) {
             ? null
             : LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
 }
+
 
 
 
@@ -386,6 +411,9 @@ public Page<TrackMyApplicationsResponse> getMyApplications(UUID authId, int page
 
     return new PageImpl<>(content, pageable, dbPage.getTotalElements());
 }
+
+
+
 
 
 

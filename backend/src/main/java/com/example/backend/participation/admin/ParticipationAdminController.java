@@ -33,20 +33,18 @@ public class ParticipationAdminController {
 
 
 
+    //search by name in live season filter by participant status(approved/rejected/pending)
+    @GetMapping("/search")
+public Page<ParticipantsByStatus> searchParticipants(
+        @RequestParam String name,
+        @RequestParam(required = false) String status, // optional filter
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+) {
+    return participationAdminService.searchParticipants(name, status, page, size);
+}
 
-    // search LIVE approved participants by name
-    @GetMapping("/live/search")
-    public Page<ParticipantsByStatus> searchLiveApprovedParticipants(
-            @RequestParam String name,
-              @RequestParam(defaultValue = "0") int page,
-    @RequestParam(defaultValue = "10") int size
-    ) {
-        return participationAdminService.searchLiveApprovedParticipants(
-                name,
-                page,
-                size
-        );
-    }
+
 
 
     // admin updates participant status

@@ -36,6 +36,9 @@ CREATE TABLE season (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
+
+
 -- =========================
 -- PARTICIPATION TABLE
 -- =========================
@@ -76,10 +79,19 @@ CREATE TABLE participation (
         CHECK (status IN ('PENDING','APPROVED','REJECTED'))
 );
 
+
+
+
 -- Indexes
 CREATE INDEX idx_participation_auth ON participation(auth_id);
 CREATE INDEX idx_participation_season ON participation(season_id);
 CREATE INDEX idx_participation_score ON participation(score DESC);
+
+
+
+
+
+
 
 -- =========================
 -- VOTES TABLE
