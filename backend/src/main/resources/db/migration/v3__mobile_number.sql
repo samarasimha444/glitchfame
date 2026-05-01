@@ -1,14 +1,14 @@
--- STEP 1: Add mobile_number (temporarily nullable)
+-- V2__add_mobile_number_to_participation.sql
+
+-- 1. Add column (nullable first)
 ALTER TABLE participation
 ADD COLUMN mobile_number VARCHAR(20);
 
--- STEP 2: Backfill existing rows
+-- 2. Backfill existing rows (adjust logic if needed)
 UPDATE participation
-SET 
-    mobile_number = '0000000000',
-    description = COALESCE(description, '');
+SET mobile_number = '0000000000'
+WHERE mobile_number IS NULL;
 
--- STEP 3: Apply NOT NULL constraints
+-- 3. Make it NOT NULL
 ALTER TABLE participation
-ALTER COLUMN mobile_number SET NOT NULL,
-ALTER COLUMN description SET NOT NULL;
+ALTER COLUMN mobile_number SET NOT NULL;

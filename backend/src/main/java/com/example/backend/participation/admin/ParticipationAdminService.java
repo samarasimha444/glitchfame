@@ -9,6 +9,7 @@ import com.example.backend.votes.query.dto.VoteQuery;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -102,12 +103,22 @@ public class ParticipationAdminService {
     }
 
 
+    
+
+
+
+
+
+
+
+
+
 
     //search by name filter  by status in live season
-
-   public Page<ParticipantsByStatus> searchParticipants(
+  public Page<ParticipantsByStatus> searchParticipants(
         String name,
         String status,
+        String sortDir,
         int page,
         int size
 ) {
@@ -139,15 +150,15 @@ public class ParticipationAdminService {
                 .map(ParticipantsByStatus::getParticipationId)
                 .toList();
 
-        String leaderboardKey = "l:" + seasonId; // MUST match your Redis
+        String leaderboardKey = "l:" + seasonId;
 
-        // 🔹 batch meta (score, vote, kill)
+        // 🔹 batch meta
         Map<UUID, VoteQuery> batchMeta =
                 voteQueryService.getMetaBatch(ids, seasonId, null);
 
         metaMap.putAll(batchMeta);
 
-        // 🔹 rank lookup (still N calls — ok for now)
+        // 🔹 rank lookup
         for (UUID id : ids) {
             Long r = redis.opsForZSet()
                     .reverseRank(leaderboardKey, id.toString());
@@ -158,48 +169,68 @@ public class ParticipationAdminService {
         }
     }
 
-    // ✅ Build final response
-    return result.map(p -> {
+    // ✅ Build enriched list (IMPORTANT: enforce interface type)
+    List<ParticipantsByStatus> enriched = content.stream()
+            .<ParticipantsByStatus>map(p -> {
 
-        // ❌ Non-approved → NO Redis
-        if (!"APPROVED".equals(p.getStatus())) {
-            return new ParticipantsByStatusImpl(
-                    p.getParticipationId(),
-                    p.getParticipantName(),
-                    p.getParticipantPhotoUrl(),
-                    p.getSeasonName(),
-                    p.getSeasonId(),
-                    p.getStatus(),
-                    0L,
-                    0L,
-                    false,
-                    false
-            );
-        }
+                if (!"APPROVED".equals(p.getStatus())) {
+                    return new ParticipantsByStatusImpl(
+                            p.getParticipationId(),
+                            p.getParticipantName(),
+                            p.getParticipantPhotoUrl(),
+                            p.getSeasonName(),
+                            p.getSeasonId(),
+                            p.getStatus(),
+                            0L,
+                            0L,
+                            false,
+                            false
+                    );
+                }
 
-        VoteQuery meta = metaMap.getOrDefault(
-                p.getParticipationId(),
-                new VoteQuery(0L, 0L, 0, 0, false, false)
-        );
+                VoteQuery meta = metaMap.getOrDefault(
+                        p.getParticipationId(),
+                        new VoteQuery(0L, 0L, 0, 0, false, false)
+                );
 
-        long rank = rankMap.getOrDefault(
-                p.getParticipationId(),
-                0L
-        );
+                long rank = rankMap.getOrDefault(
+                        p.getParticipationId(),
+                        0L
+                );
 
-        return new ParticipantsByStatusImpl(
-                p.getParticipationId(),
-                p.getParticipantName(),
-                p.getParticipantPhotoUrl(),
-                p.getSeasonName(),
-                p.getSeasonId(),
-                p.getStatus(),
-                meta.getScore(),
-                rank,
-                meta.isHasVoted(),
-                meta.isHasKilled()
-        );
-    });
+                return new ParticipantsByStatusImpl(
+                        p.getParticipationId(),
+                        p.getParticipantName(),
+                        p.getParticipantPhotoUrl(),
+                        p.getSeasonName(),
+                        p.getSeasonId(),
+                        p.getStatus(),
+                        meta.getScore(),
+                        rank,
+                        meta.isHasVoted(),
+                        meta.isHasKilled() // keep as-is if method name not changed
+                );
+            })
+            .toList();
+
+    // 🔥 Sort by score
+    Comparator<ParticipantsByStatus> comparator =
+            Comparator.comparingLong(ParticipantsByStatus::getScore);
+
+    if ("desc".equalsIgnoreCase(sortDir)) {
+        comparator = comparator.reversed();
+    }
+
+    List<ParticipantsByStatus> sorted = enriched.stream()
+            .sorted(comparator)
+            .toList();
+
+    // ⚠️ Manual pagination AFTER sorting
+    int start = Math.min(page * size, sorted.size());
+    int end = Math.min(start + size, sorted.size());
+
+    List<ParticipantsByStatus> paged = sorted.subList(start, end);
+        return new PageImpl<>(paged, pageable, sorted.size());
 }
 
 
