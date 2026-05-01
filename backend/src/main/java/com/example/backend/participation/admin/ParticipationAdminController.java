@@ -18,18 +18,24 @@ public class ParticipationAdminController {
 
 
     // get participants from LIVE seasons filtered by status
-    @GetMapping("/live")
-    public Page<ParticipantsByStatus> getLiveParticipantsByStatus(
-            @RequestParam String status,
-          @RequestParam(defaultValue = "0") int page,
-    @RequestParam(defaultValue = "10") int size
-    ) {
-        return participationAdminService.getLiveParticipantsByStatus(
-                status,
-                page,
-                size
-        );
-    }
+   @GetMapping("/live")
+public Page<ParticipantsByStatus> getLiveParticipantsByStatus(
+        @RequestParam String status,
+        @RequestParam(defaultValue = "desc") String sortDir,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+) {
+    return participationAdminService.getLiveParticipantsByStatus(
+            status,
+            sortDir,  // ✅ second param
+            page,
+            size
+    );
+}
+
+
+
+
 
 
 

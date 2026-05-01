@@ -14,6 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Sort;
+
 
 
 import java.util.*;
@@ -27,77 +29,87 @@ public class ParticipationAdminService {
     private final VoteQueryService voteQueryService;
     private final StringRedisTemplate redis; // 🔥 needed for rank
 
+
+
     // ================= LIVE PARTICIPANTS =================
+ public Page<ParticipantsByStatus> getLiveParticipantsByStatus(
+        String status,
+        String sortDir,
+        int page,
+        int size
+) {
 
-    public Page<ParticipantsByStatus> getLiveParticipantsByStatus(
-            String status,
-            int page,
-            int size
-    ) {
+    Sort sort = Sort.by("modifiedAt");
 
-        Pageable pageable = PageRequest.of(page, size);
+    // 🔥 apply direction
+    sort = "asc".equalsIgnoreCase(sortDir)
+            ? sort.ascending()
+            : sort.descending(); // default desc
 
-        Page<ParticipantsByStatus> result =
-                participationAdminRepo.findLiveParticipantsByStatus(status, pageable);
+    Pageable pageable = PageRequest.of(page, size, sort);
 
-        if (result.isEmpty()) return result;
+    Page<ParticipantsByStatus> result =
+            participationAdminRepo.findLiveParticipantsByStatus(status, pageable);
 
-        List<UUID> ids = result.stream()
-                .map(ParticipantsByStatus::getParticipationId)
-                .toList();
+    if (result.isEmpty()) return result;
 
-        UUID seasonId = result.getContent().get(0).getSeasonId();
+    List<UUID> ids = result.stream()
+            .map(ParticipantsByStatus::getParticipationId)
+            .toList();
 
-        String leaderboardKey = "leaderboard:season:" + seasonId;
+    UUID seasonId = result.getContent().get(0).getSeasonId();
 
-        Map<UUID, VoteQuery> metaMap =
-                voteQueryService.getMetaBatch(ids, seasonId, null);
+    String leaderboardKey = "leaderboard:season:" + seasonId;
 
-        return result.map(p -> {
+    Map<UUID, VoteQuery> metaMap =
+            voteQueryService.getMetaBatch(ids, seasonId, null);
 
-            VoteQuery meta = metaMap.getOrDefault(
-                    p.getParticipationId(),
-                    new VoteQuery(0L, 0L, 0, 0, false, false)
-            );
+    return result.map(p -> {
 
-            long score = "APPROVED".equals(p.getStatus())
-                    ? meta.getScore()
-                    : 0L;
+        VoteQuery meta = metaMap.getOrDefault(
+                p.getParticipationId(),
+                new VoteQuery(0L, 0L, 0, 0, false, false)
+        );
 
-            // 🔥 rank calculation
-            Long rankObj = redis.opsForZSet()
-                    .reverseRank(leaderboardKey, p.getParticipationId().toString());
+        long score = "APPROVED".equals(p.getStatus())
+                ? meta.getScore()
+                : 0L;
 
-            long rank = (rankObj == null) ? 0 : rankObj + 1;
+        Long rankObj = redis.opsForZSet()
+                .reverseRank(leaderboardKey, p.getParticipationId().toString());
 
-            return new ParticipantsByStatusImpl(
-                    p.getParticipationId(),
-                    p.getParticipantName(),
-                    p.getParticipantPhotoUrl(),
-                    p.getSeasonName(),
-                    p.getSeasonId(),
-                    p.getStatus(),
-                    score,
-                    rank,
-                    meta.isHasVoted(),
-                    meta.isHasKilled()
-            );
-        });
-    }
+        long rank = (rankObj == null) ? 0 : rankObj + 1;
+
+        return new ParticipantsByStatusImpl(
+                p.getParticipationId(),
+                p.getParticipantName(),
+                p.getParticipantPhotoUrl(),
+                p.getSeasonName(),
+                p.getSeasonId(),
+                p.getStatus(),
+                score,
+                rank,
+                meta.isHasVoted(),
+                meta.isHasKilled()
+        );
+    });
+}
+
+
+
+
+
+
 
     // ================= UPDATE STATUS =================
-
-    public void updateParticipationStatus(UUID participationId, String status) {
-
+public void updateParticipationStatus(UUID participationId, String status) {
         Participation participation = participationAdminRepo.findById(participationId)
                 .orElseThrow(() -> new IllegalStateException("Participation not found"));
-
         if (!status.equals("APPROVED") &&
             !status.equals("REJECTED") &&
             !status.equals("PENDING")) {
             throw new IllegalArgumentException("Invalid status");
         }
-
         participation.setStatus(status);
         participationAdminRepo.save(participation);
     }
