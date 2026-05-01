@@ -136,7 +136,7 @@ public ResponseEntity<SeasonFullResponse> getSeasonFull(
         @PathVariable UUID seasonId,
         Authentication authentication,
         @PageableDefault(size = 10) Pageable pageable,
-        @RequestParam(defaultValue = "DESC") String order // default = DESC
+        @RequestParam(defaultValue = "desc") String order // default = desc
 ) {
 
     UUID authId = extractAuthId(authentication);
@@ -164,6 +164,9 @@ public SeasonFullResponse getRandomLiveSeason(
     return participationService
             .getRandomLiveSeasonWithParticipants(authId, page, size,order);
 }
+
+
+
 
 
 

@@ -1,21 +1,21 @@
 package com.example.backend.participation.admin;
-
 import com.example.backend.participation.Participation;
 import com.example.backend.participation.admin.dto.ParticipantsByStatus;
-
 import jakarta.transaction.Transactional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import java.util.List;
 import java.util.UUID;
 
+
+
 public interface ParticipationAdminRepo extends JpaRepository<Participation, UUID> {
+
+
 
     // fetch participants from LIVE seasons filtered by status
     @Query(value = """
@@ -34,7 +34,7 @@ public interface ParticipationAdminRepo extends JpaRepository<Participation, UUI
         AND s.registration_start_date <= CURRENT_TIMESTAMP
         AND s.voting_end_date >= CURRENT_TIMESTAMP
 
-        ORDER BY p.participation_id DESC
+       ORDER BY p.modified_at DESC
         """,
         countQuery = """
         SELECT COUNT(*)
@@ -49,42 +49,48 @@ public interface ParticipationAdminRepo extends JpaRepository<Participation, UUI
             @Param("status") String status,
             Pageable pageable
     );
+    
 
 
-    // search LIVE approved participants by name
-    @Query(value = """
-        SELECT
-            p.participation_id AS participationId,
-            p.name AS participantName,
-            p.photo_url AS participantPhotoUrl,
-            s.name AS seasonName,
-            p.season_id AS seasonId,     -- 🔥 REQUIRED
-            p.status AS status          -- 🔥 REQUIRED
 
-        FROM participation p
-        JOIN season s ON s.season_id = p.season_id
 
-        WHERE p.status = 'APPROVED'
-        AND p.name ILIKE '%' || :name || '%'
-        AND s.registration_start_date <= CURRENT_TIMESTAMP
-        AND s.voting_end_date >= CURRENT_TIMESTAMP
 
-        ORDER BY p.participation_id DESC
-        """,
-        countQuery = """
-        SELECT COUNT(*)
-        FROM participation p
-        JOIN season s ON s.season_id = p.season_id
-        WHERE p.status = 'APPROVED'
-        AND p.name ILIKE '%' || :name || '%'
-        AND s.registration_start_date <= CURRENT_TIMESTAMP
-        AND s.voting_end_date >= CURRENT_TIMESTAMP
-        """,
-        nativeQuery = true)
-    Page<ParticipantsByStatus> searchLiveApprovedParticipants(
-            @Param("name") String name,
-            Pageable pageable
-    );
+
+ 
+
+//search by name filter by participant status(approved/rejected/pending)
+@Query(value = """
+    SELECT
+        p.participation_id AS participationId,
+        p.name AS participantName,
+        p.photo_url AS participantPhotoUrl,
+        s.name AS seasonName,
+        p.season_id AS seasonId,
+        p.status AS status
+
+    FROM participation p
+    JOIN season s ON s.season_id = p.season_id
+
+    WHERE p.name ILIKE '%' || :name || '%'
+    AND (:status IS NULL OR p.status = :status)
+
+    ORDER BY p.participation_id DESC
+    """,
+    countQuery = """
+    SELECT COUNT(*)
+    FROM participation p
+    JOIN season s ON s.season_id = p.season_id
+    WHERE p.name ILIKE '%' || :name || '%'
+    AND (:status IS NULL OR p.status = :status)
+    """,
+    nativeQuery = true)
+Page<ParticipantsByStatus> searchParticipants(
+        @Param("name") String name,
+        @Param("status") String status,
+        Pageable pageable
+);
+
+
 
 
     // reset season participations (keeps season, deletes all participants)
@@ -92,6 +98,8 @@ public interface ParticipationAdminRepo extends JpaRepository<Participation, UUI
     @Transactional
     @Query("DELETE FROM Participation p WHERE p.seasonId = :seasonId")
     void deleteAllBySeasonId(@Param("seasonId") UUID seasonId);
+
+
 
 
     // to delete all the redis keys after deleting the season

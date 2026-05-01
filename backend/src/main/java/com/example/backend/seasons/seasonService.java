@@ -37,20 +37,19 @@ public class seasonService {
     private final CloudinaryService cloudinaryService;
     private final ParticipationAdminRepo participationAdminRepo;
     private final StringRedisTemplate redis;
-   
     private final ParticipationRepo participationRepo;
     private final VoteQueryService voteQueryService;
     private final RedisService redisService;
+
+
 
     // ================= ENRICH =================
     private Page<Participants> enrichParticipants(Page<ParticipantsBase> dbPage, UUID seasonId, UUID authId) {
 
         if (dbPage.isEmpty()) return dbPage.map(p -> null);
-
         List<UUID> ids = dbPage.stream()
                 .map(ParticipantsBase::participationId)
                 .toList();
-
         Map<UUID, VoteQuery> metaMap =
                 voteQueryService.getMetaBatch(ids, seasonId, authId);
 
@@ -143,8 +142,7 @@ public class seasonService {
 
     // ================= UPDATE PRIZE =================
     public void updatePrize(UUID seasonId, String prize) {
-
-        Season season = seasonRepository.findById(seasonId)
+    Season season = seasonRepository.findById(seasonId)
                 .orElseThrow(() -> new IllegalArgumentException("Season not found"));
 
         if (prize == null || prize.isBlank()) {
@@ -154,6 +152,8 @@ public class seasonService {
         season.setPrize(prize);
         seasonRepository.save(season);
     }
+
+
 
     // ================= LOCK =================
     public boolean toggleSeasonLock(UUID seasonId) {
@@ -166,17 +166,18 @@ public class seasonService {
         seasonRepository.save(season);
 
         String lockKey = "lock:" + seasonId;
-
-        if (newState) {
+    if (newState) {
             redis.opsForValue().set(lockKey, "1");
         } else {
             redis.delete(lockKey);
         }
 
         redisService.register(seasonId, lockKey);
-
-        return newState;
+    return newState;
     }
+
+
+
 
     // ================= GET SEASONS =================
     public Page<SeasonDetails> getSeasons(UUID authId, String type, int page, int size) {
@@ -377,12 +378,9 @@ public void endSeason(UUID seasonId, Instant now) {
                 .orElseThrow(() -> new RuntimeException("Season not found"));
 
         redisService.deleteSeason(seasonId);
-
         String folder = season.getName().trim().replaceAll("\\s+", "-").toLowerCase();
-
         cloudinaryService.deleteFolder("seasons/" + folder);
         cloudinaryService.deleteFolder("seasons/" + seasonId);
-
         seasonRepository.delete(season);
     }
 

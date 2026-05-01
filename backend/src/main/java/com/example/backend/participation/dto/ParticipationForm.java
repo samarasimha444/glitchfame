@@ -13,5 +13,6 @@ public class ParticipationForm {
     private String location;
     private String description;
     private String photoUrl;
+    private String mobileNumber;
 
 }
