@@ -33,7 +33,7 @@ public class ParticipationAdminService {
         int size
 ) {
 
-    Sort sort = Sort.by("modified_at");
+  
 
     // 🔥 apply direction
     sort = "asc".equalsIgnoreCase(sortDir)

@@ -34,7 +34,7 @@ public interface ParticipationAdminRepo extends JpaRepository<Participation, UUI
         AND s.registration_start_date <= CURRENT_TIMESTAMP
         AND s.voting_end_date >= CURRENT_TIMESTAMP
 
-        ORDER BY p.participation_id DESC
+       ORDER BY p.modified_at DESC
         """,
         countQuery = """
         SELECT COUNT(*)
