@@ -35,12 +35,9 @@ public class ParticipationAdminService {
 
   
 
-    // 🔥 apply direction
-    sort = "asc".equalsIgnoreCase(sortDir)
-            ? sort.ascending()
-            : sort.descending(); // default desc
+ 
 
-    Pageable pageable = PageRequest.of(page, size, sort);
+    Pageable pageable = PageRequest.of(page, size);
 
     Page<ParticipantsByStatus> result =
             participationAdminRepo.findLiveParticipantsByStatus(status, pageable);
