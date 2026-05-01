@@ -31,6 +31,7 @@ export const getContestants = async ({pageParam = 0,status = "PENDING",size = 5,
 
 export const voteContestant = async ({ participationId, value }) => {
   const token = localStorage.getItem("token");
+  console.log(token)
 
   console.log(participationId, value);
 
@@ -44,7 +45,7 @@ export const voteContestant = async ({ participationId, value }) => {
       },
       body: JSON.stringify({
         participationId: participationId,
-        voteDelta: value, 
+        scoreDelta: value, 
       }),
     }
   );

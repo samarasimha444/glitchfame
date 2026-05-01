@@ -123,16 +123,17 @@ export const useVoteAction = ({ seasonId, setShowLoginModal }) => {
 
 
 
-export const useParticipation = (seasonId, page = 0) => {
+export const useParticipation = (seasonId, page = 0,order) => {
+  console.log(order)
   return useQuery({
-    queryKey: ["participation", seasonId,page],
+    queryKey: ["participation", seasonId,page,order],
 
     queryFn: async () => {
        
 
       const res = seasonId
-        ? await fetchSeasonParticipation(seasonId, page, 10)
-        : await fetchRandomParticipation(page, 8);
+        ? await fetchSeasonParticipation(seasonId, page, 12,order)
+        : await fetchRandomParticipation(page, 12,order);
       
       return (
         res || {

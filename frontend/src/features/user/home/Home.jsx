@@ -112,66 +112,7 @@ const Home = () => {
     </div>
   </section>
 
-<div className="flex flex-col items-center sm:hidden justify-between p-6 font-sans">
-  
-  <div className="h-4" />
 
-  {/* Main Card */}
-  <div className="w-full max-w-[320px] bg-neutral-900/40 border border-white/10 rounded-2xl p-8 backdrop-blur-sm relative">
-    {/* Accent corner - gives it a technical/gaming feel without being tacky */}
-    <div className="absolute top-0 right-0 w-16 h-16 border-t border-r border-primary rounded-tr-2xl opacity-50" />
-    
-    {/* Icon with a soft glow */}
-    <div className="mb-8 flex justify-start">
-      <div className="relative">
-        <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full" />
-        <svg 
-          width="28" 
-          height="28" 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          className="stroke-primary relative"
-          strokeWidth="2" 
-          strokeLinecap="round" 
-          strokeLinejoin="round"
-        >
-          <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.5 3.5 6.5 1 1.5 1 3.5 0 5s-3 3-5 3a5 5 0 0 1-5-5c0-1.1.32-2.13.88-3L8.5 14.5z" />
-        </svg>
-      </div>
-    </div>
-
-    {/* Heading - Clean, tight, and professional */}
-    <h2 className="text-3xl font-bold text-white tracking-tight leading-tight mb-2">
-      Ready to Play?
-    </h2>
-
-    {/* Paragraph - More readable, less aggressive */}
-    <p className="text-[13px] text-gray-400 leading-relaxed mb-8">
-      Registration for <span className="text-white font-medium">Season 12</span> is now open. Secure your spot before the countdown ends.
-    </p>
-
-    {/* Button - Focused on utility */}
-    <button className="w-full bg-primary text-black font-semibold py-3.5 rounded-xl transition-transform active:scale-[0.98] shadow-lg shadow-primary/10">
-      Enter Season 12
-    </button>
-  </div>
-
-  {/* Footer - Minimalist approach */}
-  <div className="w-full flex flex-col items-center gap-4 pb-8">
-    <div className="flex items-center gap-2.5">
-       <div className="bg-primary aspect-square w-8 flex items-center justify-center rounded-lg">
-         <svg width="18" height="18" viewBox="0 0 24 24" fill="black">
-           <path d="M13 10V3L4 14H11V21L20 10H13Z" />
-         </svg>
-       </div>
-       <span className="text-white text-xl font-bold tracking-tight">GlitchFame</span>
-    </div>
-    <div className="h-[1px] w-12 bg-white/10" />
-    <p className="text-[11px] text-gray-500 text-center max-w-[200px] leading-tight">
-      The premier platform for seasonal competition.
-    </p>
-  </div>
-</div>
 
   <Overview totalPrizeMoney={totalPrizeMoney} />
 </div>

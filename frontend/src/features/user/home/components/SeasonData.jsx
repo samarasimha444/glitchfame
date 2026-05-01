@@ -25,8 +25,7 @@ const SeasonData = ({ season }) => {
       <div className="relative w-full md:w-[40%] lg:w-[45%] xl:w-[473px] shrink-0">
         <div className="relative h-[180px] sm:h-[350px] md:h-[500px] w-full">
           <img
-            // src={season?.seasonPhotoUrl}
-            src="https://tse2.mm.bing.net/th/id/OIP.2zrihmVTBlApFrtoNQ-uvwHaEK?pid=Api&P=0&h=180"
+            src={season?.seasonPhotoUrl}
             alt={season?.seasonName}
             className="w-full h-full object-cover"
           />

@@ -15,6 +15,7 @@ const Form = ({ seasonId, image }) => {
     dateOfBirth: "",
     location: "",
     bio: "",
+    mobileNumber:""
   });
 
  
@@ -26,7 +27,7 @@ const Form = ({ seasonId, image }) => {
   const { name, value } = e.target;
 
 
-  if (name === "mobile") {
+  if (name === "mobileNumber") {
     const digitsOnly = value.replace(/\D/g, ""); 
     if (digitsOnly.length <= 10) {
       setFormData((prev) => ({ ...prev, [name]: digitsOnly }));
@@ -44,10 +45,10 @@ const Form = ({ seasonId, image }) => {
       return;
     }
 
-    const { name, location, bio, dateOfBirth } = formData;
+    const { name, location, bio, dateOfBirth,mobileNumber } = formData;
 
-    if (!name || !location || !bio || !dateOfBirth) {
-      toast.error("Please fill all fields");
+    if (!name || !location || !bio || !dateOfBirth,!mobileNumber) {
+      toast.error("Please fill all the fields");
       return;
     }
 
@@ -66,12 +67,14 @@ const Form = ({ seasonId, image }) => {
         dateOfBirth,
         location,
         photoUrl: uploadedUrl,
+        mobileNumber
       };
-
+   
+      console.log(payload)
       submitEntry(payload, {
         onSuccess: () => {
           toast.success("Submitted successfully");
-          setFormData({ name: "", dateOfBirth: "", location: "", bio: "" });
+          setFormData({ name: "", dateOfBirth: "", location: "", bio: "",mobileNumber:"" });
           navigate("/home");
         },
       });
@@ -86,6 +89,7 @@ const Form = ({ seasonId, image }) => {
       dateOfBirth: "",
       location: "",
       bio: "",
+      mobileNumber:""
     });
   };
 

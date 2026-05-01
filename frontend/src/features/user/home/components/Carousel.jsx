@@ -85,7 +85,7 @@ const textFill = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
             <div className="flex gap-4">
               <button
-                onClick={() => navigate("/join")}
+                onClick={() => navigate("/vote")}
                 className="bg-primary text-black hidden md:inline px-10 py-4 font-black uppercase text-xs tracking-widest hover:bg-primary transition"
               >
                 Join the Arena

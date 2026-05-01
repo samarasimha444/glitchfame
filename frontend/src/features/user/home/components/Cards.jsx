@@ -12,31 +12,10 @@ const ScrambleTextItem = ({ text }) => {
 
   return <span ref={ref}>{value}</span>;
 };
-const liveSeason = [
-  {
-    seasonId: "season-001",
-    seasonName: "Neon Overload: Zero Hour",
-    category: "Gaming",
-    seasonPhotoUrl: "https://images.unsplash.com/photo-1542751371-adc38448a05e",
-    votingEndDate: "2026-05-01T23:59:59Z",
-    entries: 1200,
-    prize: 5000,
-  },
-  {
-    seasonId: "season-002",
-    seasonName: "Code Clash Championship",
-    category: "Development",
-    seasonPhotoUrl:
-      "https://images.unsplash.com/photo-1518779578993-ec3579fee39f",
-    votingEndDate: "2026-05-05T23:59:59Z",
-    entries: 850,
-    prize: 3000,
-  },
-];
 
-// const Cards = ({ liveSeason, isLoading }) => {
-const Cards = ({}) => {
-  const [isLoading, setIsLoading] = useState(false);
+
+const Cards = ({ liveSeason, isLoading }) => {
+
   const isMobile = useIsMobile();
 
   return (

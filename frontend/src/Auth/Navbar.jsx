@@ -84,7 +84,7 @@ const Navbar = ({profile}) => {
       <div className="hidden sm:flex items-center  space-x-4 relative">
         <Link to={actionButton.path}>
 
-         <button className="flex items-center gap-2 text-white text-[14px]  py-2 hover:bg-prmie-500 hover:text-white transition">
+         <button className="flex items-center gap-2 text-white text-[14px]  py-2 hover:bg-prmie-500 hover:text-white transition cursor-pointer">
           <span className="text-primary"> <UserPlus size={16} /> </span>
           {actionButton.label}
           </button>
@@ -93,7 +93,7 @@ const Navbar = ({profile}) => {
         <div className="relative">
           <button
             onClick={() => setAvatarOpen(!avatarOpen)}
-            className="w-10 h-10 rounded-full text-primary flex items-center justify-center  hover:bg-gray-600 transition"
+            className="w-10 h-10 rounded-full text-primary flex items-center justify-center cursor-pointer hover:bg-gray-600 transition"
           >
             <Settings size={18} />
           </button>

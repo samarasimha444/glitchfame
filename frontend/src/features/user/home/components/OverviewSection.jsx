@@ -1,186 +1,140 @@
-import { Trophy, Users, Camera, Zap, Flame } from "lucide-react";
+import React from "react";
+import { Trophy, Users, Camera, Zap, Flame, ChevronRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const features = [
-  {
-    id: 1,
-    icon: Trophy,
-    title: "WIN BIG",
-    description: "Weekly prize pools ranging from gear to cash. The best visionaries get paid.",
-  },
-  {
-    id: 2,
-    icon: Users,
-    title: "VOTE",
-    description: "Community-driven results. No gatekeepers, just the crowd’s eye.",
-  },
-  {
-    id: 3,
-    icon: Camera,
-    title: "EQUIPMENT",
-    description: "Partnerships with top brands to get the latest tech in your hands.",
-  },
-  {
-    id: 4,
-    icon: Zap,
-    title: "SPEED",
-    description: "Fast uploads, instant feedback, and rapid reward distribution.",
-  },
+  { id: 1, icon: Trophy, title: "WIN BIG", description: "Weekly prize pools ranging from gear to cash." },
+  { id: 2, icon: Users, title: "VOTE", description: "Community-driven results. No gatekeepers." },
+  { id: 3, icon: Camera, title: "EQUIPMENT", description: "Partnerships with top brands for latest tech." },
+  { id: 4, icon: Zap, title: "SPEED", description: "Fast uploads and rapid reward distribution." },
 ];
 
 const Overview = ({ totalPrizeMoney }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full py-12 px-4 mb-6  hidden   sm:py-24 sm:flex  flex-col justify-center overflow-hidden">
-
-     <div className="flex sm:hidden justify-between items-start mb-10 sm:mb-14">
-    <div className="space-y-4 sm:space-y-6">
-      <h1 className="mobile-h2 md:home-h2 mt-1 flex items-center gap-3">
-        The Arena Awaits
-      </h1>
-      <p className="small-text max-w-xs">
-       Only the best rise — are you ready to win big?.
-      </p>
-    </div>
-  </div>
-   
-
-
-      <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10 sm:gap-16 lg:gap-20">
-
+    <section className="w-full min-h-[70vh] lg:min-h-[120dvh] flex items-center justify-center py-12 px-4 sm:py-24 bg-[#0a0c10] overflow-hidden">
+      <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
         
-     
-        
-        
- <motion.div
-  initial={{ opacity: 0, y: 20 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  viewport={{ once: true }}
-  className="sm:hidden flex flex-col items-center justify-center text-center 
-  border border-gray-800 bg-[#1A1D21]/50 
-  px-4 py-8 md:p-8 space-y-3 rounded-xl 
-  transition-all hover:border-primary/40"
->
-  <Flame className="text-primary" size={24} />
+        {/* MOBILE ONLY: HEADER CONTENT */}
+        <div className="flex sm:hidden flex-col w-full space-y-4 mb-4">
+          <h1 className="text-3xl font-black text-white uppercase tracking-tighter">
+            The Arena <br /> <span className="text-primary">Awaits</span>
+          </h1>
+          <p className="text-gray-500 text-xs max-w-xs leading-relaxed">
+            Only the best rise — the next digital icon is decided by the crowd.
+          </p>
+        </div>
 
-  <h2 className="text-white font-bold text-[11px] md:text-sm tracking-widest uppercase">
-    Ready to Play
-  </h2>
-
-  <p className="text-gray-500 text-[10px] md:text-xs leading-snug">
-    Registration is open. Compete and win big.
-  </p>
-
-  <button 
-    onClick={() => navigate("/season-12")}
-    className="w-full bg-primary text-black font-bold 
-    py-3 rounded-xl uppercase tracking-widest 
-    text-[10px] md:text-xs"
-  >
-    Enter Season 12
-  </button>
-</motion.div>
-
-        {/* TABLET & DESKTOP HEADER (From 'sm' upwards) */}
+        {/* LEFT COLUMN: BRANDING & CTA (DESKTOP) */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6 }}
-          className="w-full hidden sm:flex flex-col lg:w-1/2 text-white space-y-6 md:space-y-8"
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="w-full lg:w-5/12 text-white space-y-8"
         >
-          <h2 className="home-h2">
-            NOT JUST ANOTHER PICTURE.
-          </h2>
-         <p className="small-text py-3 md:max-w-2xl">
-            GlitchFame is where creators compete and the community decides.
-            Discover talent, cast your vote, and help crown the next digital icon.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 pt-2">
+          <div className="hidden sm:block space-y-6">
+            <h2 className="text-5xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.9]">
+              NOT JUST <br /> ANOTHER <br /> 
+              <span className="text-primary">PICTURE.</span>
+            </h2>
+            <p className="text-gray-400 text-sm md:text-base max-w-md leading-relaxed border-l-2 border-primary/30 pl-4">
+              GlitchFame is where creators compete and the community decides. 
+              Discover talent, cast your vote, and help crown the next icon.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <button
               onClick={() => navigate("/season")}
-              className="bg-primary text-black px-8 py-4 font-bold hover:bg-white transition-all uppercase tracking-widest text-xs"
+              className="group relative overflow-hidden bg-primary text-black px-8 py-4 font-black transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2"
             >
               START SUBMISSION
+              <Zap size={14} className="fill-current" />
             </button>
             <button
               onClick={() => navigate("/aboutus")}
-              className="border border-gray-600 text-white px-8 py-4 font-bold hover:border-primary transition-all uppercase tracking-widest text-xs"
+              className="border border-gray-800 text-white px-8 py-4 font-bold hover:border-primary/50 hover:bg-gray-900/50 transition-all uppercase tracking-widest text-xs"
             >
               HOW IT WORKS
             </button>
           </div>
         </motion.div>
 
-        {/* FEATURES GRID SECTION */}
-        <div className="w-full lg:w-1/2 flex flex-col gap-6">
+        {/* RIGHT COLUMN: GRID & REWARDS */}
+        <div className="w-full lg:w-6/12 flex flex-col gap-6">
+          
+          {/* FEATURES GRID */}
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={{
               hidden: {},
-              visible: { transition: { staggerChildren: 0.1 } },
+              visible: { transition: { staggerChildren: 0.12 } },
             }}
-            className="grid grid-cols-2 gap-4 md:gap-6"
+            className="grid grid-cols-2 gap-4"
           >
-            {features.map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <motion.div
-                  key={item.id}
-                  variants={{
-                    hidden: { opacity: 0, y: 20 },
-                    visible: { opacity: 1, y: 0 },
-                  }}
-                  className={`flex flex-col items-center justify-center text-center border border-gray-800 bg-[#1A1D21]/50 p-5 md:p-12 space-y-3 rounded-xl transition-all hover:border-primary/40
-                  ${index >= 2 ? "hidden lg:flex" : "flex"}`} 
-                >
-                  <Icon className="text-primary" size={24} />
-                  <h3 className="text-white font-bold text-[11px] md:text-sm tracking-widest uppercase">
+            {features.map((item) => (
+              <motion.div
+                key={item.id}
+                variants={{
+                  hidden: { opacity: 0, scale: 0.95 },
+                  visible: { opacity: 1, scale: 1 },
+                }}
+                className="flex flex-col items-center justify-center text-center border border-gray-800 bg-[#14181d]/40 p-6 sm:p-10 rounded-2xl space-y-4 hover:border-primary/30 transition-all group"
+              >
+                <div className="p-3 bg-gray-900 rounded-xl group-hover:bg-primary/10 transition-colors">
+                  <item.icon className="text-primary" size={24} />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-white font-black text-[11px] md:text-sm tracking-widest uppercase">
                     {item.title}
                   </h3>
                   <p className="text-gray-500 text-[10px] md:text-xs leading-snug">
                     {item.description}
                   </p>
-                </motion.div>
-              );
-            })}
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
 
-          {/* REWARD POOL BAR (Only on Mobile/Tablet) */}
-          <motion.section
+          {/* REWARD POOL ACTION BAR */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="w-full lg:hidden"
+            className="w-full"
           >
             <Link 
               to='/arena' 
-              className="flex items-center justify-between border border-gray-800 bg-[#1A1D21] rounded-2xl px-6 py-5 hover:border-primary transition"
+              className="flex items-center justify-between  bg-primary/5 rounded-2xl px-6 py-6 hover:bg-primary/10 transition-all group"
             >
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                  <Trophy size={20} />
+              <div className="flex items-center gap-5">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-primary blur-lg opacity-20 sm:animate-pulse"></div>
+                  <div className="relative w-12 h-12 rounded-full bg-primary flex items-center justify-center text-black shadow-[0_0_20px_rgba(var(--primary-rgb),0.4)]">
+                    <Trophy size={24} />
+                  </div>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[9px] text-gray-500 uppercase tracking-widest font-bold">
+                  <span className="text-[10px] text-primary font-black uppercase tracking-[0.2em]">
                     Live Reward Pool
                   </span>
-                  <span className="text-white text-lg font-black">
+                  <span className="text-white text-2xl font-black tabular-nums">
                     ₹{totalPrizeMoney?.toLocaleString() || 0}
                   </span>
                 </div>
               </div>
-              <span className="text-gray-500 text-2xl font-light">›</span>
+              <ChevronRight className="text-primary group-hover:translate-x-1 transition-transform" size={24} />
             </Link>
-          </motion.section>
-        </div>
+          </motion.div>
 
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -96,10 +96,11 @@ export const getContestantDetails = async (id) => {
 
 
 
-export const fetchSeasonParticipation = async (seasonId, page = 0, size = 10) => {
+export const fetchSeasonParticipation = async (seasonId, page = 0, size = 10, order ="asc") => {
+  
   const token = localStorage.getItem("token");
 
-  const url = `${BASE_URL}/seasons/${seasonId}?page=${page}&size=${size}`;
+ const url = `${BASE_URL}/seasons/${seasonId}?page=${page}&size=${size}&order=${order}`;
 
   const res = await fetch(url, {
     headers: {
@@ -150,16 +151,18 @@ export const fetchSearchContestants = async (seasonId, name = "", page = 0, size
 
 
 
-export const fetchRandomParticipation = async (page,size) => {
-
+export const fetchRandomParticipation = async (
+  page = 0,
+  size = 10,
+  order = "desc"
+) => {
   const token = localStorage.getItem("token");
-  console.log(token)
-  const url = `${BASE_URL}/seasons/live/random?page=${page}&size=${size}`; 
+
+  const url = `${BASE_URL}/seasons/live/random?page=${page}&size=${size}&order=${order}`;
 
   const res = await fetch(url, {
     headers: {
       Authorization: `Bearer ${token}`,
-     
     },
   });
 
@@ -167,8 +170,5 @@ export const fetchRandomParticipation = async (page,size) => {
     throw new Error("Failed to fetch random participation");
   }
 
-  const response = await res.json();
-  
-
-  return response;
+  return await res.json();
 };

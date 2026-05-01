@@ -1,11 +1,8 @@
-import React, { useState } from "react";
-import ShimmerCard from "../../../../components/ShimmerCard";
-import { useWinners } from "../hooks";
-import { useIsMobile } from "../../../../lib/helper";
-import { Star, Trophy,ArrowRight } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Star, ArrowRight } from 'lucide-react';
 
-
-
+// High-quality golden trophy PNG
+const GOLDEN_TROPHY_IMG = "https://pngimg.com/d/trophy_PNG20015.png";
 
 const winners = [
   {
@@ -43,108 +40,116 @@ const winners = [
 ];
 
 const New = () => {
- const [isLoading, setIsLoading] = useState(false);
-  
-  // const { data: winners = [], isLoading } = useWinners();
-  const isMobile = useIsMobile();
+  const [isLoading, setIsLoading] = useState(false);
+  const [rotation, setRotation] = useState(0);
+
+  // Scroll logic to revolve the trophy
+  useEffect(() => {
+    const handleScroll = () => {
+      // Adjust the divisor (0.2) to make it spin faster or slower
+      const scrolled = window.scrollY * 0.2;
+      setRotation(scrolled);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <>
-<div className="w-full relative">
-
-    <div className="flex justify-between items-start mb-8 sm:mb-14">
-    <div className="space-y-4 sm:space-y-6">
-      <h1 className="home-h2 mt-1 flex items-center gap-3">
-        hall of fame
-      </h1>
-      <p className="small-text">
-       Honoring glitch architects who dominated eras and claimed grand prizes
-      </p>
-    </div>
-  </div>
-  {isLoading ? (
-    <div className="flex flex-col border-t border-white/10 p-4">
-      <div className="h-64 animate-pulse bg-white/5 rounded-xl mb-4" />
-      <div className="h-64 animate-pulse bg-white/5 rounded-xl" />
-    </div>
-  ) : (
-    <div className="w-full max-w-7xl mx-auto px-4">
+    <div className="w-full relative min-h-screen bg-[#050505] overflow-x-hidden">
       
-      {/* Container: 2 cards per row on desktop with spacing between */}
-      <div className="flex flex-wrap gap-y-12 sm:gap-y-20 md:justify-between justify-start py-8">
-        {winners.map((item, index) => {
-          const isFlipped = index % 2 !== 0;
+      {/* REVOLVING TROPHY LAYER 
+          - Only shows if there are multiple winners
+          - Fixed in center, rotates based on scroll state
+      */}
+      {winners.length > 1 && (
+       <div className="hidden sm:flex absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
+          <div 
+            className="relative transition-transform duration-100 ease-out"
+            style={{ transform: `rotate(${rotation}deg)` }}
+          >
+            {/* Ambient Golden Glow */}
+            <div className="absolute inset-0 bg-yellow-600/10 blur-[100px] rounded-full scale-150" />
+            
+            <img 
+              src="https://www.freeiconspng.com/uploads/trophy-png-23.png"
+              alt="Revolving Trophy" 
+              className="h-[40vh] sm:h-[65vh] w-auto object-contain opacity-20 brightness-90"
+            />
+          </div>
+        </div>
+      )}
 
-          return (
-            <div
-              key={item.participationId}
-              
-              className="w-full md:w-[35%] md:max-w-[450px]"
-            >
-              {/* Mobile: Original Row/Reverse | Desktop: Stacked Column */}
-              <div className={`flex w-full md:flex-col items-center md:items-start gap-4 sm:gap-8 md:gap-4 ${isFlipped ? "flex-row-reverse" : "flex-row"}`}>
-                
-                {/* 1. IMAGE BOX 
-                    Mobile: 60% width 
-                    Desktop: Full width of container, max height 550px 
-                */}
-                <div className="relative w-[60%] sm:max-w- md:w-full aspect-[4/5] md:max-h-[550px] rounded-2xl overflow-hidden border border-white/10 bg-[#0A0A0A] group shadow-2xl shrink-0">
-                  <img
-                    src={`${item.photoUrl}?auto=compress&cs=tinysrgb&w=800`}
-                    alt={item.contestantName}
-                    className="absolute inset-0 w-full h-full object-cover md:group-hover:grayscale-0 md:transition-all duration-700 md:group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
-                  
-                  <div className="absolute bottom-3 left-3 sm:bottom-6 sm:left-6">
-                    <p className="text-primary font-black text-[10px] sm:text-lg tracking-tighter bg-black/80 sm:backdrop-blur-md w-fit px-3 py-1 rounded-lg border border-white/10">
-                      ${item.prizeMoney.toLocaleString()}
-                    </p>
+      {/* CONTENT LAYER */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4">
+        
+        <div className="flex justify-between items-start pt-16 mb-8 sm:mb-14">
+          <div className="space-y-4 sm:space-y-6">
+            <h1 className="text-white text-5xl sm:text-7xl font-black uppercase tracking-tighter">
+              hall of fame
+            </h1>
+            <p className="text-gray-500 text-xs sm:text-sm uppercase tracking-[0.4em]">
+              Honoring glitch architects who dominated eras
+            </p>
+          </div>
+        </div>
+
+        {isLoading ? (
+          <div className="h-96 animate-pulse bg-white/5 rounded-3xl" />
+        ) : (
+          <div className="w-full">
+            <div className="flex flex-wrap gap-y-16 sm:gap-y-32 md:justify-between justify-start py-12">
+              {winners.map((item, index) => {
+                const isFlipped = index % 2 !== 0;
+
+                return (
+                  <div
+                    key={item.participationId}
+                    className="w-full md:w-[40%] lg:w-[35%] md:max-w-[450px]"
+                  >
+                    <div className={`flex w-full md:flex-col items-center md:items-start gap-6 sm:gap-10 md:gap-4 ${isFlipped ? "flex-row-reverse" : "flex-row"}`}>
+                      
+                      {/* IMAGE BOX */}
+                      <div className="relative w-[60%] md:w-full aspect-[4/5] rounded-2xl overflow-hidden border border-white/10 bg-[#0A0A0A] group shadow-2xl shrink-0">
+                        <img
+                          src={`${item.photoUrl}?auto=compress&cs=tinysrgb&w=800`}
+                          alt={item.contestantName}
+                          className="absolute inset-0 w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-700"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                        
+                        <div className="absolute bottom-4 left-4">
+                          <p className="text-yellow-500 font-black text-xs sm:text-lg tracking-tighter bg-black/60 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10">
+                            ${item.prizeMoney.toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* TEXT CONTENT */}
+                      <div className={`w-[40%] md:w-full flex flex-col justify-center ${isFlipped ? "text-right md:text-left" : "text-left"}`}>
+                        <div className="space-y-1 sm:space-y-3">
+                          <p className="text-yellow-500/80 text-[9px] sm:text-xs font-bold uppercase tracking-[0.3em]">
+                            {item.seasonName}
+                          </p>
+                          <h3 className="text-white font-black text-sm sm:text-3xl lg:text-2xl uppercase leading-none tracking-tighter">
+                            {item.participantName || item.contestantName}
+                          </h3>
+                        </div>
+
+                      
+                      </div>
+
+                    </div>
                   </div>
-                </div>
-
-                {/* 2. TEXT CONTENT 
-                    Mobile: 40% width 
-                    Desktop: Full width, always left-aligned 
-                */}
-                <div className={`w-[40%] md:w-full flex flex-col justify-center ${isFlipped ? "text-right md:text-left" : "text-left"}`}>
-                  <div className="space-y-1 sm:space-y-3">
-                    <p className="text-primary text-[8px] sm:text-xs font-black uppercase tracking-[0.3em]">
-                      {item.seasonName}
-                    </p>
-                    <h3 className="text-white font-black text-xs sm:text-2xl lg:text-4xl uppercase leading-[0.85] tracking-tighter break-words">
-                      {item.participantName || item.contestantName}
-                    </h3>
-                  </div>
-
-                  {/* Supplemental Info Line */}
-                  <div className={`mt-4 pt-4 border-t border-white/10 flex flex-col ${isFlipped ? "items-end md:items-start" : "items-start"}`}>
-                    <span className="text-[7px] sm:text-[10px] text-gray-500 uppercase font-black tracking-[0.2em] opacity-80">
-                      Ref. Hall_Of_Fame
-                    </span>
-                    <span className="text-[7px] sm:text-[9px] text-white/40 uppercase font-bold tracking-widest mt-1">
-                      Finalist_2026
-                    </span>
-                  </div>
-                </div>
-
-              </div>
+                );
+              })}
             </div>
-          );
-        })}
-      </div>
 
-      {/* MINIMAL FOOTER */}
-      <div className="mt-12 py-10 border-t border-white/5 flex items-center justify-between">
-        <p className="text-[9px] text-gray-600 uppercase tracking-[0.6em]">GlitchFame Arena</p>
-        <div className="h-px flex-1 mx-12 bg-white/5"></div>
-        <p className="text-[9px] text-gray-600 uppercase tracking-[0.6em]">Archive 01</p>
+           
+          </div>
+        )}
       </div>
-      
     </div>
-  )}
-</div>
-    </>
   );
 };
 
