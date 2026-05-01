@@ -1,13 +1,10 @@
 package com.example.backend.participation.admin;
-
 import com.example.backend.participation.Participation;
 import com.example.backend.participation.admin.dto.ParticipantsByStatus;
 import com.example.backend.participation.admin.dto.ParticipantsByStatusImpl;
 import com.example.backend.votes.query.VoteQueryService;
 import com.example.backend.votes.query.dto.VoteQuery;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -15,9 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
-
-
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,7 +33,7 @@ public class ParticipationAdminService {
         int size
 ) {
 
-    Sort sort = Sort.by("modifiedAt");
+    Sort sort = Sort.by("modified_at");
 
     // 🔥 apply direction
     sort = "asc".equalsIgnoreCase(sortDir)

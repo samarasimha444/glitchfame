@@ -1,12 +1,9 @@
 package com.example.backend.participation.admin;
 import com.example.backend.participation.admin.dto.*;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.UUID;
 
 @RestController
