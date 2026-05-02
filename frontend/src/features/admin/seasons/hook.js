@@ -87,10 +87,10 @@ export const useUpdateContestantStatus = () => {
   });
 };
 
-export const useLiveContestants = (page, size = 6) => {
+export const useLiveContestants = (page, size = 6,order) => {
   return useQuery({
-    queryKey: ["liveContestants", page],
-    queryFn: () => getLiveContestants(page, size),
+    queryKey: ["liveContestants", page,size,order],
+    queryFn: () => getLiveContestants(page, size,order),
     keepPreviousData: true,
   });
 };

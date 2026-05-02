@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const VoteModal = ({ open, onClose, onSubmit, participationId }) => {
+const VoteModal = ({ open, credentials, onClose, onSubmit}) => {
   const [votes, setVotes] = useState("");
 
   useEffect(() => {
@@ -14,7 +14,7 @@ const VoteModal = ({ open, onClose, onSubmit, participationId }) => {
   const handleSubmit = () => {
     if (!votes || Number(votes) <= 0) return;
 
-    onSubmit(participationId, Number(votes));
+    onSubmit(credentials.participationId, credentials.seasonId, Number(votes));
     onClose();
   };
 

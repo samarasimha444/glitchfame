@@ -2,25 +2,26 @@ import React from "react";
 import { Trash2, Zap, PlusCircle } from "lucide-react";
 
 export const TableRow = React.memo(({ item, onVote, onDelete, setActive }) => {
+
   return (
     <tr className="group border-b border-gray-800/50 hover:bg-[#111622] transition-all duration-200 h-[68px]"> 
       
-      <td className="pl-2 sm:pl-4">
-        {/* Changed: Ensure items-center is present to V-align name with avatar center */}
+      <td className=" sm:pl-4">
+       
         <div className="flex items-center gap-3">
           <div className="relative shrink-0">
             <img
               src={item?.participantPhotoUrl}
               loading="lazy"
               alt={item.participantName}
-              className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover border-2 border-gray-700 group-hover:border-cyan-500/50 transition-colors shadow-lg"
+              className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover border-2 border-gray-700 sm:group-hover:border-cyan-500/50 transition-colors shadow-lg"
             />
             {/* Identity/Status Accent */}
             <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-blue-600 rounded-full border-2 border-[#0d1117]"></div>
           </div>
           <div className="flex flex-col min-w-0">
           
-            <span className="text-white text-[12px] sm:text-sm font-bold truncate group-hover:text-cyan-400 transition-colors leading-tight">
+            <span className="text-white text-[12px] sm:text-sm font-bold truncate group-hover:text-blue-400 transition-colors leading-tight">
               {item.participantName}
             </span>
             {/* Season Info (Mobile view: moves under name) */}
@@ -60,9 +61,14 @@ export const TableRow = React.memo(({ item, onVote, onDelete, setActive }) => {
         <div className="flex items-center h-full px-2 sm:pr-4 gap-2 sm:gap-3 justify-end">
           
           <button
-            onClick={() => setActive(item.participationId)}
+            onClick={() =>
+            setActive({
+             participationId: item.participationId,
+            seasonId: item.seasonId,
+  })
+}
             className="flex items-center gap-1.5 bg-[#141821] border border-gray-700 text-gray-300 
-            text-[10px] sm:text-xs px-2 sm:px-3 py-1.5 rounded-lg hover:border-cyan-500/30 hover:text-white transition-all shadow-md active:scale-95 shrink-0"
+            text-[10px] sm:text-xs px-2 sm:px-3 py-1.5 rounded-lg hover:border-cyan-500/30 hover:text-white transition-all shadow-md sm:active:scale-95 shrink-0"
           >
             <PlusCircle size={14} className="text-gray-500" />
             <span className="hidden md:inline">Add</span>
@@ -70,9 +76,9 @@ export const TableRow = React.memo(({ item, onVote, onDelete, setActive }) => {
 
           
           <button
-            onClick={() => onVote(item.participationId, 10)}
+            onClick={() => onVote(item.participationId,item.seasonId, 10)}
             className="flex items-center gap-1.5 bg-blue-950/40 border border-blue-500/20 text-blue-300 
-            text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-1.5 rounded-lg hover:bg-blue-600 hover:text-white transition-all shadow-lg active:scale-95 shrink-0"
+            text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-1.5 rounded-lg sm:hover:bg-blue-600 hover:text-white transition-all shadow-lg sm:active:scale-95 shrink-0"
           >
             <Zap size={13} className="hidden sm:block fill-blue-500 hover:fill-white" />
             +10
@@ -80,7 +86,7 @@ export const TableRow = React.memo(({ item, onVote, onDelete, setActive }) => {
 
           <button
             onClick={() => onDelete(item.participationId)}
-            className="p-2 text-gray-600 hover:text-red-500 transition-colors rounded-full hover:bg-red-500/10 active:scale-90 shrink-0"
+            className="p-2 text-gray-600 sm:hover:text-red-500 transition-colors rounded-full sm:hover:bg-red-500/10 sm:*:active:scale-90 shrink-0"
           >
             <Trash2 size={16} />
           </button>

@@ -29,11 +29,10 @@ export const getContestants = async ({pageParam = 0,status = "PENDING",size = 5,
 
 
 
-export const voteContestant = async ({ participationId, value }) => {
+export const voteContestant = async ({ participationId,seasonId, value }) => {
   const token = localStorage.getItem("token");
-  console.log(token)
+  
 
-  console.log(participationId, value);
 
   const response = await fetch(
     `${BASE_URL}/admin/votes`,
@@ -45,6 +44,7 @@ export const voteContestant = async ({ participationId, value }) => {
       },
       body: JSON.stringify({
         participationId: participationId,
+        seasonId:seasonId,
         scoreDelta: value, 
       }),
     }
@@ -92,10 +92,16 @@ export const updateContestantStatus = async (id, status) => {
 };
 
 
-export const getLiveContestants = async (page = 0, size = 6) => {
-   const token = localStorage.getItem("token")
+export const getLiveContestants = async (
+  page = 0,
+  size = 6,
+  order = "asc"
+) => {
+  const token = localStorage.getItem("token");
+  console.log(token)
+
   const response = await fetch(
-    `${BASE_URL}/admin/participations/live?status=APPROVED&page=${page}&size=${size}`,
+    `${BASE_URL}/admin/participations/live?status=APPROVED&sortDir=${order}&page=${page}&size=${size}`,
     {
       method: "GET",
       headers: {

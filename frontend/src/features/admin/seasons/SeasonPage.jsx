@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import AdminCard from '../dashboard/components/AdminCard'
 import Approval from './components/Approval'
-import ParticipantsTable from './components/UserTable'
+import UserTable from './components/UserTable'
 import { seasonCards } from '../../../constants/admin'
 import { useContestants } from './hook'
+
 
 const SeasonPage = () => {
 const [live,setLive ]=useState(false)
@@ -40,7 +41,7 @@ const stats = {
  
 
  
-  <section className="flex-1 w-full">
+  <section className="flex-1 max-w-4xl w-full">
     <AdminCard stats={stats} cardsInfo={seasonCards} />
     <p className="text-gray-300 text-sm leading-relaxed">
   Once accepted, a contestant cannot be rejected. Admins can accept, reject, delete, or edit details.
@@ -61,7 +62,7 @@ const stats = {
       />
     
    
-     <ParticipantsTable setLive={setLive} type="initial" className="max-w-screen"/>
+     <UserTable setLive={setLive} type="initial" className="max-w-screen"/>
        
 
       </aside>
