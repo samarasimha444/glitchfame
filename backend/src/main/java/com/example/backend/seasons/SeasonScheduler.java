@@ -14,7 +14,7 @@ public class SeasonScheduler {
     private final SeasonRepo seasonRepo;
     private final seasonService seasonService; // fix naming (capital S)
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 60000 *10)
     public void checkEndedSeasons() {
 
         Instant now = Instant.now();
