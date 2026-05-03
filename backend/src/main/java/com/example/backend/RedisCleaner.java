@@ -1,3 +1,4 @@
+/* 
 package com.example.backend;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -18,4 +19,4 @@ public class RedisCleaner {
 
         System.out.println("Redis cleared");
     }
-} 
+}  */

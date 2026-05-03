@@ -16,40 +16,114 @@ import java.util.UUID;
 public interface ParticipationAdminRepo extends JpaRepository<Participation, UUID> {
 
 
+//PENDING / REJECTED → DESC
+@Query(value = """
+    SELECT
+        p.participation_id AS participationId,
+        p.name AS participantName,
+        p.photo_url AS participantPhotoUrl,
+        s.name AS seasonName,
+        p.season_id AS seasonId,
+        p.status AS status
+    FROM participation p
+    JOIN season s ON s.season_id = p.season_id
+    WHERE p.status = :status
+    AND s.registration_start_date <= CURRENT_TIMESTAMP
+    AND s.voting_end_date >= CURRENT_TIMESTAMP
+    ORDER BY p.modified_at DESC
+    """,
+    countQuery = """
+    SELECT COUNT(*)
+    FROM participation p
+    JOIN season s ON s.season_id = p.season_id
+    WHERE p.status = :status
+    AND s.registration_start_date <= CURRENT_TIMESTAMP
+    AND s.voting_end_date >= CURRENT_TIMESTAMP
+    """,
+    nativeQuery = true)
+Page<ParticipantsByStatus> findLiveByStatusOrderByModifiedDesc(
+        @Param("status") String status,
+        Pageable pageable
+);
 
-    // fetch participants from LIVE seasons filtered by status
-    @Query(value = """
-        SELECT
-            p.participation_id AS participationId,
-            p.name AS participantName,
-            p.photo_url AS participantPhotoUrl,
-            s.name AS seasonName,
-            p.season_id AS seasonId,     -- 🔥 REQUIRED
-            p.status AS status          -- 🔥 REQUIRED
+//pending / rejected → ASC
+@Query(value = """
+    SELECT
+        p.participation_id AS participationId,
+        p.name AS participantName,
+        p.photo_url AS participantPhotoUrl,
+        s.name AS seasonName,
+        p.season_id AS seasonId,
+        p.status AS status
+    FROM participation p
+    JOIN season s ON s.season_id = p.season_id
+    WHERE p.status = :status
+    AND s.registration_start_date <= CURRENT_TIMESTAMP
+    AND s.voting_end_date >= CURRENT_TIMESTAMP
+    ORDER BY p.modified_at ASC
+    """,
+    countQuery = """
+    SELECT COUNT(*)
+    FROM participation p
+    JOIN season s ON s.season_id = p.season_id
+    WHERE p.status = :status
+    AND s.registration_start_date <= CURRENT_TIMESTAMP
+    AND s.voting_end_date >= CURRENT_TIMESTAMP
+    """,
+    nativeQuery = true)
+Page<ParticipantsByStatus> findLiveByStatusOrderByModifiedAsc(
+        @Param("status") String status,
+        Pageable pageable
+);
 
-        FROM participation p
-        JOIN season s ON s.season_id = p.season_id
 
-        WHERE p.status = :status
-        AND s.registration_start_date <= CURRENT_TIMESTAMP
-        AND s.voting_end_date >= CURRENT_TIMESTAMP
+//livd and  approved
+@Query(value = """
+    SELECT
+        p.participation_id AS participationId,
+        p.name AS participantName,
+        p.photo_url AS participantPhotoUrl,
+        s.name AS seasonName,
+        p.season_id AS seasonId,
+        p.status AS status
+    FROM participation p
+    JOIN season s ON s.season_id = p.season_id
+    WHERE p.status = 'APPROVED'
+    AND s.registration_start_date <= CURRENT_TIMESTAMP
+    AND s.voting_end_date >= CURRENT_TIMESTAMP
+    """,
+    nativeQuery = true)
+List<ParticipantsByStatus> findAllLiveApproved();
 
-       ORDER BY p.modified_at DESC
-        """,
-        countQuery = """
-        SELECT COUNT(*)
-        FROM participation p
-        JOIN season s ON s.season_id = p.season_id
-        WHERE p.status = :status
-        AND s.registration_start_date <= CURRENT_TIMESTAMP
-        AND s.voting_end_date >= CURRENT_TIMESTAMP
-        """,
-        nativeQuery = true)
-    Page<ParticipantsByStatus> findLiveParticipantsByStatus(
-            @Param("status") String status,
-            Pageable pageable
-    );
-    
+
+//fetch by ids
+@Query(value = """
+    SELECT
+        p.participation_id AS participationId,
+        p.name AS participantName,
+        p.photo_url AS participantPhotoUrl,
+        s.name AS seasonName,
+        p.season_id AS seasonId,
+        p.status AS status
+    FROM participation p
+    JOIN season s ON s.season_id = p.season_id
+    WHERE p.participation_id IN (:ids)
+    """,
+    nativeQuery = true)
+List<ParticipantsByStatus> findByIds(@Param("ids") List<UUID> ids);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

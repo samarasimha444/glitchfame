@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
+
+
 @RestController
 @RequestMapping("/admin/participations")
 @RequiredArgsConstructor
@@ -65,7 +67,9 @@ public Page<ParticipantsByStatus> searchParticipants(
 
 
 
-    //delete participation
+
+
+//delete participation
   @DeleteMapping("/{id}")
 public ResponseEntity<String> deleteParticipant(@PathVariable UUID id) {
     String message = participationAdminService.deleteParticipation(id);
