@@ -7,6 +7,8 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import com.example.backend.seasons.Quartz.QuartzSchedulerService;
 import com.example.backend.seasons.dto.*;
 import com.example.backend.participation.Participation;
 import com.example.backend.participation.ParticipationRepo;
@@ -40,6 +42,7 @@ public class seasonService {
     private final ParticipationRepo participationRepo;
     private final VoteQueryService voteQueryService;
     private final RedisService redisService;
+    private final QuartzSchedulerService quartzSchedulerService;
 
 
 
@@ -75,70 +78,97 @@ public class seasonService {
         });
     }
 
-    // ================= CREATE =================
-    public Season createSeason(SeasonForm form) {
 
-        Instant regStart = form.getRegistrationStartDate().toInstant();
-        Instant regEnd = form.getRegistrationEndDate().toInstant();
-        Instant voteStart = form.getVotingStartDate().toInstant();
-        Instant voteEnd = form.getVotingEndDate().toInstant();
 
-        if (seasonRepository.existsByName(form.getName())) {
-            throw new IllegalArgumentException("Season name already exists");
-        }
 
-        if (!regStart.isBefore(regEnd)) throw new IllegalArgumentException("Invalid registration dates");
-        if (voteStart.isBefore(regStart)) throw new IllegalArgumentException("Voting must start after registration");
-        if (voteEnd.isBefore(regEnd)) throw new IllegalArgumentException("Voting must end after registration");
-        if (voteEnd.isBefore(voteStart)) throw new IllegalArgumentException("Invalid voting range");
 
-        Season season = new Season();
-        season.setName(form.getName());
-        season.setDescription(form.getDescription());
-        season.setPrize(form.getPrize());
-        season.setPhotoUrl(form.getPhotoUrl());
-        season.setRegistrationStartDate(regStart);
-        season.setRegistrationEndDate(regEnd);
-        season.setVotingStartDate(voteStart);
-        season.setVotingEndDate(voteEnd);
+// ================= CREATE =================
+public Season createSeason(SeasonForm form) {
 
-        Season saved = seasonRepository.save(season);
+    Instant regStart = form.getRegistrationStartDate().toInstant();
+    Instant regEnd = form.getRegistrationEndDate().toInstant();
+    Instant voteStart = form.getVotingStartDate().toInstant();
+    Instant voteEnd = form.getVotingEndDate().toInstant();
 
-        redisService.register(saved.getSeasonId(), "l:" + saved.getSeasonId());
-        redisService.register(saved.getSeasonId(), "vc:" + saved.getSeasonId());
-        redisService.register(saved.getSeasonId(), "kc:" + saved.getSeasonId());
-        redisService.register(saved.getSeasonId(), "lock:" + saved.getSeasonId());
-
-        return saved;
+    if (seasonRepository.existsByName(form.getName())) {
+        throw new IllegalArgumentException("Season name already exists");
     }
 
-    // ================= ADJUST DATES =================
-    public void adjustDates(UUID seasonId,
-                            OffsetDateTime registrationStart,
-                            OffsetDateTime registrationEnd,
-                            OffsetDateTime votingStart,
-                            OffsetDateTime votingEnd) {
+    if (!regStart.isBefore(regEnd)) throw new IllegalArgumentException("Invalid registration dates");
+    if (voteStart.isBefore(regStart)) throw new IllegalArgumentException("Voting must start after registration");
+    if (voteEnd.isBefore(regEnd)) throw new IllegalArgumentException("Voting must end after registration");
+    if (voteEnd.isBefore(voteStart)) throw new IllegalArgumentException("Invalid voting range");
 
-        Season season = seasonRepository.findById(seasonId)
-                .orElseThrow(() -> new IllegalArgumentException("Season not found"));
+    Season season = new Season();
+    season.setName(form.getName());
+    season.setDescription(form.getDescription());
+    season.setPrize(form.getPrize());
+    season.setPhotoUrl(form.getPhotoUrl());
+    season.setRegistrationStartDate(regStart);
+    season.setRegistrationEndDate(regEnd);
+    season.setVotingStartDate(voteStart);
+    season.setVotingEndDate(voteEnd);
 
-        Instant regStart = registrationStart != null ? registrationStart.toInstant() : season.getRegistrationStartDate();
-        Instant regEnd = registrationEnd != null ? registrationEnd.toInstant() : season.getRegistrationEndDate();
-        Instant voteStart = votingStart != null ? votingStart.toInstant() : season.getVotingStartDate();
-        Instant voteEnd = votingEnd != null ? votingEnd.toInstant() : season.getVotingEndDate();
+    Season saved = seasonRepository.save(season);
 
-        if (!regStart.isBefore(regEnd)) throw new IllegalArgumentException("Invalid registration dates");
-        if (voteStart.isBefore(regStart)) throw new IllegalArgumentException("Invalid voting start");
-        if (voteEnd.isBefore(regEnd)) throw new IllegalArgumentException("Invalid voting end");
-        if (voteEnd.isBefore(voteStart)) throw new IllegalArgumentException("Invalid voting range");
+    // 🔥 schedule job (THIS is the key addition)
+    quartzSchedulerService.scheduleSeasonEnd(
+            saved.getSeasonId(),
+            saved.getVotingEndDate()
+    );
 
-        season.setRegistrationStartDate(regStart);
-        season.setRegistrationEndDate(regEnd);
-        season.setVotingStartDate(voteStart);
-        season.setVotingEndDate(voteEnd);
+    // Redis setup (leave as is)
+    redisService.register(saved.getSeasonId(), "l:" + saved.getSeasonId());
+    redisService.register(saved.getSeasonId(), "vc:" + saved.getSeasonId());
+    redisService.register(saved.getSeasonId(), "kc:" + saved.getSeasonId());
+    redisService.register(saved.getSeasonId(), "lock:" + saved.getSeasonId());
 
-        seasonRepository.save(season);
+    return saved;
+}
+
+
+
+// ================= ADJUST DATES =================
+public void adjustDates(UUID seasonId,
+                        OffsetDateTime registrationStart,
+                        OffsetDateTime registrationEnd,
+                        OffsetDateTime votingStart,
+                        OffsetDateTime votingEnd) {
+
+    Season season = seasonRepository.findById(seasonId)
+            .orElseThrow(() -> new IllegalArgumentException("Season not found"));
+
+    Instant oldVoteEnd = season.getVotingEndDate(); // 🔥 capture old
+
+    Instant regStart = registrationStart != null ? registrationStart.toInstant() : season.getRegistrationStartDate();
+    Instant regEnd = registrationEnd != null ? registrationEnd.toInstant() : season.getRegistrationEndDate();
+    Instant voteStart = votingStart != null ? votingStart.toInstant() : season.getVotingStartDate();
+    Instant voteEnd = votingEnd != null ? votingEnd.toInstant() : season.getVotingEndDate();
+
+    if (!regStart.isBefore(regEnd)) throw new IllegalArgumentException("Invalid registration dates");
+    if (voteStart.isBefore(regStart)) throw new IllegalArgumentException("Invalid voting start");
+    if (voteEnd.isBefore(regEnd)) throw new IllegalArgumentException("Invalid voting end");
+    if (voteEnd.isBefore(voteStart)) throw new IllegalArgumentException("Invalid voting range");
+
+    season.setRegistrationStartDate(regStart);
+    season.setRegistrationEndDate(regEnd);
+    season.setVotingStartDate(voteStart);
+    season.setVotingEndDate(voteEnd);
+
+    seasonRepository.save(season);
+
+    // 🔥 ONLY reschedule if voting end actually changed
+    if (!oldVoteEnd.equals(voteEnd)) {
+        quartzSchedulerService.rescheduleSeason(seasonId, voteEnd);
     }
+}
+
+
+
+
+
+
+
 
     // ================= UPDATE PRIZE =================
     public void updatePrize(UUID seasonId, String prize) {
@@ -179,6 +209,9 @@ public class seasonService {
 
 
 
+
+
+
     // ================= GET SEASONS =================
     public Page<SeasonDetails> getSeasons(UUID authId, String type, int page, int size) {
 
@@ -191,6 +224,16 @@ public class seasonService {
                 pageable
         );
     }
+
+
+
+
+
+
+
+
+
+
 
 
     // ================= GET FULL season data +participants =================
@@ -250,6 +293,12 @@ public SeasonFullResponse getSeasonFull(
 
     return response;
 }
+
+
+
+
+
+
 
 
 
