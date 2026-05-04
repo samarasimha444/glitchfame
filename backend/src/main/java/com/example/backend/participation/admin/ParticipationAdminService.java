@@ -25,7 +25,13 @@ public class ParticipationAdminService {
 
 
 
-public Page<ParticipantsByStatus> getLiveParticipantsByStatus(
+
+
+
+
+
+    // ================= GET LIVE PARTICIPANTS BY STATUS =================
+    public Page<ParticipantsByStatus> getLiveParticipantsByStatus(
         String status,
         String sortDir,
         int page,
@@ -33,6 +39,9 @@ public Page<ParticipantsByStatus> getLiveParticipantsByStatus(
 ) {
 
     boolean isApproved = "APPROVED".equalsIgnoreCase(status);
+
+
+
 
     // ================= PENDING / REJECTED =================
     if (!isApproved) {
@@ -82,6 +91,10 @@ public Page<ParticipantsByStatus> getLiveParticipantsByStatus(
         });
     }
 
+
+
+
+    
     // ================= APPROVED =================
 
     List<ParticipantsByStatus> allApproved =
@@ -89,6 +102,7 @@ public Page<ParticipantsByStatus> getLiveParticipantsByStatus(
 
     if (allApproved.isEmpty()) return Page.empty();
 
+    // Group by season
     Map<UUID, List<ParticipantsByStatus>> grouped =
             allApproved.stream()
                     .collect(Collectors.groupingBy(ParticipantsByStatus::getSeasonId));
@@ -98,57 +112,17 @@ public Page<ParticipantsByStatus> getLiveParticipantsByStatus(
     for (Map.Entry<UUID, List<ParticipantsByStatus>> entry : grouped.entrySet()) {
 
         UUID seasonId = entry.getKey();
-
-        // 🔥 FIX: correct Redis key
         String key = "l:" + seasonId;
 
-        int start = page * size;
-        int end = start + size - 1;
+        List<ParticipantsByStatus> dbList = entry.getValue();
 
-        Set<String> idStrings = "asc".equalsIgnoreCase(sortDir)
-                ? redis.opsForZSet().range(key, start, end)
-                : redis.opsForZSet().reverseRange(key, start, end);
+        for (ParticipantsByStatus p : dbList) {
 
-        List<ParticipantsByStatus> ordered;
+            String member = p.getParticipationId().toString();
 
-        // ================= REDIS DATA EXISTS =================
-        if (idStrings != null && !idStrings.isEmpty()) {
-
-            List<UUID> ids = idStrings.stream()
-                    .map(UUID::fromString)
-                    .toList();
-
-            List<ParticipantsByStatus> participants =
-                    participationAdminRepo.findByIds(ids);
-
-            Map<UUID, ParticipantsByStatus> map =
-                    participants.stream().collect(Collectors.toMap(
-                            ParticipantsByStatus::getParticipationId,
-                            Function.identity()
-                    ));
-
-            ordered = ids.stream()
-                    .map(map::get)
-                    .filter(Objects::nonNull)
-                    .toList();
-        }
-
-        // ================= FALLBACK (REDIS EMPTY) =================
-        else {
-            ordered = entry.getValue(); // fallback to DB list
-        }
-
-        // ================= BUILD RESPONSE =================
-
-        for (int i = 0; i < ordered.size(); i++) {
-
-            ParticipantsByStatus p = ordered.get(i);
-
-            Double scoreObj = redis.opsForZSet()
-                    .score(key, p.getParticipationId().toString());
-
+            // score from Redis (default 0)
+            Double scoreObj = redis.opsForZSet().score(key, member);
             long score = scoreObj == null ? 0L : scoreObj.longValue();
-            long rank = start + i + 1;
 
             finalList.add(new ParticipantsByStatusImpl(
                     p.getParticipationId(),
@@ -157,12 +131,46 @@ public Page<ParticipantsByStatus> getLiveParticipantsByStatus(
                     p.getSeasonName(),
                     p.getSeasonId(),
                     p.getStatus(),
-                    score,
-                    rank,
+                    Long.valueOf(score),   // long → Long
+                    0L,                   // temp rank
                     false,
                     false
             ));
         }
+    }
+
+    // ================= SORTING =================
+
+    if ("asc".equalsIgnoreCase(sortDir)) {
+        finalList.sort(
+                Comparator.comparing(ParticipantsByStatus::getScore)
+                          .thenComparing(ParticipantsByStatus::getParticipantName)
+        );
+    } else {
+        finalList.sort(
+                Comparator.comparing(ParticipantsByStatus::getScore).reversed()
+                          .thenComparing(ParticipantsByStatus::getParticipantName)
+        );
+    }
+
+    // ================= ASSIGN RANK =================
+
+    for (int i = 0; i < finalList.size(); i++) {
+
+        ParticipantsByStatus p = finalList.get(i);
+
+        finalList.set(i, new ParticipantsByStatusImpl(
+                p.getParticipationId(),
+                p.getParticipantName(),
+                p.getParticipantPhotoUrl(),
+                p.getSeasonName(),
+                p.getSeasonId(),
+                p.getStatus(),
+                p.getScore(),
+                Long.valueOf(i + 1),   // rank as Long
+                false,
+                false
+        ));
     }
 
     // ================= GLOBAL PAGINATION =================
@@ -192,23 +200,52 @@ public Page<ParticipantsByStatus> getLiveParticipantsByStatus(
 
 
 
-    // ================= UPDATE STATUS =================
+
+
+
+
+
+
+
+
+//  UPDATE STATUS 
 public void updateParticipationStatus(UUID participationId, String status) {
-        Participation participation = participationAdminRepo.findById(participationId)
-                .orElseThrow(() -> new IllegalStateException("Participation not found"));
-        if (!status.equals("APPROVED") &&
-            !status.equals("REJECTED") &&
-            !status.equals("PENDING")) {
-            throw new IllegalArgumentException("Invalid status");
-        }
-        participation.setStatus(status);
-        participationAdminRepo.save(participation);
+
+    Participation participation = participationAdminRepo.findById(participationId)
+            .orElseThrow(() -> new IllegalStateException("Participation not found"));
+
+    // ✅ Validate status
+    if (!"APPROVED".equals(status) &&
+        !"REJECTED".equals(status) &&
+        !"PENDING".equals(status)) {
+        throw new IllegalArgumentException("Invalid status");
     }
 
+    String oldStatus = participation.getStatus();
 
-    
+    // ✅ Avoid unnecessary updates
+    if (status.equals(oldStatus)) {
+        return;
+    }
 
+    participation.setStatus(status);
+    participationAdminRepo.save(participation);
 
+    String key = "l:" + participation.getSeasonId();
+    String member = participation.getParticipationId().toString();
+
+    // ================= REDIS SYNC =================
+
+    // ✅ Add to leaderboard when approved
+    if ("APPROVED".equals(status)) {
+        redis.opsForZSet().add(key, member, 0);
+    }
+
+    // ✅ Remove from leaderboard when not approved
+    if ("REJECTED".equals(status) || "PENDING".equals(status)) {
+        redis.opsForZSet().remove(key, member);
+    }
+}
 
 
 

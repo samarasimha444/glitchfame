@@ -66,4 +66,6 @@ private long score;
 @Column(name = "player_rank")
 private Integer rank;
 
+
+
 }
