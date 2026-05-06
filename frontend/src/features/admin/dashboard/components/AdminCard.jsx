@@ -9,7 +9,7 @@ const AdminCard = ({ title, paragraph, className, type, cardsInfo,stats}) => {
   console.log(stats)
 
   return (
- <div className={`flex flex-col  w-full py-4 ${className}`}>
+ <div className={`flex flex-col  z-10 w-full py-4 ${className}`}>
 
   <Suspense fallback={null}>
        

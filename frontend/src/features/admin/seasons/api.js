@@ -7,11 +7,11 @@ const token = localStorage.getItem("token")
 
 
 
-export const getContestants = async ({pageParam = 0,status = "PENDING",size = 5,
+export const getContestants = async ({pageParam = 0,status = "PENDING", filter = "desc",order = 6,
 }) => {
    const token = localStorage.getItem("token")
   const response = await fetch(
-    `${BASE_URL}/admin/participations/live?status=${status}&page=${pageParam}&size=${size}`,
+   `${BASE_URL}/admin/participations/live?status=${status}&sortDir=${filter}&page=${pageParam}&size=${order}`,
     {
       method: "GET",
       headers: {
@@ -95,7 +95,7 @@ export const updateContestantStatus = async (id, status) => {
 export const getLiveContestants = async (
   page = 0,
   size = 6,
-  order = "asc"
+  order = "asce"
 ) => {
   const token = localStorage.getItem("token");
   console.log(token)
@@ -121,7 +121,7 @@ export const getLiveContestants = async (
 
 
 
-export const searchContestants = async ({  name,page = 0,size = 20,}) => {
+export const searchContestants = async ({  name,status,page = 0,size = 20,}) => {
   console.log(name)
 
   const params = new URLSearchParams({

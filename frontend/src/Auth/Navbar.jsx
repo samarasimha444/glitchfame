@@ -1,17 +1,19 @@
 import React, { lazy, Suspense, useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Zap, Award, Info, Logs,UserPlus, Home } from "lucide-react";
+import { Zap, Award, Info, Logs, UserPlus, Home } from "lucide-react";
 import MobileMenu from "../components/MobileSideBar";
 import { Settings } from "lucide-react";
 import NeonLoader from "../components/NeonLoader";
+import NewModel from "../components/NewModel";
 const ResetModal = lazy(() => import("../components/ResetModel"));
 
-const Navbar = ({profile}) => {
-  console.log(profile)
-  const navigate = useNavigate()
+const Navbar = ({ profile }) => {
+  console.log(profile);
+  const navigate = useNavigate();
+  const [showLogoutModal,setShowLogoutModal]= useState(false)
   const [isOpen, setIsOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
-    const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   const menuItems = [
     { label: "Home", path: "/home", icon: Home },
@@ -23,36 +25,32 @@ const Navbar = ({profile}) => {
   const actionButton = {
     label: "Participate",
     path: "/season",
-    
   };
 
-
- const handleLogout = useCallback(() => {
+  const handleLogout = useCallback(() => {
     localStorage.removeItem("token");
     navigate("/auth");
   }, [navigate]);
-  
-  return (
-   <nav className="absolute   max-w-[1600px] mx-auto top-0 left-0 w-full z-50   border-gray-600/50 px-5 sm:px-8 py-5 flex items-center justify-between min-[1800px]:relative">
-      <div className="flex items-center space-x-2">
 
-      <div className="mx-auto w-10 h-10 rounded-xl flex items-center justify-center bg-primary shadow-[0_0_40px_rgba(168,85,247,0.5)]">
-       <Zap className="text-black" size={26} />
-    </div>
+  return (
+    <nav className="absolute   max-w-[1600px] mx-auto top-0 left-0 w-full z-50   border-gray-600/50 px-5 sm:px-8 py-5 flex items-center justify-between min-[1800px]:relative">
+      <div className="flex items-center space-x-2">
+        <div className="mx-auto w-10 h-10 rounded-xl flex items-center justify-center bg-primary shadow-[0_0_40px_rgba(168,85,247,0.5)]">
+          <Zap className="text-black" size={26} />
+        </div>
 
         <span className="font-bold px-2 sm:flex text-[#F9FAFB] text-[20px]">
           GlitchFame
         </span>
 
-    {openModal && (
-  <Suspense fallback={<NeonLoader />}>
-    <ResetModal
-      isOpen={openModal}
-      onClose={() => setOpenModal(false)}
-    />
-  </Suspense>
-)}
-      
+        {openModal && (
+          <Suspense fallback={<NeonLoader />}>
+            <ResetModal
+              isOpen={openModal}
+              onClose={() => setOpenModal(false)}
+            />
+          </Suspense>
+        )}
 
         <ul className="hidden  min-[850px]:flex space-x-6 ml-4 text-[14px] font-medium">
           {menuItems.map((item, idx) =>
@@ -72,9 +70,7 @@ const Navbar = ({profile}) => {
                 key={idx}
                 className="flex items-center gap-1 hover:text-primary cursor-pointer"
               >
-                {item.icon && (
-                  <item.icon size={16} className="text-white" />
-                )}
+                {item.icon && <item.icon size={16} className="text-white" />}
                 {item.label}
               </li>,
           )}
@@ -83,10 +79,12 @@ const Navbar = ({profile}) => {
 
       <div className="hidden sm:flex items-center  space-x-4 relative">
         <Link to={actionButton.path}>
-
-         <button className="flex items-center gap-2 text-white text-[14px]  py-2 hover:bg-prmie-500 hover:text-white transition cursor-pointer">
-          <span className="text-primary"> <UserPlus size={16} /> </span>
-          {actionButton.label}
+          <button className="flex items-center gap-2 text-white text-[14px]  py-2 hover:bg-prmie-500 hover:text-white transition cursor-pointer">
+            <span className="text-primary">
+              {" "}
+              <UserPlus size={16} />{" "}
+            </span>
+            {actionButton.label}
           </button>
         </Link>
 
@@ -103,18 +101,18 @@ const Navbar = ({profile}) => {
               <button
                 className="px-4 py-2 text-white hover:text-red-400  transition"
                 onClick={() => {
-                  handleLogout()
+                  setShowLogoutModal(true)
                   setAvatarOpen(false);
                   console.log("Logout clicked");
                 }}
               >
                 Logout
               </button>
-              <button 
+              <button
                 className="px-4 py-2 text-white hover:bg-gray-500 transition"
                 onClick={() => {
                   setAvatarOpen(false);
-                  setOpenModal(true)
+                  setOpenModal(true);
                 }}
               >
                 Reset Password
@@ -130,9 +128,17 @@ const Navbar = ({profile}) => {
       >
         <Logs size={28} className="animate-[wiggle_2s_ease-in-out_infinite]" />
       </button>
+      
+        <NewModel
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onSubmit={handleLogout}
+        title="Logout"
+        message="Are you sure you want to logout?"
+      />
 
       <MobileMenu
-       profile={profile}
+        profile={profile}
         isOpen={isOpen}
         setOpenModal={setOpenModal}
         setIsOpen={setIsOpen}

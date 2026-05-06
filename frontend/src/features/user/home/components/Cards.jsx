@@ -16,6 +16,7 @@ const ScrambleTextItem = ({ text }) => {
 
 const Cards = ({ liveSeason, isLoading }) => {
 
+
   const isMobile = useIsMobile();
 
   return (
@@ -26,11 +27,134 @@ const Cards = ({ liveSeason, isLoading }) => {
           <div className="h-64 border-b border-white/10 animate-pulse bg-white/5" />
         </div>
       : liveSeason?.length === 0 ?
-        <div className="py-20 text-center border-y border-white/10">
-          <p className="text-[10px] tracking-[0.5em] text-gray-600 uppercase">
-            No Active Seasons Found
+         <div className="flex flex-col lg:flex-row w-full max-w-7xl gap-12 items-start mx-auto">
+    
+    <div className="flex flex-wrap flex-1 gap-6 content-start">
+      
+      <div className="flex items-center gap-4 sm:block w-full sm:w-[calc(50%-12px)]">
+        
+        {/* Mobile Header */}
+        <div className="sm:hidden w-1/2">
+          <h3 className="text-white text-xs font-bold uppercase leading-tight">
+            Coming Soon
+          </h3>
+          <p className="text-[10px] text-primary mt-2 uppercase tracking-widest font-medium">
+            Stay Tuned
           </p>
         </div>
+
+        <div className="group relative flex flex-col w-full aspect-7/10 border border-white/10 overflow-hidden bg-black cursor-not-allowed">
+          
+          {/* Top Bar */}
+          <div className="flex justify-between items-center px-4 py-2 bg-[#0A0A0A] border-b border-white/10 z-20">
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse" />
+              <span className="text-[9px] font-bold text-white uppercase tracking-widest">
+                Upcoming
+              </span>
+            </div>
+            <span className="text-[9px] text-gray-600 uppercase font-bold">
+              Soon
+            </span>
+          </div>
+
+          {/* Image */}
+          <div className="relative grow overflow-hidden grayscale">
+            <img
+              src="https://static.vecteezy.com/system/resources/thumbnails/035/775/987/small_2x/ai-generated-trophy-trophy-trophies-with-confetti-free-photo.jpg"
+              alt="Coming Soon"
+              className="w-full h-full object-cover object-center brightness-[0.4]"
+            />
+
+            {/* Desktop Overlay */}
+            <div className="hidden sm:flex absolute inset-0 flex-col items-center justify-center p-6 text-center z-10 pointer-events-none">
+              <h3 className="text-white font-black text-3xl md:text-5xl lg:text-6xl leading-[0.8] tracking-[-0.05em] uppercase">
+                Coming Soon
+              </h3>
+              <div className="mt-6 px-4 py-1 border border-white/20 backdrop-blur-sm">
+                <p className="text-[9px] text-primary font-bold uppercase tracking-[0.3em]">
+                  Stay Tuned
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom */}
+          <div className="flex justify-between items-center p-5 bg-black border-t border-white/10 opacity-50">
+            <span className="text-[10px] font-black text-white uppercase tracking-widest">
+              Not Available
+            </span>
+          </div>
+        </div>
+      </div>
+
+
+       <div className="flex items-center gap-4 sm:block w-full sm:w-[calc(50%-12px)]">
+              <div className="sm:hidden w-1/2">
+                <h3 className="text-white text-xs font-bold uppercase leading-tight">
+                  Archive
+                </h3>
+                <p className="text-[10px] text-primary mt-2 uppercase tracking-widest">
+                  History [01-99]
+                </p>
+              </div>
+              <Link
+                to="/arena"
+                className="group relative flex flex-col w-full aspect-7/10 border border-white/10 overflow-hidden bg-black transition-colors"
+              >
+                <div className="flex justify-between items-center px-4 py-2 bg-[#0A0A0A] border-b border-white/10 z-20">
+                  <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">
+                    Database_Archive
+                  </span>
+                  <span className="text-[9px] text-gray-600 uppercase font-bold">
+                    Vol. 01
+                  </span>
+                </div>
+                <div className="relative grow overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+                  <img
+                    src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80"
+                    className="w-full h-full object-cover object-center opacity-20 brightness-50 group-hover:opacity-40 transition-all duration-700"
+                    alt="View all"
+                  />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 pointer-events-none">
+                    <h3 className="text-white font-black text-3xl md:text-5xl lg:text-6xl uppercase leading-[0.85] tracking-tight group-hover:scale-110 transition-transform duration-500">
+                      View All <br /> Seasons
+                    </h3>
+                    <p className="mt-4 text-primary text-[9px] font-bold uppercase tracking-[0.4em]">
+                      Explore History
+                    </p>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center p-5 bg-black border-t border-white/10 group-hover:bg-white transition-all duration-300">
+                  <span className="text-[10px] font-black text-white group-hover:text-black uppercase tracking-widest">
+                    Explore All
+                  </span>
+                  <ArrowRight
+                    size={16}
+                    className="text-white group-hover:text-black transition-colors"
+                  />
+                </div>
+              </Link>
+            </div>
+
+    </div>
+
+    
+    <div className="hidden lg:block w-full max-w-87.5 sticky top-32 mt-20">
+      <div className="pl-8">
+        <p className="text-xl font-black text-white/90 leading-tight uppercase tracking-tighter">
+          New seasons are on the way. Stay tuned for upcoming battles and legends.
+        </p>
+        <div className="mt-6 flex items-center gap-4">
+          <div className="h-px w-12 bg-primary"></div>
+          <p className="text-[10px] text-gray-500 uppercase tracking-[0.5em]">
+            GlitchFame
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
       : 
         <div className="flex flex-col lg:flex-row w-full max-w-7xl gap-12 items-start mx-auto">
          

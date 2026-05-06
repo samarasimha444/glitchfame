@@ -14,7 +14,7 @@ const Overview = ({ totalPrizeMoney }) => {
   const navigate = useNavigate();
 
   return (
-    <section className="w-full min-h-[70vh] lg:min-h-[120dvh] flex items-center justify-center py-12 px-4 sm:py-24 bg-[#0a0c10] overflow-hidden">
+    <section className="w-full min-h-[70vh] lg:min-h-[120dvh]  flex items-center justify-center py-12 px-4 sm:py-24 bg-[#0a0c10] overflow-hidden">
       <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
         
         {/* MOBILE ONLY: HEADER CONTENT */}
@@ -22,7 +22,7 @@ const Overview = ({ totalPrizeMoney }) => {
           <h1 className="text-3xl font-black text-white uppercase tracking-tighter">
             The Arena <br /> <span className="text-primary">Awaits</span>
           </h1>
-          <p className="text-gray-500 text-xs max-w-xs leading-relaxed">
+          <p className="text-[13px] mb-4 sm:text-base text-gray-400 leading-relaxed max-w-xs">
             Only the best rise — the next digital icon is decided by the crowd.
           </p>
         </div>

@@ -1,8 +1,8 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { LayoutDashboard, Settings, User2Icon, Users } from "lucide-react";
-import { useCallback, memo } from "react";
+import { useCallback, memo, useState } from "react";
+import NewModel from "../../../components/NewModel";
 
-// ✅ move outside component (stable reference)
 const menuItems = [
   {
     name: "Seasons",
@@ -28,6 +28,7 @@ const menuItems = [
 
 const Sidebar = () => {
   const navigate = useNavigate();
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogout = useCallback(() => {
     localStorage.removeItem("token");
@@ -45,7 +46,7 @@ const Sidebar = () => {
             return (
               <li key="logout">
                 <button
-                  onClick={handleLogout}
+                  onClick={()=>setShowLogoutModal(true)}
                   className="flex items-center cursor-pointer gap-3 w-full px-4 py-3 rounded-lg transition-all duration-200 hover:bg-red-600 hover:text-white"
                 >
                   <Icon size={16} />
@@ -75,6 +76,15 @@ const Sidebar = () => {
           );
         })}
       </ul>
+
+      <NewModel
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onSubmit={handleLogout}
+        title="Logout"
+        message="Are you sure you want to logout?"
+      />
+
     </div>
   );
 };

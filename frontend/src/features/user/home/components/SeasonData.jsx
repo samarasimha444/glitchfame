@@ -14,7 +14,7 @@ const SeasonData = ({ season }) => {
         <h2 className="home-h2">
           Active competition
         </h2>
-        <p className="text-[13px] sm:text-base text-gray-400 leading-relaxed max-w-xl">
+        <p className="text-[13px] mb-4 sm:text-base text-gray-400 leading-relaxed max-w-xl">
           The gates are open. Step in now
         </p>
       </div>
@@ -24,11 +24,15 @@ const SeasonData = ({ season }) => {
       {/* IMAGE SECTION: Height reduced for mobile */}
       <div className="relative w-full md:w-[40%] lg:w-[45%] xl:w-[473px] shrink-0">
         <div className="relative h-[180px] sm:h-[350px] md:h-[500px] w-full">
-          <img
-            src={season?.seasonPhotoUrl}
-            alt={season?.seasonName}
-            className="w-full h-full object-cover"
-          />
+
+         <img
+  src={
+    season?.seasonPhotoUrl ||
+    "https://static.vecteezy.com/system/resources/thumbnails/035/775/987/small_2x/ai-generated-trophy-trophy-trophies-with-confetti-free-photo.jpg"
+  }
+  alt={season?.seasonName}
+  className="w-full h-full object-cover"
+/>
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent md:bg-black/40" />
         </div>
 
@@ -76,7 +80,7 @@ const SeasonData = ({ season }) => {
                 <Users size={12} className="text-primary" />
                 <span className="text-[8px] md:text-xs uppercase font-bold tracking-wider">Players</span>
               </div>
-              <p className="text-xs md:text-xl font-bold">12.4k</p>
+              <p className="text-xs md:text-xl font-bold">...</p>
             </div>
 
             <div className="space-y-1">
@@ -87,7 +91,7 @@ const SeasonData = ({ season }) => {
               <p className="text-xs md:text-xl font-bold text-primary">
                 {season?.registrationEndDate ? 
                   new Date(season.registrationEndDate).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }) 
-                  : "N/A"}
+                  : "..."}
               </p>
             </div>
 
@@ -99,7 +103,7 @@ const SeasonData = ({ season }) => {
               <p className="text-xs md:text-xl font-bold">
                 {season?.registrationEndDate ? 
                   new Date(season.registrationEndDate).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) 
-                  : "N/A"}
+                  : "..."}
               </p>
             </div>
           </div>

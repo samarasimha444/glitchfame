@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { LayoutDashboard, Users, Settings, Menu, X, User } from "lucide-react";
+import NewModel from "../../../components/NewModel";
 
 const menuItems = [
   { name: "Seasons", path: "/admin", icon: LayoutDashboard },
@@ -11,14 +12,18 @@ const menuItems = [
 
 const AdminNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // remove token
-    navigate("/auth"); // redirect to login
+    localStorage.removeItem("token"); 
+    navigate("/auth"); 
   };
 
   return (
+
+    <>
+  
     <nav className="relative w-full border-b border-gray-700 shadow-sm py-3 flex justify-between items-center md:hidden">
       <div className="text-white font-bold text-xl">Admin Dashboard</div>
 
@@ -38,7 +43,7 @@ const AdminNavbar = () => {
                     <button
                       onClick={() => {
                         setIsOpen(false);
-                        handleLogout();
+                        setShowLogoutModal(true)
                       }}
                       className="flex items-center gap-2 px-3 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white w-full text-left"
                     >
@@ -73,6 +78,16 @@ const AdminNavbar = () => {
         </div>
       )}
     </nav>
+
+       <NewModel
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onSubmit={handleLogout}
+        title="Logout"
+        message="Are you sure you want to logout?"
+      />
+
+      </>
   );
 };
 

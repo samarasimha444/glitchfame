@@ -18,7 +18,7 @@ const getStatusStyle = (status) => {
 };
 
 const SeasonsTable = ({ seasons, isLoading }) => {
-  console.log(seasons);
+ 
   const { mutate: toggleSeasonLock, isPending: seasonPending } =
     useToggleSeasonLock();
 

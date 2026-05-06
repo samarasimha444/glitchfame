@@ -16,7 +16,7 @@ export const TableRow = React.memo(({ item, onVote, onDelete, setActive }) => {
               alt={item.participantName}
               className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover border-2 border-gray-700 sm:group-hover:border-cyan-500/50 transition-colors shadow-lg"
             />
-            {/* Identity/Status Accent */}
+           
             <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-blue-600 rounded-full border-2 border-[#0d1117]"></div>
           </div>
           <div className="flex flex-col min-w-0">
