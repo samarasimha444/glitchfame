@@ -15,6 +15,7 @@ const [live,setLive ]=useState(false)
 const debouncedSearch = useDebounce(search, 500);
 
 const {  data,fetchNextPage,hasNextPage,isFetchingNextPage,isLoading} =useContestants(order,filter,);
+
 const{   data: searchData, isLoading: searching } = useSearchContestants(debouncedSearch);
 
 const contestants = debouncedSearch && searchData ? searchData?.content : data?.pages?.flatMap((p) => p.content || []) || [];
@@ -55,6 +56,8 @@ const stats = {
         hasNextPage={hasNextPage}
         isFetchingNextPage={isFetchingNextPage}
         search={search}
+         filter={filter}
+     setFilter={setFilter}
         setSearch= {setSearch}
       />
     

@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from "react";
-import FeaturedCarousel from "./components/Carousel";
+const FeaturedCarousel = lazy(() => import("./components/Carousel"));
 const Overview = lazy(() => import("./components/OverviewSection"));
 const New = lazy(() => import("./components/New"));
 import { useLiveUpcomingSeasons } from "./hooks";
@@ -37,7 +37,9 @@ const Home = () => {
 
   return (
     <div className="w-full min-h-screen    bg-fixed bg-cover bg-center flex flex-col items-center">
-      <FeaturedCarousel />
+      <Suspense fallback={<div className="h-[480px] w-full bg-gray-900 animate-pulse" />}>
+        <FeaturedCarousel />
+      </Suspense>
 
       <section className="min-h-[305px] md:hidden border-y border-gray-800  px-6 py-12 flex flex-col justify-center">
         <div className="max-w-screen md:mx-auto w-full">
@@ -53,7 +55,7 @@ const Home = () => {
 
       <SeasonData season={season} />
 
-      <section className="w-full px-4 py-16 md:py-12  flex flex-col max-w-7xl mx-auto">
+      <section className="w-full px-4 py-16 md:py-20  flex flex-col max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-3">

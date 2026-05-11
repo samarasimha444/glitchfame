@@ -20,6 +20,8 @@ const Approval = ({
   isFetchingNextPage,
   setSearch,
   search,
+  filter,
+  setFilter,
   className,
 }) => {
   console.log(contestants);
@@ -42,7 +44,6 @@ const Approval = ({
     <div className={`w-full bg-[#0f1115] flex justify-center ${className}`}>
       <div className="w-full max-w-full bg-[#1a1f2b] rounded-xs p-4 sm:p-6 min-h-[30dvh] shadow-xs border border-gray-800">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
-         
           <div className="flex gap-3 items-start sm:items-center">
             <ShieldAlert className="text-yellow-400 mt-1 sm:mt-0" size={22} />
             <div>
@@ -55,32 +56,34 @@ const Approval = ({
             </div>
           </div>
 
-          {/* Right: Controls */}
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
-            {/* Search Bar */}
             <div className="relative flex-1 sm:flex-none">
               <Search
                 size={16}
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
               />
               <input
-               onChange={(e)=>setSearch(e.target.value)}
-               value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                value={search}
                 type="text"
                 placeholder="Search..."
                 className="w-full sm:w-60 h-10 sm:h-9 pl-9 pr-8 text-sm bg-[#141821] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-600 transition"
               />
-              <Loader2
+              {/* <Loader2
                 size={16}
                 className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-blue-600"
-              />
+              /> */}
             </div>
 
             {/* Filter by Time */}
             <div className="relative flex-1 sm:flex-none">
-              <select className="w-full sm:w-32 h-10 sm:h-9 px-3 text-sm bg-[#141821] border border-gray-700 rounded-lg text-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 transition appearance-none cursor-pointer">
-                <option value="all">All Time</option>
-                <option value="new">Newest</option>
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                className="w-full sm:w-32 h-10 sm:h-9 px-3 text-sm bg-[#141821] border border-gray-700 rounded-lg text-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600 transition appearance-none cursor-pointer"
+              >
+                <option value="desc">Newest</option>
+                <option value="asc">Oldest</option>
               </select>
               <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
                 <ChevronDown size={14} />
@@ -130,7 +133,7 @@ const Approval = ({
                       handleAction("APPROVED", user.participationId)
                     }
                     disabled={isPending}
-                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-black border border-gray-600 text-white px-4 py-2 rounded-lg hover:border-gray-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-black border border-gray-600 cursor-pointer text-white px-4 py-2 rounded-lg hover:border-gray-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <CheckCircle size={16} />
                     Approve
@@ -141,7 +144,7 @@ const Approval = ({
                       handleAction("REJECTED", user.participationId)
                     }
                     disabled={isPending}
-                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-black border border-red-600 text-red-500 px-4 py-2 rounded-lg hover:bg-red-600 hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-black border border-red-600 text-red-500 px-4 py-2 rounded-lg hover:bg-red-600 hover:text-white transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <XCircle size={16} />
                     Reject

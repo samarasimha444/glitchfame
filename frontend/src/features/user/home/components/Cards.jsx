@@ -63,6 +63,8 @@ const Cards = ({ liveSeason, isLoading }) => {
             <img
               src="https://static.vecteezy.com/system/resources/thumbnails/035/775/987/small_2x/ai-generated-trophy-trophy-trophies-with-confetti-free-photo.jpg"
               alt="Coming Soon"
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover object-center brightness-[0.4]"
             />
 
@@ -115,6 +117,8 @@ const Cards = ({ liveSeason, isLoading }) => {
                     src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80"
                     className="w-full h-full object-cover object-center opacity-20 brightness-50 group-hover:opacity-40 transition-all duration-700"
                     alt="View all"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 pointer-events-none">
                     <h3 className="text-white font-black text-3xl md:text-5xl lg:text-6xl uppercase leading-[0.85] tracking-tight group-hover:scale-110 transition-transform duration-500">
@@ -196,6 +200,8 @@ const Cards = ({ liveSeason, isLoading }) => {
                     <img
                       src={`${season.seasonPhotoUrl}?auto=compress&cs=tinysrgb&w=800`}
                       alt={season.seasonName}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover object-center brightness-[0.4] group-hover:brightness-75 group-hover:scale-105 transition-all duration-700"
                     />
                     <div className="hidden sm:flex absolute inset-0 flex-col items-center justify-center p-6 text-center z-10 pointer-events-none">
@@ -250,6 +256,8 @@ const Cards = ({ liveSeason, isLoading }) => {
                     src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80"
                     className="w-full h-full object-cover object-center opacity-20 brightness-50 group-hover:opacity-40 transition-all duration-700"
                     alt="View all"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 pointer-events-none">
                     <h3 className="text-white font-black text-3xl md:text-5xl lg:text-6xl uppercase leading-[0.85] tracking-tight group-hover:scale-110 transition-transform duration-500">

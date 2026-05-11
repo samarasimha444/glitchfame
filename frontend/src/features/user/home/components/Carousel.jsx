@@ -11,8 +11,8 @@ import { useRef } from "react";
 
 
 const images = [
-  "https://images.pexels.com/photos/14960246/pexels-photo-14960246.jpeg?cs=srgb&dl=pexels-less-rock-14960246.jpg&fm=jpg",
-  "https://tse3.mm.bing.net/th/id/OIP.mH44ISNpf9kj_zNEMcCwEwHaEK?pid=Api&P=0&h=180",
+  "https://static.vecteezy.com/system/resources/thumbnails/046/762/726/small_2x/a-trophy-with-confetti-and-ribbons-on-a-dark-background-photo.jpg",
+  "https://static.vecteezy.com/system/resources/previews/013/381/421/non_2x/versus-screen-design-banner-competition-vs-game-match-martial-arts-vs-sports-battle-easy-to-edit-illustration-vector.jpg",
   "https://tse1.mm.bing.net/th/id/OIP.KCUfds52iy8sP7L2Mjau9AHaEJ?pid=Api&P=0&h=180",
 ];
 
@@ -54,6 +54,10 @@ const textFill = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
               <img
                 src={img}
                 alt="Slide"
+                loading="lazy"
+                decoding="async"
+                width={1920}
+                height={1080}
                 className="w-full h-full object-cover object-center"
               />
             </div>
@@ -184,9 +188,13 @@ const textFill = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
             
             {/* The single hero image replacing the old block */}
             <div className="flex-1">
-              <img 
-                src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1000&auto=format&fit=crop" 
-                alt="Arena" 
+              <img
+                src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1000&auto=format&fit=crop"
+                alt="Arena"
+                loading="lazy"
+                decoding="async"
+                width={500}
+                height={192}
                 className="w-full h-48 object-cover grayscale hover:grayscale-0 transition-all duration-500"
               />
             </div>

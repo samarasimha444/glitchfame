@@ -31,6 +31,8 @@ const SeasonData = ({ season }) => {
     "https://static.vecteezy.com/system/resources/thumbnails/035/775/987/small_2x/ai-generated-trophy-trophy-trophies-with-confetti-free-photo.jpg"
   }
   alt={season?.seasonName}
+  loading="lazy"
+  decoding="async"
   className="w-full h-full object-cover"
 />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent md:bg-black/40" />

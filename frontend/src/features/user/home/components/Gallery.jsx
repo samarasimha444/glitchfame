@@ -38,6 +38,8 @@ const Gallery = () => {
                 <img
                   src={item.participantPhoto}
                   alt={item.name}
+                  loading="lazy"
+                  decoding="async"
                   className="w-[70px] h-[70px] rounded-full object-cover bg-[#111]"
                 />
               </div>

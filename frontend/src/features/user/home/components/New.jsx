@@ -26,7 +26,7 @@ const New = () => {
   return (
    <div className="w-full relative min-h-screen bg-[#050505] overflow-x-hidden">
       
-  {/* REVOLVING TROPHY LAYER */}
+  
   {winners?.length > 1 && (
     <div className="hidden sm:flex absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
       <div 
@@ -35,9 +35,11 @@ const New = () => {
       >
         <div className="absolute inset-0 bg-yellow-600/10 blur-[100px] rounded-full scale-150" />
         
-        <img 
+        <img
           src="https://www.freeiconspng.com/uploads/trophy-png-23.png"
-          alt="Revolving Trophy" 
+          alt="Revolving Trophy"
+          loading="lazy"
+          decoding="async"
           className="h-[40vh] sm:h-[65vh] w-auto object-contain opacity-20 brightness-90"
         />
       </div>
@@ -47,12 +49,15 @@ const New = () => {
   {/* CONTENT */}
   <div className="relative z-10 w-full max-w-7xl mx-auto px-4">
         
-    <div className="flex justify-between items-start pt-16 mb-8 sm:mb-14">
+     
+      
+
+    <div className="flex justify-between items-start pt-10 mb-8 sm:mb-3">
       <div className="space-y-4 sm:space-y-6">
-        <h1 className="text-white text-5xl sm:text-7xl font-black uppercase tracking-tighter">
+        <h1 className="home-h2">
           hall of fame
         </h1>
-        <p className="text-gray-500 text-xs sm:text-sm uppercase tracking-[0.4em]">
+        <p className="text-[13px] mb-4 sm:text-base text-gray-400 leading-relaxed max-w-xl">
           Honoring glitch architects who dominated eras
         </p>
       </div>
@@ -84,6 +89,8 @@ const New = () => {
                           : `${item.photoUrl}?auto=compress&cs=tinysrgb&w=800`
                       }
                       alt={isFake ? "Coming Soon" : item.contestantName}
+                      loading="lazy"
+                      decoding="async"
                       className={`absolute inset-0 w-full h-full object-cover transition-transform duration-700 ${
                         isFake ? "opacity-40 grayscale" : "md:group-hover:scale-105"
                       }`}
