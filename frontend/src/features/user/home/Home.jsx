@@ -1,9 +1,9 @@
-import React, { Suspense, lazy, useRef } from "react";
+import React, { Suspense, lazy } from "react";
 
 import FeaturedCarousel from "./components/Carousel";
 const Overview = lazy(() => import("./components/OverviewSection"));
 const New = lazy(() => import("./components/New"));
-import { useLiveUpcomingSeasons } from "./hooks";
+import { useLiveUpcomingSeasons, useScrambleText } from "./hooks";
 
 import {
   isRegistrationOpen,
@@ -13,16 +13,10 @@ import Cards from "./components/Cards";
 import { Flame, MenuSquare, Search } from "lucide-react";
 import { useMemo } from "react";
 import SeasonData from "./components/SeasonData";
-import { useScroll, useTransform, motion } from "framer-motion";
+import { useInView } from "framer-motion";
 
 const Home = () => {
-  const missionRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: missionRef,
-    offset: ["start 80%", "end 20%"],
-  });
-
-  const textFill = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+ 
 
   const { data: seasons = [], isLoading: seasonsLoading } =
     useLiveUpcomingSeasons();
@@ -43,31 +37,30 @@ const Home = () => {
     }, 0);
   }, [liveSeason]);
 
+  const ScrambleTextItem = ({ text }) => {
+    const { ref, inView } = useInView();
+    const value = useScrambleText(text, inView);
+  
+    return <span ref={ref}>{value}</span>;
+  };
+  
+
   return (
     <div className="w-full min-h-screen    bg-fixed bg-cover bg-center flex flex-col items-center">
       
         <FeaturedCarousel />
      
 
-      <section ref={missionRef} className="min-h-[305px] md:hidden border-y border-gray-800  px-6 py-12 flex flex-col justify-center">
+      <section className="min-h-[305px] md:hidden border-y border-gray-800  px-6 py-12 flex flex-col justify-center">
         <div className="max-w-screen md:mx-auto w-full">
           <h5 className="home-h2">The Mission</h5>
-          <motion.p
-            style={{
-              backgroundImage: useTransform(
-                textFill,
-                (v) => `linear-gradient(to bottom, white ${v}, #9ca3af ${v})`
-              ),
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-            }}
-            className="text-[13px] sm:text-base text-transparent leading-relaxed max-w-xl"
-          >
+          <p className="text-[13px] sm:text-base text-gray-400 leading-relaxed max-w-xl">
+            
             GlitchFame celebrates the anomalies. Each season presents a new
             digital frontier where competitors clash for supremacy. We reward
             the creative, the bold, and the fast. One winner takes the crown;
             everyone else is just a glitch in the background.
-          </motion.p>
+          </p>
         </div>
       </section>
 
@@ -79,6 +72,7 @@ const Home = () => {
             <div className="flex items-center gap-3">
               <h2 className="home-h2">Live Seasons</h2>
 
+           
             </div>
           </div>
         </div>

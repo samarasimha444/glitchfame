@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import { Autoplay, EffectCreative, Parallax } from "swiper/modules";
+import { Autoplay, EffectCreative } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/effect-creative";
@@ -76,7 +76,7 @@ export default function FeaturedCarousel() {
                     alt=""
                     loading="eager"
                     decoding="async"
-                    className="w-full h-full object-cover scale-[1.05] will-change-transform"
+                    className="w-full h-full object-cover scale-[1.05]"
                   />
                 </div>
 
@@ -134,7 +134,6 @@ export default function FeaturedCarousel() {
           style={{
             backgroundImage:
               "linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)",
-            size: "100px 100px",
             backgroundSize: "80px 80px",
           }}
         ></div>

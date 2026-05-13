@@ -17,7 +17,7 @@ const ScrambleTextItem = ({ text }) => {
 const Cards = ({ liveSeason, isLoading }) => {
 
 
-  const isMobile = useIsMobile();
+ 
 
   return (
     <div className="w-full relative">
@@ -33,7 +33,7 @@ const Cards = ({ liveSeason, isLoading }) => {
       
       <div className="flex items-center gap-4 sm:block w-full sm:w-[calc(50%-12px)]">
         
-        {/* Mobile Header */}
+        
         <div className="sm:hidden w-1/2">
           <h3 className="text-white text-xs font-bold uppercase leading-tight">
             Coming Soon
@@ -233,10 +233,12 @@ const Cards = ({ liveSeason, isLoading }) => {
             <div className="flex items-center gap-4 sm:block w-full sm:w-[calc(50%-12px)]">
               <div className="sm:hidden w-1/2">
                 <h3 className="text-white text-xs font-bold uppercase leading-tight">
-                  Archive
+                  <ScrambleTextItem text={`Archieve`} />
+                 
                 </h3>
                 <p className="text-[10px] text-primary mt-2 uppercase tracking-widest">
-                  Track All
+                  <ScrambleTextItem text={`Track All`}/>
+                 
                 </p>
               </div>
               <Link
