@@ -16,7 +16,7 @@ const VotingHeader = ({season}) => {
       <div className="mx-auto w-full">
 
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-10">
-          
+
           <div className="max-w-xl">
 
             <div className="hidden md:flex items-center gap-3 text-sm sm:mb-4">

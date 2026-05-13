@@ -236,7 +236,7 @@ const Cards = ({ liveSeason, isLoading }) => {
                   Archive
                 </h3>
                 <p className="text-[10px] text-primary mt-2 uppercase tracking-widest">
-                  History [01-99]
+                  Track All
                 </p>
               </div>
               <Link

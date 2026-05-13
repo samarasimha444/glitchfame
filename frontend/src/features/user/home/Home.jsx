@@ -1,5 +1,6 @@
-import React, { Suspense, lazy } from "react";
-const FeaturedCarousel = lazy(() => import("./components/Carousel"));
+import React, { Suspense, lazy, useRef } from "react";
+
+import FeaturedCarousel from "./components/Carousel";
 const Overview = lazy(() => import("./components/OverviewSection"));
 const New = lazy(() => import("./components/New"));
 import { useLiveUpcomingSeasons } from "./hooks";
@@ -12,9 +13,16 @@ import Cards from "./components/Cards";
 import { Flame, MenuSquare, Search } from "lucide-react";
 import { useMemo } from "react";
 import SeasonData from "./components/SeasonData";
+import { useScroll, useTransform, motion } from "framer-motion";
 
 const Home = () => {
- 
+  const missionRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: missionRef,
+    offset: ["start 80%", "end 20%"],
+  });
+
+  const textFill = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   const { data: seasons = [], isLoading: seasonsLoading } =
     useLiveUpcomingSeasons();
@@ -37,19 +45,29 @@ const Home = () => {
 
   return (
     <div className="w-full min-h-screen    bg-fixed bg-cover bg-center flex flex-col items-center">
-      <Suspense fallback={<div className="h-[480px] w-full bg-gray-900 animate-pulse" />}>
+      
         <FeaturedCarousel />
-      </Suspense>
+     
 
-      <section className="min-h-[305px] md:hidden border-y border-gray-800  px-6 py-12 flex flex-col justify-center">
+      <section ref={missionRef} className="min-h-[305px] md:hidden border-y border-gray-800  px-6 py-12 flex flex-col justify-center">
         <div className="max-w-screen md:mx-auto w-full">
           <h5 className="home-h2">The Mission</h5>
-          <p className="text-[13px] sm:text-base text-gray-400 leading-relaxed max-w-xl">
+          <motion.p
+            style={{
+              backgroundImage: useTransform(
+                textFill,
+                (v) => `linear-gradient(to bottom, white ${v}, #9ca3af ${v})`
+              ),
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+            }}
+            className="text-[13px] sm:text-base text-transparent leading-relaxed max-w-xl"
+          >
             GlitchFame celebrates the anomalies. Each season presents a new
             digital frontier where competitors clash for supremacy. We reward
             the creative, the bold, and the fast. One winner takes the crown;
             everyone else is just a glitch in the background.
-          </p>
+          </motion.p>
         </div>
       </section>
 
@@ -61,15 +79,6 @@ const Home = () => {
             <div className="flex items-center gap-3">
               <h2 className="home-h2">Live Seasons</h2>
 
-              {/* <div className="inline-flex items-center gap-1.5 bg-red-950/30 border border-red-500/30 px-2 py-1 rounded-md">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
-                </span>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-red-500">
-                  Active
-                </span>
-              </div> */}
             </div>
           </div>
         </div>

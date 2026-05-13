@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Vote from "./features/user/Voting/Vote"
+import { AuthProvider } from "./contexts/AuthContext";
 
 import  { ReactLenis } from "lenis/react"
 
@@ -30,6 +31,7 @@ const AdminSettings = lazy(() => import("./features/admin/settings/SettingPage")
 
 export default function App() {
   return (
+    <AuthProvider>
     <Suspense fallback={null}>
       <Routes>
       
@@ -75,5 +77,6 @@ export default function App() {
         </Route>
       </Routes>
     </Suspense>
+    </AuthProvider>
   );
 }

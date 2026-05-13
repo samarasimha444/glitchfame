@@ -1,11 +1,10 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import AdminNavbar from "./AdminNavBar";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const AdminLayout = () => {
-
-  const profile = JSON.parse(localStorage.getItem("profile"));
-  console.log(profile)
+  const { profile } = useAuth();
 
   return (
     <div className="flex  min-h-screen  w-full max-w-screen text-white">

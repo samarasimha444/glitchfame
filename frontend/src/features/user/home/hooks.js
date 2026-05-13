@@ -1,18 +1,12 @@
-import { useMutation, useQuery} from "@tanstack/react-query";
-import { getLiveUpcomingSeasons, getSeasonById, getWinners} from "./api";
-import { changePasswordApi, getProfile } from "../api";
-import { useState,useEffect, useRef } from "react";
-
+import { useAuth } from "../../../contexts/AuthContext";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getLiveUpcomingSeasons, getSeasonById, getWinners } from "./api";
+import { changePasswordApi } from "../api";
+import { useState, useEffect, useRef } from "react";
 
 export const useProfile = () => {
-  return useQuery({
-    queryKey: ["profile"],
-    queryFn: getProfile,
-    staleTime: 1000 * 60 * 5, 
-    retry: 1,
-
-    refetchOnWindowFocus: false,
-  });
+  const { profile } = useAuth();
+  return { data: { data: profile }, isLoading: false };
 };
 
 

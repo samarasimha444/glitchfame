@@ -67,9 +67,14 @@ const Vote = () => {
   const isError = isParticipationError || isSearchError;
   const isEmpty = !isLoadingState && contestants.length === 0;
 
+  console.log(seasonInfo)
   return (
     <div className="flex flex-col w-full m-auto max-w-400 min-h-screen">
-      <section className="bg-black pt-20">
+      <section 
+  className="pt-20 bg-black/90 bg-cover bg-center bg-no-repeat bg-blend-overlay"
+  style={{ backgroundImage: `url(${seasonInfo?.seasonPhotoUrl
+})` }}
+>
         <VotingHeader season={seasonInfo} id={seasonId} />
 
         <div className="md:flex md:px-12 flex-col md:flex-row gap-4 mb-5 sm:mt-4 md:mb-8">

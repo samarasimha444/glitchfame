@@ -4,7 +4,7 @@ import Footer from "../Footer.jsx";
 
 import { Home, Trophy, Flame, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { useProfile } from "../features/user/home/hooks.js";
+import { useAuth } from "../contexts/AuthContext";
 import { useMemo } from "react";
 
 const MobileBottomNav = () => {
@@ -56,9 +56,7 @@ const MobileBottomNav = () => {
   );
 };
 const Layout = () => {
-  const { data } = useProfile();
-
-  const profile = useMemo(() => data?.data || null, [data]);
+  const { profile } = useAuth();
 
   return (
     <>

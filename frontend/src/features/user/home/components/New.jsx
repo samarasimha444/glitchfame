@@ -47,11 +47,9 @@ const New = () => {
   )}
 
   {/* CONTENT */}
-  <div className="relative z-10 w-full max-w-7xl mx-auto px-4">
+  <div className="relative z-10 w-full max-w-7xl mx-auto ">
         
      
-      
-
     <div className="flex justify-between items-start pt-10 mb-8 sm:mb-3">
       <div className="space-y-4 sm:space-y-6">
         <h1 className="home-h2">
@@ -98,7 +96,7 @@ const New = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                     
                     <div className="absolute bottom-4 left-4">
-                      <p className="text-yellow-500 font-black text-xs sm:text-lg tracking-tighter bg-black/60 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10">
+                      <p className="text-primary font-black text-xs sm:text-lg tracking-tighter bg-black/60 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10">
                         {isFake ? "COMING SOON" : `$${item.prizeMoney.toLocaleString()}`}
                       </p>
                     </div>
@@ -107,7 +105,7 @@ const New = () => {
                  
                   <div className={`w-[40%] md:w-full flex flex-col justify-center ${isFlipped ? "text-right md:text-left" : "text-left"}`}>
                     <div className="space-y-1 sm:space-y-3">
-                      <p className="text-yellow-500/80 text-[9px] sm:text-xs font-bold uppercase tracking-[0.3em]">
+                      <p className="text-primary text-[9px] sm:text-xs font-bold uppercase tracking-[0.3em]">
                         {isFake ? "Upcoming Winner" : item.seasonName}
                       </p>
                       <h3 className="text-white font-black text-sm sm:text-3xl lg:text-2xl uppercase leading-none tracking-tighter">

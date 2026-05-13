@@ -45,7 +45,7 @@ const Arena = () => {
         <p className=" hidden sm:block text-xs tracking-widest text-primary mb-3">
           LIVE COMPETITIONS
         </p>
-        <h2 className="text-2xl md:text-5xl font-bold mb-4">
+        <h2 className="text-2xl md:text-6xl font-bold mb-4">
           Explore Active <span className="text-primary">Seasons</span>
         </h2>
         <p className="small-text">
